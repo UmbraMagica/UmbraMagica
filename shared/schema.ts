@@ -6,6 +6,7 @@ import {
   jsonb,
   index,
   serial,
+  integer,
   date,
   boolean,
 } from "drizzle-orm/pg-core";
@@ -54,7 +55,7 @@ export const inviteCodes = pgTable("invite_codes", {
   id: serial("id").primaryKey(),
   code: varchar("code", { length: 50 }).notNull().unique(),
   isUsed: boolean("is_used").default(false).notNull(),
-  usedBy: serial("used_by").references(() => users.id),
+  usedBy: integer("used_by").references(() => users.id),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   usedAt: timestamp("used_at"),
 });
