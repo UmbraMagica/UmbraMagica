@@ -9,6 +9,7 @@ import Landing from "@/pages/landing";
 import Home from "@/pages/home";
 import Admin from "@/pages/admin";
 import Registration from "@/pages/registration";
+import Chat from "@/pages/chat";
 import NotFound from "@/pages/not-found";
 import { useEffect } from "react";
 import { apiRequest } from "./lib/queryClient";
@@ -51,6 +52,7 @@ function Router() {
           <Route path="/" component={user.role === "admin" ? Admin : Home} />
           <Route path="/admin" component={Admin} />
           <Route path="/home" component={Home} />
+          <Route path="/chat" component={Chat} />
         </>
       )}
       <Route component={NotFound} />

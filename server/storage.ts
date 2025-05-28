@@ -53,7 +53,7 @@ export interface IStorage {
   
   // Message operations
   getMessage(id: number): Promise<Message | undefined>;
-  getMessagesByRoom(roomId: number, limit?: number, offset?: number): Promise<(Message & { character: { firstName: string; middleName?: string; lastName: string } })[]>;
+  getMessagesByRoom(roomId: number, limit?: number, offset?: number): Promise<(Message & { character: { firstName: string; middleName?: string | null; lastName: string } })[]>;
   createMessage(message: InsertMessage): Promise<Message>;
   deleteMessage(id: number): Promise<boolean>;
   
@@ -214,7 +214,7 @@ export class DatabaseStorage implements IStorage {
         createdAt: messages.createdAt,
         character: {
           firstName: characters.firstName,
-          middleName: characters.middleName || undefined,
+          middleName: characters.middleName,
           lastName: characters.lastName,
         },
       })

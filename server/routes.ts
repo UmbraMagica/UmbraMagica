@@ -337,6 +337,160 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Chat API endpoints
+  app.get("/api/chat/rooms", requireAuth, async (req, res) => {
+    try {
+      const rooms = await storage.getAllChatRooms();
+      res.json(rooms);
+    } catch (error) {
+      console.error("Error fetching chat rooms:", error);
+      res.status(500).json({ message: "Failed to fetch chat rooms" });
+    }
+  });
+
+  app.get("/api/chat/rooms/:roomId/messages", requireAuth, async (req, res) => {
+    try {
+      const roomId = parseInt(req.params.roomId);
+      const limit = parseInt(req.query.limit as string) || 50;
+      const offset = parseInt(req.query.offset as string) || 0;
+      
+      const messages = await storage.getMessagesByRoom(roomId, limit, offset);
+      res.json(messages);
+    } catch (error) {
+      console.error("Error fetching messages:", error);
+      res.status(500).json({ message: "Failed to fetch messages" });
+    }
+  });
+
+  app.post("/api/chat/rooms/:roomId/archive", requireAuth, async (req, res) => {
+    try {
+      const roomId = parseInt(req.params.roomId);
+      const beforeDate = req.body.beforeDate ? new Date(req.body.beforeDate) : undefined;
+      
+      const archivedCount = await storage.archiveMessages(roomId, beforeDate);
+      res.json({ message: `Archived ${archivedCount} messages`, count: archivedCount });
+    } catch (error) {
+      console.error("Error archiving messages:", error);
+      res.status(500).json({ message: "Failed to archive messages" });
+    }
+  });
+
+  app.get("/api/chat/rooms/:roomId/export", requireAuth, async (req, res) => {
+    try {
+      const roomId = parseInt(req.params.roomId);
+      const messages = await storage.getMessagesByRoom(roomId, 1000, 0);
+      
+      const exportData = messages.map(msg => ({
+        timestamp: msg.createdAt,
+        character: `${msg.character.firstName}${msg.character.middleName ? ` ${msg.character.middleName}` : ''} ${msg.character.lastName}`,
+        message: msg.content,
+        type: msg.messageType,
+      }));
+
+      res.setHeader('Content-Type', 'application/json');
+      res.setHeader('Content-Disposition', `attachment; filename="chat-export-${roomId}-${new Date().toISOString().split('T')[0]}.json"`);
+      res.json(exportData);
+    } catch (error) {
+      console.error("Error exporting chat:", error);
+      res.status(500).json({ message: "Failed to export chat" });
+    }
+  });
+
   const httpServer = createServer(app);
+  
+  // WebSocket server for real-time chat
+  const wss = new WebSocketServer({ server: httpServer, path: '/ws' });
+  
+  // Store active WebSocket connections with user info
+  const activeConnections = new Map<WebSocket, { userId: number; characterId?: number }>();
+
+  wss.on('connection', (ws, req) => {
+    console.log('New WebSocket connection');
+    
+    ws.on('message', async (data) => {
+      try {
+        const message = JSON.parse(data.toString());
+        
+        switch (message.type) {
+          case 'authenticate':
+            // In a real implementation, you'd verify the session here
+            activeConnections.set(ws, { 
+              userId: message.userId, 
+              characterId: message.characterId 
+            });
+            ws.send(JSON.stringify({ type: 'authenticated', success: true }));
+            break;
+            
+          case 'chat_message':
+            const connectionInfo = activeConnections.get(ws);
+            if (!connectionInfo?.characterId) {
+              ws.send(JSON.stringify({ type: 'error', message: 'Not authenticated' }));
+              return;
+            }
+
+            // Validate message content
+            const validatedMessage = insertMessageSchema.parse({
+              roomId: message.roomId,
+              characterId: connectionInfo.characterId,
+              content: message.content,
+              messageType: message.messageType || 'message',
+            });
+
+            // Save message to database
+            const savedMessage = await storage.createMessage(validatedMessage);
+            
+            // Get character info for broadcast
+            const character = await storage.getCharacter(connectionInfo.characterId);
+            if (!character) return;
+
+            // Broadcast to all connected clients
+            const broadcastMessage = {
+              type: 'new_message',
+              message: {
+                ...savedMessage,
+                character: {
+                  firstName: character.firstName,
+                  middleName: character.middleName,
+                  lastName: character.lastName,
+                }
+              }
+            };
+
+            wss.clients.forEach((client) => {
+              if (client.readyState === WebSocket.OPEN) {
+                client.send(JSON.stringify(broadcastMessage));
+              }
+            });
+            break;
+        }
+      } catch (error) {
+        console.error('WebSocket message error:', error);
+        ws.send(JSON.stringify({ type: 'error', message: 'Invalid message format' }));
+      }
+    });
+
+    ws.on('close', () => {
+      activeConnections.delete(ws);
+      console.log('WebSocket connection closed');
+    });
+  });
+
+  // Initialize default chat room if it doesn't exist
+  (async () => {
+    try {
+      const mainRoom = await storage.getChatRoomByName("Hlavní chat");
+      if (!mainRoom) {
+        await storage.createChatRoom({
+          name: "Hlavní chat",
+          description: "Hlavní herní místnost pro všechny hráče",
+          isPublic: true,
+        });
+        console.log("Created default chat room: Hlavní chat");
+      }
+    } catch (error) {
+      console.error("Error initializing chat room:", error);
+    }
+  })();
+
   return httpServer;
 }
