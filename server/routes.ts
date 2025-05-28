@@ -340,7 +340,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Chat API endpoints
   app.get("/api/chat/rooms", requireAuth, async (req, res) => {
     try {
+      console.log("Fetching chat rooms...");
       const rooms = await storage.getAllChatRooms();
+      console.log("Found rooms:", rooms);
       res.json(rooms);
     } catch (error) {
       console.error("Error fetching chat rooms:", error);
