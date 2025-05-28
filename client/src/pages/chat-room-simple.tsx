@@ -75,18 +75,9 @@ export default function ChatRoom() {
 
   const currentRoom = rooms.find(room => room.id === currentRoomId);
 
-  // Fetch messages
+  // Fetch messages - Use the working endpoint structure
   const { data: messages = [], isLoading: messagesLoading, error: messagesError } = useQuery<ChatMessage[]>({
-    queryKey: ["/api/chat/messages", { roomId: currentRoomId }],
-    queryFn: async () => {
-      const response = await fetch(`/api/chat/messages?roomId=${currentRoomId}`, {
-        credentials: "include",
-      });
-      if (!response.ok) {
-        throw new Error("Failed to fetch messages");
-      }
-      return response.json();
-    },
+    queryKey: [`/api/chat/rooms/${currentRoomId}/messages`],
     enabled: !!currentRoomId,
   });
 
@@ -173,7 +164,7 @@ export default function ChatRoom() {
       
       // Refresh messages after sending
       setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey: ["/api/chat/messages", { roomId: currentRoomId }] });
+        queryClient.invalidateQueries({ queryKey: [`/api/chat/rooms/${currentRoomId}/messages`] });
       }, 100);
     } else {
       toast({
