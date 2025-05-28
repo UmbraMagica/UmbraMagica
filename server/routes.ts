@@ -15,6 +15,11 @@ declare module "express-session" {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Debug middleware for chat endpoints
+  app.use('/api/chat/*', (req, res, next) => {
+    console.log(`${req.method} ${req.path} - Query:`, req.query);
+    next();
+  });
   // Session configuration
   const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
   const pgStore = connectPg(session);
