@@ -268,28 +268,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/characters/online", requireAuth, async (req, res) => {
     try {
-      // Return only the current user's active character
-      const userId = req.session.userId!;
-      console.log("Fetching characters for user ID:", userId);
-      
-      const characters = await storage.getCharactersByUserId(userId);
-      console.log("Found characters:", characters);
-      
+      // Return all active characters from all users (representing online players)
+      const users = await storage.getAllUsers();
       const onlineCharacters = [];
       
-      for (const character of characters) {
-        if (character.isActive) {
-          onlineCharacters.push({
-            id: character.id,
-            fullName: `${character.firstName}${character.middleName ? ` ${character.middleName}` : ''} ${character.lastName}`,
-            firstName: character.firstName,
-            lastName: character.lastName,
-            location: "Online",
-          });
+      for (const user of users) {
+        const characters = await storage.getCharactersByUserId(user.id);
+        for (const character of characters) {
+          if (character.isActive) {
+            onlineCharacters.push({
+              id: character.id,
+              fullName: `${character.firstName}${character.middleName ? ` ${character.middleName}` : ''} ${character.lastName}`,
+              firstName: character.firstName,
+              lastName: character.lastName,
+              location: "Hlavní chat",
+            });
+          }
         }
       }
       
-      console.log("Returning online characters:", onlineCharacters);
+      console.log("Returning all online characters:", onlineCharacters);
       res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
       res.json(onlineCharacters);
     } catch (error) {
