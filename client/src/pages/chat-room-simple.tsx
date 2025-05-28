@@ -76,10 +76,15 @@ export default function ChatRoom() {
   const currentRoom = rooms.find(room => room.id === currentRoomId);
 
   // Fetch messages
-  const { data: messages = [] } = useQuery<ChatMessage[]>({
-    queryKey: ["/api/chat/messages", currentRoomId],
+  const { data: messages = [], isLoading: messagesLoading, error: messagesError } = useQuery<ChatMessage[]>({
+    queryKey: [`/api/chat/rooms/${currentRoomId}/messages`],
     enabled: !!currentRoomId,
   });
+
+  // Debug messages
+  console.log("Messages data:", messages);
+  console.log("Messages loading:", messagesLoading);
+  console.log("Messages error:", messagesError);
 
   // Initialize WebSocket connection
   useEffect(() => {
@@ -103,7 +108,7 @@ export default function ChatRoom() {
       try {
         const data = JSON.parse(event.data);
         if (data.type === "message") {
-          queryClient.invalidateQueries({ queryKey: ["/api/chat/messages", currentRoomId] });
+          queryClient.invalidateQueries({ queryKey: [`/api/chat/rooms/${currentRoomId}/messages`] });
         }
       } catch (error) {
         console.error("Chyba při zpracování WebSocket zprávy:", error);
@@ -155,7 +160,7 @@ export default function ChatRoom() {
       setMessageInput("");
       
       // Refresh messages immediately after sending
-      queryClient.invalidateQueries({ queryKey: ["/api/chat/messages", currentRoomId] });
+      queryClient.invalidateQueries({ queryKey: [`/api/chat/rooms/${currentRoomId}/messages`] });
       
       // Send via WebSocket for real-time update for other users
       if (ws && ws.readyState === WebSocket.OPEN) {
