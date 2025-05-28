@@ -7,7 +7,7 @@ import path from 'path';
 
 try {
   console.log('🏗️  Building frontend...');
-  execSync('npm run build', { stdio: 'inherit' });
+  execSync('npx vite build', { stdio: 'inherit' });
   
   console.log('📦 Building server...');
   execSync('npx esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outfile=dist/index.js', { stdio: 'inherit' });
