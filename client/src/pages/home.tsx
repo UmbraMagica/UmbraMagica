@@ -132,10 +132,22 @@ export default function Home() {
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <Button variant="secondary" className="bg-muted hover:bg-primary text-foreground hover:text-primary-foreground p-4 h-auto rounded-lg transition-all duration-200 transform hover:scale-105 text-left justify-start">
-                    <div>
-                      <User className="h-6 w-6 mb-2" />
-                      <div className="font-medium">Upravit postavu</div>
-                      <div className="text-sm opacity-80">Aktualizujte profil</div>
+                    <div className="flex items-center">
+                      <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-lg mr-4">
+                        {primaryCharacter ? 
+                          `${primaryCharacter.firstName[0]}${primaryCharacter.lastName[0]}` : 
+                          'FB'
+                        }
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-medium">
+                          {primaryCharacter ? 
+                            `${primaryCharacter.firstName} ${primaryCharacter.lastName}` : 
+                            'Upravit postavu'
+                          }
+                        </div>
+                        <div className="text-sm opacity-80">Aktualizujte profil</div>
+                      </div>
                     </div>
                   </Button>
                   <Button 
