@@ -268,23 +268,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/characters/online", requireAuth, async (req, res) => {
     try {
-      // For now, return all characters as "online"
-      // In a real implementation, you'd track online status
-      const users = await storage.getAllUsers();
+      // Return only the current user's active character
+      const userId = req.session.userId!;
+      const user = await storage.getUser(userId);
+      
+      if (!user) {
+        return res.json([]);
+      }
+      
+      const characters = await storage.getCharactersByUserId(userId);
       const onlineCharacters = [];
       
-      for (const user of users) {
-        const characters = await storage.getCharactersByUserId(user.id);
-        for (const character of characters) {
-          if (character.isActive) {
-            onlineCharacters.push({
-              id: character.id,
-              fullName: `${character.firstName}${character.middleName ? ` ${character.middleName}` : ''} ${character.lastName}`,
-              firstName: character.firstName,
-              lastName: character.lastName,
-              location: "Hlavní chat", // Mock location
-            });
-          }
+      for (const character of characters) {
+        if (character.isActive) {
+          onlineCharacters.push({
+            id: character.id,
+            fullName: `${character.firstName}${character.middleName ? ` ${character.middleName}` : ''} ${character.lastName}`,
+            firstName: character.firstName,
+            lastName: character.lastName,
+            location: "Online",
+          });
         }
       }
       
