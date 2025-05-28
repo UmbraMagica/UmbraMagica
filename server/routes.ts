@@ -393,6 +393,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.post("/api/chat/messages", requireAuth, async (req, res) => {
+    try {
+      const { roomId, characterId, content, messageType } = req.body;
+      
+      if (!roomId || !characterId || !content) {
+        return res.status(400).json({ message: "roomId, characterId, and content are required" });
+      }
+      
+      if (content.length < 1 || content.length > 5000) {
+        return res.status(400).json({ message: "Message content must be 1-5000 characters" });
+      }
+      
+      const message = await storage.createMessage({
+        roomId: parseInt(roomId),
+        characterId: parseInt(characterId),
+        content: content.trim(),
+        messageType: messageType || "text"
+      });
+      
+      res.json(message);
+    } catch (error) {
+      console.error("Error creating message:", error);
+      res.status(500).json({ message: "Failed to create message" });
+    }
+  });
+
   app.post("/api/chat/rooms/:roomId/archive", requireAuth, async (req, res) => {
     try {
       const roomId = parseInt(req.params.roomId);
