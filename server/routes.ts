@@ -235,6 +235,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Character routes
+  app.patch("/api/characters/:id", requireAuth, async (req, res) => {
+    try {
+      const characterId = parseInt(req.params.id);
+      const userId = req.session.userId!;
+      
+      // Check if the character belongs to the authenticated user
+      const character = await storage.getCharacter(characterId);
+      if (!character || character.userId !== userId) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+      
+      const { firstName, middleName, lastName, birthDate } = req.body;
+      
+      const updatedCharacter = await storage.updateCharacter(characterId, {
+        firstName,
+        middleName,
+        lastName,
+        birthDate,
+      });
+      
+      if (!updatedCharacter) {
+        return res.status(404).json({ message: "Character not found" });
+      }
+      
+      res.json(updatedCharacter);
+    } catch (error) {
+      console.error("Error updating character:", error);
+      res.status(500).json({ message: "Failed to update character" });
+    }
+  });
+
   app.get("/api/characters/online", requireAuth, async (req, res) => {
     try {
       // For now, return all characters as "online"

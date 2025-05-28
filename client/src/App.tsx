@@ -11,6 +11,7 @@ import Admin from "@/pages/admin";
 import Registration from "@/pages/registration";
 import ChatList from "@/pages/chat-list";
 import ChatRoom from "@/pages/chat-room-simple";
+import CharacterEdit from "@/pages/character-edit";
 import NotFound from "@/pages/not-found";
 import { useEffect } from "react";
 import { apiRequest } from "./lib/queryClient";
@@ -53,6 +54,7 @@ function Router() {
           <Route path="/" component={user.role === "admin" ? Admin : Home} />
           <Route path="/admin" component={Admin} />
           <Route path="/home" component={Home} />
+          <Route path="/character/edit" component={CharacterEdit} />
           <Route path="/chat" component={ChatList} />
           <Route path="/chat/:roomId" component={ChatRoom} />
         </>
