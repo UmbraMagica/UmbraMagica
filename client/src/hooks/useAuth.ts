@@ -66,6 +66,8 @@ export function useAuth() {
     },
     onSuccess: (data) => {
       queryClient.setQueryData(["/api/auth/user"], data);
+      // Force page refresh to navigate to the correct route
+      window.location.href = "/";
     },
   });
 
