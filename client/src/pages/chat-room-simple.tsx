@@ -94,6 +94,7 @@ export default function ChatRoom() {
   console.log("Messages data:", messages);
   console.log("Messages loading:", messagesLoading);
   console.log("Messages error:", messagesError);
+  console.log("Current room ID:", currentRoomId);
 
   // Initialize WebSocket connection
   useEffect(() => {

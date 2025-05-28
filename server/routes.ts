@@ -395,22 +395,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/chat/messages", requireAuth, async (req, res) => {
     try {
+      console.log("POST /api/chat/messages - Request body:", req.body);
       const { roomId, characterId, content, messageType } = req.body;
       
       if (!roomId || !characterId || !content) {
+        console.log("Missing required fields:", { roomId, characterId, content });
         return res.status(400).json({ message: "roomId, characterId, and content are required" });
       }
       
       if (content.length < 1 || content.length > 5000) {
+        console.log("Invalid content length:", content.length);
         return res.status(400).json({ message: "Message content must be 1-5000 characters" });
       }
       
-      const message = await storage.createMessage({
+      const messageData = {
         roomId: parseInt(roomId),
         characterId: parseInt(characterId),
         content: content.trim(),
         messageType: messageType || "text"
-      });
+      };
+      
+      console.log("Creating message with data:", messageData);
+      const message = await storage.createMessage(messageData);
+      console.log("Message created successfully:", message);
       
       res.json(message);
     } catch (error) {
