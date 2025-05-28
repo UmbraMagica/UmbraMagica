@@ -1,0 +1,106 @@
+
+Search
+
+Live tail
+GMT+2
+
+Menu
+==> Cloning from https://github.com/CaseyLotteBenett/textroleplay
+==> Checking out commit c7c90ac3aebb99a29144194de88a738afc0de6e4 in branch main
+==> Using Node.js version 22.14.0 (default)
+==> Docs on specifying a Node.js version: https://render.com/docs/node-version
+==> Using Bun version 1.1.0 (default)
+==> Docs on specifying a bun version: https://render.com/docs/bun-version
+==> Running build command 'npm install'...
+added 394 packages, and audited 395 packages in 13s
+56 packages are looking for funding
+  run `npm fund` for details
+found 0 vulnerabilities
+==> Uploading build...
+==> Uploaded in 5.3s. Compression took 4.4s
+==> Build successful 🎉
+==> Deploying...
+==> Running 'ls -la && npx tsx server/index.ts'
+total 1004
+drwxr-sr-x   8 render render   4096 May 28 18:34 .
+drwxr-sr-x   4 render render   4096 May 28 18:34 ..
+drwxr-sr-x   8 render render   4096 May 28 18:33 .git
+-rw-r--r--   1 render render   2027 May 28 18:33 DEPLOYMENT.md
+-rw-r--r--   1 render render   1232 May 28 18:33 README.md
+drwxr-sr-x   2 render render   4096 May 28 18:33 attached_assets
+drwxr-sr-x   3 render render   4096 May 28 18:33 client
+-rw-r--r--   1 render render    459 May 28 18:33 components.json
+-rw-r--r--   1 render render    325 May 28 18:33 drizzle.config.ts
+-rw-r--r--   1 render render 605693 May 28 18:33 generated-icon.png
+drwxr-sr-x 294 render render  12288 May 28 18:34 node_modules
+-rw-r--r--   1 render render 329396 May 28 18:34 package-lock.json
+-rw-r--r--   1 render render   3706 May 28 18:33 package.json
+-rw-r--r--   1 render render     80 May 28 18:33 postcss.config.js
+-rw-r--r--   1 render render    268 May 28 18:33 railway.json
+-rw-r--r--   1 render render    585 May 28 18:33 render-build.js
+-rw-r--r--   1 render render    181 May 28 18:33 render.yaml
+drwxr-sr-x   2 render render   4096 May 28 18:33 server
+drwxr-sr-x   2 render render   4096 May 28 18:33 shared
+-rw-r--r--   1 render render   2787 May 28 18:33 tailwind.config.ts
+-rw-r--r--   1 render render    657 May 28 18:33 tsconfig.json
+-rw-r--r--   1 render render    894 May 28 18:33 vite.config.ts
+node:internal/modules/run_main:122
+    triggerUncaughtException(
+    ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'vite' imported from /opt/render/project/src/server/vite.ts
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:268:9)
+    at packageResolve (node:internal/modules/esm/resolve:768:81)
+    at moduleResolve (node:internal/modules/esm/resolve:854:18)
+    at defaultResolve (node:internal/modules/esm/resolve:984:11)
+    at nextResolve (node:internal/modules/esm/hooks:748:28)
+    at resolveBase (file:///opt/render/.cache/_npx/fd45a72a545557e9/node_modules/tsx/dist/esm/index.mjs?1748457321381:2:3212)
+    at resolveDirectory (file:///opt/render/.cache/_npx/fd45a72a545557e9/node_modules/tsx/dist/esm/index.mjs?1748457321381:2:3584)
+    at resolveTsPaths (file:///opt/render/.cache/_npx/fd45a72a545557e9/node_modules/tsx/dist/esm/index.mjs?1748457321381:2:4073)
+    at async resolve (file:///opt/render/.cache/_npx/fd45a72a545557e9/node_modules/tsx/dist/esm/index.mjs?1748457321381:2:4441)
+    at async nextResolve (node:internal/modules/esm/hooks:748:22) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+Node.js v22.14.0
+==> Exited with status 1
+==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
+==> Running 'ls -la && npx tsx server/index.ts'
+total 1004
+drwxr-sr-x   8 render render   4096 May 28 18:34 .
+drwxr-sr-x   4 render render   4096 May 28 18:34 ..
+drwxr-sr-x   8 render render   4096 May 28 18:33 .git
+-rw-r--r--   1 render render   2027 May 28 18:33 DEPLOYMENT.md
+-rw-r--r--   1 render render   1232 May 28 18:33 README.md
+drwxr-sr-x   2 render render   4096 May 28 18:33 attached_assets
+drwxr-sr-x   3 render render   4096 May 28 18:33 client
+-rw-r--r--   1 render render    459 May 28 18:33 components.json
+-rw-r--r--   1 render render    325 May 28 18:33 drizzle.config.ts
+-rw-r--r--   1 render render 605693 May 28 18:33 generated-icon.png
+drwxr-sr-x 294 render render  12288 May 28 18:34 node_modules
+-rw-r--r--   1 render render 329396 May 28 18:34 package-lock.json
+-rw-r--r--   1 render render   3706 May 28 18:33 package.json
+-rw-r--r--   1 render render     80 May 28 18:33 postcss.config.js
+-rw-r--r--   1 render render    268 May 28 18:33 railway.json
+-rw-r--r--   1 render render    585 May 28 18:33 render-build.js
+-rw-r--r--   1 render render    181 May 28 18:33 render.yaml
+drwxr-sr-x   2 render render   4096 May 28 18:33 server
+drwxr-sr-x   2 render render   4096 May 28 18:33 shared
+-rw-r--r--   1 render render   2787 May 28 18:33 tailwind.config.ts
+-rw-r--r--   1 render render    657 May 28 18:33 tsconfig.json
+-rw-r--r--   1 render render    894 May 28 18:33 vite.config.ts
+node:internal/modules/run_main:122
+    triggerUncaughtException(
+    ^
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'vite' imported from /opt/render/project/src/server/vite.ts
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:268:9)
+    at packageResolve (node:internal/modules/esm/resolve:768:81)
+    at moduleResolve (node:internal/modules/esm/resolve:854:18)
+    at defaultResolve (node:internal/modules/esm/resolve:984:11)
+    at nextResolve (node:internal/modules/esm/hooks:748:28)
+    at resolveBase (file:///opt/render/.cache/_npx/fd45a72a545557e9/node_modules/tsx/dist/esm/index.mjs?1748457353985:2:3212)
+    at resolveDirectory (file:///opt/render/.cache/_npx/fd45a72a545557e9/node_modules/tsx/dist/esm/index.mjs?1748457353985:2:3584)
+    at resolveTsPaths (file:///opt/render/.cache/_npx/fd45a72a545557e9/node_modules/tsx/dist/esm/index.mjs?1748457353985:2:4073)
+    at async resolve (file:///opt/render/.cache/_npx/fd45a72a545557e9/node_modules/tsx/dist/esm/index.mjs?1748457353985:2:4441)
+    at async nextResolve (node:internal/modules/esm/hooks:748:22) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+Node.js v22.14.0
