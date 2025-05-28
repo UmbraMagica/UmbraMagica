@@ -105,14 +105,7 @@ export default function Landing() {
             </Link>
           </div>
 
-          {/* Test credentials info */}
-          <div className="mt-8 p-4 bg-muted/20 rounded-lg border border-border/50">
-            <h4 className="text-sm font-medium text-accent mb-2">Testovací účty:</h4>
-            <div className="text-xs text-muted-foreground space-y-1">
-              <p><strong>Admin:</strong> TesterAdmin / admin123</p>
-              <p><strong>Uživatel:</strong> TesterUživatel / user123</p>
-            </div>
-          </div>
+
         </CardContent>
       </Card>
     </div>
