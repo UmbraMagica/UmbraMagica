@@ -16,10 +16,14 @@ export default function ChatList() {
   const { user } = useAuth();
 
   // Fetch chat rooms
-  const { data: rooms = [] } = useQuery<ChatRoom[]>({
+  const { data: rooms = [], isLoading, error } = useQuery<ChatRoom[]>({
     queryKey: ["/api/chat/rooms"],
     enabled: !!user,
   });
+
+  console.log("Chat rooms data:", rooms);
+  console.log("Loading:", isLoading);
+  console.log("Error:", error);
 
   if (!user) {
     return (

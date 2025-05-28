@@ -339,34 +339,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Chat API endpoints
-  app.get("/api/chat/rooms", requireAuth, async (req, res) => {
-    try {
-      console.log("Fetching chat rooms...");
-      
-      // Return hardcoded rooms for now to test the frontend
-      const rooms = [
-        {
-          id: 1,
-          name: "Hlavní chat",
-          description: "Hlavní herní místnost pro všechny hráče",
-          isPublic: true,
-          createdAt: new Date().toISOString()
-        },
-        {
-          id: 2,
-          name: "Testovací chat", 
-          description: "Místnost pro testování a experimenty",
-          isPublic: true,
-          createdAt: new Date().toISOString()
-        }
-      ];
-      
-      console.log("Returning rooms:", rooms);
-      res.json(rooms);
-    } catch (error) {
-      console.error("Error fetching chat rooms:", error);
-      res.status(500).json({ message: "Failed to fetch chat rooms" });
-    }
+  app.get("/api/chat/rooms", (req, res) => {
+    const rooms = [
+      {
+        id: 1,
+        name: "Hlavní chat",
+        description: "Hlavní herní místnost pro všechny hráče",
+        isPublic: true,
+        createdAt: "2025-05-28T15:00:00Z"
+      },
+      {
+        id: 2,
+        name: "Testovací chat", 
+        description: "Místnost pro testování a experimenty",
+        isPublic: true,
+        createdAt: "2025-05-28T15:00:00Z"
+      }
+    ];
+    
+    res.setHeader('Content-Type', 'application/json');
+    res.json(rooms);
   });
 
   app.get("/api/chat/rooms/:roomId/messages", requireAuth, async (req, res) => {
