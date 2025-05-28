@@ -378,7 +378,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/chat/messages", requireAuth, async (req, res) => {
     try {
       const roomId = parseInt(req.query.roomId as string);
+      console.log("GET /api/chat/messages - roomId:", roomId);
+      
       if (!roomId) {
+        console.log("Missing roomId parameter");
         return res.status(400).json({ message: "roomId is required" });
       }
       
@@ -386,6 +389,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const offset = parseInt(req.query.offset as string) || 0;
       
       const messages = await storage.getMessagesByRoom(roomId, limit, offset);
+      console.log("Fetched messages:", messages.length, "messages");
+      console.log("Sample message:", messages[0]);
+      
       res.json(messages);
     } catch (error) {
       console.error("Error fetching messages:", error);
