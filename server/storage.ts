@@ -176,6 +176,125 @@ export class DatabaseStorage implements IStorage {
   async hashPassword(password: string): Promise<string> {
     return await bcrypt.hash(password, 12);
   }
+
+  // Chat operations
+  async getChatRoom(id: number): Promise<ChatRoom | undefined> {
+    const result = await db.select().from(chatRooms).where(eq(chatRooms.id, id));
+    return result[0];
+  }
+
+  async getChatRoomByName(name: string): Promise<ChatRoom | undefined> {
+    const result = await db.select().from(chatRooms).where(eq(chatRooms.name, name));
+    return result[0];
+  }
+
+  async createChatRoom(insertChatRoom: InsertChatRoom): Promise<ChatRoom> {
+    const result = await db.insert(chatRooms).values(insertChatRoom).returning();
+    return result[0];
+  }
+
+  async getAllChatRooms(): Promise<ChatRoom[]> {
+    return db.select().from(chatRooms);
+  }
+
+  // Message operations
+  async getMessage(id: number): Promise<Message | undefined> {
+    const result = await db.select().from(messages).where(eq(messages.id, id));
+    return result[0];
+  }
+
+  async getMessagesByRoom(roomId: number, limit: number = 50, offset: number = 0): Promise<(Message & { character: { firstName: string; middleName?: string | null; lastName: string } })[]> {
+    const result = await db
+      .select({
+        id: messages.id,
+        roomId: messages.roomId,
+        characterId: messages.characterId,
+        content: messages.content,
+        messageType: messages.messageType,
+        createdAt: messages.createdAt,
+        character: {
+          firstName: characters.firstName,
+          middleName: characters.middleName || undefined,
+          lastName: characters.lastName,
+        },
+      })
+      .from(messages)
+      .innerJoin(characters, eq(messages.characterId, characters.id))
+      .where(eq(messages.roomId, roomId))
+      .orderBy(desc(messages.createdAt))
+      .limit(limit)
+      .offset(offset);
+    
+    return result.reverse(); // Return in ascending order for chat display
+  }
+
+  async createMessage(insertMessage: InsertMessage): Promise<Message> {
+    const result = await db.insert(messages).values(insertMessage).returning();
+    return result[0];
+  }
+
+  async deleteMessage(id: number): Promise<boolean> {
+    const result = await db.delete(messages).where(eq(messages.id, id));
+    return (result.rowCount || 0) > 0;
+  }
+
+  // Archive operations
+  async archiveMessages(roomId: number, beforeDate?: Date): Promise<number> {
+    const whereCondition = beforeDate 
+      ? and(eq(messages.roomId, roomId), lt(messages.createdAt, beforeDate))
+      : eq(messages.roomId, roomId);
+
+    // First, get messages to archive with character names
+    const messagesToArchive = await db
+      .select({
+        id: messages.id,
+        roomId: messages.roomId,
+        characterId: messages.characterId,
+        content: messages.content,
+        messageType: messages.messageType,
+        createdAt: messages.createdAt,
+        characterName: {
+          firstName: characters.firstName,
+          middleName: characters.middleName,
+          lastName: characters.lastName,
+        },
+      })
+      .from(messages)
+      .innerJoin(characters, eq(messages.characterId, characters.id))
+      .where(whereCondition);
+
+    if (messagesToArchive.length === 0) {
+      return 0;
+    }
+
+    // Insert into archive table
+    const archiveData = messagesToArchive.map(msg => ({
+      originalMessageId: msg.id,
+      roomId: msg.roomId,
+      characterId: msg.characterId,
+      characterName: `${msg.characterName.firstName}${msg.characterName.middleName ? ` ${msg.characterName.middleName}` : ''} ${msg.characterName.lastName}`,
+      content: msg.content,
+      messageType: msg.messageType,
+      originalCreatedAt: msg.createdAt,
+    }));
+
+    await db.insert(archivedMessages).values(archiveData);
+
+    // Delete original messages
+    const deleteResult = await db.delete(messages).where(whereCondition);
+    
+    return deleteResult.rowCount || 0;
+  }
+
+  async getArchivedMessages(roomId: number, limit: number = 50, offset: number = 0): Promise<ArchivedMessage[]> {
+    return db
+      .select()
+      .from(archivedMessages)
+      .where(eq(archivedMessages.roomId, roomId))
+      .orderBy(desc(archivedMessages.originalCreatedAt))
+      .limit(limit)
+      .offset(offset);
+  }
 }
 
 export const storage = new DatabaseStorage();
