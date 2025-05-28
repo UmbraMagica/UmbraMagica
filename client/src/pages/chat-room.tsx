@@ -170,7 +170,7 @@ export default function ChatRoom() {
 
   // Initialize WebSocket connection
   useEffect(() => {
-    if (!user || !user.characters?.[0]) return;
+    if (!user || !user.characters?.[0] || !user.characters[0].firstName) return;
 
     const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
     const wsUrl = `${protocol}//${window.location.host}/ws`;
