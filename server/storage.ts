@@ -228,7 +228,7 @@ export class DatabaseStorage implements IStorage {
       .limit(limit)
       .offset(offset);
     
-    return result.reverse(); // Return in ascending order for chat display
+    return result; // Return in descending order (newest first) for chat display
   }
 
   async createMessage(insertMessage: InsertMessage): Promise<Message> {
