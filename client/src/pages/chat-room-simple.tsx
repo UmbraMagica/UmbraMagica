@@ -77,7 +77,16 @@ export default function ChatRoom() {
 
   // Fetch messages
   const { data: messages = [], isLoading: messagesLoading, error: messagesError } = useQuery<ChatMessage[]>({
-    queryKey: [`/api/chat/rooms/${currentRoomId}/messages`],
+    queryKey: ["/api/chat/messages", { roomId: currentRoomId }],
+    queryFn: async () => {
+      const response = await fetch(`/api/chat/messages?roomId=${currentRoomId}`, {
+        credentials: "include",
+      });
+      if (!response.ok) {
+        throw new Error("Failed to fetch messages");
+      }
+      return response.json();
+    },
     enabled: !!currentRoomId,
   });
 
@@ -108,7 +117,7 @@ export default function ChatRoom() {
       try {
         const data = JSON.parse(event.data);
         if (data.type === "message") {
-          queryClient.invalidateQueries({ queryKey: [`/api/chat/rooms/${currentRoomId}/messages`] });
+          queryClient.invalidateQueries({ queryKey: ["/api/chat/messages", { roomId: currentRoomId }] });
         }
       } catch (error) {
         console.error("Chyba při zpracování WebSocket zprávy:", error);
@@ -160,7 +169,7 @@ export default function ChatRoom() {
       setMessageInput("");
       
       // Refresh messages immediately after sending
-      queryClient.invalidateQueries({ queryKey: [`/api/chat/rooms/${currentRoomId}/messages`] });
+      queryClient.invalidateQueries({ queryKey: ["/api/chat/messages", { roomId: currentRoomId }] });
       
       // Send via WebSocket for real-time update for other users
       if (ws && ws.readyState === WebSocket.OPEN) {

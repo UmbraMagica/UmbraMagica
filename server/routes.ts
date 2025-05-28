@@ -375,6 +375,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get("/api/chat/messages", requireAuth, async (req, res) => {
+    try {
+      const roomId = parseInt(req.query.roomId as string);
+      if (!roomId) {
+        return res.status(400).json({ message: "roomId is required" });
+      }
+      
+      const limit = parseInt(req.query.limit as string) || 50;
+      const offset = parseInt(req.query.offset as string) || 0;
+      
+      const messages = await storage.getMessagesByRoom(roomId, limit, offset);
+      res.json(messages);
+    } catch (error) {
+      console.error("Error fetching messages:", error);
+      res.status(500).json({ message: "Failed to fetch messages" });
+    }
+  });
+
   app.post("/api/chat/rooms/:roomId/archive", requireAuth, async (req, res) => {
     try {
       const roomId = parseInt(req.params.roomId);
