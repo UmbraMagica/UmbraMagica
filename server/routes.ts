@@ -343,10 +343,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       console.log("Fetching chat rooms...");
       
-      // Direct database query to bypass any potential issues
-      const rooms = await db.select().from(chatRooms);
-      console.log("Found rooms:", rooms);
+      // Return hardcoded rooms for now to test the frontend
+      const rooms = [
+        {
+          id: 1,
+          name: "Hlavní chat",
+          description: "Hlavní herní místnost pro všechny hráče",
+          isPublic: true,
+          createdAt: new Date().toISOString()
+        },
+        {
+          id: 2,
+          name: "Testovací chat", 
+          description: "Místnost pro testování a experimenty",
+          isPublic: true,
+          createdAt: new Date().toISOString()
+        }
+      ];
       
+      console.log("Returning rooms:", rooms);
       res.json(rooms);
     } catch (error) {
       console.error("Error fetching chat rooms:", error);
