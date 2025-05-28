@@ -48,6 +48,10 @@ export default function ChatRoom() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   const currentRoomId = roomId ? parseInt(roomId) : null;
+  
+  // Debug user data
+  console.log("User data:", user);
+  console.log("User characters:", user?.characters);
 
   // Fetch current room info
   const { data: rooms = [] } = useQuery<ChatRoom[]>({
@@ -264,10 +268,15 @@ export default function ChatRoom() {
   };
 
   const getCurrentUserInitials = () => {
-    if (!user?.characters?.[0]) return "?";
-    const character = user.characters[0];
-    if (!character.firstName || !character.lastName) return "?";
-    return `${character.firstName.charAt(0)}${character.lastName.charAt(0)}`;
+    try {
+      if (!user?.characters?.[0]) return "U";
+      const character = user.characters[0];
+      if (!character?.firstName || !character?.lastName) return "U";
+      return `${character.firstName.charAt(0)}${character.lastName.charAt(0)}`;
+    } catch (error) {
+      console.error("Error getting user initials:", error);
+      return "U";
+    }
   };
 
   if (!user) {
