@@ -2,15 +2,23 @@ import {
   users,
   characters,
   inviteCodes,
+  chatRooms,
+  messages,
+  archivedMessages,
   type User,
   type InsertUser,
   type Character,
   type InsertCharacter,
   type InviteCode,
   type InsertInviteCode,
+  type ChatRoom,
+  type InsertChatRoom,
+  type Message,
+  type InsertMessage,
+  type ArchivedMessage,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, and } from "drizzle-orm";
+import { eq, and, desc, lt } from "drizzle-orm";
 import bcrypt from "bcrypt";
 
 export interface IStorage {
@@ -36,6 +44,22 @@ export interface IStorage {
   // Authentication
   validateUser(username: string, password: string): Promise<User | null>;
   hashPassword(password: string): Promise<string>;
+  
+  // Chat operations
+  getChatRoom(id: number): Promise<ChatRoom | undefined>;
+  getChatRoomByName(name: string): Promise<ChatRoom | undefined>;
+  createChatRoom(room: InsertChatRoom): Promise<ChatRoom>;
+  getAllChatRooms(): Promise<ChatRoom[]>;
+  
+  // Message operations
+  getMessage(id: number): Promise<Message | undefined>;
+  getMessagesByRoom(roomId: number, limit?: number, offset?: number): Promise<(Message & { character: { firstName: string; middleName?: string; lastName: string } })[]>;
+  createMessage(message: InsertMessage): Promise<Message>;
+  deleteMessage(id: number): Promise<boolean>;
+  
+  // Archive operations
+  archiveMessages(roomId: number, beforeDate?: Date): Promise<number>;
+  getArchivedMessages(roomId: number, limit?: number, offset?: number): Promise<ArchivedMessage[]>;
 }
 
 export class DatabaseStorage implements IStorage {

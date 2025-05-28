@@ -60,15 +60,63 @@ export const inviteCodes = pgTable("invite_codes", {
   usedAt: timestamp("used_at"),
 });
 
+// Chat rooms table
+export const chatRooms = pgTable("chat_rooms", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 100 }).notNull(),
+  description: text("description"),
+  isPublic: boolean("is_public").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Messages table
+export const messages = pgTable("messages", {
+  id: serial("id").primaryKey(),
+  roomId: integer("room_id").references(() => chatRooms.id).notNull(),
+  characterId: integer("character_id").references(() => characters.id).notNull(),
+  content: text("content").notNull(),
+  messageType: varchar("message_type", { length: 20 }).default("message").notNull(), // message, action, system
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Archived messages table (for backup/archival)
+export const archivedMessages = pgTable("archived_messages", {
+  id: serial("id").primaryKey(),
+  originalMessageId: integer("original_message_id").notNull(),
+  roomId: integer("room_id").notNull(),
+  characterId: integer("character_id").notNull(),
+  characterName: varchar("character_name", { length: 150 }).notNull(),
+  content: text("content").notNull(),
+  messageType: varchar("message_type", { length: 20 }).notNull(),
+  originalCreatedAt: timestamp("original_created_at").notNull(),
+  archivedAt: timestamp("archived_at").defaultNow().notNull(),
+});
+
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   characters: many(characters),
 }));
 
-export const charactersRelations = relations(characters, ({ one }) => ({
+export const charactersRelations = relations(characters, ({ one, many }) => ({
   user: one(users, {
     fields: [characters.userId],
     references: [users.id],
+  }),
+  messages: many(messages),
+}));
+
+export const chatRoomsRelations = relations(chatRooms, ({ many }) => ({
+  messages: many(messages),
+}));
+
+export const messagesRelations = relations(messages, ({ one }) => ({
+  character: one(characters, {
+    fields: [messages.characterId],
+    references: [characters.id],
+  }),
+  room: one(chatRooms, {
+    fields: [messages.roomId],
+    references: [chatRooms.id],
   }),
 }));
 
@@ -84,6 +132,19 @@ export const insertCharacterSchema = createInsertSchema(characters).pick({
   middleName: true,
   lastName: true,
   birthDate: true,
+});
+
+export const insertMessageSchema = createInsertSchema(messages).pick({
+  roomId: true,
+  characterId: true,
+  content: true,
+  messageType: true,
+});
+
+export const insertChatRoomSchema = createInsertSchema(chatRooms).pick({
+  name: true,
+  description: true,
+  isPublic: true,
 });
 
 export const registrationSchema = z.object({
@@ -114,3 +175,8 @@ export type Character = typeof characters.$inferSelect;
 export type InsertCharacter = typeof characters.$inferInsert;
 export type InviteCode = typeof inviteCodes.$inferSelect;
 export type InsertInviteCode = typeof inviteCodes.$inferInsert;
+export type ChatRoom = typeof chatRooms.$inferSelect;
+export type InsertChatRoom = typeof chatRooms.$inferInsert;
+export type Message = typeof messages.$inferSelect;
+export type InsertMessage = typeof messages.$inferInsert;
+export type ArchivedMessage = typeof archivedMessages.$inferSelect;
