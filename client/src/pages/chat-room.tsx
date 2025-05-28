@@ -282,6 +282,18 @@ export default function ChatRoom() {
     );
   }
 
+  if (!user.characters || user.characters.length === 0) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Card>
+          <CardContent className="p-6">
+            <p className="text-muted-foreground">Nemáte žádnou postavu. Vytvořte si postavu pro přístup k chatu.</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   if (!currentRoom) {
     return (
       <div className="flex items-center justify-center min-h-screen">
