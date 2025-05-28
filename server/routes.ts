@@ -2,7 +2,8 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
-import { registrationSchema, loginSchema, insertCharacterSchema, insertMessageSchema } from "@shared/schema";
+import { registrationSchema, loginSchema, insertCharacterSchema, insertMessageSchema, chatRooms } from "@shared/schema";
+import { db } from "./db";
 import { z } from "zod";
 import session from "express-session";
 import connectPg from "connect-pg-simple";
@@ -341,8 +342,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/chat/rooms", requireAuth, async (req, res) => {
     try {
       console.log("Fetching chat rooms...");
-      const rooms = await storage.getAllChatRooms();
+      
+      // Direct database query to bypass any potential issues
+      const rooms = await db.select().from(chatRooms);
       console.log("Found rooms:", rooms);
+      
       res.json(rooms);
     } catch (error) {
       console.error("Error fetching chat rooms:", error);

@@ -194,7 +194,10 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllChatRooms(): Promise<ChatRoom[]> {
-    return db.select().from(chatRooms);
+    console.log("Getting all chat rooms from database...");
+    const result = await db.select().from(chatRooms);
+    console.log("Database returned:", result);
+    return result;
   }
 
   // Message operations
