@@ -475,7 +475,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
-  // Initialize default chat room if it doesn't exist
+  // Initialize default chat rooms if they don't exist
   (async () => {
     try {
       const mainRoom = await storage.getChatRoomByName("Hlavní chat");
@@ -487,8 +487,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
         console.log("Created default chat room: Hlavní chat");
       }
+
+      const testRoom = await storage.getChatRoomByName("Testovací chat");
+      if (!testRoom) {
+        await storage.createChatRoom({
+          name: "Testovací chat",
+          description: "Místnost pro testování a experimenty",
+          isPublic: true,
+        });
+        console.log("Created test chat room: Testovací chat");
+      }
     } catch (error) {
-      console.error("Error initializing chat room:", error);
+      console.error("Error initializing chat rooms:", error);
     }
   })();
 
