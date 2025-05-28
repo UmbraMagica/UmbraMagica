@@ -154,7 +154,10 @@ export default function ChatRoom() {
 
       setMessageInput("");
       
-      // Send via WebSocket for real-time update
+      // Refresh messages immediately after sending
+      queryClient.invalidateQueries({ queryKey: ["/api/chat/messages", currentRoomId] });
+      
+      // Send via WebSocket for real-time update for other users
       if (ws && ws.readyState === WebSocket.OPEN) {
         ws.send(JSON.stringify({
           type: "message",
