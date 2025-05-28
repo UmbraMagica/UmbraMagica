@@ -131,7 +131,10 @@ export default function Home() {
                   Rychlé akce
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <Button className="bg-gradient-to-r from-primary to-secondary hover:from-secondary hover:to-primary text-primary-foreground p-4 h-auto rounded-lg transition-all duration-200 transform hover:scale-105 text-left justify-start">
+                  <Button 
+                    className="bg-gradient-to-r from-primary to-secondary hover:from-secondary hover:to-primary text-primary-foreground p-4 h-auto rounded-lg transition-all duration-200 transform hover:scale-105 text-left justify-start"
+                    onClick={() => window.location.href = '/chat'}
+                  >
                     <div>
                       <MessageCircle className="h-6 w-6 mb-2" />
                       <div className="font-medium">Vstoupit do chatu</div>
