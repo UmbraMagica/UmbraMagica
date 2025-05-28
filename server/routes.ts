@@ -270,13 +270,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       // Return only the current user's active character
       const userId = req.session.userId!;
-      const user = await storage.getUser(userId);
-      
-      if (!user) {
-        return res.json([]);
-      }
+      console.log("Fetching characters for user ID:", userId);
       
       const characters = await storage.getCharactersByUserId(userId);
+      console.log("Found characters:", characters);
+      
       const onlineCharacters = [];
       
       for (const character of characters) {
@@ -291,6 +289,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
       
+      console.log("Returning online characters:", onlineCharacters);
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
       res.json(onlineCharacters);
     } catch (error) {
       console.error("Error fetching online characters:", error);
