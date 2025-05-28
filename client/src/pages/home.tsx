@@ -255,31 +255,7 @@ export default function Home() {
               </CardContent>
             </Card>
 
-            {/* Chat Rooms */}
-            <Card className="bg-card border-border">
-              <CardContent className="p-6">
-                <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center">
-                  <DoorOpen className="text-accent mr-3 h-5 w-5" />
-                  Herní místnosti
-                </h3>
-                <div className="space-y-2">
-                  {chatRooms.map((room, index) => (
-                    <Button 
-                      key={index}
-                      variant="ghost" 
-                      className="w-full justify-between p-3 bg-muted/30 hover:bg-primary/20 rounded-lg transition-all duration-200 group"
-                    >
-                      <span className="text-sm font-medium text-foreground group-hover:text-accent">
-                        {room.name}
-                      </span>
-                      <span className="text-xs text-muted-foreground">
-                        {room.onlineCount} online
-                      </span>
-                    </Button>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+
           </div>
         </div>
       </div>
