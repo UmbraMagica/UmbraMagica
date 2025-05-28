@@ -501,7 +501,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
             });
 
             // Save message to database
+            console.log("WebSocket saving message:", validatedMessage);
             const savedMessage = await storage.createMessage(validatedMessage);
+            console.log("WebSocket message saved:", savedMessage);
             
             // Get character info for broadcast
             const character = await storage.getCharacter(connectionInfo.characterId);

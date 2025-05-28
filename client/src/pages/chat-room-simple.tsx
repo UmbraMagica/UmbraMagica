@@ -107,9 +107,10 @@ export default function ChatRoom() {
     websocket.onopen = () => {
       console.log("WebSocket připojen");
       setIsConnected(true);
+      // Authenticate first
       websocket.send(JSON.stringify({
-        type: "join",
-        roomId: currentRoomId,
+        type: "authenticate",
+        userId: user.id,
         characterId: currentCharacter.id
       }));
     };
@@ -159,33 +160,25 @@ export default function ChatRoom() {
       return;
     }
 
-    try {
-      await apiRequest("POST", "/api/chat/messages", {
+    // Send via WebSocket
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify({
+        type: "chat_message",
         roomId: currentRoomId,
-        characterId: currentCharacter.id,
         content: messageInput.trim(),
         messageType: "text"
-      });
-
+      }));
+      
       setMessageInput("");
       
-      // Refresh messages immediately after sending
-      queryClient.invalidateQueries({ queryKey: ["/api/chat/messages", { roomId: currentRoomId }] });
-      
-      // Send via WebSocket for real-time update for other users
-      if (ws && ws.readyState === WebSocket.OPEN) {
-        ws.send(JSON.stringify({
-          type: "message",
-          roomId: currentRoomId,
-          characterId: currentCharacter.id,
-          content: messageInput.trim()
-        }));
-      }
-    } catch (error) {
-      console.error("Chyba při odesílání zprávy:", error);
+      // Refresh messages after sending
+      setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: ["/api/chat/messages", { roomId: currentRoomId }] });
+      }, 100);
+    } else {
       toast({
-        title: "Chyba",
-        description: "Nepodařilo se odeslat zprávu.",
+        title: "Chyba připojení",
+        description: "WebSocket není připojen. Zkuste obnovit stránku.",
         variant: "destructive",
       });
     }
