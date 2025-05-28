@@ -377,7 +377,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const messages = await storage.getMessagesByRoom(roomId, limit, offset);
       console.log("Fetched messages:", messages.length, "messages");
       if (messages.length > 0) {
-        console.log("Sample message:", messages[0]);
+        console.log("First message (should be newest):", messages[0].id, messages[0].content);
+        console.log("Last message (should be oldest):", messages[messages.length-1].id, messages[messages.length-1].content);
       }
       
       res.json(messages);

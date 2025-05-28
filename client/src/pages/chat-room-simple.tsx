@@ -77,21 +77,8 @@ export default function ChatRoom() {
 
   // Fetch messages - Use the working endpoint structure
   const { data: messages = [], isLoading: messagesLoading, error: messagesError } = useQuery<ChatMessage[]>({
-    queryKey: [`/api/chat/rooms/${currentRoomId}/messages`, Date.now()],
-    queryFn: async () => {
-      const response = await fetch(`/api/chat/rooms/${currentRoomId}/messages?t=${Date.now()}`, {
-        credentials: "include",
-        headers: {
-          'Cache-Control': 'no-cache',
-        }
-      });
-      if (!response.ok) {
-        throw new Error("Failed to fetch messages");
-      }
-      return response.json();
-    },
+    queryKey: [`/api/chat/rooms/${currentRoomId}/messages`],
     enabled: !!currentRoomId,
-    refetchInterval: 2000, // Refresh every 2 seconds
   });
 
   // Debug messages
