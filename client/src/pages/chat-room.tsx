@@ -266,6 +266,7 @@ export default function ChatRoom() {
   const getCurrentUserInitials = () => {
     if (!user?.characters?.[0]) return "?";
     const character = user.characters[0];
+    if (!character.firstName || !character.lastName) return "?";
     return `${character.firstName.charAt(0)}${character.lastName.charAt(0)}`;
   };
 
