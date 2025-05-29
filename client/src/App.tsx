@@ -57,6 +57,7 @@ function Router() {
           <Route path="/home" component={Home} />
           <Route path="/character/edit" component={CharacterEdit} />
           <Route path="/chat" component={ChatCategories} />
+          <Route path="/chat-categories" component={ChatCategories} />
           <Route path="/chat/list" component={ChatList} />
           <Route path="/chat/room/:roomId" component={ChatRoom} />
         </>
