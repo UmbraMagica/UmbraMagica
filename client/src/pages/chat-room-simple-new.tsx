@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { ArrowLeft, Edit3, Save, X, BookOpen } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
+import { RoomDescription } from "@/components/RoomDescription";
 
 interface ChatRoom {
   id: number;
@@ -519,21 +520,21 @@ export default function ChatRoom() {
                   <div>**tučné** → <strong>tučné</strong></div>
                   <div>*kurzíva* → <em>kurzíva</em></div>
                   <div>__podtržené__ → <u>podtržené</u></div>
+                  <div className="mt-2">
+                    <div className="font-medium mb-1">Odkazy na chaty:</div>
+                    <div>[Ulice] → vytvoří odkaz na chat "Ulice"</div>
+                    <div>[Příčná ulice] → vytvoří odkaz na kategorie</div>
+                  </div>
                 </div>
               </div>
             ) : (
-              <div 
-                className="text-sm text-muted-foreground whitespace-pre-line prose prose-sm max-w-none prose-headings:text-foreground prose-p:text-muted-foreground prose-strong:text-foreground prose-em:text-muted-foreground prose-u:text-muted-foreground"
-                dangerouslySetInnerHTML={{
-                  __html: currentRoom.longDescription 
-                    ? currentRoom.longDescription
-                        .replace(/\n/g, '<br>')
-                        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                        .replace(/\*(.*?)\*/g, '<em>$1</em>')
-                        .replace(/__(.*?)__/g, '<u>$1</u>')
-                    : (user?.role === 'admin' ? "Žádný popis místnosti. Klikněte na upravit pro přidání popisu." : "")
-                }}
-              />
+              currentRoom.longDescription ? (
+                <RoomDescription description={currentRoom.longDescription} />
+              ) : (
+                <div className="text-sm text-muted-foreground">
+                  {user?.role === 'admin' ? "Žádný popis místnosti. Klikněte na upravit pro přidání popisu." : ""}
+                </div>
+              )
             )}
           </div>
         </div>
