@@ -48,6 +48,8 @@ export default function ChatRoom() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [isEditingDescription, setIsEditingDescription] = useState(false);
   const [editedDescription, setEditedDescription] = useState("");
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [editedName, setEditedName] = useState("");
   
   const currentRoomId = roomId ? parseInt(roomId) : null;
 
@@ -219,6 +221,11 @@ export default function ChatRoom() {
     setIsEditingDescription(true);
   };
 
+  const handleEditName = () => {
+    setEditedName(currentRoom?.name || "");
+    setIsEditingName(true);
+  };
+
   const handleSaveDescription = async () => {
     if (!currentRoom) return;
     
@@ -244,9 +251,36 @@ export default function ChatRoom() {
     }
   };
 
+  const handleSaveName = async () => {
+    if (!currentRoom) return;
+    
+    try {
+      await apiRequest("PATCH", `/api/admin/chat/rooms/${currentRoom.id}`, {
+        name: editedName
+      });
+      
+      // Invalidate queries to refetch updated data
+      queryClient.invalidateQueries({ queryKey: ["/api/chat/rooms"] });
+      
+      setIsEditingName(false);
+      toast({
+        title: "Úspěch",
+        description: "Název místnosti byl aktualizován.",
+      });
+    } catch (error) {
+      toast({
+        title: "Chyba",
+        description: "Nepodařilo se aktualizovat název místnosti.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const handleCancelEdit = () => {
     setIsEditingDescription(false);
     setEditedDescription("");
+    setIsEditingName(false);
+    setEditedName("");
   };
 
   if (!currentRoom) {
@@ -276,10 +310,52 @@ export default function ChatRoom() {
                 <ArrowLeft className="h-4 w-4" />
                 Opustit chat
               </Button>
-              <div>
-                <h1 className="text-2xl font-bold text-foreground">{currentRoom.name}</h1>
-                {currentRoom.description && (
-                  <p className="text-sm text-muted-foreground mt-1">{currentRoom.description}</p>
+              <div className="flex items-center gap-2">
+                {isEditingName ? (
+                  <div className="flex items-center gap-2">
+                    <Input
+                      value={editedName}
+                      onChange={(e) => setEditedName(e.target.value)}
+                      className="text-xl font-bold"
+                      placeholder="Název místnosti"
+                    />
+                    <Button
+                      onClick={handleSaveName}
+                      variant="default"
+                      size="sm"
+                      className="flex items-center gap-1"
+                    >
+                      <Save className="h-3 w-3" />
+                    </Button>
+                    <Button
+                      onClick={handleCancelEdit}
+                      variant="outline"
+                      size="sm"
+                      className="flex items-center gap-1"
+                    >
+                      <X className="h-3 w-3" />
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <div>
+                      <h1 className="text-2xl font-bold text-foreground">{currentRoom.name}</h1>
+                      {currentRoom.description && (
+                        <p className="text-sm text-muted-foreground mt-1">{currentRoom.description}</p>
+                      )}
+                    </div>
+                    {user?.role === 'admin' && (
+                      <Button
+                        onClick={handleEditName}
+                        variant="ghost"
+                        size="sm"
+                        className="flex items-center gap-1 opacity-70 hover:opacity-100"
+                        title="Upravit název místnosti"
+                      >
+                        <Edit3 className="h-3 w-3" />
+                      </Button>
+                    )}
+                  </div>
                 )}
               </div>
             </div>

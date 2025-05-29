@@ -672,7 +672,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Admin endpoint to update room descriptions
+  // Admin endpoint to update room details
   app.patch("/api/admin/chat/rooms/:roomId", requireAuth, async (req, res) => {
     try {
       const user = req.session.userId ? await storage.getUser(req.session.userId) : null;
@@ -681,13 +681,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const roomId = parseInt(req.params.roomId);
-      const { longDescription } = req.body;
+      const { name, description, longDescription, isPublic } = req.body;
 
       if (!roomId) {
         return res.status(400).json({ message: "Room ID is required" });
       }
 
-      const updatedRoom = await storage.updateChatRoom(roomId, { longDescription });
+      const updatedRoom = await storage.updateChatRoom(roomId, { 
+        name, 
+        description, 
+        longDescription, 
+        isPublic 
+      });
       
       if (!updatedRoom) {
         return res.status(404).json({ message: "Room not found" });
@@ -695,8 +700,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       res.json(updatedRoom);
     } catch (error) {
-      console.error("Error updating room description:", error);
-      res.status(500).json({ message: "Failed to update room description" });
+      console.error("Error updating room:", error);
+      res.status(500).json({ message: "Failed to update room" });
     }
   });
 
