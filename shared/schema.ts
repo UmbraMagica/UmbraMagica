@@ -45,6 +45,8 @@ export const characters = pgTable("characters", {
   middleName: varchar("middle_name", { length: 50 }),
   lastName: varchar("last_name", { length: 50 }).notNull(),
   birthDate: date("birth_date").notNull(),
+  school: varchar("school", { length: 100 }),
+  description: text("description"),
   isActive: boolean("is_active").default(true).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
@@ -132,6 +134,8 @@ export const insertCharacterSchema = createInsertSchema(characters).pick({
   middleName: true,
   lastName: true,
   birthDate: true,
+  school: true,
+  description: true,
 });
 
 export const insertMessageSchema = createInsertSchema(messages).pick({

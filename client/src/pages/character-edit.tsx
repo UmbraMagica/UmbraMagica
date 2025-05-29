@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { 
@@ -24,6 +25,8 @@ const characterEditSchema = insertCharacterSchema.pick({
   middleName: true,
   lastName: true,
   birthDate: true,
+  school: true,
+  description: true,
 });
 
 type CharacterEditForm = z.infer<typeof characterEditSchema>;
@@ -43,6 +46,8 @@ export default function CharacterEdit() {
       middleName: primaryCharacter?.middleName || "",
       lastName: primaryCharacter?.lastName || "",
       birthDate: primaryCharacter?.birthDate || "",
+      school: primaryCharacter?.school || "",
+      description: primaryCharacter?.description || "",
     },
   });
 
