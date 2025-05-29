@@ -51,7 +51,7 @@ function SubCategoryCollapsible({ subCategory }: { subCategory: ChatCategory }) 
       </CollapsibleTrigger>
       <CollapsibleContent className="mt-2 ml-4 space-y-2">
         {subCategory.rooms.map((room) => (
-          <Link key={room.id} href={`/chat/${room.id}`}>
+          <Link key={room.id} href={`/chat/room/${room.id}`}>
             <Button 
               variant="outline" 
               size="sm"
@@ -122,7 +122,7 @@ function CategoryCard({ category }: { category: ChatCategory }) {
                 </h4>
                 <div className="grid gap-2">
                   {category.rooms.map((room) => (
-                    <Link key={room.id} href={`/chat/${room.id}`}>
+                    <Link key={room.id} href={`/chat/room/${room.id}`}>
                       <Button 
                         variant="outline" 
                         className="w-full justify-start h-auto p-3"
