@@ -8,9 +8,8 @@ import { useState, useEffect, useRef } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { ArrowLeft, Edit3, Save, X, BookOpen, ChevronDown, ChevronRight } from "lucide-react";
+import { ArrowLeft, Edit3, Save, X, BookOpen } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 interface ChatRoom {
   id: number;
@@ -48,7 +47,6 @@ export default function ChatRoom() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [isEditingDescription, setIsEditingDescription] = useState(false);
   const [editedDescription, setEditedDescription] = useState("");
-  const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
   
   const currentRoomId = roomId ? parseInt(roomId) : null;
 
@@ -298,114 +296,40 @@ export default function ChatRoom() {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-background">
-      {/* Header */}
-      <div className="flex-none border-b bg-card p-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setLocation('/chat')}
-              className="flex items-center gap-2"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Opustit chat
-            </Button>
-            <div>
-              <h1 className="text-2xl font-bold text-foreground">{currentRoom.name}</h1>
-              {currentRoom.description && (
-                <p className="text-sm text-muted-foreground mt-1">{currentRoom.description}</p>
-              )}
+    <div className="flex h-screen bg-background">
+      {/* Main Chat Area */}
+      <div className="flex-1 flex flex-col">
+        {/* Header */}
+        <div className="flex-none border-b bg-card p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setLocation('/chat')}
+                className="flex items-center gap-2"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Opustit chat
+              </Button>
+              <div>
+                <h1 className="text-2xl font-bold text-foreground">{currentRoom.name}</h1>
+                {currentRoom.description && (
+                  <p className="text-sm text-muted-foreground mt-1">{currentRoom.description}</p>
+                )}
+              </div>
             </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className={`h-2 w-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`} />
-            <span className="text-sm text-muted-foreground">
-              {isConnected ? 'Připojeno' : 'Odpojeno'}
-            </span>
+            <div className="flex items-center gap-2">
+              <div className={`h-2 w-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`} />
+              <span className="text-sm text-muted-foreground">
+                {isConnected ? 'Připojeno' : 'Odpojeno'}
+              </span>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Room Description - Collapsible */}
-      {(currentRoom.longDescription || user?.role === 'admin') && (
-        <Collapsible open={isDescriptionOpen} onOpenChange={setIsDescriptionOpen}>
-          <div className="flex-none border-b bg-muted/50">
-            <div className="flex justify-end p-2 pr-4">
-              <div className="flex items-center gap-2">
-                {user?.role === 'admin' && (
-                  <div className="flex gap-2">
-                    {isEditingDescription ? (
-                      <>
-                        <Button
-                          onClick={handleSaveDescription}
-                          variant="default"
-                          size="sm"
-                          className="flex items-center gap-1"
-                        >
-                          <Save className="h-4 w-4" />
-                          Uložit
-                        </Button>
-                        <Button
-                          onClick={handleCancelEdit}
-                          variant="outline"
-                          size="sm"
-                          className="flex items-center gap-1"
-                        >
-                          <X className="h-4 w-4" />
-                          Zrušit
-                        </Button>
-                      </>
-                    ) : (
-                      <Button
-                        onClick={handleEditDescription}
-                        variant="outline"
-                        size="sm"
-                        className="flex items-center gap-1"
-                      >
-                        <Edit3 className="h-4 w-4" />
-                        Upravit popis
-                      </Button>
-                    )}
-                  </div>
-                )}
-                <CollapsibleTrigger asChild>
-                  <Button variant="outline" size="sm" className="flex items-center gap-2">
-                    <BookOpen className="h-4 w-4" />
-                    <span>Popis místnosti</span>
-                    {isDescriptionOpen ? (
-                      <ChevronDown className="h-4 w-4" />
-                    ) : (
-                      <ChevronRight className="h-4 w-4" />
-                    )}
-                  </Button>
-                </CollapsibleTrigger>
-              </div>
-              <CollapsibleContent>
-                <div className="mt-3">
-                  {isEditingDescription ? (
-                    <Textarea
-                      value={editedDescription}
-                      onChange={(e) => setEditedDescription(e.target.value)}
-                      placeholder="Zadejte popis místnosti..."
-                      className="min-h-32 text-sm"
-                      rows={6}
-                    />
-                  ) : (
-                    <div className="text-sm text-muted-foreground whitespace-pre-line max-h-48 overflow-y-auto">
-                      {currentRoom.longDescription || (user?.role === 'admin' ? "Žádný popis místnosti. Klikněte na upravit pro přidání popisu." : "")}
-                    </div>
-                  )}
-                </div>
-              </CollapsibleContent>
-            </div>
-          </div>
-        </Collapsible>
-      )}
-
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        {/* Messages */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {localMessages.map((message) => (
           <div key={message.id} className="flex items-start gap-3">
             <Avatar className="h-8 w-8 flex-shrink-0">
@@ -491,6 +415,74 @@ export default function ChatRoom() {
           </div>
         </div>
       </div>
+
+      {/* Right Panel - Room Description */}
+      {(currentRoom.longDescription || user?.role === 'admin') && (
+        <div className="w-80 border-l bg-muted/30 flex flex-col">
+          {/* Panel Header */}
+          <div className="flex-none p-4 border-b bg-card">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <BookOpen className="h-4 w-4" />
+                <span className="font-medium">Popis místnosti</span>
+              </div>
+              {user?.role === 'admin' && (
+                <div className="flex gap-2">
+                  {isEditingDescription ? (
+                    <>
+                      <Button
+                        onClick={handleSaveDescription}
+                        variant="default"
+                        size="sm"
+                        className="flex items-center gap-1"
+                      >
+                        <Save className="h-4 w-4" />
+                        Uložit
+                      </Button>
+                      <Button
+                        onClick={handleCancelEdit}
+                        variant="outline"
+                        size="sm"
+                        className="flex items-center gap-1"
+                      >
+                        <X className="h-4 w-4" />
+                        Zrušit
+                      </Button>
+                    </>
+                  ) : (
+                    <Button
+                      onClick={handleEditDescription}
+                      variant="outline"
+                      size="sm"
+                      className="flex items-center gap-1"
+                    >
+                      <Edit3 className="h-4 w-4" />
+                      Upravit
+                    </Button>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Panel Content */}
+          <div className="flex-1 p-4 overflow-y-auto">
+            {isEditingDescription ? (
+              <Textarea
+                value={editedDescription}
+                onChange={(e) => setEditedDescription(e.target.value)}
+                placeholder="Zadejte popis místnosti..."
+                className="min-h-64 text-sm w-full resize-none"
+                rows={12}
+              />
+            ) : (
+              <div className="text-sm text-muted-foreground whitespace-pre-line">
+                {currentRoom.longDescription || (user?.role === 'admin' ? "Žádný popis místnosti. Klikněte na upravit pro přidání popisu." : "")}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
