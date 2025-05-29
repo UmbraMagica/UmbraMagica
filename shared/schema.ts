@@ -77,6 +77,7 @@ export const chatRooms = pgTable("chat_rooms", {
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 100 }).notNull(),
   description: text("description"),
+  longDescription: text("long_description"),
   categoryId: integer("category_id").references(() => chatCategories.id),
   isPublic: boolean("is_public").default(true).notNull(),
   sortOrder: integer("sort_order").default(0),
@@ -180,6 +181,7 @@ export const insertChatCategorySchema = createInsertSchema(chatCategories).pick(
 export const insertChatRoomSchema = createInsertSchema(chatRooms).pick({
   name: true,
   description: true,
+  longDescription: true,
   categoryId: true,
   isPublic: true,
   sortOrder: true,

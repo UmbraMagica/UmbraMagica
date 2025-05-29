@@ -14,6 +14,7 @@ interface ChatRoom {
   id: number;
   name: string;
   description?: string;
+  longDescription?: string;
   isPublic: boolean;
   createdAt: string;
 }
@@ -286,6 +287,17 @@ export default function ChatRoom() {
           </div>
         </div>
       </div>
+
+      {/* Room Description */}
+      {currentRoom.longDescription && (
+        <div className="flex-none border-b bg-muted/50 p-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-sm text-muted-foreground whitespace-pre-line">
+              {currentRoom.longDescription}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
