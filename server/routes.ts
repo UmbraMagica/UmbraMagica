@@ -246,13 +246,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Access denied" });
       }
       
-      const { firstName, middleName, lastName, birthDate } = req.body;
+      const { firstName, middleName, lastName, birthDate, school, description } = req.body;
       
       const updatedCharacter = await storage.updateCharacter(characterId, {
         firstName,
         middleName,
         lastName,
         birthDate,
+        school,
+        description,
       });
       
       if (!updatedCharacter) {

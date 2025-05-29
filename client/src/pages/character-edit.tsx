@@ -46,8 +46,8 @@ export default function CharacterEdit() {
       middleName: primaryCharacter?.middleName || "",
       lastName: primaryCharacter?.lastName || "",
       birthDate: primaryCharacter?.birthDate || "",
-      school: primaryCharacter?.school || "",
-      description: primaryCharacter?.description || "",
+      school: (primaryCharacter as any)?.school || "",
+      description: (primaryCharacter as any)?.description || "",
     },
   });
 
@@ -208,6 +208,33 @@ export default function CharacterEdit() {
                     />
                     {form.formState.errors.birthDate && (
                       <p className="text-sm text-destructive">{form.formState.errors.birthDate.message}</p>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="school" className="text-foreground">Škola</Label>
+                    <Input
+                      id="school"
+                      {...form.register("school")}
+                      placeholder="Zadejte název školy (volitelné)"
+                      className="bg-muted border-border text-foreground"
+                    />
+                    {form.formState.errors.school && (
+                      <p className="text-sm text-destructive">{form.formState.errors.school.message}</p>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="description" className="text-foreground">Popis postavy</Label>
+                    <Textarea
+                      id="description"
+                      {...form.register("description")}
+                      placeholder="Napište krátký popis vaší postavy (volitelné)"
+                      className="bg-muted border-border text-foreground min-h-[100px]"
+                      rows={4}
+                    />
+                    {form.formState.errors.description && (
+                      <p className="text-sm text-destructive">{form.formState.errors.description.message}</p>
                     )}
                   </div>
 
