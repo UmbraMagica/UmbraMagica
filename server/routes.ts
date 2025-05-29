@@ -273,10 +273,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const characterId = parseInt(req.params.id);
       const userId = req.session.userId!;
       
-      // Check if the character belongs to the authenticated user
+      // Check if the character belongs to the authenticated user or if user is admin
       const character = await storage.getCharacter(characterId);
-      if (!character || character.userId !== userId) {
-        return res.status(403).json({ message: "Access denied" });
+      if (!character) {
+        return res.status(404).json({ message: "Character not found" });
+      }
+      
+      const requestingUser = await storage.getUser(userId);
+      if (!requestingUser) {
+        return res.status(401).json({ message: "Invalid user session" });
+      }
+      
+      // Allow access if user owns the character OR is an admin
+      if (character.userId !== userId && requestingUser.role !== "admin") {
+        return res.status(403).json({ message: "Access denied. Only character owner or admin can edit." });
       }
       
       // Validate input data using schema
