@@ -673,6 +673,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin endpoint to update room descriptions
+  app.patch("/api/admin/chat/rooms/:roomId", requireAuth, async (req, res) => {
+    try {
+      const user = req.session.userId ? await storage.getUser(req.session.userId) : null;
+      if (!user || user.role !== 'admin') {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const roomId = parseInt(req.params.roomId);
+      const { longDescription } = req.body;
+
+      if (!roomId) {
+        return res.status(400).json({ message: "Room ID is required" });
+      }
+
+      const updatedRoom = await storage.updateChatRoom(roomId, { longDescription });
+      
+      if (!updatedRoom) {
+        return res.status(404).json({ message: "Room not found" });
+      }
+
+      res.json(updatedRoom);
+    } catch (error) {
+      console.error("Error updating room description:", error);
+      res.status(500).json({ message: "Failed to update room description" });
+    }
+  });
+
   // RPG Game mechanics - Dice and coin endpoints
   app.post("/api/game/dice-roll", requireAuth, async (req, res) => {
     try {

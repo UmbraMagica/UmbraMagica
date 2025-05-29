@@ -59,6 +59,7 @@ export interface IStorage {
   getChatRoom(id: number): Promise<ChatRoom | undefined>;
   getChatRoomByName(name: string): Promise<ChatRoom | undefined>;
   createChatRoom(room: InsertChatRoom): Promise<ChatRoom>;
+  updateChatRoom(id: number, updates: Partial<InsertChatRoom>): Promise<ChatRoom | undefined>;
   getAllChatRooms(): Promise<ChatRoom[]>;
   getChatRoomsByCategory(categoryId: number): Promise<ChatRoom[]>;
   
@@ -201,6 +202,14 @@ export class DatabaseStorage implements IStorage {
 
   async createChatRoom(insertChatRoom: InsertChatRoom): Promise<ChatRoom> {
     const result = await db.insert(chatRooms).values(insertChatRoom).returning();
+    return result[0];
+  }
+
+  async updateChatRoom(id: number, updates: Partial<InsertChatRoom>): Promise<ChatRoom | undefined> {
+    const result = await db.update(chatRooms)
+      .set(updates)
+      .where(eq(chatRooms.id, id))
+      .returning();
     return result[0];
   }
 

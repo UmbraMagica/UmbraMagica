@@ -8,7 +8,8 @@ import { useState, useEffect, useRef } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Edit3, Save, X } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
 
 interface ChatRoom {
   id: number;
@@ -44,6 +45,8 @@ export default function ChatRoom() {
   const [isConnected, setIsConnected] = useState(false);
   const [localMessages, setLocalMessages] = useState<ChatMessage[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [isEditingDescription, setIsEditingDescription] = useState(false);
+  const [editedDescription, setEditedDescription] = useState("");
   
   const currentRoomId = roomId ? parseInt(roomId) : null;
 
@@ -244,6 +247,41 @@ export default function ChatRoom() {
 
   const getCurrentUserInitials = () => {
     return `${currentCharacter.firstName.charAt(0)}${currentCharacter.lastName.charAt(0)}`;
+  };
+
+  const handleEditDescription = () => {
+    setEditedDescription(currentRoom?.longDescription || "");
+    setIsEditingDescription(true);
+  };
+
+  const handleSaveDescription = async () => {
+    if (!currentRoom) return;
+    
+    try {
+      await apiRequest("PATCH", `/api/admin/chat/rooms/${currentRoom.id}`, {
+        longDescription: editedDescription
+      });
+      
+      // Invalidate queries to refetch updated data
+      queryClient.invalidateQueries({ queryKey: ["/api/chat/rooms"] });
+      
+      setIsEditingDescription(false);
+      toast({
+        title: "Úspěch",
+        description: "Popis místnosti byl aktualizován.",
+      });
+    } catch (error) {
+      toast({
+        title: "Chyba",
+        description: "Nepodařilo se aktualizovat popis místnosti.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditingDescription(false);
+    setEditedDescription("");
   };
 
   if (!currentRoom) {
