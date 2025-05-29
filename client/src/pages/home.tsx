@@ -30,6 +30,8 @@ export default function Home() {
   const { user, logout } = useAuth();
   const { toast } = useToast();
 
+
+
   const { data: onlineCharacters = [] } = useQuery<OnlineCharacter[]>({
     queryKey: ["/api/characters/online"],
     staleTime: 30000, // 30 seconds
@@ -57,12 +59,7 @@ export default function Home() {
 
   // Game date calculation - year 1926, current day/month
   const currentDate = new Date();
-  const gameDate = new Date(1926, currentDate.getMonth(), currentDate.getDate());
-  const gameDateString = gameDate.toLocaleDateString('cs-CZ', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric'
-  });
+  const gameDateString = `${currentDate.getDate()}. ${currentDate.toLocaleDateString('cs-CZ', { month: 'long' })} 1926`;
 
   const recentActivity = [
     { text: `Aktualizována postava`, time: "včera", type: "info" },
