@@ -2,10 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ArrowLeft, Users, MapPin, ChevronDown, ChevronRight } from "lucide-react";
+import { ArrowLeft, Users, MapPin } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useState } from "react";
 
 interface ChatCategory {
   id: number;
@@ -26,127 +24,91 @@ interface ChatRoom {
   sortOrder: number;
 }
 
-function SubCategoryCollapsible({ subCategory }: { subCategory: ChatCategory }) {
-  const [isOpen, setIsOpen] = useState(false);
-
-  return (
-    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-      <CollapsibleTrigger asChild>
-        <Button 
-          variant="ghost" 
-          className="w-full justify-between p-3 h-auto border rounded-lg hover:bg-muted/50"
-        >
-          <div className="text-left">
-            <h5 className="font-medium">{subCategory.name}</h5>
-            {subCategory.description && (
-              <p className="text-sm text-muted-foreground mt-1">{subCategory.description}</p>
-            )}
-          </div>
-          {isOpen ? (
-            <ChevronDown className="h-4 w-4 shrink-0" />
-          ) : (
-            <ChevronRight className="h-4 w-4 shrink-0" />
-          )}
-        </Button>
-      </CollapsibleTrigger>
-      <CollapsibleContent className="mt-2 ml-4 space-y-2">
-        {subCategory.rooms.map((room) => (
-          <Link key={room.id} href={`/chat/${room.id}`}>
-            <Button 
-              variant="outline" 
-              size="sm"
-              className="w-full justify-start h-auto p-3"
-            >
-              <div className="text-left">
-                <div className="flex items-center gap-2">
-                  <Users className="h-4 w-4" />
-                  <span className="font-medium">{room.name}</span>
-                </div>
-                {room.description && (
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {room.description}
-                  </p>
-                )}
-              </div>
-            </Button>
-          </Link>
-        ))}
-      </CollapsibleContent>
-    </Collapsible>
-  );
-}
-
 function CategoryCard({ category }: { category: ChatCategory }) {
-  const [isMainOpen, setIsMainOpen] = useState(true);
-
   return (
     <Card className="mb-4">
-      <Collapsible open={isMainOpen} onOpenChange={setIsMainOpen}>
-        <CollapsibleTrigger asChild>
-          <CardHeader className="cursor-pointer hover:bg-muted/50 transition-colors">
-            <CardTitle className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <MapPin className="h-5 w-5" />
-                {category.name}
-              </div>
-              {isMainOpen ? (
-                <ChevronDown className="h-5 w-5" />
-              ) : (
-                <ChevronRight className="h-5 w-5" />
-              )}
-            </CardTitle>
-            {category.description && (
-              <CardDescription>{category.description}</CardDescription>
-            )}
-          </CardHeader>
-        </CollapsibleTrigger>
-        <CollapsibleContent>
-          <CardContent className="space-y-4">
-            {/* Subcategories */}
-            {category.children.length > 0 && (
-              <div className="space-y-3">
-                <h4 className="font-medium text-sm text-muted-foreground">Oblasti</h4>
-                <div className="space-y-2">
-                  {category.children.map((subCategory) => (
-                    <SubCategoryCollapsible key={subCategory.id} subCategory={subCategory} />
-                  ))}
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <MapPin className="h-5 w-5" />
+          {category.name}
+        </CardTitle>
+        {category.description && (
+          <CardDescription>{category.description}</CardDescription>
+        )}
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {/* Subcategories */}
+        {category.children.length > 0 && (
+          <div className="space-y-3">
+            <h4 className="font-medium text-sm text-muted-foreground">Oblasti</h4>
+            <div className="grid gap-3">
+              {category.children.map((subCategory) => (
+                <div key={subCategory.id} className="border rounded-lg p-3">
+                  <h5 className="font-medium mb-2">{subCategory.name}</h5>
+                  {subCategory.description && (
+                    <p className="text-sm text-muted-foreground mb-3">{subCategory.description}</p>
+                  )}
+                  {subCategory.rooms.length > 0 && (
+                    <div className="grid gap-2">
+                      {subCategory.rooms.map((room) => (
+                        <Link key={room.id} href={`/chat/${room.id}`}>
+                          <Button 
+                            variant="outline" 
+                            className="w-full justify-start h-auto p-3"
+                          >
+                            <div className="text-left">
+                              <div className="flex items-center gap-2">
+                                <Users className="h-4 w-4" />
+                                <span className="font-medium">{room.name}</span>
+                              </div>
+                              {room.description && (
+                                <p className="text-sm text-muted-foreground mt-1">
+                                  {room.description}
+                                </p>
+                              )}
+                            </div>
+                          </Button>
+                        </Link>
+                      ))}
+                    </div>
+                  )}
                 </div>
-              </div>
-            )}
+              ))}
+            </div>
+          </div>
+        )}
 
-            {/* Direct rooms under this category */}
-            {category.rooms.length > 0 && (
-              <div className="space-y-3">
-                <h4 className="font-medium text-sm text-muted-foreground">
-                  {category.children.length > 0 ? "Další místa" : "Chatovací místnosti"}
-                </h4>
-                <div className="grid gap-2">
-                  {category.rooms.map((room) => (
-                    <Link key={room.id} href={`/chat/${room.id}`}>
-                      <Button 
-                        variant="outline" 
-                        className="w-full justify-start h-auto p-3"
-                      >
-                        <div className="text-left">
-                          <div className="flex items-center gap-2">
-                            <Users className="h-4 w-4" />
-                            <span className="font-medium">{room.name}</span>
-                          </div>
-                          {room.description && (
-                            <p className="text-sm text-muted-foreground mt-1">
-                              {room.description}
-                            </p>
-                          )}
-                        </div>
-                      </Button>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            )}
-          </CardContent>
-        </CollapsibleContent>
-      </Collapsible>
+        {/* Direct rooms under this category */}
+        {category.rooms.length > 0 && (
+          <div className="space-y-3">
+            <h4 className="font-medium text-sm text-muted-foreground">
+              {category.children.length > 0 ? "Další místa" : "Chatovací místnosti"}
+            </h4>
+            <div className="grid gap-2">
+              {category.rooms.map((room) => (
+                <Link key={room.id} href={`/chat/${room.id}`}>
+                  <Button 
+                    variant="outline" 
+                    className="w-full justify-start h-auto p-3"
+                  >
+                    <div className="text-left">
+                      <div className="flex items-center gap-2">
+                        <Users className="h-4 w-4" />
+                        <span className="font-medium">{room.name}</span>
+                      </div>
+                      {room.description && (
+                        <p className="text-sm text-muted-foreground mt-1">
+                          {room.description}
+                        </p>
+                      )}
+                    </div>
+                  </Button>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+      </CardContent>
     </Card>
   );
 }
