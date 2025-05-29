@@ -8,8 +8,9 @@ import { useState, useEffect, useRef } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { ArrowLeft, Edit3, Save, X } from "lucide-react";
+import { ArrowLeft, Edit3, Save, X, BookOpen, ChevronDown, ChevronRight } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 interface ChatRoom {
   id: number;
@@ -47,6 +48,7 @@ export default function ChatRoom() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [isEditingDescription, setIsEditingDescription] = useState(false);
   const [editedDescription, setEditedDescription] = useState("");
+  const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
   
   const currentRoomId = roomId ? parseInt(roomId) : null;
 
@@ -326,65 +328,80 @@ export default function ChatRoom() {
         </div>
       </div>
 
-      {/* Room Description */}
+      {/* Room Description - Collapsible */}
       {(currentRoom.longDescription || user?.role === 'admin') && (
-        <div className="flex-none border-b bg-muted/50 p-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex-1">
-                {isEditingDescription ? (
-                  <Textarea
-                    value={editedDescription}
-                    onChange={(e) => setEditedDescription(e.target.value)}
-                    placeholder="Zadejte popis místnosti..."
-                    className="min-h-32 text-sm"
-                    rows={6}
-                  />
-                ) : (
-                  <div className="text-sm text-muted-foreground whitespace-pre-line">
-                    {currentRoom.longDescription || (user?.role === 'admin' ? "Žádný popis místnosti. Klikněte na upravit pro přidání popisu." : "")}
-                  </div>
-                )}
-              </div>
-              {user?.role === 'admin' && (
-                <div className="flex gap-2">
-                  {isEditingDescription ? (
-                    <>
+        <Collapsible open={isDescriptionOpen} onOpenChange={setIsDescriptionOpen}>
+          <div className="flex-none border-b bg-muted/50">
+            <div className="max-w-4xl mx-auto p-4">
+              <div className="flex items-center justify-between gap-4">
+                <CollapsibleTrigger asChild>
+                  <Button variant="ghost" className="flex items-center gap-2 p-0 h-auto">
+                    <BookOpen className="h-4 w-4" />
+                    <span className="font-medium">Popis místnosti</span>
+                    {isDescriptionOpen ? (
+                      <ChevronDown className="h-4 w-4" />
+                    ) : (
+                      <ChevronRight className="h-4 w-4" />
+                    )}
+                  </Button>
+                </CollapsibleTrigger>
+                {user?.role === 'admin' && (
+                  <div className="flex gap-2">
+                    {isEditingDescription ? (
+                      <>
+                        <Button
+                          onClick={handleSaveDescription}
+                          variant="default"
+                          size="sm"
+                          className="flex items-center gap-1"
+                        >
+                          <Save className="h-4 w-4" />
+                          Uložit
+                        </Button>
+                        <Button
+                          onClick={handleCancelEdit}
+                          variant="outline"
+                          size="sm"
+                          className="flex items-center gap-1"
+                        >
+                          <X className="h-4 w-4" />
+                          Zrušit
+                        </Button>
+                      </>
+                    ) : (
                       <Button
-                        onClick={handleSaveDescription}
-                        variant="default"
-                        size="sm"
-                        className="flex items-center gap-1"
-                      >
-                        <Save className="h-4 w-4" />
-                        Uložit
-                      </Button>
-                      <Button
-                        onClick={handleCancelEdit}
+                        onClick={handleEditDescription}
                         variant="outline"
                         size="sm"
                         className="flex items-center gap-1"
                       >
-                        <X className="h-4 w-4" />
-                        Zrušit
+                        <Edit3 className="h-4 w-4" />
+                        Upravit popis
                       </Button>
-                    </>
+                    )}
+                  </div>
+                )}
+              </div>
+              <CollapsibleContent>
+                <div className="mt-3">
+                  {isEditingDescription ? (
+                    <Textarea
+                      value={editedDescription}
+                      onChange={(e) => setEditedDescription(e.target.value)}
+                      placeholder="Zadejte popis místnosti..."
+                      className="min-h-32 text-sm"
+                      rows={6}
+                    />
                   ) : (
-                    <Button
-                      onClick={handleEditDescription}
-                      variant="outline"
-                      size="sm"
-                      className="flex items-center gap-1"
-                    >
-                      <Edit3 className="h-4 w-4" />
-                      Upravit popis
-                    </Button>
+                    <div className="text-sm text-muted-foreground whitespace-pre-line max-h-48 overflow-y-auto">
+                      {currentRoom.longDescription || (user?.role === 'admin' ? "Žádný popis místnosti. Klikněte na upravit pro přidání popisu." : "")}
+                    </div>
                   )}
                 </div>
-              )}
+              </CollapsibleContent>
             </div>
           </div>
-        </div>
+        </Collapsible>
       )}
 
       {/* Messages */}
