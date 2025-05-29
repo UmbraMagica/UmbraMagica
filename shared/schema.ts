@@ -62,12 +62,24 @@ export const inviteCodes = pgTable("invite_codes", {
   usedAt: timestamp("used_at"),
 });
 
+// Chat categories table
+export const chatCategories = pgTable("chat_categories", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 100 }).notNull(),
+  description: text("description"),
+  parentId: integer("parent_id"),
+  sortOrder: integer("sort_order").default(0),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 // Chat rooms table
 export const chatRooms = pgTable("chat_rooms", {
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 100 }).notNull(),
   description: text("description"),
+  categoryId: integer("category_id").references(() => chatCategories.id),
   isPublic: boolean("is_public").default(true).notNull(),
+  sortOrder: integer("sort_order").default(0),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -107,7 +119,20 @@ export const charactersRelations = relations(characters, ({ one, many }) => ({
   messages: many(messages),
 }));
 
-export const chatRoomsRelations = relations(chatRooms, ({ many }) => ({
+export const chatCategoriesRelations = relations(chatCategories, ({ one, many }) => ({
+  parent: one(chatCategories, {
+    fields: [chatCategories.parentId],
+    references: [chatCategories.id],
+  }),
+  children: many(chatCategories),
+  rooms: many(chatRooms),
+}));
+
+export const chatRoomsRelations = relations(chatRooms, ({ one, many }) => ({
+  category: one(chatCategories, {
+    fields: [chatRooms.categoryId],
+    references: [chatCategories.id],
+  }),
   messages: many(messages),
 }));
 
@@ -145,10 +170,19 @@ export const insertMessageSchema = createInsertSchema(messages).pick({
   messageType: true,
 });
 
+export const insertChatCategorySchema = createInsertSchema(chatCategories).pick({
+  name: true,
+  description: true,
+  parentId: true,
+  sortOrder: true,
+});
+
 export const insertChatRoomSchema = createInsertSchema(chatRooms).pick({
   name: true,
   description: true,
+  categoryId: true,
   isPublic: true,
+  sortOrder: true,
 });
 
 export const registrationSchema = z.object({
@@ -179,6 +213,8 @@ export type Character = typeof characters.$inferSelect;
 export type InsertCharacter = typeof characters.$inferInsert;
 export type InviteCode = typeof inviteCodes.$inferSelect;
 export type InsertInviteCode = typeof inviteCodes.$inferInsert;
+export type ChatCategory = typeof chatCategories.$inferSelect;
+export type InsertChatCategory = typeof chatCategories.$inferInsert;
 export type ChatRoom = typeof chatRooms.$inferSelect;
 export type InsertChatRoom = typeof chatRooms.$inferInsert;
 export type Message = typeof messages.$inferSelect;

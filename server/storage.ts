@@ -45,11 +45,19 @@ export interface IStorage {
   validateUser(username: string, password: string): Promise<User | null>;
   hashPassword(password: string): Promise<string>;
   
+  // Chat category operations
+  getChatCategory(id: number): Promise<ChatCategory | undefined>;
+  getChatCategoryByName(name: string): Promise<ChatCategory | undefined>;
+  createChatCategory(category: InsertChatCategory): Promise<ChatCategory>;
+  getAllChatCategories(): Promise<ChatCategory[]>;
+  getChatCategoriesWithChildren(): Promise<(ChatCategory & { children: ChatCategory[], rooms: ChatRoom[] })[]>;
+  
   // Chat operations
   getChatRoom(id: number): Promise<ChatRoom | undefined>;
   getChatRoomByName(name: string): Promise<ChatRoom | undefined>;
   createChatRoom(room: InsertChatRoom): Promise<ChatRoom>;
   getAllChatRooms(): Promise<ChatRoom[]>;
+  getChatRoomsByCategory(categoryId: number): Promise<ChatRoom[]>;
   
   // Message operations
   getMessage(id: number): Promise<Message | undefined>;
@@ -195,9 +203,77 @@ export class DatabaseStorage implements IStorage {
 
   async getAllChatRooms(): Promise<ChatRoom[]> {
     console.log("Getting all chat rooms from database...");
-    const result = await db.select().from(chatRooms);
+    const result = await db.select().from(chatRooms).orderBy(chatRooms.sortOrder, chatRooms.name);
     console.log("Database returned:", result);
     return result;
+  }
+
+  async getChatRoomsByCategory(categoryId: number): Promise<ChatRoom[]> {
+    const result = await db.select().from(chatRooms)
+      .where(eq(chatRooms.categoryId, categoryId))
+      .orderBy(chatRooms.sortOrder, chatRooms.name);
+    return result;
+  }
+
+  // Chat category operations
+  async getChatCategory(id: number): Promise<ChatCategory | undefined> {
+    const result = await db.select().from(chatCategories).where(eq(chatCategories.id, id));
+    return result[0];
+  }
+
+  async getChatCategoryByName(name: string): Promise<ChatCategory | undefined> {
+    const result = await db.select().from(chatCategories).where(eq(chatCategories.name, name));
+    return result[0];
+  }
+
+  async createChatCategory(insertChatCategory: InsertChatCategory): Promise<ChatCategory> {
+    const result = await db.insert(chatCategories).values(insertChatCategory).returning();
+    return result[0];
+  }
+
+  async getAllChatCategories(): Promise<ChatCategory[]> {
+    const result = await db.select().from(chatCategories).orderBy(chatCategories.sortOrder, chatCategories.name);
+    return result;
+  }
+
+  async getChatCategoriesWithChildren(): Promise<(ChatCategory & { children: ChatCategory[], rooms: ChatRoom[] })[]> {
+    const allCategories = await db.select().from(chatCategories).orderBy(chatCategories.sortOrder, chatCategories.name);
+    const allRooms = await db.select().from(chatRooms).orderBy(chatRooms.sortOrder, chatRooms.name);
+    
+    // Build tree structure
+    const categoriesMap = new Map<number, ChatCategory & { children: ChatCategory[], rooms: ChatRoom[] }>();
+    
+    // Initialize all categories
+    allCategories.forEach(cat => {
+      categoriesMap.set(cat.id, { ...cat, children: [], rooms: [] });
+    });
+    
+    // Add rooms to categories
+    allRooms.forEach(room => {
+      if (room.categoryId) {
+        const category = categoriesMap.get(room.categoryId);
+        if (category) {
+          category.rooms.push(room);
+        }
+      }
+    });
+    
+    // Build parent-child relationships
+    const rootCategories: (ChatCategory & { children: ChatCategory[], rooms: ChatRoom[] })[] = [];
+    
+    allCategories.forEach(cat => {
+      const categoryWithChildren = categoriesMap.get(cat.id)!;
+      if (cat.parentId) {
+        const parent = categoriesMap.get(cat.parentId);
+        if (parent) {
+          parent.children.push(categoryWithChildren);
+        }
+      } else {
+        rootCategories.push(categoryWithChildren);
+      }
+    });
+    
+    return rootCategories;
   }
 
   // Message operations
