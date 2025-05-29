@@ -407,6 +407,119 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
+      // Create chat categories and rooms for Wizarding London
+      
+      // 1. Main category: Kouzelnický Londýn
+      let wizardingLondon = await storage.getChatCategoryByName("Kouzelnický Londýn");
+      if (!wizardingLondon) {
+        wizardingLondon = await storage.createChatCategory({
+          name: "Kouzelnický Londýn",
+          description: "Hlavní oblast kouzelného Londýna",
+          sortOrder: 1,
+        });
+      }
+
+      // 2. Subcategory: Příčná ulice
+      let diagonAlley = await storage.getChatCategoryByName("Příčná ulice");
+      if (!diagonAlley) {
+        diagonAlley = await storage.createChatCategory({
+          name: "Příčná ulice",
+          description: "Hlavní nákupní ulice kouzelného světa",
+          parentId: wizardingLondon.id,
+          sortOrder: 1,
+        });
+      }
+
+      // 3. Subcategory: Obrtlá ulice
+      let knockturnAlley = await storage.getChatCategoryByName("Obrtlá ulice");
+      if (!knockturnAlley) {
+        knockturnAlley = await storage.createChatCategory({
+          name: "Obrtlá ulice",
+          description: "Temná ulička s podezřelými obchody",
+          parentId: wizardingLondon.id,
+          sortOrder: 2,
+        });
+      }
+
+      // 4. Chat rooms in Příčná ulice
+      const diagonAlleyRooms = [
+        { name: "Ulice", description: "Hlavní ulice Příčné ulice", sortOrder: 1 },
+        { name: "Gringottovi", description: "Banka pro čaroděje a kouzelníky", sortOrder: 2 },
+        { name: "Děravý kotel", description: "Slavný hostinec a vstup do kouzelného světa", sortOrder: 3 },
+        { name: "Černá vrána", description: "Obchod s kouzelnými ingrediencemi", sortOrder: 4 },
+        { name: "Čarokáva", description: "Kavárna pro čaroděje", sortOrder: 5 },
+      ];
+
+      for (const roomData of diagonAlleyRooms) {
+        const existingRoom = await storage.getChatRoomByName(roomData.name);
+        if (!existingRoom) {
+          await storage.createChatRoom({
+            name: roomData.name,
+            description: roomData.description,
+            categoryId: diagonAlley.id,
+            isPublic: true,
+            sortOrder: roomData.sortOrder,
+          });
+        }
+      }
+
+      // 5. Chat rooms in Obrtlá ulice
+      const knockturnAlleyRooms = [
+        { name: "Pošmourná ulička", description: "Temné zákoutí Obrtlé ulice", sortOrder: 1 },
+        { name: "Zlomená hůlka", description: "Obchod s podezřelými kouzelnými předměty", sortOrder: 2 },
+      ];
+
+      for (const roomData of knockturnAlleyRooms) {
+        const existingRoom = await storage.getChatRoomByName(roomData.name);
+        if (!existingRoom) {
+          await storage.createChatRoom({
+            name: roomData.name,
+            description: roomData.description,
+            categoryId: knockturnAlley.id,
+            isPublic: true,
+            sortOrder: roomData.sortOrder,
+          });
+        }
+      }
+
+      // 6. Direct rooms under Kouzelnický Londýn (not in subcategories)
+      const directRooms = [
+        { name: "Ministerstvo kouzel", description: "Úřad kouzelné vlády", sortOrder: 3 },
+        { name: "Nemocnice u sv. Munga", description: "Nemocnice pro kouzelné nemoci a úrazy", sortOrder: 4 },
+        { name: "Katakomby", description: "Podzemní bludiště pod Londýnem", sortOrder: 5 },
+      ];
+
+      for (const roomData of directRooms) {
+        const existingRoom = await storage.getChatRoomByName(roomData.name);
+        if (!existingRoom) {
+          await storage.createChatRoom({
+            name: roomData.name,
+            description: roomData.description,
+            categoryId: wizardingLondon.id,
+            isPublic: true,
+            sortOrder: roomData.sortOrder,
+          });
+        }
+      }
+
+      // 7. Keep original rooms for compatibility
+      const originalRooms = [
+        { name: "Hlavní chat", description: "Hlavní herní místnost pro všechny hráče", sortOrder: 0 },
+        { name: "Testovací chat", description: "Místnost pro testování a experimenty", sortOrder: 0 },
+      ];
+
+      for (const roomData of originalRooms) {
+        const existingRoom = await storage.getChatRoomByName(roomData.name);
+        if (!existingRoom) {
+          await storage.createChatRoom({
+            name: roomData.name,
+            description: roomData.description,
+            isPublic: true,
+            sortOrder: roomData.sortOrder,
+          });
+        }
+      }
+
       res.json({ message: "Test data initialized successfully" });
     } catch (error) {
       console.error("Error initializing test data:", error);
@@ -414,27 +527,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Chat API endpoints
-  app.get("/api/chat/rooms", (req, res) => {
-    const rooms = [
-      {
-        id: 1,
-        name: "Hlavní chat",
-        description: "Hlavní herní místnost pro všechny hráče",
-        isPublic: true,
-        createdAt: "2025-05-28T15:00:00Z"
-      },
-      {
-        id: 2,
-        name: "Testovací chat", 
-        description: "Místnost pro testování a experimenty",
-        isPublic: true,
-        createdAt: "2025-05-28T15:00:00Z"
-      }
-    ];
-    
-    res.setHeader('Content-Type', 'application/json');
-    res.json(rooms);
+  // Chat category routes
+  app.get("/api/chat/categories", requireAuth, async (req, res) => {
+    try {
+      const categories = await storage.getChatCategoriesWithChildren();
+      res.json(categories);
+    } catch (error) {
+      console.error("Error fetching chat categories:", error);
+      res.status(500).json({ message: "Failed to fetch chat categories" });
+    }
+  });
+
+  // Chat routes
+  app.get("/api/chat/rooms", requireAuth, async (req, res) => {
+    try {
+      const rooms = await storage.getAllChatRooms();
+      res.json(rooms);
+    } catch (error) {
+      console.error("Error fetching chat rooms:", error);
+      res.status(500).json({ message: "Failed to fetch chat rooms" });
+    }
   });
 
   app.get("/api/chat/rooms/:roomId/messages", requireAuth, async (req, res) => {
