@@ -327,11 +327,61 @@ export default function ChatRoom() {
       </div>
 
       {/* Room Description */}
-      {currentRoom.longDescription && (
+      {(currentRoom.longDescription || user?.role === 'admin') && (
         <div className="flex-none border-b bg-muted/50 p-4">
           <div className="max-w-4xl mx-auto">
-            <div className="text-sm text-muted-foreground whitespace-pre-line">
-              {currentRoom.longDescription}
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex-1">
+                {isEditingDescription ? (
+                  <Textarea
+                    value={editedDescription}
+                    onChange={(e) => setEditedDescription(e.target.value)}
+                    placeholder="Zadejte popis místnosti..."
+                    className="min-h-32 text-sm"
+                    rows={6}
+                  />
+                ) : (
+                  <div className="text-sm text-muted-foreground whitespace-pre-line">
+                    {currentRoom.longDescription || (user?.role === 'admin' ? "Žádný popis místnosti. Klikněte na upravit pro přidání popisu." : "")}
+                  </div>
+                )}
+              </div>
+              {user?.role === 'admin' && (
+                <div className="flex gap-2">
+                  {isEditingDescription ? (
+                    <>
+                      <Button
+                        onClick={handleSaveDescription}
+                        variant="default"
+                        size="sm"
+                        className="flex items-center gap-1"
+                      >
+                        <Save className="h-4 w-4" />
+                        Uložit
+                      </Button>
+                      <Button
+                        onClick={handleCancelEdit}
+                        variant="outline"
+                        size="sm"
+                        className="flex items-center gap-1"
+                      >
+                        <X className="h-4 w-4" />
+                        Zrušit
+                      </Button>
+                    </>
+                  ) : (
+                    <Button
+                      onClick={handleEditDescription}
+                      variant="outline"
+                      size="sm"
+                      className="flex items-center gap-1"
+                    >
+                      <Edit3 className="h-4 w-4" />
+                      Upravit popis
+                    </Button>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>
