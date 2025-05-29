@@ -332,8 +332,8 @@ export default function ChatRoom() {
       {(currentRoom.longDescription || user?.role === 'admin') && (
         <Collapsible open={isDescriptionOpen} onOpenChange={setIsDescriptionOpen}>
           <div className="flex-none border-b bg-muted/50">
-            <div className="max-w-4xl mx-auto p-4">
-              <div className="flex items-center justify-end gap-4">
+            <div className="flex justify-end p-2 pr-4">
+              <div className="flex items-center gap-2">
                 {user?.role === 'admin' && (
                   <div className="flex gap-2">
                     {isEditingDescription ? (
