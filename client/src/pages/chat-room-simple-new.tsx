@@ -265,7 +265,7 @@ export default function ChatRoom() {
       {/* Main Chat Area */}
       <div className="flex-1 flex flex-col">
         {/* Header */}
-        <div className="flex-none border-b bg-card p-4">
+        <div className="flex-none border-b bg-card p-4 z-10">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Button
@@ -385,9 +385,8 @@ export default function ChatRoom() {
       {/* Right Panel - Room Description */}
       {(currentRoom.longDescription || user?.role === 'admin') && (
         <div className="w-80 border-l bg-muted/30 flex flex-col">
-          {/* Panel Header */}
-          <div className="flex-none p-4 border-b bg-card border-t-0">
-            <div className="flex items-center justify-between">
+          {/* Panel Header - matches main header */}
+          <div className="flex-none p-4 border-b bg-card min-h-[84px] flex items-center justify-between w-full">
               <div className="flex items-center gap-2">
                 <BookOpen className="h-4 w-4" />
                 <span className="font-medium">Popis místnosti</span>
@@ -428,7 +427,6 @@ export default function ChatRoom() {
                   )}
                 </div>
               )}
-            </div>
           </div>
 
           {/* Panel Content */}
