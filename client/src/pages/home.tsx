@@ -14,9 +14,9 @@ import {
   History, 
   Users, 
   Circle,
-  DoorOpen,
-  Calendar
+  DoorOpen
 } from "lucide-react";
+import { GameDate } from "@/components/GameDate";
 
 interface OnlineCharacter {
   id: number;
@@ -203,27 +203,7 @@ export default function Home() {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Game Date */}
-            <Card className="bg-card border-border">
-              <CardContent className="p-6">
-                <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center">
-                  <Calendar className="text-accent mr-3 h-5 w-5" />
-                  Herní datum aktuálně
-                </h3>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-accent mb-2">
-                    {gameDateString}
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    Kouzelný svět v roce 1926
-                  </p>
-                  <div className="mt-3 p-3 bg-muted/30 rounded-lg">
-                    <p className="text-xs text-muted-foreground">
-                      Herní rok je fixní, ale den a měsíc odpovídají současnosti
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <GameDate />
 
             {/* My Character */}
             <Card className="bg-card border-border">
