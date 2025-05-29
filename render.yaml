@@ -1,9 +1,10 @@
 services:
   - type: web
-    name: textroleplay
+    name: textroleplay-backend
     env: node
-    buildCommand: npm install
-    startCommand: npm run dev
+    rootDir: ./backend
+    buildCommand: npm install && npm run build
+    startCommand: npm start
     envVars:
       - key: NODE_ENV
         value: production
