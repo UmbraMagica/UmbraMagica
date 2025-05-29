@@ -14,7 +14,8 @@ import {
   History, 
   Users, 
   Circle,
-  DoorOpen
+  DoorOpen,
+  Calendar
 } from "lucide-react";
 
 interface OnlineCharacter {
@@ -53,6 +54,15 @@ export default function Home() {
   const primaryCharacter = user?.characters?.[0];
   const characterAge = primaryCharacter ? 
     new Date().getFullYear() - new Date(primaryCharacter.birthDate).getFullYear() : 0;
+
+  // Game date calculation - year 1926, current day/month
+  const currentDate = new Date();
+  const gameDate = new Date(1926, currentDate.getMonth(), currentDate.getDate());
+  const gameDateString = gameDate.toLocaleDateString('cs-CZ', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  });
 
   const recentActivity = [
     { text: `Aktualizována postava`, time: "včera", type: "info" },
@@ -195,6 +205,29 @@ export default function Home() {
 
           {/* Sidebar */}
           <div className="space-y-6">
+            {/* Game Date */}
+            <Card className="bg-card border-border">
+              <CardContent className="p-6">
+                <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center">
+                  <Calendar className="text-accent mr-3 h-5 w-5" />
+                  Herní datum
+                </h3>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-accent mb-2">
+                    {gameDateString}
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Kouzelný svět v roce 1926
+                  </p>
+                  <div className="mt-3 p-3 bg-muted/30 rounded-lg">
+                    <p className="text-xs text-muted-foreground">
+                      Herní rok je fixní, ale den a měsíc odpovídají současnosti
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* My Character */}
             <Card className="bg-card border-border">
               <CardContent className="p-6">
