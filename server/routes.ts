@@ -320,7 +320,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               fullName: `${character.firstName}${character.middleName ? ` ${character.middleName}` : ''} ${character.lastName}`,
               firstName: character.firstName,
               lastName: character.lastName,
-              location: "Hlavní chat",
+              location: "Ulice",
             });
           }
         }
@@ -966,16 +966,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Initialize default chat rooms if they don't exist
   (async () => {
     try {
-      const mainRoom = await storage.getChatRoomByName("Hlavní chat");
-      if (!mainRoom) {
-        await storage.createChatRoom({
-          name: "Hlavní chat",
-          description: "Hlavní herní místnost pro všechny hráče",
-          isPublic: true,
-        });
-        console.log("Created default chat room: Hlavní chat");
-      }
-
       const testRoom = await storage.getChatRoomByName("Testovací chat");
       if (!testRoom) {
         await storage.createChatRoom({
