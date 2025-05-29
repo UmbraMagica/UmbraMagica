@@ -1,0 +1,54 @@
+[08:57:31.608] Running build in Washington, D.C., USA (East) – iad1
+[08:57:31.608] Build machine configuration: 2 cores, 8 GB
+[08:57:31.624] Cloning github.com/CaseyLotteBenett/textroleplay (Branch: main, Commit: 86783a5)
+[08:57:31.669] Skipping build cache, deployment was triggered without cache.
+[08:57:31.917] Cloning completed: 292.000ms
+[08:57:32.214] Running "vercel build"
+[08:57:33.916] Vercel CLI 42.2.0
+[08:57:34.525] Installing dependencies...
+[08:57:54.475] 
+[08:57:54.475] added 244 packages in 20s
+[08:57:54.476] 
+[08:57:54.476] 44 packages are looking for funding
+[08:57:54.476]   run `npm fund` for details
+[08:57:54.646] 
+[08:57:54.647] > textroleplay-frontend@0.0.0 build
+[08:57:54.647] > tsc && vite build
+[08:57:54.647] 
+[08:58:01.009] src/components/ui/aspect-ratio.tsx(1,39): error TS2307: Cannot find module '@radix-ui/react-aspect-ratio' or its corresponding type declarations.
+[08:58:01.009] src/components/ui/carousel.tsx(4,8): error TS2307: Cannot find module 'embla-carousel-react' or its corresponding type declarations.
+[08:58:01.009] src/components/ui/chart.tsx(4,36): error TS2307: Cannot find module 'recharts' or its corresponding type declarations.
+[08:58:01.009] src/components/ui/chart.tsx(188,25): error TS7006: Parameter 'item' implicitly has an 'any' type.
+[08:58:01.009] src/components/ui/chart.tsx(188,31): error TS7006: Parameter 'index' implicitly has an 'any' type.
+[08:58:01.009] src/components/ui/chart.tsx(288,23): error TS7006: Parameter 'item' implicitly has an 'any' type.
+[08:58:01.009] src/components/ui/command.tsx(3,45): error TS2307: Cannot find module 'cmdk' or its corresponding type declarations.
+[08:58:01.009] src/components/ui/context-menu.tsx(2,39): error TS2307: Cannot find module '@radix-ui/react-context-menu' or its corresponding type declarations.
+[08:58:01.010] src/components/ui/drawer.tsx(4,43): error TS2307: Cannot find module 'vaul' or its corresponding type declarations.
+[08:58:01.010] src/components/ui/hover-card.tsx(4,37): error TS2307: Cannot find module '@radix-ui/react-hover-card' or its corresponding type declarations.
+[08:58:01.010] src/components/ui/input-otp.tsx(2,43): error TS2307: Cannot find module 'input-otp' or its corresponding type declarations.
+[08:58:01.011] src/components/ui/input-otp.tsx(36,44): error TS18046: 'inputOTPContext' is of type 'unknown'.
+[08:58:01.011] src/components/ui/menubar.tsx(4,35): error TS2307: Cannot find module '@radix-ui/react-menubar' or its corresponding type declarations.
+[08:58:01.011] src/components/ui/navigation-menu.tsx(2,42): error TS2307: Cannot find module '@radix-ui/react-navigation-menu' or its corresponding type declarations.
+[08:58:01.012] src/components/ui/progress.tsx(4,36): error TS2307: Cannot find module '@radix-ui/react-progress' or its corresponding type declarations.
+[08:58:01.012] src/components/ui/radio-group.tsx(2,38): error TS2307: Cannot find module '@radix-ui/react-radio-group' or its corresponding type declarations.
+[08:58:01.012] src/components/ui/resizable.tsx(4,37): error TS2307: Cannot find module 'react-resizable-panels' or its corresponding type declarations.
+[08:58:01.012] src/components/ui/scroll-area.tsx(2,38): error TS2307: Cannot find module '@radix-ui/react-scroll-area' or its corresponding type declarations.
+[08:58:01.012] src/components/ui/slider.tsx(2,34): error TS2307: Cannot find module '@radix-ui/react-slider' or its corresponding type declarations.
+[08:58:01.013] src/components/ui/switch.tsx(2,35): error TS2307: Cannot find module '@radix-ui/react-switch' or its corresponding type declarations.
+[08:58:01.013] src/components/ui/toggle-group.tsx(4,39): error TS2307: Cannot find module '@radix-ui/react-toggle-group' or its corresponding type declarations.
+[08:58:01.013] src/components/ui/toggle.tsx(2,34): error TS2307: Cannot find module '@radix-ui/react-toggle' or its corresponding type declarations.
+[08:58:01.013] src/components/ui/tooltip.tsx(4,35): error TS2307: Cannot find module '@radix-ui/react-tooltip' or its corresponding type declarations.
+[08:58:01.016] src/lib/queryClient.ts(10,34): error TS2339: Property 'env' does not exist on type 'ImportMeta'.
+[08:58:01.016] src/pages/character-edit.tsx(18,39): error TS2307: Cannot find module '../../../shared/schema' or its corresponding type declarations.
+[08:58:01.016] src/pages/character-edit.tsx(77,9): error TS6133: 'characterAge' is declared but its value is never read.
+[08:58:01.016] src/pages/chat-room-simple.tsx(6,1): error TS6192: All imports in import declaration are unused.
+[08:58:01.016] src/pages/chat-room-simple.tsx(10,1): error TS6133: 'apiRequest' is declared but its value is never read.
+[08:58:01.017] src/pages/chat-room-simple.tsx(94,32): error TS2339: Property 'env' does not exist on type 'ImportMeta'.
+[08:58:01.017] src/pages/chat-room.tsx(11,61): error TS6133: 'User' is declared but its value is never read.
+[08:58:01.017] src/pages/chat-room.tsx(179,32): error TS2339: Property 'env' does not exist on type 'ImportMeta'.
+[08:58:01.017] src/pages/home.tsx(17,3): error TS6133: 'DoorOpen' is declared but its value is never read.
+[08:58:01.017] src/pages/home.tsx(57,9): error TS6133: 'chatRooms' is declared but its value is never read.
+[08:58:01.017] src/pages/landing.tsx(14,34): error TS6133: 'loginError' is declared but its value is never read.
+[08:58:01.044] Error: Command "npm run build" exited with 2
+[08:58:01.225] 
+[08:58:04.462] Exiting build container
