@@ -207,7 +207,7 @@ export default function Home() {
               <CardContent className="p-6">
                 <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center">
                   <Calendar className="text-accent mr-3 h-5 w-5" />
-                  Herní datum
+                  Herní datum aktuálně
                 </h3>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-accent mb-2">
