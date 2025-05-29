@@ -511,6 +511,69 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // RPG Game mechanics - Dice and coin endpoints
+  app.post("/api/game/dice-roll", requireAuth, async (req, res) => {
+    try {
+      const { roomId, characterId } = req.body;
+      
+      if (!roomId || !characterId) {
+        return res.status(400).json({ message: "roomId and characterId are required" });
+      }
+
+      // Generate random dice roll (1-10)
+      const diceResult = Math.floor(Math.random() * 10) + 1;
+      
+      // Create message with dice roll result
+      const diceMessage = await storage.createMessage({
+        roomId: parseInt(roomId),
+        characterId: parseInt(characterId),
+        content: `hodil kostkou: ${diceResult}`,
+        messageType: 'dice_roll',
+      });
+
+      res.json({ 
+        result: diceResult, 
+        message: diceMessage,
+        success: true 
+      });
+    } catch (error) {
+      console.error("Error rolling dice:", error);
+      res.status(500).json({ message: "Failed to roll dice" });
+    }
+  });
+
+  app.post("/api/game/coin-flip", requireAuth, async (req, res) => {
+    try {
+      const { roomId, characterId } = req.body;
+      
+      if (!roomId || !characterId) {
+        return res.status(400).json({ message: "roomId and characterId are required" });
+      }
+
+      // Generate random coin flip (1 or 2, representing heads/tails)
+      const coinResult = Math.floor(Math.random() * 2) + 1;
+      const coinSide = coinResult === 1 ? "panna" : "orel";
+      
+      // Create message with coin flip result
+      const coinMessage = await storage.createMessage({
+        roomId: parseInt(roomId),
+        characterId: parseInt(characterId),
+        content: `hodil mincí: ${coinSide}`,
+        messageType: 'coin_flip',
+      });
+
+      res.json({ 
+        result: coinResult,
+        side: coinSide,
+        message: coinMessage,
+        success: true 
+      });
+    } catch (error) {
+      console.error("Error flipping coin:", error);
+      res.status(500).json({ message: "Failed to flip coin" });
+    }
+  });
+
   const httpServer = createServer(app);
   
   // WebSocket server for real-time chat
@@ -576,6 +639,91 @@ export async function registerRoutes(app: Express): Promise<Server> {
             wss.clients.forEach((client) => {
               if (client.readyState === WebSocket.OPEN) {
                 client.send(JSON.stringify(broadcastMessage));
+              }
+            });
+            break;
+            
+          case 'dice_roll':
+            const diceConnectionInfo = activeConnections.get(ws);
+            if (!diceConnectionInfo?.characterId) {
+              ws.send(JSON.stringify({ type: 'error', message: 'Not authenticated' }));
+              return;
+            }
+
+            // Generate random dice roll (1-10)
+            const diceResult = Math.floor(Math.random() * 10) + 1;
+            
+            // Save dice roll message to database
+            const diceMessage = await storage.createMessage({
+              roomId: message.roomId,
+              characterId: diceConnectionInfo.characterId,
+              content: `hodil kostkou: ${diceResult}`,
+              messageType: 'dice_roll',
+            });
+
+            // Get character info for broadcast
+            const diceCharacter = await storage.getCharacter(diceConnectionInfo.characterId);
+            if (!diceCharacter) return;
+
+            // Broadcast dice roll to all connected clients
+            const diceBroadcast = {
+              type: 'new_message',
+              message: {
+                ...diceMessage,
+                character: {
+                  firstName: diceCharacter.firstName,
+                  middleName: diceCharacter.middleName,
+                  lastName: diceCharacter.lastName,
+                }
+              }
+            };
+
+            wss.clients.forEach((client) => {
+              if (client.readyState === WebSocket.OPEN) {
+                client.send(JSON.stringify(diceBroadcast));
+              }
+            });
+            break;
+            
+          case 'coin_flip':
+            const coinConnectionInfo = activeConnections.get(ws);
+            if (!coinConnectionInfo?.characterId) {
+              ws.send(JSON.stringify({ type: 'error', message: 'Not authenticated' }));
+              return;
+            }
+
+            // Generate random coin flip (1 or 2)
+            const coinResult = Math.floor(Math.random() * 2) + 1;
+            const coinSide = coinResult === 1 ? "panna" : "orel";
+            
+            // Save coin flip message to database
+            const coinMessage = await storage.createMessage({
+              roomId: message.roomId,
+              characterId: coinConnectionInfo.characterId,
+              content: `hodil mincí: ${coinSide}`,
+              messageType: 'coin_flip',
+            });
+
+            // Get character info for broadcast
+            const coinCharacter = await storage.getCharacter(coinConnectionInfo.characterId);
+            if (!coinCharacter) return;
+
+            // Broadcast coin flip to all connected clients
+            const coinBroadcast = {
+              type: 'new_message',
+              message: {
+                ...coinMessage,
+                character: {
+                  firstName: coinCharacter.firstName,
+                  middleName: coinCharacter.middleName,
+                  lastName: coinCharacter.lastName,
+                }
+              }
+            };
+
+            wss.clients.forEach((client) => {
+              if (client.readyState === WebSocket.OPEN) {
+                client.send(JSON.stringify(coinBroadcast));
               }
             });
             break;

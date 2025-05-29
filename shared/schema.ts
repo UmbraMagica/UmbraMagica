@@ -75,7 +75,7 @@ export const messages = pgTable("messages", {
   roomId: integer("room_id").references(() => chatRooms.id).notNull(),
   characterId: integer("character_id").references(() => characters.id).notNull(),
   content: text("content").notNull(),
-  messageType: varchar("message_type", { length: 20 }).default("message").notNull(), // message, action, system
+  messageType: varchar("message_type", { length: 20 }).default("message").notNull(), // message, action, system, dice_roll, coin_flip
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

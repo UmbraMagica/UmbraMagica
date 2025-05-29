@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
-import { MessageCircle, Send, Download, Archive, ArrowLeft, User } from "lucide-react";
+import { MessageCircle, Send, Download, Archive, ArrowLeft, User, Dice1, Coins } from "lucide-react";
 import { format } from "date-fns";
 
 interface ChatRoom {
@@ -132,6 +132,58 @@ export default function ChatRoom() {
       toast({
         title: "Chyba při archivaci",
         description: "Nepodařilo se archivovat zprávy.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Dice roll mutation
+  const diceRollMutation = useMutation({
+    mutationFn: () => {
+      return new Promise<void>((resolve, reject) => {
+        if (!ws || !isConnected) {
+          reject(new Error("WebSocket není připojen"));
+          return;
+        }
+
+        ws.send(JSON.stringify({
+          type: 'dice_roll',
+          roomId: currentRoomId,
+        }));
+
+        resolve();
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Chyba při hodu kostkou",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Coin flip mutation
+  const coinFlipMutation = useMutation({
+    mutationFn: () => {
+      return new Promise<void>((resolve, reject) => {
+        if (!ws || !isConnected) {
+          reject(new Error("WebSocket není připojen"));
+          return;
+        }
+
+        ws.send(JSON.stringify({
+          type: 'coin_flip',
+          roomId: currentRoomId,
+        }));
+
+        resolve();
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Chyba při hodu mincí",
+        description: error.message,
         variant: "destructive",
       });
     },
