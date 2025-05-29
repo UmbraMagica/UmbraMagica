@@ -1,0 +1,41 @@
+[11:19:36.968] Running build in Washington, D.C., USA (East) – iad1
+[11:19:36.969] Build machine configuration: 2 cores, 8 GB
+[11:19:36.986] Cloning github.com/CaseyLotteBenett/textroleplay (Branch: main, Commit: e6b38f9)
+[11:19:37.209] Previous build caches not available
+[11:19:37.317] Cloning completed: 331.000ms
+[11:19:37.585] Running "vercel build"
+[11:19:38.064] Vercel CLI 42.2.0
+[11:19:38.588] Running "install" command: `npm install`...
+[11:20:08.301] 
+[11:20:08.302] added 317 packages, and audited 318 packages in 29s
+[11:20:08.303] 
+[11:20:08.304] 44 packages are looking for funding
+[11:20:08.304]   run `npm fund` for details
+[11:20:08.314] 
+[11:20:08.314] 2 moderate severity vulnerabilities
+[11:20:08.314] 
+[11:20:08.315] To address all issues (including breaking changes), run:
+[11:20:08.315]   npm audit fix --force
+[11:20:08.315] 
+[11:20:08.315] Run `npm audit` for details.
+[11:20:08.597] 
+[11:20:08.600] > textroleplay-frontend@0.0.0 build
+[11:20:08.600] > tsc && vite build
+[11:20:08.601] 
+[11:20:16.125] src/pages/character-edit.tsx(77,9): error TS6133: 'characterAge' is declared but its value is never read.
+[11:20:16.126] src/pages/character-edit.tsx(129,60): error TS2769: No overload matches this call.
+[11:20:16.126]   Overload 1 of 4, '(value: string | number | Date): Date', gave the following error.
+[11:20:16.127]     Argument of type 'string | undefined' is not assignable to parameter of type 'string | number | Date'.
+[11:20:16.127]       Type 'undefined' is not assignable to type 'string | number | Date'.
+[11:20:16.127]   Overload 2 of 4, '(value: string | number): Date', gave the following error.
+[11:20:16.127]     Argument of type 'string | undefined' is not assignable to parameter of type 'string | number'.
+[11:20:16.127]       Type 'undefined' is not assignable to type 'string | number'.
+[11:20:16.128] src/pages/chat-room-simple.tsx(6,1): error TS6192: All imports in import declaration are unused.
+[11:20:16.128] src/pages/chat-room-simple.tsx(10,1): error TS6133: 'apiRequest' is declared but its value is never read.
+[11:20:16.128] src/pages/chat-room.tsx(11,61): error TS6133: 'User' is declared but its value is never read.
+[11:20:16.128] src/pages/home.tsx(17,3): error TS6133: 'DoorOpen' is declared but its value is never read.
+[11:20:16.128] src/pages/home.tsx(57,9): error TS6133: 'chatRooms' is declared but its value is never read.
+[11:20:16.128] src/pages/landing.tsx(14,34): error TS6133: 'loginError' is declared but its value is never read.
+[11:20:16.153] Error: Command "npm run build" exited with 2
+[11:20:16.440] 
+[11:20:19.551] Exiting build container
