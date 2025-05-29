@@ -1,0 +1,38 @@
+[09:29:05.805] Running build in Washington, D.C., USA (East) – iad1
+[09:29:05.805] Build machine configuration: 2 cores, 8 GB
+[09:29:05.851] Cloning github.com/CaseyLotteBenett/textroleplay (Branch: main, Commit: d0f15e0)
+[09:29:05.865] Skipping build cache, deployment was triggered without cache.
+[09:29:06.139] Cloning completed: 288.000ms
+[09:29:06.456] Running "vercel build"
+[09:29:07.235] Vercel CLI 42.2.0
+[09:29:07.789] Running "install" command: `npm install`...
+[09:29:32.810] 
+[09:29:32.811] added 317 packages, and audited 318 packages in 25s
+[09:29:32.811] 
+[09:29:32.812] 44 packages are looking for funding
+[09:29:32.812]   run `npm fund` for details
+[09:29:32.821] 
+[09:29:32.821] 2 moderate severity vulnerabilities
+[09:29:32.821] 
+[09:29:32.822] To address all issues (including breaking changes), run:
+[09:29:32.822]   npm audit fix --force
+[09:29:32.822] 
+[09:29:32.822] Run `npm audit` for details.
+[09:29:33.106] 
+[09:29:33.107] > textroleplay-frontend@0.0.0 build
+[09:29:33.107] > tsc && vite build
+[09:29:33.107] 
+[09:29:40.128] src/lib/queryClient.ts(10,34): error TS2339: Property 'env' does not exist on type 'ImportMeta'.
+[09:29:40.129] src/pages/character-edit.tsx(18,39): error TS2307: Cannot find module '../../../shared/schema' or its corresponding type declarations.
+[09:29:40.130] src/pages/character-edit.tsx(77,9): error TS6133: 'characterAge' is declared but its value is never read.
+[09:29:40.130] src/pages/chat-room-simple.tsx(6,1): error TS6192: All imports in import declaration are unused.
+[09:29:40.130] src/pages/chat-room-simple.tsx(10,1): error TS6133: 'apiRequest' is declared but its value is never read.
+[09:29:40.130] src/pages/chat-room-simple.tsx(94,32): error TS2339: Property 'env' does not exist on type 'ImportMeta'.
+[09:29:40.131] src/pages/chat-room.tsx(11,61): error TS6133: 'User' is declared but its value is never read.
+[09:29:40.131] src/pages/chat-room.tsx(179,32): error TS2339: Property 'env' does not exist on type 'ImportMeta'.
+[09:29:40.131] src/pages/home.tsx(17,3): error TS6133: 'DoorOpen' is declared but its value is never read.
+[09:29:40.131] src/pages/home.tsx(57,9): error TS6133: 'chatRooms' is declared but its value is never read.
+[09:29:40.131] src/pages/landing.tsx(14,34): error TS6133: 'loginError' is declared but its value is never read.
+[09:29:40.157] Error: Command "npm run build" exited with 2
+[09:29:40.356] 
+[09:29:43.380] Exiting build container
