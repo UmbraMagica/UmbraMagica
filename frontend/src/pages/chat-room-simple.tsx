@@ -91,8 +91,8 @@ export default function ChatRoom() {
   useEffect(() => {
     if (!currentRoomId || !currentCharacter) return;
 
-    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-    const wsUrl = `${protocol}//${window.location.host}/ws`;
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+    const wsUrl = apiUrl.replace('http', 'ws').replace('https', 'wss') + '/ws';
     const websocket = new WebSocket(wsUrl);
 
     websocket.onopen = () => {
