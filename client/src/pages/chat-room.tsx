@@ -509,7 +509,7 @@ export default function ChatRoom() {
                 className="h-[60px] px-3"
                 title="Hodit kostkou (1d10)"
               >
-                <Dices className="h-4 w-4" />
+                🎲
               </Button>
               <Button
                 onClick={() => coinFlipMutation.mutate()}
@@ -518,7 +518,7 @@ export default function ChatRoom() {
                 className="h-[60px] px-3"
                 title="Hodit mincí (1d2)"
               >
-                <Coins className="h-4 w-4" />
+                🪙
               </Button>
               <Button
                 onClick={handleSendMessage}
