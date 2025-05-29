@@ -134,10 +134,7 @@ export default function ChatRoom() {
     };
   }, [currentRoomId, currentCharacter, queryClient]);
 
-  // Auto-scroll to bottom
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  // Auto-scroll removed - newest messages stay at the top
 
   const handleSendMessage = async () => {
     if (!messageInput.trim() || !currentRoomId || !currentCharacter) return;
