@@ -515,7 +515,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // 7. Keep original rooms for compatibility
       const originalRooms = [
-        { name: "Hlavní chat", description: "Hlavní herní místnost pro všechny hráče", sortOrder: 0 },
         { name: "Testovací chat", description: "Místnost pro testování a experimenty", sortOrder: 0 },
       ];
 
