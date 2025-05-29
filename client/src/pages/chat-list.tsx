@@ -2,7 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MessageCircle, Users, ArrowRight } from "lucide-react";
+import { MessageCircle, Users, ArrowRight, ArrowLeft } from "lucide-react";
+import { useLocation } from "wouter";
 
 interface ChatRoom {
   id: number;
@@ -14,6 +15,7 @@ interface ChatRoom {
 
 export default function ChatList() {
   const { user } = useAuth();
+  const [, setLocation] = useLocation();
 
   // Fetch chat rooms
   const { data: rooms = [], isLoading, error } = useQuery<ChatRoom[]>({
@@ -44,6 +46,17 @@ export default function ChatList() {
   return (
     <div className="container mx-auto p-6 max-w-4xl">
       <div className="mb-8">
+        <div className="flex items-center gap-3 mb-4">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setLocation('/home')}
+            className="flex items-center gap-2"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Zpět na hlavní stranu
+          </Button>
+        </div>
         <h1 className="text-3xl font-bold text-foreground mb-2">Herní chaty</h1>
         <p className="text-muted-foreground">
           Vyberte chatovací místnost pro interakci s ostatními hráči
