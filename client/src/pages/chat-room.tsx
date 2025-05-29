@@ -468,24 +468,22 @@ export default function ChatRoom() {
         <div className="border-t p-4">
           {/* Game Actions */}
           <div className="flex gap-2 mb-3 justify-center">
-            <Button
+            <button
               onClick={() => diceRollMutation.mutate()}
               disabled={!isConnected || diceRollMutation.isPending}
-              variant="outline"
-              size="sm"
+              className="px-4 py-2 border rounded-md hover:bg-gray-100 disabled:opacity-50"
               title="Hodit kostkou (1d10)"
             >
               🎲 Kostka
-            </Button>
-            <Button
+            </button>
+            <button
               onClick={() => coinFlipMutation.mutate()}
               disabled={!isConnected || coinFlipMutation.isPending}
-              variant="outline" 
-              size="sm"
+              className="px-4 py-2 border rounded-md hover:bg-gray-100 disabled:opacity-50"
               title="Hodit mincí (1d2)"
             >
               🪙 Mince
-            </Button>
+            </button>
           </div>
           
           <div className="flex gap-3 items-end">
