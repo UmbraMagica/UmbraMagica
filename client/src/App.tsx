@@ -10,7 +10,7 @@ import Home from "@/pages/home";
 import Admin from "@/pages/admin";
 import Registration from "@/pages/registration";
 import ChatList from "@/pages/chat-list";
-import ChatRoom from "@/pages/chat-room-simple";
+import ChatRoom from "@/pages/chat-room";
 import CharacterEdit from "@/pages/character-edit";
 import NotFound from "@/pages/not-found";
 import { useEffect } from "react";
