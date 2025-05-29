@@ -466,6 +466,28 @@ export default function ChatRoom() {
 
         {/* Message Input */}
         <div className="border-t p-4">
+          {/* Game Actions */}
+          <div className="flex gap-2 mb-3 justify-center">
+            <Button
+              onClick={() => diceRollMutation.mutate()}
+              disabled={!isConnected || diceRollMutation.isPending}
+              variant="outline"
+              size="sm"
+              title="Hodit kostkou (1d10)"
+            >
+              🎲 Kostka
+            </Button>
+            <Button
+              onClick={() => coinFlipMutation.mutate()}
+              disabled={!isConnected || coinFlipMutation.isPending}
+              variant="outline" 
+              size="sm"
+              title="Hodit mincí (1d2)"
+            >
+              🪙 Mince
+            </Button>
+          </div>
+          
           <div className="flex gap-3 items-end">
             {/* User Avatar */}
             <Avatar className="w-10 h-10 flex-shrink-0">
@@ -500,34 +522,14 @@ export default function ChatRoom() {
               </div>
             </div>
             
-            {/* Game Actions & Send Button */}
-            <div className="flex gap-2">
-              <Button
-                onClick={() => diceRollMutation.mutate()}
-                disabled={!isConnected || diceRollMutation.isPending}
-                variant="outline"
-                className="h-[60px] px-3"
-                title="Hodit kostkou (1d10)"
-              >
-                🎲
-              </Button>
-              <Button
-                onClick={() => coinFlipMutation.mutate()}
-                disabled={!isConnected || coinFlipMutation.isPending}
-                variant="outline"
-                className="h-[60px] px-3"
-                title="Hodit mincí (1d2)"
-              >
-                🪙
-              </Button>
-              <Button
-                onClick={handleSendMessage}
-                disabled={!isMessageValid || !isConnected || sendMessageMutation.isPending}
-                className="h-[60px] px-6"
-              >
-                <Send className="h-4 w-4" />
-              </Button>
-            </div>
+            {/* Send Button */}
+            <Button
+              onClick={handleSendMessage}
+              disabled={!isMessageValid || !isConnected || sendMessageMutation.isPending}
+              className="h-[60px] px-6"
+            >
+              <Send className="h-4 w-4" />
+            </Button>
           </div>
         </div>
       </Card>
