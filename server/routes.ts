@@ -653,29 +653,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
             // Generate random dice roll (1-10)
             const diceResult = Math.floor(Math.random() * 10) + 1;
             
-            // Save dice roll message to database
-            const diceMessage = await storage.createMessage({
+            // Get character info first for immediate broadcast
+            const diceCharacter = await storage.getCharacter(diceConnectionInfo.characterId);
+            if (!diceCharacter) return;
+
+            // Create message object for immediate broadcast
+            const tempDiceMessage = {
+              id: Date.now(), // Temporary ID for immediate display
               roomId: message.roomId,
               characterId: diceConnectionInfo.characterId,
               content: `hodil kostkou: ${diceResult}`,
               messageType: 'dice_roll',
-            });
+              createdAt: new Date().toISOString(),
+              character: {
+                firstName: diceCharacter.firstName,
+                middleName: diceCharacter.middleName,
+                lastName: diceCharacter.lastName,
+              }
+            };
 
-            // Get character info for broadcast
-            const diceCharacter = await storage.getCharacter(diceConnectionInfo.characterId);
-            if (!diceCharacter) return;
-
-            // Broadcast dice roll to all connected clients
+            // Broadcast immediately for fast response
             const diceBroadcast = {
               type: 'new_message',
-              message: {
-                ...diceMessage,
-                character: {
-                  firstName: diceCharacter.firstName,
-                  middleName: diceCharacter.middleName,
-                  lastName: diceCharacter.lastName,
-                }
-              }
+              message: tempDiceMessage
             };
 
             wss.clients.forEach((client) => {
@@ -683,6 +683,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 client.send(JSON.stringify(diceBroadcast));
               }
             });
+
+            // Save to database in background (don't wait)
+            storage.createMessage({
+              roomId: message.roomId,
+              characterId: diceConnectionInfo.characterId,
+              content: `hodil kostkou: ${diceResult}`,
+              messageType: 'dice_roll',
+            }).catch(error => console.error("Error saving dice roll:", error));
             break;
             
           case 'coin_flip':
@@ -696,29 +704,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
             const coinResult = Math.floor(Math.random() * 2) + 1;
             const coinSide = coinResult === 1 ? "panna" : "orel";
             
-            // Save coin flip message to database
-            const coinMessage = await storage.createMessage({
+            // Get character info first for immediate broadcast
+            const coinCharacter = await storage.getCharacter(coinConnectionInfo.characterId);
+            if (!coinCharacter) return;
+
+            // Create message object for immediate broadcast
+            const tempCoinMessage = {
+              id: Date.now(), // Temporary ID for immediate display
               roomId: message.roomId,
               characterId: coinConnectionInfo.characterId,
               content: `hodil mincí: ${coinSide}`,
               messageType: 'coin_flip',
-            });
+              createdAt: new Date().toISOString(),
+              character: {
+                firstName: coinCharacter.firstName,
+                middleName: coinCharacter.middleName,
+                lastName: coinCharacter.lastName,
+              }
+            };
 
-            // Get character info for broadcast
-            const coinCharacter = await storage.getCharacter(coinConnectionInfo.characterId);
-            if (!coinCharacter) return;
-
-            // Broadcast coin flip to all connected clients
+            // Broadcast immediately for fast response
             const coinBroadcast = {
               type: 'new_message',
-              message: {
-                ...coinMessage,
-                character: {
-                  firstName: coinCharacter.firstName,
-                  middleName: coinCharacter.middleName,
-                  lastName: coinCharacter.lastName,
-                }
-              }
+              message: tempCoinMessage
             };
 
             wss.clients.forEach((client) => {
@@ -726,6 +734,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 client.send(JSON.stringify(coinBroadcast));
               }
             });
+
+            // Save to database in background (don't wait)
+            storage.createMessage({
+              roomId: message.roomId,
+              characterId: coinConnectionInfo.characterId,
+              content: `hodil mincí: ${coinSide}`,
+              messageType: 'coin_flip',
+            }).catch(error => console.error("Error saving coin flip:", error));
             break;
         }
       } catch (error) {
