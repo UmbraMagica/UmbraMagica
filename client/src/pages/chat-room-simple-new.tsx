@@ -386,7 +386,7 @@ export default function ChatRoom() {
       {(currentRoom.longDescription || user?.role === 'admin') && (
         <div className="w-80 border-l bg-muted/30 flex flex-col">
           {/* Panel Header */}
-          <div className="flex-none p-4 border-b bg-card">
+          <div className="flex-none p-4 border-b bg-card border-t-0">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <BookOpen className="h-4 w-4" />
