@@ -500,14 +500,34 @@ export default function ChatRoom() {
               </div>
             </div>
             
-            {/* Send Button */}
-            <Button
-              onClick={handleSendMessage}
-              disabled={!isMessageValid || !isConnected || sendMessageMutation.isPending}
-              className="h-[60px] px-6"
-            >
-              <Send className="h-4 w-4" />
-            </Button>
+            {/* Game Actions & Send Button */}
+            <div className="flex gap-2">
+              <Button
+                onClick={() => diceRollMutation.mutate()}
+                disabled={!isConnected || diceRollMutation.isPending}
+                variant="outline"
+                className="h-[60px] px-3"
+                title="Hodit kostkou (1d10)"
+              >
+                <Dice1 className="h-4 w-4" />
+              </Button>
+              <Button
+                onClick={() => coinFlipMutation.mutate()}
+                disabled={!isConnected || coinFlipMutation.isPending}
+                variant="outline"
+                className="h-[60px] px-3"
+                title="Hodit mincí (1d2)"
+              >
+                <Coins className="h-4 w-4" />
+              </Button>
+              <Button
+                onClick={handleSendMessage}
+                disabled={!isMessageValid || !isConnected || sendMessageMutation.isPending}
+                className="h-[60px] px-6"
+              >
+                <Send className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </div>
       </Card>
