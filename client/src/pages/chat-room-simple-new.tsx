@@ -430,17 +430,34 @@ export default function ChatRoom() {
           {/* Panel Content */}
           <div className="flex-1 p-4 overflow-y-auto">
             {isEditingDescription ? (
-              <Textarea
-                value={editedDescription}
-                onChange={(e) => setEditedDescription(e.target.value)}
-                placeholder="Zadejte popis místnosti..."
-                className="min-h-64 text-sm w-full resize-none"
-                rows={12}
-              />
-            ) : (
-              <div className="text-sm text-muted-foreground whitespace-pre-line">
-                {currentRoom.longDescription || (user?.role === 'admin' ? "Žádný popis místnosti. Klikněte na upravit pro přidání popisu." : "")}
+              <div className="space-y-3">
+                <Textarea
+                  value={editedDescription}
+                  onChange={(e) => setEditedDescription(e.target.value)}
+                  placeholder="Zadejte popis místnosti..."
+                  className="min-h-64 text-sm w-full resize-none"
+                  rows={12}
+                />
+                <div className="text-xs text-muted-foreground border-t pt-2">
+                  <div className="font-medium mb-1">Formátování:</div>
+                  <div>**tučné** → <strong>tučné</strong></div>
+                  <div>*kurzíva* → <em>kurzíva</em></div>
+                  <div>__podtržené__ → <u>podtržené</u></div>
+                </div>
               </div>
+            ) : (
+              <div 
+                className="text-sm text-muted-foreground whitespace-pre-line prose prose-sm max-w-none prose-headings:text-foreground prose-p:text-muted-foreground prose-strong:text-foreground prose-em:text-muted-foreground prose-u:text-muted-foreground"
+                dangerouslySetInnerHTML={{
+                  __html: currentRoom.longDescription 
+                    ? currentRoom.longDescription
+                        .replace(/\n/g, '<br>')
+                        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                        .replace(/__(.*?)__/g, '<u>$1</u>')
+                    : (user?.role === 'admin' ? "Žádný popis místnosti. Klikněte na upravit pro přidání popisu." : "")
+                }}
+              />
             )}
           </div>
         </div>
