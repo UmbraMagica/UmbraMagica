@@ -39,6 +39,7 @@ export default function ChatRoom() {
   const [messageInput, setMessageInput] = useState("");
   const [ws, setWs] = useState<WebSocket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
+  const [localMessages, setLocalMessages] = useState<ChatMessage[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   const currentRoomId = roomId ? parseInt(roomId) : null;
@@ -76,13 +77,20 @@ export default function ChatRoom() {
   const currentRoom = rooms.find(room => room.id === currentRoomId);
 
   // Fetch messages - Use the working endpoint structure
-  const { data: messages = [], isLoading: messagesLoading, error: messagesError } = useQuery<ChatMessage[]>({
+  const { data: fetchedMessages = [], isLoading: messagesLoading, error: messagesError } = useQuery<ChatMessage[]>({
     queryKey: [`/api/chat/rooms/${currentRoomId}/messages`],
     enabled: !!currentRoomId,
   });
 
+  // Sync fetched messages with local state
+  useEffect(() => {
+    if (fetchedMessages.length > 0) {
+      setLocalMessages(fetchedMessages);
+    }
+  }, [fetchedMessages]);
+
   // Debug messages
-  console.log("Messages data:", messages);
+  console.log("Messages data:", localMessages);
   console.log("Messages loading:", messagesLoading);
   console.log("Messages error:", messagesError);
   console.log("Current room ID:", currentRoomId);
@@ -109,7 +117,10 @@ export default function ChatRoom() {
     websocket.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        if (data.type === "message") {
+        if (data.type === "new_message") {
+          // Add the new message directly to the cache instead of refreshing
+          setLocalMessages((prevMessages: ChatMessage[]) => [data.message, ...prevMessages]);
+        } else if (data.type === "message") {
           queryClient.invalidateQueries({ queryKey: ["/api/chat/messages", { roomId: currentRoomId }] });
         }
       } catch (error) {
