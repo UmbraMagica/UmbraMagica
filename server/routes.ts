@@ -14,7 +14,36 @@ declare module "express-session" {
   }
 }
 
+// Simple rate limiter
+const rateLimiter = new Map<string, { count: number; resetTime: number }>();
+
+const checkRateLimit = (identifier: string, maxRequests: number = 30, windowMs: number = 60000) => {
+  const now = Date.now();
+  const userLimit = rateLimiter.get(identifier);
+  
+  if (!userLimit || now > userLimit.resetTime) {
+    rateLimiter.set(identifier, { count: 1, resetTime: now + windowMs });
+    return true;
+  }
+  
+  if (userLimit.count >= maxRequests) {
+    return false;
+  }
+  
+  userLimit.count++;
+  return true;
+};
+
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Rate limiting middleware
+  app.use('/api/*', (req, res, next) => {
+    const identifier = req.ip || 'unknown';
+    if (!checkRateLimit(identifier)) {
+      return res.status(429).json({ message: "Too many requests. Please try again later." });
+    }
+    next();
+  });
+  
   // Debug middleware for chat endpoints
   app.use('/api/chat/*', (req, res, next) => {
     console.log(`${req.method} ${req.path} - Query:`, req.query);
@@ -30,14 +59,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     tableName: "sessions",
   });
 
+  // Generate secure session secret if not provided
+  const sessionSecret = process.env.SESSION_SECRET || require('crypto').randomBytes(32).toString('hex');
+  
   app.use(session({
-    secret: process.env.SESSION_SECRET || "rpg-realm-secret-key",
+    secret: sessionSecret,
     store: sessionStore,
     resave: false,
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: false, // Set to true in production with HTTPS
+      secure: process.env.NODE_ENV === 'production', // Secure in production
+      sameSite: 'strict', // CSRF protection
       maxAge: sessionTtl,
     },
   }));
@@ -246,16 +279,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Access denied" });
       }
       
-      const { firstName, middleName, lastName, birthDate, school, description } = req.body;
+      // Validate input data using schema
+      const validatedData = insertCharacterSchema.parse(req.body);
       
-      const updatedCharacter = await storage.updateCharacter(characterId, {
-        firstName,
-        middleName,
-        lastName,
-        birthDate,
-        school,
-        description,
-      });
+      const updatedCharacter = await storage.updateCharacter(characterId, validatedData);
       
       if (!updatedCharacter) {
         return res.status(404).json({ message: "Character not found" });
@@ -593,7 +620,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         switch (message.type) {
           case 'authenticate':
-            // In a real implementation, you'd verify the session here
+            // Verify session and character ownership
+            if (!message.sessionId || !message.userId || !message.characterId) {
+              ws.send(JSON.stringify({ type: 'error', message: 'Missing authentication data' }));
+              return;
+            }
+            
+            // In production, verify the session ID matches the user
+            const user = await storage.getUser(message.userId);
+            if (!user) {
+              ws.send(JSON.stringify({ type: 'error', message: 'Invalid user' }));
+              return;
+            }
+            
+            const userCharacter = await storage.getCharacter(message.characterId);
+            if (!userCharacter || userCharacter.userId !== message.userId) {
+              ws.send(JSON.stringify({ type: 'error', message: 'Character access denied' }));
+              return;
+            }
+            
             activeConnections.set(ws, { 
               userId: message.userId, 
               characterId: message.characterId 
@@ -622,8 +667,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
             console.log("WebSocket message saved:", savedMessage);
             
             // Get character info for broadcast
-            const character = await storage.getCharacter(connectionInfo.characterId);
-            if (!character) return;
+            const messageCharacter = await storage.getCharacter(connectionInfo.characterId);
+            if (!messageCharacter) return;
 
             // Broadcast to all connected clients
             const broadcastMessage = {
@@ -631,9 +676,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
               message: {
                 ...savedMessage,
                 character: {
-                  firstName: character.firstName,
-                  middleName: character.middleName,
-                  lastName: character.lastName,
+                  firstName: messageCharacter.firstName,
+                  middleName: messageCharacter.middleName,
+                  lastName: messageCharacter.lastName,
                 }
               }
             };
