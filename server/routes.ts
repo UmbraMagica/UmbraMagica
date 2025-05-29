@@ -482,22 +482,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
 
-      // 6. Direct rooms under Kouzelnický Londýn (not in subcategories)
-      const directRooms = [
+      // 6. Additional subcategories under Kouzelnický Londýn
+      const additionalCategories = [
         { name: "Ministerstvo kouzel", description: "Úřad kouzelné vlády", sortOrder: 3 },
         { name: "Nemocnice u sv. Munga", description: "Nemocnice pro kouzelné nemoci a úrazy", sortOrder: 4 },
         { name: "Katakomby", description: "Podzemní bludiště pod Londýnem", sortOrder: 5 },
       ];
 
-      for (const roomData of directRooms) {
-        const existingRoom = await storage.getChatRoomByName(roomData.name);
+      for (const categoryData of additionalCategories) {
+        let category = await storage.getChatCategoryByName(categoryData.name);
+        if (!category) {
+          category = await storage.createChatCategory({
+            name: categoryData.name,
+            description: categoryData.description,
+            parentId: wizardingLondon.id,
+            sortOrder: categoryData.sortOrder,
+          });
+        }
+
+        // Create a main room with the same name as the category
+        const existingRoom = await storage.getChatRoomByName(categoryData.name);
         if (!existingRoom) {
           await storage.createChatRoom({
-            name: roomData.name,
-            description: roomData.description,
-            categoryId: wizardingLondon.id,
+            name: categoryData.name,
+            description: categoryData.description,
+            categoryId: category.id,
             isPublic: true,
-            sortOrder: roomData.sortOrder,
+            sortOrder: 1,
           });
         }
       }
