@@ -333,18 +333,7 @@ export default function ChatRoom() {
         <Collapsible open={isDescriptionOpen} onOpenChange={setIsDescriptionOpen}>
           <div className="flex-none border-b bg-muted/50">
             <div className="max-w-4xl mx-auto p-4">
-              <div className="flex items-center justify-between gap-4">
-                <CollapsibleTrigger asChild>
-                  <Button variant="ghost" className="flex items-center gap-2 p-0 h-auto">
-                    <BookOpen className="h-4 w-4" />
-                    <span className="font-medium">Popis místnosti</span>
-                    {isDescriptionOpen ? (
-                      <ChevronDown className="h-4 w-4" />
-                    ) : (
-                      <ChevronRight className="h-4 w-4" />
-                    )}
-                  </Button>
-                </CollapsibleTrigger>
+              <div className="flex items-center justify-end gap-4">
                 {user?.role === 'admin' && (
                   <div className="flex gap-2">
                     {isEditingDescription ? (
@@ -381,6 +370,17 @@ export default function ChatRoom() {
                     )}
                   </div>
                 )}
+                <CollapsibleTrigger asChild>
+                  <Button variant="outline" size="sm" className="flex items-center gap-2">
+                    <BookOpen className="h-4 w-4" />
+                    <span>Popis místnosti</span>
+                    {isDescriptionOpen ? (
+                      <ChevronDown className="h-4 w-4" />
+                    ) : (
+                      <ChevronRight className="h-4 w-4" />
+                    )}
+                  </Button>
+                </CollapsibleTrigger>
               </div>
               <CollapsibleContent>
                 <div className="mt-3">
