@@ -175,6 +175,58 @@ export default function ChatRoom() {
     }
   };
 
+  const handleDiceRoll = async () => {
+    if (!currentRoomId || !currentCharacter) return;
+
+    if (!ws || !isConnected) {
+      toast({
+        title: "Chyba připojení",
+        description: "WebSocket není připojen. Zkuste obnovit stránku.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      ws.send(JSON.stringify({
+        type: 'dice_roll',
+        roomId: currentRoomId,
+      }));
+    } catch (error) {
+      toast({
+        title: "Chyba při hodu kostkou",
+        description: "Nepodařilo se hodit kostkou.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleCoinFlip = async () => {
+    if (!currentRoomId || !currentCharacter) return;
+
+    if (!ws || !isConnected) {
+      toast({
+        title: "Chyba připojení",
+        description: "WebSocket není připojen. Zkuste obnovit stránku.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      ws.send(JSON.stringify({
+        type: 'coin_flip',
+        roomId: currentRoomId,
+      }));
+    } catch (error) {
+      toast({
+        title: "Chyba při hodu mincí",
+        description: "Nepodařilo se hodit mincí.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const getCharacterInitials = (character: { firstName: string; lastName: string }) => {
     return `${character.firstName.charAt(0)}${character.lastName.charAt(0)}`;
   };
@@ -264,6 +316,28 @@ export default function ChatRoom() {
               }}
               maxLength={5000}
             />
+            <div className="flex items-center justify-between gap-2 mb-2">
+              <div className="flex gap-2">
+                <Button
+                  onClick={handleDiceRoll}
+                  disabled={!isConnected}
+                  variant="outline"
+                  size="sm"
+                  title="Hodit kostkou (1d10)"
+                >
+                  🎲 Kostka
+                </Button>
+                <Button
+                  onClick={handleCoinFlip}
+                  disabled={!isConnected}
+                  variant="outline"
+                  size="sm"
+                  title="Hodit mincí (1d2)"
+                >
+                  🪙 Mince
+                </Button>
+              </div>
+            </div>
             <div className="flex items-center justify-between">
               <span className="text-xs text-muted-foreground">
                 {messageInput.length}/5000 znaků
