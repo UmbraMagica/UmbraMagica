@@ -446,7 +446,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         { name: "Ulice", description: "Hlavní ulice Příčné ulice", sortOrder: 1 },
         { name: "Gringottovi", description: "Banka pro čaroděje a kouzelníky", sortOrder: 2 },
         { name: "Děravý kotel", description: "Slavný hostinec a vstup do kouzelného světa", sortOrder: 3 },
-        { name: "Černá vrána", description: "Obchod s kouzelnými ingrediencemi", sortOrder: 4 },
+        { name: "Černá vrána", description: "Pohřební služba pro kouzelný svět", sortOrder: 4 },
         { name: "Čarokáva", description: "Kavárna pro čaroděje", sortOrder: 5 },
       ];
 
