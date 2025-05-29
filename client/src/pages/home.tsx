@@ -54,15 +54,9 @@ export default function Home() {
   const characterAge = primaryCharacter ? 
     new Date().getFullYear() - new Date(primaryCharacter.birthDate).getFullYear() : 0;
 
-  const chatRooms = [
-    { name: "Hlavní chat", onlineCount: 3 },
-    { name: "Taverna U Zlatého draka", onlineCount: 1 },
-    { name: "Kouzelná knihovna", onlineCount: 1 },
-  ];
-
   const recentActivity = [
-    { text: `Vstoupili jste do Hlavního chatu`, time: "před 2 hodinami", type: "success" },
-    { text: "Aktualizována postava", time: "včera", type: "info" },
+    { text: `Aktualizována postava`, time: "včera", type: "info" },
+    { text: "Přihlášení do systému", time: "před 2 hodinami", type: "success" },
   ];
 
   return (
@@ -168,33 +162,35 @@ export default function Home() {
               </CardContent>
             </Card>
 
-            {/* Recent Activity */}
-            <Card className="bg-card border-border">
-              <CardContent className="p-6">
-                <h2 className="text-xl font-semibold text-foreground mb-4 flex items-center">
-                  <History className="text-accent mr-3 h-5 w-5" />
-                  Nedávná aktivita
-                </h2>
-                <div className="space-y-3">
-                  {recentActivity.map((activity, index) => (
-                    <div key={index} className="flex items-center space-x-3 p-3 bg-muted/30 rounded-lg">
-                      <div className={`w-2 h-2 rounded-full ${
-                        activity.type === "success" ? "bg-green-500" : "bg-accent"
-                      }`}></div>
-                      <div className="flex-1">
-                        <p className="text-sm text-foreground">{activity.text}</p>
-                        <p className="text-xs text-muted-foreground">{activity.time}</p>
+            {/* Recent Activity - Only for admins */}
+            {user?.role === 'admin' && (
+              <Card className="bg-card border-border">
+                <CardContent className="p-6">
+                  <h2 className="text-xl font-semibold text-foreground mb-4 flex items-center">
+                    <History className="text-accent mr-3 h-5 w-5" />
+                    Nedávná aktivita
+                  </h2>
+                  <div className="space-y-3">
+                    {recentActivity.map((activity, index) => (
+                      <div key={index} className="flex items-center space-x-3 p-3 bg-muted/30 rounded-lg">
+                        <div className={`w-2 h-2 rounded-full ${
+                          activity.type === "success" ? "bg-green-500" : "bg-accent"
+                        }`}></div>
+                        <div className="flex-1">
+                          <p className="text-sm text-foreground">{activity.text}</p>
+                          <p className="text-xs text-muted-foreground">{activity.time}</p>
+                        </div>
                       </div>
+                    ))}
+                    <div className="text-center pt-2">
+                      <Button variant="link" className="text-accent hover:text-secondary text-sm">
+                        Zobrazit vše
+                      </Button>
                     </div>
-                  ))}
-                  <div className="text-center pt-2">
-                    <Button variant="link" className="text-accent hover:text-secondary text-sm">
-                      Zobrazit vše
-                    </Button>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            )}
           </div>
 
           {/* Sidebar */}
