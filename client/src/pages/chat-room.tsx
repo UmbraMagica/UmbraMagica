@@ -343,12 +343,26 @@ export default function ChatRoom() {
     );
   }
 
-  if (!user.characters || user.characters.length === 0) {
+  const currentCharacter = user?.characters?.[0];
+  
+  if (!user.characters || user.characters.length === 0 || !currentCharacter) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Card>
           <CardContent className="p-6">
             <p className="text-muted-foreground">Nemáte žádnou postavu. Vytvořte si postavu pro přístup k chatu.</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (!currentCharacter.firstName || !currentCharacter.lastName) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Card>
+          <CardContent className="p-6">
+            <p className="text-muted-foreground">Vaše postava není kompletně nastavena. Upravte její údaje.</p>
           </CardContent>
         </Card>
       </div>
