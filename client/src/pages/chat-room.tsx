@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
-import { MessageCircle, Send, Download, Archive, ArrowLeft, User, Dice1, Coins } from "lucide-react";
+import { MessageCircle, Send, Download, Archive, ArrowLeft, User, Dices, Coins } from "lucide-react";
 import { format } from "date-fns";
 
 interface ChatRoom {
@@ -509,7 +509,7 @@ export default function ChatRoom() {
                 className="h-[60px] px-3"
                 title="Hodit kostkou (1d10)"
               >
-                <Dice1 className="h-4 w-4" />
+                <Dices className="h-4 w-4" />
               </Button>
               <Button
                 onClick={() => coinFlipMutation.mutate()}
