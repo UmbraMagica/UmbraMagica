@@ -11,7 +11,7 @@ import Admin from "@/pages/admin";
 import Registration from "@/pages/registration";
 import ChatList from "@/pages/chat-list";
 import ChatCategories from "@/pages/chat-categories";
-import ChatRoom from "@/pages/chat-room-simple";
+import ChatRoom from "@/pages/chat-room-simple-new";
 import CharacterEdit from "@/pages/character-edit";
 import NotFound from "@/pages/not-found";
 import { useEffect } from "react";
