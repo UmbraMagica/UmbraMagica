@@ -10,6 +10,7 @@ import Home from "@/pages/home";
 import Admin from "@/pages/admin";
 import Registration from "@/pages/registration";
 import ChatList from "@/pages/chat-list";
+import ChatCategories from "@/pages/chat-categories";
 import ChatRoom from "@/pages/chat-room-simple";
 import CharacterEdit from "@/pages/character-edit";
 import NotFound from "@/pages/not-found";
@@ -55,7 +56,8 @@ function Router() {
           <Route path="/admin" component={Admin} />
           <Route path="/home" component={Home} />
           <Route path="/character/edit" component={CharacterEdit} />
-          <Route path="/chat" component={ChatList} />
+          <Route path="/chat" component={ChatCategories} />
+          <Route path="/chat/list" component={ChatList} />
           <Route path="/chat/:roomId" component={ChatRoom} />
         </>
       )}
