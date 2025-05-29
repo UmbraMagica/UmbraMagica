@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
+import { useLocation } from "wouter";
 import { 
   Crown, 
   Users, 
@@ -38,6 +39,7 @@ export default function Admin() {
   const { user, logout } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [, setLocation] = useLocation();
   const [newInviteCode, setNewInviteCode] = useState("");
 
   const { data: users = [] } = useQuery<AdminUser[]>({
@@ -154,7 +156,11 @@ export default function Admin() {
                   <UsersRound className="mr-2 h-4 w-4" />
                   Postavy
                 </Button>
-                <Button variant="ghost" className="text-foreground hover:text-accent">
+                <Button 
+                  variant="ghost" 
+                  className="text-foreground hover:text-accent"
+                  onClick={() => setLocation('/chat-categories')}
+                >
                   <MessageCircle className="mr-2 h-4 w-4" />
                   Chaty
                 </Button>
