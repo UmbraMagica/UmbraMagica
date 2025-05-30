@@ -19,7 +19,8 @@ import {
   Circle,
   DoorOpen,
   Settings,
-  RectangleEllipsis
+  RectangleEllipsis,
+  Wand2
 } from "lucide-react";
 import { GameDate } from "@/components/GameDate";
 import { calculateGameAge } from "@/lib/gameDate";
@@ -208,7 +209,7 @@ export default function Home() {
                   <Zap className="text-accent mr-3 h-5 w-5" />
                   Rychlé akce
                 </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   <Button 
                     variant="secondary" 
                     className="bg-muted hover:bg-primary text-foreground hover:text-primary-foreground p-4 h-auto rounded-lg transition-all duration-200 transform hover:scale-105 text-left justify-start"
@@ -243,6 +244,17 @@ export default function Home() {
                       <MessageCircle className="h-6 w-6 mb-2" />
                       <div className="font-medium">Vstoupit do chatu</div>
                       <div className="text-sm opacity-80">Pokračujte v příběhu</div>
+                    </div>
+                  </Button>
+                  <Button 
+                    variant="outline"
+                    className="border-amber-300 hover:bg-amber-50 dark:hover:bg-amber-950 text-amber-700 dark:text-amber-300 hover:text-amber-800 dark:hover:text-amber-200 p-4 h-auto rounded-lg transition-all duration-200 transform hover:scale-105 text-left justify-start"
+                    onClick={() => setLocation('/ollivanders')}
+                  >
+                    <div>
+                      <Wand2 className="h-6 w-6 mb-2" />
+                      <div className="font-medium">U Ollivandera</div>
+                      <div className="text-sm opacity-80">Získejte hůlku</div>
                     </div>
                   </Button>
                 </div>

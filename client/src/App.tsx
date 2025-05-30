@@ -78,6 +78,7 @@ function Router() {
           <Route path="/characters/:characterId/inventory" component={CharacterInventory} />
           <Route path="/characters/:characterId/journal" component={CharacterJournal} />
           <Route path="/cemetery" component={Cemetery} />
+          <Route path="/ollivanders" component={Ollivanders} />
         </>
       )}
       <Route component={NotFound} />

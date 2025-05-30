@@ -24,7 +24,7 @@ export default function Ollivanders() {
   });
 
   // Get character's current wand
-  const { data: characterWand, isLoading: wandLoading } = useQuery({
+  const { data: characterWand, isLoading: wandLoading } = useQuery<Wand | null>({
     queryKey: [`/api/characters/${mainCharacter?.id}/wand`],
     enabled: !!mainCharacter?.id
   });
