@@ -54,6 +54,8 @@ export default function Admin() {
   const [isCemeteryCollapsed, setIsCemeteryCollapsed] = useState(false);
   const [isLiveCharactersCollapsed, setIsLiveCharactersCollapsed] = useState(false);
   const [isAdminActivityCollapsed, setIsAdminActivityCollapsed] = useState(false);
+  const [isCharacterRequestsCollapsed, setIsCharacterRequestsCollapsed] = useState(false);
+  const [isUserManagementCollapsed, setIsUserManagementCollapsed] = useState(false);
   const [banUserData, setBanUserData] = useState<{ id: number; username: string } | null>(null);
   const [resetPasswordData, setResetPasswordData] = useState<{ id: number; username: string } | null>(null);
   const [showConfirmBan, setShowConfirmBan] = useState(false);
@@ -703,7 +705,8 @@ export default function Admin() {
           <Card className="bg-card border-border">
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-foreground flex items-center">
+                <h2 className="text-xl font-semibold text-foreground flex items-center cursor-pointer" 
+                    onClick={() => setIsCharacterRequestsCollapsed(!isCharacterRequestsCollapsed)}>
                   <UserPlus className="text-accent mr-3 h-5 w-5" />
                   Žádosti o nové postavy
                   {characterRequests.filter((req: any) => req.status === 'pending').length > 0 && (
@@ -711,9 +714,15 @@ export default function Admin() {
                       {characterRequests.filter((req: any) => req.status === 'pending').length} čeká
                     </Badge>
                   )}
+                  {isCharacterRequestsCollapsed ? (
+                    <ChevronDown className="ml-2 h-4 w-4" />
+                  ) : (
+                    <ChevronUp className="ml-2 h-4 w-4" />
+                  )}
                 </h2>
               </div>
 
+              {!isCharacterRequestsCollapsed && (
               <div className="space-y-4">
                 {characterRequests.length > 0 ? (
                   characterRequests.map((request: any) => (
@@ -786,6 +795,7 @@ export default function Admin() {
                   </div>
                 )}
               </div>
+              )}
             </CardContent>
           </Card>
 
@@ -945,7 +955,6 @@ export default function Admin() {
               </div>
 
               {!isAdminActivityCollapsed && (
-
               <div className="space-y-3">
                 {adminActivityLog.length > 0 ? (
                   adminActivityLog.slice(0, 10).map((activity: any) => (
@@ -972,6 +981,7 @@ export default function Admin() {
                   </div>
                 )}
               </div>
+              )}
             </CardContent>
           </Card>
         </div>
