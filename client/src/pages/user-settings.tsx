@@ -253,7 +253,7 @@ export default function UserSettings() {
                         >
                           Zobrazit profil
                         </Button>
-                        {userCharacters.length > 1 && mainCharacter?.id !== character.id && (
+                        {userCharacters.length > 1 && mainCharacter?.id !== (character as any)?.id && (
                           <Button
                             size="sm"
                             onClick={() => setMainCharacterMutation.mutate(character.id)}
