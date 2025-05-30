@@ -311,17 +311,22 @@ export default function ChatRoom() {
   const handleClearMessages = async () => {
     if (!currentRoomId || user?.role !== 'admin') return;
 
-    if (!confirm('Opravdu chcete vymazat všechny zprávy z tohoto chatu? Archivované zprávy zůstanou zachovány.')) {
+    if (!confirm('Opravdu chcete smazat všechny zprávy z tohoto chatu? Zprávy budou nejprve automaticky archivovány a poté smazány z aktivního chatu.')) {
       return;
     }
 
     try {
-      const response = await apiRequest("DELETE", `/api/admin/rooms/${currentRoomId}/clear`);
-      const data = await response.json();
+      // First archive messages
+      const archiveResponse = await apiRequest("POST", `/api/chat/rooms/${currentRoomId}/archive`);
+      const archiveData = await archiveResponse.json();
+      
+      // Then clear visible messages
+      const clearResponse = await apiRequest("DELETE", `/api/admin/rooms/${currentRoomId}/clear`);
+      const clearData = await clearResponse.json();
       
       toast({
         title: "Úspěch",
-        description: data.message,
+        description: `${archiveData.message} Zprávy byly poté smazány z aktivního chatu.`,
       });
       
       // Refresh messages
@@ -330,7 +335,7 @@ export default function ChatRoom() {
     } catch (error) {
       toast({
         title: "Chyba",
-        description: "Nepodařilo se vymazat zprávy.",
+        description: "Nepodařilo se archivovat nebo smazat zprávy.",
         variant: "destructive",
       });
     }
@@ -518,10 +523,10 @@ export default function ChatRoom() {
                   variant="outline"
                   size="sm"
                   className="flex items-center gap-2 text-destructive hover:bg-destructive hover:text-destructive-foreground"
-                  title="Vymazat zprávy z chatu (archiv zůstává)"
+                  title="Archivovat a smazat zprávy (automaticky archivuje před smazáním)"
                 >
                   <Trash2 className="h-4 w-4" />
-                  Vymazat
+                  Archivovat a smazat
                 </Button>
               </>
             )}
