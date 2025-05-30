@@ -67,26 +67,6 @@ export default function CharacterEditSimple() {
   const primaryCharacter = specificCharacter || mainCharacter;
   const isAdmin = user?.role === 'admin';
 
-  // Security check: ensure user can only edit their own characters
-  if (primaryCharacter && primaryCharacter.userId !== user?.id && !isAdmin) {
-    return (
-      <div className="container mx-auto p-6">
-        <div className="text-center">
-          <h3 className="text-lg font-medium mb-2">Přístup zamítnut</h3>
-          <p className="text-muted-foreground">
-            Nemáte oprávnění upravovat tuto postavu.
-          </p>
-          <Button 
-            className="mt-4" 
-            onClick={() => setLocation('/')}
-          >
-            Zpět na domovskou stránku
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
   // Form for regular users
   const userForm = useForm<UserEditForm>({
     resolver: zodResolver(userEditSchema),
@@ -108,6 +88,26 @@ export default function CharacterEditSimple() {
       description: "",
     },
   });
+
+  // Security check: ensure user can only edit their own characters
+  if (primaryCharacter && primaryCharacter.userId !== user?.id && !isAdmin) {
+    return (
+      <div className="container mx-auto p-6">
+        <div className="text-center">
+          <h3 className="text-lg font-medium mb-2">Přístup zamítnut</h3>
+          <p className="text-muted-foreground">
+            Nemáte oprávnění upravovat tuto postavu.
+          </p>
+          <Button 
+            className="mt-4" 
+            onClick={() => setLocation('/')}
+          >
+            Zpět na domovskou stránku
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   // Update form values when character data loads
   useEffect(() => {
