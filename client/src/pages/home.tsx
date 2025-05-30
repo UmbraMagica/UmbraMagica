@@ -271,6 +271,14 @@ export default function Home() {
             </Card>
           </div>
         </div>
+        
+        {/* Cemetery access at the bottom */}
+        <div className="mt-8 pt-4 border-t border-border text-center">
+          <Button variant="ghost" className="text-muted-foreground hover:text-foreground" onClick={() => setLocation('/cemetery')}>
+            <div className="text-lg mr-2">🪦</div>
+            <span className="text-sm">Hřbitov</span>
+          </Button>
+        </div>
       </div>
     </div>
   );
