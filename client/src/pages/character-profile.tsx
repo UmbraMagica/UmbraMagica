@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, Calendar, User, Mail, Clock, Edit3, GraduationCap, FileText } from "lucide-react";
+import { ArrowLeft, Calendar, User, Mail, Clock, Edit3, GraduationCap, FileText, Package, BookOpen } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { format } from "date-fns";
 import { cs } from "date-fns/locale";
@@ -235,6 +235,24 @@ export default function CharacterProfile() {
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full justify-start"
+                  onClick={() => setLocation(`/characters/${character.id}/inventory`)}
+                >
+                  <Package className="h-4 w-4 mr-2" />
+                  Inventář postavy
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full justify-start"
+                  onClick={() => setLocation(`/characters/${character.id}/journal`)}
+                >
+                  <BookOpen className="h-4 w-4 mr-2" />
+                  Deník postavy
+                </Button>
                 <Button
                   variant="outline"
                   size="sm"
