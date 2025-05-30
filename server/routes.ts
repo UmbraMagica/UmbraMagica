@@ -855,6 +855,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get user's main character (must be before :id route)
+  app.get("/api/characters/main", requireAuth, async (req, res) => {
+    try {
+      const mainCharacter = await storage.getMainCharacter(req.session.userId!);
+      res.json(mainCharacter || null);
+    } catch (error) {
+      console.error("Error fetching main character:", error);
+      res.status(500).json({ message: "Failed to fetch main character" });
+    }
+  });
+
   // Get specific character with user info
   app.get("/api/characters/:id", requireAuth, async (req, res) => {
     try {
@@ -1516,17 +1527,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error setting main character:", error);
       res.status(500).json({ message: "Failed to set main character" });
-    }
-  });
-
-  // Get user's main character
-  app.get("/api/characters/main", requireAuth, async (req, res) => {
-    try {
-      const mainCharacter = await storage.getMainCharacter(req.session.userId!);
-      res.json(mainCharacter || null);
-    } catch (error) {
-      console.error("Error fetching main character:", error);
-      res.status(500).json({ message: "Failed to fetch main character" });
     }
   });
 
