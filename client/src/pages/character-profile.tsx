@@ -33,7 +33,7 @@ export default function CharacterProfile() {
   const { user } = useAuth();
 
   const { data: character, isLoading, error } = useQuery<Character>({
-    queryKey: [`/api/characters/${id}`],
+    queryKey: ["/api/characters", id],
     enabled: !!id,
   });
 
