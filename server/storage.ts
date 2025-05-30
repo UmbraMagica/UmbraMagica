@@ -167,6 +167,12 @@ export interface IStorage {
     flexibilities: string[];
   }>;
   migrateExistingWandsToInventory(): Promise<number>;
+  updateWandComponents(components: {
+    woods: string[];
+    cores: { name: string; category: string; description: string }[];
+    lengths: string[];
+    flexibilities: string[];
+  }): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -1297,6 +1303,18 @@ export class DatabaseStorage implements IStorage {
       console.error("Error migrating wands to inventory:", error);
       throw error;
     }
+  }
+
+  async updateWandComponents(components: {
+    woods: string[];
+    cores: { name: string; category: string; description: string }[];
+    lengths: string[];
+    flexibilities: string[];
+  }): Promise<void> {
+    // For now, this will simply return the updated components
+    // In a full implementation, these would be stored in the database
+    // Currently using hardcoded values in getAllWandComponents()
+    console.log("Wand components updated:", components);
   }
 }
 

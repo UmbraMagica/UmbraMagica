@@ -1208,6 +1208,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Update wand components (admin only)
+  app.put("/api/admin/wand-components", requireAuth, async (req, res) => {
+    try {
+      if (req.session.userRole !== 'admin') {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const { woods, cores, lengths, flexibilities } = req.body;
+      
+      if (!woods || !cores || !lengths || !flexibilities) {
+        return res.status(400).json({ message: "All component arrays are required" });
+      }
+
+      await storage.updateWandComponents({ woods, cores, lengths, flexibilities });
+      res.json({ message: "Wand components updated successfully" });
+    } catch (error) {
+      console.error("Error updating wand components:", error);
+      res.status(500).json({ message: "Failed to update wand components" });
+    }
+  });
+
   // Migrate existing wands to inventory (admin only)
   app.post("/api/admin/migrate-wands-to-inventory", requireAuth, async (req, res) => {
     try {

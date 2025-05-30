@@ -10,6 +10,7 @@ import Home from "@/pages/home";
 import Admin from "@/pages/admin";
 import AdminArchive from "@/pages/admin-archive";
 import AdminSpells from "@/pages/admin-spells";
+import AdminWandComponents from "@/pages/admin-wand-components";
 import Registration from "@/pages/registration";
 import ChatList from "@/pages/chat-list";
 import ChatCategories from "@/pages/chat-categories";
@@ -67,6 +68,7 @@ function Router() {
           <Route path="/admin" component={Admin} />
           <Route path="/admin/archive" component={AdminArchive} />
           <Route path="/admin/spells" component={AdminSpells} />
+          <Route path="/admin/wand-components" component={AdminWandComponents} />
           <Route path="/home" component={Home} />
           <Route path="/character/edit" component={CharacterEdit} />
           <Route path="/settings" component={UserSettings} />
