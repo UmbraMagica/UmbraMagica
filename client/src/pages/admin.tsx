@@ -585,6 +585,13 @@ export default function Admin() {
                   >
                     Detailní správa kouzel
                   </Button>
+                  <Button
+                    onClick={() => setLocation('/admin/wand-components')}
+                    variant="default"
+                    size="sm"
+                  >
+                    Komponenty hůlek
+                  </Button>
                 </div>
               </div>
             </CardContent>
