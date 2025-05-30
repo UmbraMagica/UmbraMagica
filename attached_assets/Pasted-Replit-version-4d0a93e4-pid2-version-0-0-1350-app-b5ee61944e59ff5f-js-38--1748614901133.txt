@@ -1,0 +1,82 @@
+Replit version 4d0a93e4, pid2 version 0.0.1350
+_app-b5ee61944e59ff5f.js:38 
+      /////////////////////
+   ///////////////////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////        Curious and driven?
+  ///////////////@@@@@@@///////        Work with us!
+  ///////////////@@@@@@@///////
+  ///////////////@@@@@@@///////        https://join.replit.com/hack.with.us
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@#//////////////
+   ///////////////////////////
+      /////////////////////
+      
+_app-b5ee61944e59ff5f.js:38 [LaunchDarkly] LaunchDarkly client initialized
+23Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.Understand this error
+framework-9076dd0e43a56c45.js:1 Unrecognized feature: 'ambient-light-sensor'.
+_ @ framework-9076dd0e43a56c45.js:1Understand this warning
+framework-9076dd0e43a56c45.js:1 Unrecognized feature: 'battery'.
+_ @ framework-9076dd0e43a56c45.js:1Understand this warning
+framework-9076dd0e43a56c45.js:1 Unrecognized feature: 'execution-while-not-rendered'.
+_ @ framework-9076dd0e43a56c45.js:1Understand this warning
+framework-9076dd0e43a56c45.js:1 Unrecognized feature: 'execution-while-out-of-viewport'.
+_ @ framework-9076dd0e43a56c45.js:1Understand this warning
+framework-9076dd0e43a56c45.js:1 Unrecognized feature: 'layout-animations'.
+_ @ framework-9076dd0e43a56c45.js:1Understand this warning
+framework-9076dd0e43a56c45.js:1 Unrecognized feature: 'legacy-image-formats'.
+_ @ framework-9076dd0e43a56c45.js:1Understand this warning
+framework-9076dd0e43a56c45.js:1 Unrecognized feature: 'navigation-override'.
+_ @ framework-9076dd0e43a56c45.js:1Understand this warning
+framework-9076dd0e43a56c45.js:1 Unrecognized feature: 'oversized-images'.
+_ @ framework-9076dd0e43a56c45.js:1Understand this warning
+framework-9076dd0e43a56c45.js:1 Unrecognized feature: 'publickey-credentials'.
+_ @ framework-9076dd0e43a56c45.js:1Understand this warning
+framework-9076dd0e43a56c45.js:1 Unrecognized feature: 'speaker-selection'.
+_ @ framework-9076dd0e43a56c45.js:1Understand this warning
+framework-9076dd0e43a56c45.js:1 Unrecognized feature: 'unoptimized-images'.
+_ @ framework-9076dd0e43a56c45.js:1Understand this warning
+framework-9076dd0e43a56c45.js:1 Unrecognized feature: 'unsized-media'.
+_ @ framework-9076dd0e43a56c45.js:1Understand this warning
+framework-9076dd0e43a56c45.js:1 Unrecognized feature: 'pointer-lock'.
+_ @ framework-9076dd0e43a56c45.js:1Understand this warning
+framework-9076dd0e43a56c45.js:1 Allow attribute will take precedence over 'allowfullscreen'.
+_ @ framework-9076dd0e43a56c45.js:1Understand this warning
+framework-9076dd0e43a56c45.js:1 Allow attribute will take precedence over 'allowpaymentrequest'.
+_ @ framework-9076dd0e43a56c45.js:1Understand this warning
+TextRolePlay:1 Banner not shown: beforeinstallpromptevent.preventDefault() called. The page must call beforeinstallpromptevent.prompt() to show the banner.
+workspace_iframe.html:32 Unrecognized feature: 'ambient-light-sensor'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'battery'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-not-rendered'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-out-of-viewport'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'layout-animations'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'legacy-image-formats'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'navigation-override'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'oversized-images'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'publickey-credentials'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'speaker-selection'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'unoptimized-images'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'unsized-media'.Understand this warning
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowfullscreen'.Understand this warning
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowpaymentrequest'.Understand this warning
+Network.js:227 WebSocket connection to 'wss://a97dd40b-1cde-4de4-a47d-73d5912bd5d8-00-12mbkouhj5b1k.kirk.replit.dev/?token=M-aO5fktWf8f' failed: 
+t @ Network.js:227Understand this error
+Network.js:227 Uncaught (in promise) SyntaxError: Failed to construct 'WebSocket': The URL 'wss://localhost:undefined/?token=M-aO5fktWf8f' is invalid.
+    at new t (Network.js:227:18)
+    at setupWebSocket (client:536:19)
+    at fallback (client:509:16)
+    at WebSocket.<anonymous> (client:555:7)Understand this error
+Console.js:61 CHARACTER EDIT LOADED - URL characterId: 6 Full URL: https://a97dd40b-1cde-4de4-a47d-73d5912bd5d8-00-12mbkouhj5b1k.kirk.replit.dev/character/edit?characterId=6
+Console.js:61 Final primaryCharacter: undefined From URL ID: 6 specificCharacter: undefined mainCharacter: Object
+Console.js:61 CHARACTER EDIT LOADED - URL characterId: 6 Full URL: https://a97dd40b-1cde-4de4-a47d-73d5912bd5d8-00-12mbkouhj5b1k.kirk.replit.dev/character/edit?characterId=6
+Console.js:61 Final primaryCharacter: Object From URL ID: 6 specificCharacter: Array(2) mainCharacter: Object
+Console.js:61 CHARACTER EDIT LOADED - URL characterId: 6 Full URL: https://a97dd40b-1cde-4de4-a47d-73d5912bd5d8-00-12mbkouhj5b1k.kirk.replit.dev/character/edit?characterId=6
+Console.js:61 Final primaryCharacter: Object From URL ID: 6 specificCharacter: Array(2) mainCharacter: Object
+
+                
+          
+          
+          
+         Chrome is moving towards a new experience that allows users to choose to browse without third-party cookies.

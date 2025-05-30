@@ -63,7 +63,7 @@ export default function CharacterEditFixed() {
   });
 
   const { data: specificCharacter, isLoading: isLoadingSpecific } = useQuery<any>({
-    queryKey: ["/api/characters", characterIdFromUrl],
+    queryKey: [`/api/characters/${characterIdFromUrl}`],
     enabled: !!characterIdFromUrl && !!user,
   });
 
