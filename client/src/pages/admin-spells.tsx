@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Edit, Trash2, Wand2, ArrowLeft } from "lucide-react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Plus, Edit, Trash2, Wand2, ArrowLeft, Search, Filter } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { Spell } from "@shared/schema";
 import { useLocation } from "wouter";
@@ -22,6 +24,12 @@ export default function AdminSpells() {
     type: "",
     targetType: "self" as "self" | "other" | "object"
   });
+
+  // Filters and search
+  const [searchTerm, setSearchTerm] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState<string>("all");
+  const [typeFilter, setTypeFilter] = useState<string>("all");
+  const [targetFilter, setTargetFilter] = useState<string>("all");
 
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -46,6 +54,22 @@ export default function AdminSpells() {
   const { data: spells = [], isLoading } = useQuery<Spell[]>({
     queryKey: ['/api/admin/spells'],
   });
+
+  // Filtered spells based on search and filters
+  const filteredSpells = useMemo(() => {
+    return spells.filter(spell => {
+      const matchesSearch = searchTerm === "" || 
+        spell.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        spell.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        spell.effect.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      const matchesCategory = categoryFilter === "all" || spell.category === categoryFilter;
+      const matchesType = typeFilter === "all" || spell.type === typeFilter;
+      const matchesTarget = targetFilter === "all" || spell.targetType === targetFilter;
+
+      return matchesSearch && matchesCategory && matchesType && matchesTarget;
+    });
+  }, [spells, searchTerm, categoryFilter, typeFilter, targetFilter]);
 
   const initializeSpellsMutation = useMutation({
     mutationFn: async () => {
@@ -231,6 +255,83 @@ export default function AdminSpells() {
           </Button>
         </div>
       </div>
+
+      {/* Search and Filters */}
+      <Card className="mb-6">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Filter className="h-5 w-5" />
+            Filtrování a vyhledávání
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Vyhledat kouzla..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-9"
+              />
+            </div>
+            <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+              <SelectTrigger>
+                <SelectValue placeholder="Všechny kategorie" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Všechny kategorie</SelectItem>
+                {categories.map((category) => (
+                  <SelectItem key={category} value={category}>
+                    {category}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={typeFilter} onValueChange={setTypeFilter}>
+              <SelectTrigger>
+                <SelectValue placeholder="Všechny typy" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Všechny typy</SelectItem>
+                {types.map((type) => (
+                  <SelectItem key={type} value={type}>
+                    {type}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={targetFilter} onValueChange={setTargetFilter}>
+              <SelectTrigger>
+                <SelectValue placeholder="Všechny cíle" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Všechny cíle</SelectItem>
+                <SelectItem value="self">Sebe</SelectItem>
+                <SelectItem value="other">Jinou postavu</SelectItem>
+                <SelectItem value="object">Předmět</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="mt-4 flex items-center justify-between">
+            <p className="text-sm text-muted-foreground">
+              Zobrazeno {filteredSpells.length} z {spells.length} kouzel
+            </p>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setSearchTerm("");
+                setCategoryFilter("all");
+                setTypeFilter("all");
+                setTargetFilter("all");
+              }}
+            >
+              Vymazat filtry
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
 
       {isCreating && (
         <Card className="mb-6">
@@ -427,63 +528,100 @@ export default function AdminSpells() {
         </Card>
       )}
 
-      <div className="grid gap-4">
-        {spells.length === 0 ? (
-          <Card>
-            <CardContent className="text-center py-8">
+      {/* Spells Table */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Seznam kouzel</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {spells.length === 0 ? (
+            <div className="text-center py-8">
               <p className="text-muted-foreground">Žádná kouzla nebyla nalezena.</p>
               <p className="text-sm text-muted-foreground mt-2">
                 Klikněte na "Inicializovat základní kouzla" pro přidání tří základních kouzel.
               </p>
-            </CardContent>
-          </Card>
-        ) : (
-          spells.map((spell) => (
-            <Card key={spell.id}>
-              <CardContent className="pt-6">
-                <div className="flex justify-between items-start">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <h3 className="text-lg font-semibold">{spell.name}</h3>
-                      <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">
-                        {spell.category}
-                      </span>
-                      <span className="text-xs bg-secondary px-2 py-1 rounded">
-                        {spell.type}
-                      </span>
-                    </div>
-                    <p className="text-sm text-muted-foreground mb-2">{spell.description}</p>
-                    <p className="text-sm">{spell.effect}</p>
-                    <p className="text-xs text-muted-foreground mt-2">
-                      Cíl: {spell.targetType === "self" ? "Sebe" : spell.targetType === "other" ? "Jinou postavu" : "Předmět"}
-                    </p>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handleEdit(spell)}
-                    >
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="destructive"
-                      onClick={() => {
-                        if (confirm(`Opravdu chcete smazat kouzlo "${spell.name}"?`)) {
-                          deleteSpellMutation.mutate(spell.id);
-                        }
-                      }}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))
-        )}
-      </div>
+            </div>
+          ) : filteredSpells.length === 0 ? (
+            <div className="text-center py-8">
+              <p className="text-muted-foreground">Žádná kouzla nevyhovují zadaným filtrům.</p>
+              <p className="text-sm text-muted-foreground mt-2">
+                Zkuste upravit vyhledávací kritéria nebo vymazat filtry.
+              </p>
+            </div>
+          ) : (
+            <div className="rounded-md border">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[200px]">Název</TableHead>
+                    <TableHead className="w-[150px]">Kategorie</TableHead>
+                    <TableHead className="w-[120px]">Typ</TableHead>
+                    <TableHead className="w-[100px]">Cíl</TableHead>
+                    <TableHead>Popis</TableHead>
+                    <TableHead>Efekt</TableHead>
+                    <TableHead className="w-[120px]">Akce</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredSpells.map((spell) => (
+                    <TableRow key={spell.id}>
+                      <TableCell className="font-medium">{spell.name}</TableCell>
+                      <TableCell>
+                        <Badge variant="secondary" className="text-xs">
+                          {spell.category}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="outline" className="text-xs">
+                          {spell.type}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-sm">
+                        {spell.targetType === "self" ? "Sebe" : 
+                         spell.targetType === "other" ? "Jinou postavu" : "Předmět"}
+                      </TableCell>
+                      <TableCell className="max-w-[200px]">
+                        <div className="truncate text-sm text-muted-foreground" title={spell.description}>
+                          {spell.description}
+                        </div>
+                      </TableCell>
+                      <TableCell className="max-w-[200px]">
+                        <div className="truncate text-sm" title={spell.effect}>
+                          {spell.effect}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex gap-1">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleEdit(spell)}
+                            className="h-8 w-8 p-0"
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={() => {
+                              if (confirm(`Opravdu chcete smazat kouzlo "${spell.name}"?`)) {
+                                deleteSpellMutation.mutate(spell.id);
+                              }
+                            }}
+                            className="h-8 w-8 p-0"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }
