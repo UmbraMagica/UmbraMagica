@@ -128,7 +128,7 @@ export default function Home() {
                   <HomeIcon className="mr-2 h-4 w-4" />
                   Dashboard
                 </Button>
-                <Button variant="ghost" className="text-foreground hover:text-accent" onClick={() => window.location.href = '/chat'}>
+                <Button variant="ghost" className="text-foreground hover:text-accent" onClick={() => setLocation('/chat')}>
                   <MessageCircle className="mr-2 h-4 w-4" />
                   Herní chaty
                 </Button>
@@ -304,28 +304,23 @@ export default function Home() {
               </CardContent>
             </Card>
 
-            {/* Character Switcher */}
+            {/* Character Overview */}
             {userCharacters.length > 1 && (
               <Card className="bg-card border-border">
                 <CardContent className="p-6">
                   <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center">
                     <Users className="text-accent mr-3 h-5 w-5" />
-                    Přepnout postavu
+                    Moje postavy
                   </h3>
                   <div className="space-y-2">
                     {userCharacters.map((character: any) => (
                       <div 
                         key={character.id} 
-                        className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-colors ${
+                        className={`flex items-center justify-between p-3 rounded-lg ${
                           mainCharacter?.id === character.id 
                             ? 'bg-accent/20 border border-accent/30' 
-                            : 'bg-muted/30 hover:bg-muted/50'
+                            : 'bg-muted/30'
                         }`}
-                        onClick={() => {
-                          if (mainCharacter?.id !== character.id) {
-                            setMainCharacterMutation.mutate(character.id);
-                          }
-                        }}
                       >
                         <div className="flex items-center space-x-3">
                           <div className="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center">
@@ -346,7 +341,7 @@ export default function Home() {
                           <div className="flex items-center space-x-1">
                             <span className="text-yellow-500">👑</span>
                             <Badge className="bg-accent/20 text-accent text-xs">
-                              Aktivní
+                              Primární
                             </Badge>
                           </div>
                         )}

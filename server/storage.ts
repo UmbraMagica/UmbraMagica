@@ -549,11 +549,13 @@ export class DatabaseStorage implements IStorage {
       throw new Error("Character request not found");
     }
 
-    // Check if user has any existing characters
+    // Check if user has any existing characters and if they have a main character
     const existingCharacters = await db
       .select()
       .from(characters)
       .where(and(eq(characters.userId, request.userId), eq(characters.isActive, true)));
+
+    const hasMainCharacter = existingCharacters.some(char => char.isMainCharacter);
 
     // Update request status
     await db
@@ -566,7 +568,7 @@ export class DatabaseStorage implements IStorage {
       })
       .where(eq(characterRequests.id, requestId));
 
-    // Create the character - only set as main if it's the user's first character
+    // Create the character - only set as main if it's the user's first character OR if they don't have a main character yet
     const [character] = await db
       .insert(characters)
       .values({
@@ -578,7 +580,7 @@ export class DatabaseStorage implements IStorage {
         school: request.school,
         description: request.description,
         isActive: true,
-        isMainCharacter: existingCharacters.length === 0, // Only first character becomes main
+        isMainCharacter: existingCharacters.length === 0 || !hasMainCharacter, // Only if first character OR no main character exists
       })
       .returning();
 
