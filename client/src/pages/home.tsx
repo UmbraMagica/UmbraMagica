@@ -322,7 +322,7 @@ export default function Home() {
                       <div 
                         key={character.id} 
                         className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-colors hover:bg-muted/50 ${
-                          mainCharacter?.id === character.id 
+                          (displayedCharacter?.id === character.id || (!displayedCharacter && mainCharacter?.id === character.id))
                             ? 'bg-accent/20 border border-accent/30' 
                             : 'bg-muted/30'
                         }`}
