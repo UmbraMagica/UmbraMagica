@@ -121,39 +121,205 @@ export default function Home() {
           <p className="text-lg text-muted-foreground">Připravte se na další dobrodružství ve světě RPG Realm</p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 space-y-8">
-            <GameDate />
-            
-            <Card className="bg-card border-border">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          {/* Left Column - Navigation & Quick Actions */}
+          <div className="lg:col-span-1 space-y-6">
+            <Card className="bg-gradient-to-br from-purple-500/10 to-blue-500/10 border-purple-300/30">
               <CardContent className="p-6">
-                <h2 className="text-xl font-semibold text-foreground mb-4 flex items-center">
-                  <Zap className="text-accent mr-3 h-5 w-5" />
+                <h3 className="text-xl font-bold text-purple-300 mb-4 flex items-center">
+                  <Zap className="mr-3 h-6 w-6" />
                   Rychlé akce
-                </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                </h3>
+                <div className="space-y-3">
                   <Button 
-                    variant="default"
-                    className="bg-gradient-to-r from-primary to-secondary hover:from-secondary hover:to-primary text-primary-foreground p-4 h-auto rounded-lg transition-all duration-200 transform hover:scale-105 text-left justify-start"
+                    variant="ghost"
+                    className="w-full justify-start text-left h-auto p-3 hover:bg-purple-500/20"
                     onClick={() => setLocation('/chat')}
                   >
-                    <div>
-                      <MessageCircle className="h-6 w-6 mb-2" />
-                      <div className="font-medium">Vstoupit do chatu</div>
-                      <div className="text-sm opacity-80">Pokračujte v příběhu</div>
+                    <div className="flex items-center space-x-3">
+                      <MessageCircle className="h-5 w-5 text-purple-400" />
+                      <div>
+                        <div className="font-medium">Chat</div>
+                        <div className="text-xs text-muted-foreground">Vstoupit do hry</div>
+                      </div>
                     </div>
                   </Button>
+                  
                   <Button 
-                    variant="outline"
-                    className="border-amber-300 hover:bg-amber-50 dark:hover:bg-amber-950 text-amber-700 dark:text-amber-300 hover:text-amber-800 dark:hover:text-amber-200 p-4 h-auto rounded-lg transition-all duration-200 transform hover:scale-105 text-left justify-start"
+                    variant="ghost"
+                    className="w-full justify-start text-left h-auto p-3 hover:bg-purple-500/20"
                     onClick={() => setLocation('/ollivanders')}
                   >
-                    <div>
-                      <Wand2 className="h-6 w-6 mb-2" />
-                      <div className="font-medium">U Ollivandera</div>
-                      <div className="text-sm opacity-80">Získejte hůlku</div>
+                    <div className="flex items-center space-x-3">
+                      <Wand2 className="h-5 w-5 text-amber-400" />
+                      <div>
+                        <div className="font-medium">U Ollivandera</div>
+                        <div className="text-xs text-muted-foreground">Získat hůlku</div>
+                      </div>
                     </div>
                   </Button>
+
+                  <Button 
+                    variant="ghost"
+                    className="w-full justify-start text-left h-auto p-3 hover:bg-purple-500/20"
+                    onClick={() => setLocation('/characters')}
+                  >
+                    <div className="flex items-center space-x-3">
+                      <Users className="h-5 w-5 text-blue-400" />
+                      <div>
+                        <div className="font-medium">Postavy</div>
+                        <div className="text-xs text-muted-foreground">Seznam postav</div>
+                      </div>
+                    </div>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Pravidla a Wiki */}
+            <Card className="bg-gradient-to-br from-green-500/10 to-teal-500/10 border-green-300/30">
+              <CardContent className="p-6">
+                <h3 className="text-xl font-bold text-green-300 mb-4 flex items-center">
+                  <BookOpen className="mr-3 h-6 w-6" />
+                  Pravidla a průvodci
+                </h3>
+                <div className="space-y-3">
+                  <Button 
+                    variant="ghost"
+                    className="w-full justify-start text-left h-auto p-3 hover:bg-green-500/20"
+                    onClick={() => window.open('/pravidla', '_blank')}
+                  >
+                    <div className="flex items-center space-x-3">
+                      <ScrollText className="h-5 w-5 text-green-400" />
+                      <div>
+                        <div className="font-medium">Herní pravidla</div>
+                        <div className="text-xs text-muted-foreground">Základní pravidla hry</div>
+                      </div>
+                    </div>
+                  </Button>
+                  
+                  <Button 
+                    variant="ghost"
+                    className="w-full justify-start text-left h-auto p-3 hover:bg-green-500/20"
+                    onClick={() => window.open('/wiki', '_blank')}
+                  >
+                    <div className="flex items-center space-x-3">
+                      <Globe className="h-5 w-5 text-blue-400" />
+                      <div>
+                        <div className="font-medium">Wikipedie</div>
+                        <div className="text-xs text-muted-foreground">Encyklopedie světa</div>
+                      </div>
+                    </div>
+                  </Button>
+
+                  <Button 
+                    variant="ghost"
+                    className="w-full justify-start text-left h-auto p-3 hover:bg-green-500/20"
+                    onClick={() => window.open('/priprava', '_blank')}
+                  >
+                    <div className="flex items-center space-x-3">
+                      <User className="h-5 w-5 text-orange-400" />
+                      <div>
+                        <div className="font-medium">Příprava postavy</div>
+                        <div className="text-xs text-muted-foreground">Návod pro nové hráče</div>
+                      </div>
+                    </div>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Center Column - Main Content */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Game Date */}
+            <GameDate />
+
+            {/* Denní věštec */}
+            <Card className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border-amber-300/30">
+              <CardContent className="p-6">
+                <h3 className="text-xl font-semibold text-foreground mb-4 flex items-center">
+                  <div className="text-2xl mr-3">🔮</div>
+                  Denní věštec
+                </h3>
+                <div className="bg-amber-50/50 dark:bg-amber-950/30 p-4 rounded-lg border-l-4 border-amber-400">
+                  <h4 className="font-medium text-amber-800 dark:text-amber-200 mb-2">
+                    Věštba na dnešní den
+                  </h4>
+                  <p className="text-sm text-amber-700 dark:text-amber-300 italic">
+                    "Hvězdy šeptají o nadcházejících změnách. Dnes je příznivý den pro nová přátelství 
+                    a objevování skrytých kouzel. Pozor na stíny v odpoledních hodinách - mohou skrývat 
+                    nečekané příležitosti."
+                  </p>
+                  <p className="text-xs text-amber-600 dark:text-amber-400 mt-2">
+                    - Profesorka Trelawneyová
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Novinky */}
+            <Card className="bg-card border-border">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-xl font-semibold text-foreground flex items-center">
+                    <Newspaper className="text-accent mr-3 h-6 w-6" />
+                    Novinky a oznámení
+                  </h3>
+                  {user?.role === 'admin' && (
+                    <Button variant="outline" size="sm">
+                      <div className="text-xs">+ Přidat novinku</div>
+                    </Button>
+                  )}
+                </div>
+                <div className="space-y-4">
+                  <div className="border-l-4 border-accent pl-4">
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-medium text-foreground">Nový systém sesílání kouzel</h4>
+                      {user?.role === 'admin' && (
+                        <Button variant="ghost" size="sm" className="text-xs opacity-60 hover:opacity-100">
+                          Upravit
+                        </Button>
+                      )}
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      Byl přidán pokročilý systém sesílání kouzel s realistickými efekty úspěchu a neúspěchu. 
+                      Každé kouzlo má nyní svou vlastní obtížnost a požadavky na magickou energii.
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">31. prosince 1926 • Admin</p>
+                  </div>
+                  
+                  <div className="border-l-4 border-blue-500 pl-4">
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-medium text-foreground">Vánoční události</h4>
+                      {user?.role === 'admin' && (
+                        <Button variant="ghost" size="sm" className="text-xs opacity-60 hover:opacity-100">
+                          Upravit
+                        </Button>
+                      )}
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      Během vánočních svátků budou po celém Kouzelnickém Londýně probíhat speciální události. 
+                      Sledujte oznámení a připojte se k oslavám!
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">20. prosince 1926 • Professor McGonagall</p>
+                  </div>
+                  
+                  <div className="border-l-4 border-green-500 pl-4">
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-medium text-foreground">Nové lokace k průzkumu</h4>
+                      {user?.role === 'admin' && (
+                        <Button variant="ghost" size="sm" className="text-xs opacity-60 hover:opacity-100">
+                          Upravit
+                        </Button>
+                      )}
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      Otevřely se nové chatovací místnosti včetně Ministerstva kouzel a Zásypu. 
+                      Prozkoumejte tyto tajemné lokace a objevte jejich skrytá tajemství.
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">15. prosince 1926 • Admin</p>
+                  </div>
                 </div>
               </CardContent>
             </Card>
