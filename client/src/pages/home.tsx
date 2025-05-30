@@ -151,9 +151,7 @@ export default function Home() {
                   <Settings className="mr-2 h-4 w-4" />
                   Nastavení
                 </Button>
-                <Button variant="ghost" className="text-muted-foreground hover:text-foreground" onClick={() => setLocation('/cemetery')} title="Hřbitov">
-                  <RectangleEllipsis className="h-4 w-4" />
-                </Button>
+
                 {user?.role === 'admin' && (
                   <Button variant="ghost" className="text-amber-400 hover:text-amber-300" onClick={() => window.location.href = '/admin'}>
                     <Crown className="mr-2 h-4 w-4" />
@@ -396,6 +394,14 @@ export default function Home() {
 
 
           </div>
+        </div>
+        
+        {/* Cemetery access at the bottom */}
+        <div className="mt-8 pt-4 border-t border-border text-center">
+          <Button variant="ghost" className="text-muted-foreground hover:text-foreground" onClick={() => setLocation('/cemetery')}>
+            <div className="text-lg mr-2">🪦</div>
+            <span className="text-sm">Hřbitov</span>
+          </Button>
         </div>
       </div>
     </div>

@@ -75,11 +75,14 @@ export default function ChatRoom() {
     );
   }
 
-  // Fetch user's characters for switching
-  const { data: userCharacters = [] } = useQuery<any[]>({
+  // Fetch user's characters for switching (only alive characters)
+  const { data: allUserCharacters = [] } = useQuery<any[]>({
     queryKey: ["/api/characters"],
     enabled: !!user,
   });
+
+  // Filter only alive characters (not in cemetery)
+  const userCharacters = allUserCharacters.filter((char: any) => char.isActive);
 
   // Fetch main character
   const { data: mainCharacter } = useQuery<any>({
@@ -87,8 +90,8 @@ export default function ChatRoom() {
     enabled: !!user,
   });
 
-  // Current character for chat (use main character or first available)
-  const currentCharacter = mainCharacter || userCharacters[0];
+  // Current character for chat (use main character or first available alive character)
+  const currentCharacter = (mainCharacter && mainCharacter.isActive) ? mainCharacter : userCharacters[0];
   
   // Check if user needs a character (non-admin users need a character)
   const needsCharacter = user?.role !== 'admin';

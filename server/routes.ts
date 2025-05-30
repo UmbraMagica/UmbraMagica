@@ -1631,6 +1631,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!killedCharacter) {
         return res.status(404).json({ message: "Character not found" });
       }
+
+      // Log admin activity
+      await storage.logAdminActivity({
+        adminId,
+        action: 'character_death',
+        targetUserId: killedCharacter.userId,
+        details: `Postava ${killedCharacter.firstName} ${killedCharacter.lastName} byla označena jako mrtvá. Důvod: ${deathReason.trim()}`,
+        metadata: JSON.stringify({ 
+          characterId: killedCharacter.id, 
+          deathReason: deathReason.trim() 
+        })
+      });
       
       res.json({ message: "Character killed successfully", character: killedCharacter });
     } catch (error) {

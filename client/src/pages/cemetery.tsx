@@ -87,7 +87,7 @@ export default function Cemetery() {
 
         {deadCharacters.length === 0 ? (
           <div className="text-center py-12">
-            <div className="text-xl text-purple-300 mb-4">Zatím zde nikdo nespoč��vá.</div>
+            <div className="text-xl text-purple-300 mb-4">Zatím zde nikdo nespočívá.</div>
             <div className="text-purple-400">Všechny postavy jsou stále naživu.</div>
           </div>
         ) : (
