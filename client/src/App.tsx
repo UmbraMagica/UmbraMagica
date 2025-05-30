@@ -19,6 +19,7 @@ import CharactersList from "@/pages/characters-list";
 import CharacterProfile from "@/pages/character-profile";
 import CharacterInventory from "@/pages/character-inventory";
 import CharacterJournal from "@/pages/character-journal";
+import CharacterSpells from "@/pages/character-spells";
 import UserSettings from "@/pages/user-settings";
 import Cemetery from "@/pages/cemetery";
 import Ollivanders from "@/pages/ollivanders";
@@ -77,6 +78,7 @@ function Router() {
           <Route path="/character/:id" component={CharacterProfile} />
           <Route path="/characters/:characterId/inventory" component={CharacterInventory} />
           <Route path="/characters/:characterId/journal" component={CharacterJournal} />
+          <Route path="/characters/:id/spells" component={CharacterSpells} />
           <Route path="/cemetery" component={Cemetery} />
           <Route path="/ollivanders" component={Ollivanders} />
         </>
