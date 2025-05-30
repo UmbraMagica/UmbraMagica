@@ -277,14 +277,21 @@ export default function Registration() {
                 </div>
                 
                 <div>
-                  <Label className="block text-sm font-medium text-foreground mb-2">Datum narození</Label>
+                  <Label className="block text-sm font-medium text-foreground mb-2">
+                    Datum narození <span className="text-destructive">*</span>
+                  </Label>
                   <Input
                     type="date"
                     value={formData.birthDate}
                     onChange={(e) => handleInputChange('birthDate', e.target.value)}
                     className="rpg-input"
+                    min="1860-01-01"
+                    max="1910-12-31"
                     required
                   />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Rok 1926, vhodný věk pro novou postavu je 16-66 let (narození 1860-1910)
+                  </p>
                 </div>
 
                 <div className="bg-muted/20 rounded-lg p-4 border border-border/50">

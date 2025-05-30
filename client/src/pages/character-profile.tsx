@@ -82,6 +82,7 @@ export default function CharacterProfile() {
   };
 
   const getFullName = (character: Character) => {
+    if (!character.firstName || !character.lastName) return "Neznámá postava";
     return `${character.firstName}${character.middleName ? ` ${character.middleName}` : ''} ${character.lastName}`;
   };
 
