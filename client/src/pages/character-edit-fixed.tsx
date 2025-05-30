@@ -87,48 +87,6 @@ export default function CharacterEditFixed() {
   // Determine which character to use
   const primaryCharacter = characterIdFromUrl ? specificCharacter : mainCharacter;
 
-  // Security check after all hooks are defined
-  if (primaryCharacter && primaryCharacter.userId !== user?.id && !isAdmin) {
-    return (
-      <div className="container mx-auto p-6">
-        <div className="text-center">
-          <h3 className="text-lg font-medium mb-2">Přístup zamítnut</h3>
-          <p className="text-muted-foreground">
-            Nemáte oprávnění upravovat tuto postavu.
-          </p>
-          <Button 
-            className="mt-4" 
-            onClick={() => setLocation('/')}
-          >
-            Zpět na domovskou stránku
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
-  // Update form values when character data loads
-  useEffect(() => {
-    if (primaryCharacter) {
-      userForm.reset({
-        school: primaryCharacter.school || "",
-        description: primaryCharacter.description || "",
-      });
-      
-      adminForm.reset({
-        firstName: primaryCharacter.firstName || "",
-        middleName: primaryCharacter.middleName || "",
-        lastName: primaryCharacter.lastName || "",
-        birthDate: primaryCharacter.birthDate || "",
-        school: primaryCharacter.school || "",
-        description: primaryCharacter.description || "",
-      });
-    }
-  }, [primaryCharacter, userForm, adminForm]);
-
-  const currentForm = isAdmin ? adminForm : userForm;
-  const currentAge = primaryCharacter ? calculateGameAge(primaryCharacter.birthDate) : 0;
-
   const updateCharacterMutation = useMutation({
     mutationFn: async (data: UserEditForm | AdminEditForm) => {
       if (!primaryCharacter?.id) {
@@ -154,10 +112,33 @@ export default function CharacterEditFixed() {
     },
   });
 
+  // Update form values when character data loads
+  useEffect(() => {
+    if (primaryCharacter) {
+      userForm.reset({
+        school: primaryCharacter.school || "",
+        description: primaryCharacter.description || "",
+      });
+      
+      adminForm.reset({
+        firstName: primaryCharacter.firstName || "",
+        middleName: primaryCharacter.middleName || "",
+        lastName: primaryCharacter.lastName || "",
+        birthDate: primaryCharacter.birthDate || "",
+        school: primaryCharacter.school || "",
+        description: primaryCharacter.description || "",
+      });
+    }
+  }, [primaryCharacter, userForm, adminForm]);
+
+  const currentForm = isAdmin ? adminForm : userForm;
+  const currentAge = primaryCharacter ? calculateGameAge(primaryCharacter.birthDate) : 0;
+
   const onSubmit = (data: UserEditForm | AdminEditForm) => {
     updateCharacterMutation.mutate(data);
   };
 
+  // Security and loading checks after all hooks
   if (!user) {
     return (
       <div className="container mx-auto p-6">
@@ -173,6 +154,25 @@ export default function CharacterEditFixed() {
       <div className="container mx-auto p-6">
         <div className="text-center">
           <p>Načítám data postavy...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (primaryCharacter && primaryCharacter.userId !== user?.id && !isAdmin) {
+    return (
+      <div className="container mx-auto p-6">
+        <div className="text-center">
+          <h3 className="text-lg font-medium mb-2">Přístup zamítnut</h3>
+          <p className="text-muted-foreground">
+            Nemáte oprávnění upravovat tuto postavu.
+          </p>
+          <Button 
+            className="mt-4" 
+            onClick={() => setLocation('/')}
+          >
+            Zpět na domovskou stránku
+          </Button>
         </div>
       </div>
     );
