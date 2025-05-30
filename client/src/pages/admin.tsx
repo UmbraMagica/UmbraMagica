@@ -28,7 +28,9 @@ import {
   Home,
   Skull,
   AlertTriangle,
-  Heart
+  Heart,
+  ChevronDown,
+  ChevronUp
 } from "lucide-react";
 
 interface AdminUser {
@@ -49,6 +51,7 @@ export default function Admin() {
   const [killCharacterData, setKillCharacterData] = useState<{ id: number; name: string } | null>(null);
   const [deathReason, setDeathReason] = useState("");
   const [showConfirmKill, setShowConfirmKill] = useState(false);
+  const [isCemeteryCollapsed, setIsCemeteryCollapsed] = useState(false);
 
   const { data: users = [] } = useQuery<AdminUser[]>({
     queryKey: ["/api/users"],
@@ -185,7 +188,7 @@ export default function Admin() {
 
   const resurrectCharacterMutation = useMutation({
     mutationFn: async (characterId: number) => {
-      const response = await apiRequest("POST", `/api/admin/characters/${characterId}/resurrect`);
+      const response = await apiRequest("POST", `/api/characters/${characterId}/revive`);
       return response.json();
     },
     onSuccess: () => {
@@ -722,13 +725,25 @@ export default function Admin() {
           <Card className="bg-card border-border">
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-foreground flex items-center">
-                  <Skull className="text-red-400 mr-3 h-5 w-5" />
-                  Správa postav - Hřbitov
-                </h2>
+                <Button
+                  variant="ghost"
+                  onClick={() => setIsCemeteryCollapsed(!isCemeteryCollapsed)}
+                  className="flex items-center p-0 h-auto hover:bg-transparent"
+                >
+                  <h2 className="text-xl font-semibold text-foreground flex items-center">
+                    <Skull className="text-red-400 mr-3 h-5 w-5" />
+                    Správa postav - Hřbitov
+                    {isCemeteryCollapsed ? (
+                      <ChevronDown className="ml-2 h-4 w-4" />
+                    ) : (
+                      <ChevronUp className="ml-2 h-4 w-4" />
+                    )}
+                  </h2>
+                </Button>
               </div>
 
-              <div className="space-y-4 max-h-96 overflow-y-auto">
+              {!isCemeteryCollapsed && (
+                <div className="space-y-4 max-h-96 overflow-y-auto">
                 {allCharacters.filter((char: any) => char.deathDate).length > 0 ? (
                   allCharacters.filter((char: any) => char.deathDate).map((character: any) => (
                     <div key={character.id} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
@@ -766,8 +781,10 @@ export default function Admin() {
                     <p className="text-muted-foreground">Hřbitov je prázdný - všechny postavy jsou naživu</p>
                   </div>
                 )}
+                </div>
+              )}
 
-                {/* Kill Character Dialog */}
+              {/* Kill Character Dialog */}
                 {killCharacterData && (
                   <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
                     <div className="bg-card border border-border rounded-lg p-6 w-full max-w-md mx-4">
