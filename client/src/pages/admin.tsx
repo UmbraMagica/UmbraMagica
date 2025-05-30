@@ -520,6 +520,75 @@ export default function Admin() {
               </div>
             </CardContent>
           </Card>
+
+          <Card className="bg-card border-border hover:border-accent/50 transition-colors cursor-pointer"
+                onClick={() => setLocation('/admin/spells')}>
+            <CardContent className="p-6">
+              <div className="flex items-center">
+                <div className="p-3 rounded-full bg-purple-500/20 text-purple-400">
+                  <Book className="h-6 w-6" />
+                </div>
+                <div className="ml-4">
+                  <p className="text-lg font-semibold text-foreground">Správa kouzel</p>
+                  <p className="text-sm text-muted-foreground">Spravovat databázi kouzel</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Quick Spell Actions */}
+        <div className="mb-8">
+          <Card className="bg-card border-border">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-full bg-purple-500/20 text-purple-400">
+                    <Book className="h-4 w-4" />
+                  </div>
+                  <div>
+                    <h3 className="font-medium text-foreground">Rychlé akce s kouzly</h3>
+                    <p className="text-sm text-muted-foreground">Inicializujte základní kouzla nebo přejděte do detailní správy</p>
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    onClick={() => {
+                      fetch('/api/admin/spells/initialize', { 
+                        method: 'POST',
+                        credentials: 'include'
+                      })
+                      .then(res => res.json())
+                      .then(() => {
+                        toast({
+                          title: "Úspěch",
+                          description: "Základní kouzla byla inicializována a přidána ke všem postavám",
+                        });
+                      })
+                      .catch(() => {
+                        toast({
+                          title: "Chyba", 
+                          description: "Nepodařilo se inicializovat kouzla",
+                          variant: "destructive",
+                        });
+                      });
+                    }}
+                    variant="outline"
+                    size="sm"
+                  >
+                    Inicializovat základní kouzla
+                  </Button>
+                  <Button
+                    onClick={() => setLocation('/admin/spells')}
+                    variant="default"
+                    size="sm"
+                  >
+                    Detailní správa kouzel
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -947,66 +1016,6 @@ export default function Admin() {
             </CardContent>
           </Card>
 
-          {/* Spell Management */}
-          <Card className="bg-card border-border">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-foreground flex items-center">
-                  <Book className="text-accent mr-3 h-5 w-5" />
-                  Správa kouzel
-                </h2>
-                <Button
-                  onClick={() => setLocation('/admin/spells')}
-                  variant="outline"
-                  size="sm"
-                  className="flex items-center gap-2"
-                >
-                  <Book className="h-4 w-4" />
-                  Otevřít správu kouzel
-                </Button>
-              </div>
-              <div className="bg-muted/30 rounded-lg p-4">
-                <p className="text-sm text-muted-foreground mb-3">
-                  Zde můžete spravovat databázi kouzel, přidávat nová kouzla a přiřazovat je postavám.
-                </p>
-                <div className="flex gap-2">
-                  <Button
-                    onClick={() => setLocation('/admin/spells')}
-                    variant="default"
-                    size="sm"
-                  >
-                    Správa kouzel
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      fetch('/api/admin/spells/initialize', { 
-                        method: 'POST',
-                        credentials: 'include'
-                      })
-                      .then(res => res.json())
-                      .then(() => {
-                        toast({
-                          title: "Úspěch",
-                          description: "Základní kouzla byla inicializována",
-                        });
-                      })
-                      .catch(() => {
-                        toast({
-                          title: "Chyba", 
-                          description: "Nepodařilo se inicializovat kouzla",
-                          variant: "destructive",
-                        });
-                      });
-                    }}
-                    variant="outline"
-                    size="sm"
-                  >
-                    Inicializovat základní kouzla
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
 
           {/* Admin Activity Log */}
           <Card className="bg-card border-border">
