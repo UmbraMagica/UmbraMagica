@@ -444,6 +444,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               firstName: character.firstName,
               lastName: character.lastName,
               location: location,
+              avatar: character.avatar,
             };
           }
         }

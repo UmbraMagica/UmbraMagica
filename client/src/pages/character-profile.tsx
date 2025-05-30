@@ -10,6 +10,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { format } from "date-fns";
 import { cs } from "date-fns/locale";
 import { calculateGameAge } from "@/lib/gameDate";
+import { CharacterAvatar } from "@/components/CharacterAvatar";
 
 interface Character {
   id: number;
@@ -21,6 +22,7 @@ interface Character {
   isActive: boolean;
   school?: string;
   description?: string;
+  avatar?: string | null;
   user: {
     username: string;
     email: string;
@@ -117,11 +119,7 @@ export default function CharacterProfile() {
           <Card>
             <CardHeader>
               <div className="flex items-center gap-4">
-                <Avatar className="h-20 w-20">
-                  <AvatarFallback className="bg-primary/10 text-primary text-2xl font-medium">
-                    {getCharacterInitials(character)}
-                  </AvatarFallback>
-                </Avatar>
+                <CharacterAvatar character={character} size="lg" className="h-20 w-20" />
                 <div className="flex-1">
                   <div className="flex items-start justify-between">
                     <div>

@@ -58,11 +58,7 @@ export function RoomPresence({ roomId, onlineCharacters }: RoomPresenceProps) {
         <div className="space-y-2">
           {onlineCharacters.map((character) => (
             <div key={character.id} className="flex items-center gap-2">
-              <Avatar className="h-6 w-6">
-                <AvatarFallback className="text-xs bg-primary/10 text-primary">
-                  {getCharacterInitials(character)}
-                </AvatarFallback>
-              </Avatar>
+              <CharacterAvatar character={character} size="xs" />
               <div className="flex items-center gap-2 flex-1 min-w-0">
                 <Link 
                   href={`/characters/${character.id}`}

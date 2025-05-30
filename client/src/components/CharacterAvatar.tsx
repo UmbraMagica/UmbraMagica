@@ -4,12 +4,13 @@ interface CharacterAvatarProps {
     lastName: string;
     avatar?: string | null;
   };
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'xs' | 'sm' | 'md' | 'lg';
   className?: string;
 }
 
 export function CharacterAvatar({ character, size = 'md', className = '' }: CharacterAvatarProps) {
   const sizeClasses = {
+    xs: 'w-6 h-6 text-xs',
     sm: 'w-8 h-8 text-xs',
     md: 'w-12 h-12 text-sm',
     lg: 'w-16 h-16 text-base'
