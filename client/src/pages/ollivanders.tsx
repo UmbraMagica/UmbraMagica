@@ -357,8 +357,15 @@ export default function Ollivanders() {
                             <SelectValue placeholder="Vyberte délku..." />
                           </SelectTrigger>
                           <SelectContent>
-                            {wandComponents.lengths?.map((length: string) => (
-                              <SelectItem key={length} value={length}>{length}</SelectItem>
+                            {wandComponents.lengths?.map((length: any) => (
+                              <SelectItem key={typeof length === 'string' ? length : length.name} value={typeof length === 'string' ? length : length.name}>
+                                <div className="flex flex-col">
+                                  <span>{typeof length === 'string' ? length : length.name}</span>
+                                  {typeof length === 'object' && length.description && (
+                                    <span className="text-xs text-muted-foreground">{length.description}</span>
+                                  )}
+                                </div>
+                              </SelectItem>
                             ))}
                           </SelectContent>
                         </Select>
@@ -372,8 +379,15 @@ export default function Ollivanders() {
                             <SelectValue placeholder="Vyberte ohebnost..." />
                           </SelectTrigger>
                           <SelectContent>
-                            {wandComponents.flexibilities?.map((flexibility: string) => (
-                              <SelectItem key={flexibility} value={flexibility}>{flexibility}</SelectItem>
+                            {wandComponents.flexibilities?.map((flexibility: any) => (
+                              <SelectItem key={typeof flexibility === 'string' ? flexibility : flexibility.name} value={typeof flexibility === 'string' ? flexibility : flexibility.name}>
+                                <div className="flex flex-col">
+                                  <span>{typeof flexibility === 'string' ? flexibility : flexibility.name}</span>
+                                  {typeof flexibility === 'object' && flexibility.description && (
+                                    <span className="text-xs text-muted-foreground">{flexibility.description}</span>
+                                  )}
+                                </div>
+                              </SelectItem>
                             ))}
                           </SelectContent>
                         </Select>

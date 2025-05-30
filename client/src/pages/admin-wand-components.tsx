@@ -430,34 +430,16 @@ export default function AdminWandComponents() {
 
               {/* Lengths list */}
               <div className="grid gap-2">
-                {wandComponents?.lengths?.map((length: string, index: number) => (
-                  <div key={index} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
-                    {editingLength === length ? (
-                      <div className="flex gap-2 flex-1">
-                        <Input
-                          defaultValue={length}
-                          onBlur={(e) => updateLength(index, e.target.value)}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter') {
-                              updateLength(index, e.currentTarget.value);
-                            } else if (e.key === 'Escape') {
-                              setEditingLength(null);
-                            }
-                          }}
-                          autoFocus
-                        />
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setEditingLength(null)}
-                        >
-                          Zrušit
-                        </Button>
+                {wandComponents?.lengths?.map((length: any, index: number) => (
+                  <div key={index} className="p-4 bg-muted/30 rounded-lg">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <h3 className="font-semibold">{typeof length === 'string' ? length : length.name}</h3>
+                        {typeof length === 'object' && length.description && (
+                          <p className="text-sm text-muted-foreground mt-1 whitespace-pre-line">{length.description}</p>
+                        )}
                       </div>
-                    ) : (
-                      <>
-                        <span>{length}</span>
-                        <div className="flex gap-2">
+                      <div className="flex gap-2">
                           <Button
                             variant="outline"
                             size="sm"
@@ -503,51 +485,31 @@ export default function AdminWandComponents() {
 
               {/* Flexibilities list */}
               <div className="grid gap-2">
-                {wandComponents?.flexibilities?.map((flex: string, index: number) => (
-                  <div key={index} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
-                    {editingFlex === flex ? (
-                      <div className="flex gap-2 flex-1">
-                        <Input
-                          defaultValue={flex}
-                          onBlur={(e) => updateFlex(index, e.target.value)}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter') {
-                              updateFlex(index, e.currentTarget.value);
-                            } else if (e.key === 'Escape') {
-                              setEditingFlex(null);
-                            }
-                          }}
-                          autoFocus
-                        />
+                {wandComponents?.flexibilities?.map((flex: any, index: number) => (
+                  <div key={index} className="p-4 bg-muted/30 rounded-lg">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <h3 className="font-semibold">{typeof flex === 'string' ? flex : flex.name}</h3>
+                        {typeof flex === 'object' && flex.description && (
+                          <p className="text-sm text-muted-foreground mt-1 whitespace-pre-line">{flex.description}</p>
+                        )}
+                      </div>
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => setEditingFlex(null)}
+                          onClick={() => setEditingFlex(flex)}
                         >
-                          Zrušit
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => removeFlex(flex)}
+                        >
+                          <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
-                    ) : (
-                      <>
-                        <span>{flex}</span>
-                        <div className="flex gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setEditingFlex(flex)}
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => removeFlex(flex)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </>
-                    )}
+                    </div>
                   </div>
                 ))}
               </div>
