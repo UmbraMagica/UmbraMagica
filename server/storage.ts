@@ -1230,7 +1230,9 @@ export class DatabaseStorage implements IStorage {
     }
     
     // If no stored components, return fallback
-    return this.getDefaultWandComponents();
+    const defaultComponents = this.getDefaultWandComponents();
+    this.storedWandComponents = defaultComponents;
+    return defaultComponents;
   }
 
   private getDefaultWandComponents(): {
@@ -1383,8 +1385,8 @@ export class DatabaseStorage implements IStorage {
   async updateWandComponents(components: {
     woods: { name: string; description: string }[];
     cores: { name: string; category: string; description: string }[];
-    lengths: string[];
-    flexibilities: string[];
+    lengths: { name: string; description: string }[];
+    flexibilities: { name: string; description: string }[];
   }): Promise<void> {
     try {
       // Store components in database
@@ -1402,7 +1404,7 @@ export class DatabaseStorage implements IStorage {
         });
       
       // Also store in memory for performance
-      this.storedWandComponents = components;
+      this.storedWandComponents = components as any;
       console.log("Wand components updated and stored in database:", components);
     } catch (error) {
       console.error("Error storing wand components:", error);
