@@ -332,30 +332,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/characters/online", requireAuth, async (req, res) => {
     try {
       // Only return characters that are currently connected via WebSocket
-      const onlineCharacters = [];
+      const onlineCharacters: any[] = [];
       
       // Get characters from active WebSocket connections
-      for (const [userId, ws] of activeConnections) {
-        if (ws.readyState === WebSocket.OPEN && ws.currentCharacterId) {
-          const character = await storage.getCharacter(ws.currentCharacterId);
+      const promises = Array.from(activeConnections.entries()).map(async ([ws, connInfo]) => {
+        if (ws.readyState === WebSocket.OPEN && connInfo.characterId) {
+          const character = await storage.getCharacter(connInfo.characterId);
           if (character && character.isActive) {
             // Get the room name for location
             let location = "Lobby";
-            if (ws.currentRoomId) {
-              const room = await storage.getChatRoom(ws.currentRoomId);
+            if (connInfo.roomId) {
+              const room = await storage.getChatRoom(connInfo.roomId);
               location = room ? room.name : "Neznámá lokace";
             }
             
-            onlineCharacters.push({
+            return {
               id: character.id,
               fullName: `${character.firstName}${character.middleName ? ` ${character.middleName}` : ''} ${character.lastName}`,
               firstName: character.firstName,
               lastName: character.lastName,
               location: location,
-            });
+            };
           }
         }
-      }
+        return null;
+      });
+      
+      const results = await Promise.all(promises);
+      onlineCharacters.push(...results.filter(char => char !== null));
       
       console.log("Returning all online characters:", onlineCharacters);
       res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
