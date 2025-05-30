@@ -1,7 +1,7 @@
 import { useAuth } from "@/hooks/useAuth";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { z } from "zod";
 import { useLocation } from "wouter";
+import { useEffect } from "react";
 
 // Simple schema for user edits (only school and description)
 const userEditSchema = z.object({
@@ -46,15 +47,21 @@ export default function CharacterEditSimple() {
   const [, setLocation] = useLocation();
   const queryClient = useQueryClient();
 
-  const primaryCharacter = user?.characters?.[0];
+  // Fetch the main character from API instead of using user.characters[0]
+  const { data: mainCharacter } = useQuery<any>({
+    queryKey: ["/api/characters/main"],
+    enabled: !!user,
+  });
+
+  const primaryCharacter = mainCharacter;
   const isAdmin = user?.role === 'admin';
 
   // Form for regular users
   const userForm = useForm<UserEditForm>({
     resolver: zodResolver(userEditSchema),
     defaultValues: {
-      school: (primaryCharacter as any)?.school || "",
-      description: (primaryCharacter as any)?.description || "",
+      school: "",
+      description: "",
     },
   });
 
@@ -62,14 +69,33 @@ export default function CharacterEditSimple() {
   const adminForm = useForm<AdminEditForm>({
     resolver: zodResolver(adminEditSchema),
     defaultValues: {
-      firstName: primaryCharacter?.firstName || "",
-      middleName: primaryCharacter?.middleName || "",
-      lastName: primaryCharacter?.lastName || "",
-      birthDate: primaryCharacter?.birthDate || "",
-      school: (primaryCharacter as any)?.school || "",
-      description: (primaryCharacter as any)?.description || "",
+      firstName: "",
+      middleName: "",
+      lastName: "",
+      birthDate: "",
+      school: "",
+      description: "",
     },
   });
+
+  // Update form values when character data loads
+  useEffect(() => {
+    if (primaryCharacter) {
+      userForm.reset({
+        school: primaryCharacter.school || "",
+        description: primaryCharacter.description || "",
+      });
+      
+      adminForm.reset({
+        firstName: primaryCharacter.firstName || "",
+        middleName: primaryCharacter.middleName || "",
+        lastName: primaryCharacter.lastName || "",
+        birthDate: primaryCharacter.birthDate || "",
+        school: primaryCharacter.school || "",
+        description: primaryCharacter.description || "",
+      });
+    }
+  }, [primaryCharacter, userForm, adminForm]);
 
   const updateCharacterMutation = useMutation({
     mutationFn: async (data: UserEditForm | AdminEditForm) => {
