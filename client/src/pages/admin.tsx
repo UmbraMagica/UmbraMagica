@@ -27,7 +27,8 @@ import {
   Archive,
   Home,
   Skull,
-  AlertTriangle
+  AlertTriangle,
+  Heart
 } from "lucide-react";
 
 interface AdminUser {
@@ -182,10 +183,39 @@ export default function Admin() {
     },
   });
 
+  const resurrectCharacterMutation = useMutation({
+    mutationFn: async (characterId: number) => {
+      const response = await apiRequest("POST", `/api/admin/characters/${characterId}/resurrect`);
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Úspěch",
+        description: "Postava byla oživena",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/characters/all"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/cemetery"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/activity-log"] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Chyba",
+        description: error.message || "Nepodařilo se oživit postavu",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleKillCharacter = (characterId: number, characterName: string) => {
     setKillCharacterData({ id: characterId, name: characterName });
     setDeathReason("");
     setShowConfirmKill(false);
+  };
+
+  const handleResurrectCharacter = (characterId: number, characterName: string) => {
+    if (confirm(`Opravdu chcete oživit postavu ${characterName}? Tato akce odstraní datum smrti a postava se znovu stane aktivní.`)) {
+      resurrectCharacterMutation.mutate(characterId);
+    }
   };
 
   const confirmKillCharacter = () => {
@@ -698,7 +728,7 @@ export default function Admin() {
                 </h2>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-4 max-h-96 overflow-y-auto">
                 {allCharacters.filter((char: any) => char.deathDate).length > 0 ? (
                   allCharacters.filter((char: any) => char.deathDate).map((character: any) => (
                     <div key={character.id} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
@@ -713,16 +743,20 @@ export default function Admin() {
                           <p className="text-sm text-muted-foreground">
                             @{character.user?.username} • ID: {character.id}
                           </p>
+                          <p className="text-xs text-red-400">
+                            Zemřel: {new Date(character.deathDate).toLocaleDateString('cs-CZ')}
+                            {character.deathReason && ` • ${character.deathReason}`}
+                          </p>
                         </div>
                       </div>
                       <Button
-                        variant="destructive"
+                        variant="outline"
                         size="sm"
-                        onClick={() => handleKillCharacter(character.id, `${character.firstName} ${character.lastName}`)}
-                        className="flex items-center gap-2"
+                        onClick={() => handleResurrectCharacter(character.id, `${character.firstName} ${character.lastName}`)}
+                        className="flex items-center gap-2 text-green-400 border-green-400 hover:bg-green-400 hover:text-white"
                       >
-                        <Skull className="h-4 w-4" />
-                        Označit jako zemřelou
+                        <Heart className="h-4 w-4" />
+                        Oživit
                       </Button>
                     </div>
                   ))
