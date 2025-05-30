@@ -239,12 +239,12 @@ export default function Home() {
             {/* Game Date */}
             <GameDate />
 
-            {/* Denní věštec */}
+            {/* Magická věštba */}
             <Card className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border-amber-300/30">
               <CardContent className="p-6">
                 <h3 className="text-xl font-semibold text-foreground mb-4 flex items-center">
                   <div className="text-2xl mr-3">🔮</div>
-                  Denní věštec
+                  Magická věštba dne
                 </h3>
                 <div className="bg-amber-50/50 dark:bg-amber-950/30 p-4 rounded-lg border-l-4 border-amber-400">
                   <h4 className="font-medium text-amber-800 dark:text-amber-200 mb-2">
