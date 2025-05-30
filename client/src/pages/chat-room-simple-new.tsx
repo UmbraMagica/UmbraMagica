@@ -12,6 +12,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { ArrowLeft, Edit3, Save, X, BookOpen } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { RoomDescription } from "@/components/RoomDescription";
+import { RoomPresence } from "@/components/RoomPresence";
 
 interface ChatRoom {
   id: number;
@@ -51,6 +52,13 @@ export default function ChatRoom() {
   const [editedDescription, setEditedDescription] = useState("");
   const [isEditingName, setIsEditingName] = useState(false);
   const [editedName, setEditedName] = useState("");
+  const [presentCharacters, setPresentCharacters] = useState<Array<{
+    id: number;
+    firstName: string;
+    middleName?: string;
+    lastName: string;
+    fullName: string;
+  }>>([]);
   
   const currentRoomId = roomId ? parseInt(roomId) : null;
 
@@ -122,17 +130,31 @@ export default function ChatRoom() {
     socket.onopen = () => {
       console.log("WebSocket připojen");
       setIsConnected(true);
+      
+      // First authenticate with user and character info
       socket.send(JSON.stringify({
-        type: 'join',
-        roomId: currentRoomId,
-        userId: user.id
+        type: 'authenticate',
+        sessionId: 'session',
+        userId: user.id,
+        characterId: currentCharacter?.id
       }));
     };
 
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
+      
       if (data.type === 'message' && data.roomId === currentRoomId) {
         setLocalMessages(prev => [data.message, ...prev]);
+      } else if (data.type === 'authenticated') {
+        // After authentication, join the room
+        socket.send(JSON.stringify({
+          type: 'join_room',
+          roomId: currentRoomId
+        }));
+      } else if (data.type === 'room_joined' && data.characters) {
+        setPresentCharacters(data.characters);
+      } else if (data.type === 'presence_update' && data.characters) {
+        setPresentCharacters(data.characters);
       }
     };
 
@@ -457,15 +479,14 @@ export default function ChatRoom() {
         </div>
       </div>
 
-      {/* Right Panel - Room Description */}
-      {(currentRoom.longDescription || user?.role === 'admin') && (
-        <div className="w-80 border-l bg-muted/30 flex flex-col">
-          {/* Panel Header - matches main header */}
-          <div className="flex-none p-4 border-b bg-card h-[84px] flex items-center justify-between w-full">
-              <div className="flex items-center gap-2">
-                <BookOpen className="h-4 w-4" />
-                <span className="font-medium">Popis místnosti</span>
-              </div>
+      {/* Right Panel - Room Description and Presence */}
+      <div className="w-80 border-l bg-muted/30 flex flex-col">
+        {/* Panel Header - matches main header */}
+        <div className="flex-none p-4 border-b bg-card h-[84px] flex items-center justify-between w-full">
+            <div className="flex items-center gap-2">
+              <BookOpen className="h-4 w-4" />
+              <span className="font-medium">Informace o místnosti</span>
+            </div>
               {user?.role === 'admin' && (
                 <div className="flex gap-2">
                   {isEditingDescription ? (
@@ -505,40 +526,52 @@ export default function ChatRoom() {
           </div>
 
           {/* Panel Content */}
-          <div className="flex-1 p-4 overflow-y-auto">
-            {isEditingDescription ? (
-              <div className="space-y-3">
-                <Textarea
-                  value={editedDescription}
-                  onChange={(e) => setEditedDescription(e.target.value)}
-                  placeholder="Zadejte popis místnosti..."
-                  className="min-h-64 text-sm w-full resize-none"
-                  rows={12}
-                />
-                <div className="text-xs text-muted-foreground border-t pt-2">
-                  <div className="font-medium mb-1">Formátování:</div>
-                  <div>**tučné** → <strong>tučné</strong></div>
-                  <div>*kurzíva* → <em>kurzíva</em></div>
-                  <div>__podtržené__ → <u>podtržené</u></div>
-                  <div className="mt-2">
-                    <div className="font-medium mb-1">Odkazy na chaty:</div>
-                    <div>[Ulice] → vytvoří odkaz na chat "Ulice"</div>
-                    <div>[Příčná ulice] → vytvoří odkaz na kategorie</div>
+          <div className="flex-1 p-4 overflow-y-auto space-y-4">
+            {/* Room Presence */}
+            <RoomPresence roomId={currentRoomId!} onlineCharacters={presentCharacters} />
+            
+            {/* Room Description */}
+            {(currentRoom.longDescription || user?.role === 'admin') && (
+              <div>
+                {isEditingDescription ? (
+                  <div className="space-y-3">
+                    <div className="text-sm font-medium text-foreground">Popis místnosti</div>
+                    <Textarea
+                      value={editedDescription}
+                      onChange={(e) => setEditedDescription(e.target.value)}
+                      placeholder="Zadejte popis místnosti..."
+                      className="min-h-64 text-sm w-full resize-none"
+                      rows={12}
+                    />
+                    <div className="text-xs text-muted-foreground border-t pt-2">
+                      <div className="font-medium mb-1">Formátování:</div>
+                      <div>**tučné** → <strong>tučné</strong></div>
+                      <div>*kurzíva* → <em>kurzíva</em></div>
+                      <div>__podtržené__ → <u>podtržené</u></div>
+                      <div className="mt-2">
+                        <div className="font-medium mb-1">Odkazy na chaty:</div>
+                        <div>[Ulice] → vytvoří odkaz na chat "Ulice"</div>
+                        <div>[Příčná ulice] → vytvoří odkaz na kategorie</div>
+                      </div>
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  <div>
+                    <div className="text-sm font-medium text-foreground mb-2">Popis místnosti</div>
+                    {currentRoom.longDescription ? (
+                      <RoomDescription description={currentRoom.longDescription} />
+                    ) : (
+                      <div className="text-sm text-muted-foreground">
+                        {user?.role === 'admin' ? "Žádný popis místnosti. Klikněte na upravit pro přidání popisu." : ""}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
-            ) : (
-              currentRoom.longDescription ? (
-                <RoomDescription description={currentRoom.longDescription} />
-              ) : (
-                <div className="text-sm text-muted-foreground">
-                  {user?.role === 'admin' ? "Žádný popis místnosti. Klikněte na upravit pro přidání popisu." : ""}
-                </div>
-              )
             )}
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }
