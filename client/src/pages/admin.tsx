@@ -783,10 +783,12 @@ export default function Admin() {
                 )}
                 </div>
               )}
+            </CardContent>
+          </Card>
 
-              {/* Kill Character Dialog */}
-                {killCharacterData && (
-                  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          {/* Kill Character Dialog */}
+          {killCharacterData && (
+            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
                     <div className="bg-card border border-border rounded-lg p-6 w-full max-w-md mx-4">
                       <div className="flex items-center gap-3 mb-4">
                         <AlertTriangle className="h-6 w-6 text-red-400" />
@@ -846,7 +848,6 @@ export default function Admin() {
                     </div>
                   </div>
                 )}
-              </div>
             </CardContent>
           </Card>
 
