@@ -166,14 +166,6 @@ export default function Admin() {
                   <MessageCircle className="mr-2 h-4 w-4" />
                   Chaty
                 </Button>
-                <Button 
-                  variant="ghost" 
-                  className="text-foreground hover:text-accent"
-                  onClick={() => setLocation('/admin/archive')}
-                >
-                  <Archive className="mr-2 h-4 w-4" />
-                  Archiv zpráv
-                </Button>
               </div>
             </div>
             <div className="flex items-center space-x-4">
@@ -265,6 +257,24 @@ export default function Admin() {
                 <div className="ml-4">
                   <p className="text-sm font-medium text-muted-foreground">Aktivní chaty</p>
                   <p className="text-2xl font-bold text-foreground">{stats.activeChats}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          <Card className="bg-card border-border hover:border-accent/50 transition-colors cursor-pointer"
+                onClick={() => setLocation('/admin/archive')}>
+            <CardContent className="p-6">
+              <div className="flex items-center">
+                <div className="p-3 rounded-full bg-amber-500/20 text-amber-400">
+                  <Archive className="h-6 w-6" />
+                </div>
+                <div className="ml-4">
+                  <p className="text-lg font-semibold text-foreground">Archiv zpráv</p>
+                  <p className="text-sm text-muted-foreground">Prohlížet archivované chaty</p>
                 </div>
               </div>
             </CardContent>
