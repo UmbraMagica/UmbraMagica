@@ -4,6 +4,7 @@ import { Users, Circle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { CharacterAvatar } from "@/components/CharacterAvatar";
 
 interface Character {
   id: number;
@@ -11,6 +12,7 @@ interface Character {
   middleName?: string;
   lastName: string;
   fullName: string;
+  avatar?: string | null;
 }
 
 interface RoomPresenceProps {
