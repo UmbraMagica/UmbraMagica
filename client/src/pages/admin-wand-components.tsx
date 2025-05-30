@@ -19,8 +19,13 @@ export default function AdminWandComponents() {
   
   const [editingWood, setEditingWood] = useState<any | null>(null);
   const [editingCore, setEditingCore] = useState<any | null>(null);
-  const [editingLength, setEditingLength] = useState<string | null>(null);
-  const [editingFlex, setEditingFlex] = useState<string | null>(null);
+  const [editingLength, setEditingLength] = useState<any | null>(null);
+  const [editingFlex, setEditingFlex] = useState<any | null>(null);
+  
+  const [editingLengthName, setEditingLengthName] = useState("");
+  const [editingLengthDescription, setEditingLengthDescription] = useState("");
+  const [editingFlexName, setEditingFlexName] = useState("");
+  const [editingFlexDescription, setEditingFlexDescription] = useState("");
   
   const [newWood, setNewWood] = useState({ name: "", description: "" });
   const [newCore, setNewCore] = useState({ name: "", category: "", description: "" });
@@ -131,13 +136,12 @@ export default function AdminWandComponents() {
     setEditingWood(null);
   };
 
-  const updateLength = (index: number, newLength: string) => {
-    if (!wandComponents || !newLength.trim()) return;
+  const updateLength = (index: number, updatedLength: any) => {
+    if (!wandComponents) return;
     const updatedLengths = [...wandComponents.lengths];
-    updatedLengths[index] = newLength.trim();
+    updatedLengths[index] = updatedLength;
     const updatedComponents = { ...wandComponents, lengths: updatedLengths };
     saveComponentsMutation.mutate(updatedComponents);
-    setEditingLength(null);
   };
 
   const updateFlex = (index: number, newFlex: string) => {
@@ -157,10 +161,18 @@ export default function AdminWandComponents() {
     setNewLength("");
   };
 
-  const removeLength = (lengthToRemove: string) => {
+  const removeLength = (lengthToRemove: any) => {
     if (!wandComponents) return;
-    const updatedLengths = wandComponents.lengths.filter((length: string) => length !== lengthToRemove);
+    const updatedLengths = wandComponents.lengths.filter((length: any) => length !== lengthToRemove);
     const updatedComponents = { ...wandComponents, lengths: updatedLengths };
+    saveComponentsMutation.mutate(updatedComponents);
+  };
+
+  const updateFlex = (index: number, updatedFlex: any) => {
+    if (!wandComponents) return;
+    const updatedFlexes = [...wandComponents.flexibilities];
+    updatedFlexes[index] = updatedFlex;
+    const updatedComponents = { ...wandComponents, flexibilities: updatedFlexes };
     saveComponentsMutation.mutate(updatedComponents);
   };
 
@@ -172,9 +184,9 @@ export default function AdminWandComponents() {
     setNewFlex("");
   };
 
-  const removeFlex = (flexToRemove: string) => {
+  const removeFlex = (flexToRemove: any) => {
     if (!wandComponents) return;
-    const updatedFlexes = wandComponents.flexibilities.filter((flex: string) => flex !== flexToRemove);
+    const updatedFlexes = wandComponents.flexibilities.filter((flex: any) => flex !== flexToRemove);
     const updatedComponents = { ...wandComponents, flexibilities: updatedFlexes };
     saveComponentsMutation.mutate(updatedComponents);
   };
@@ -432,18 +444,69 @@ export default function AdminWandComponents() {
               <div className="grid gap-2">
                 {wandComponents?.lengths?.map((length: any, index: number) => (
                   <div key={index} className="p-4 bg-muted/30 rounded-lg">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <h3 className="font-semibold">{typeof length === 'string' ? length : length.name}</h3>
-                        {typeof length === 'object' && length.description && (
-                          <p className="text-sm text-muted-foreground mt-1 whitespace-pre-line">{length.description}</p>
-                        )}
+                    {editingLength === length ? (
+                      <div className="space-y-3">
+                        <div>
+                          <Label htmlFor="length-name">Název délky</Label>
+                          <Input
+                            id="length-name"
+                            defaultValue={typeof length === 'string' ? length : length.name}
+                            onBlur={(e) => updateLength(index, { name: e.target.value, description: editingLengthDescription || (typeof length === 'object' ? length.description : '') })}
+                            placeholder="Délka (např. 12&quot;)..."
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="length-description">Popis délky</Label>
+                          <Textarea
+                            id="length-description"
+                            defaultValue={typeof length === 'object' ? length.description : ''}
+                            onChange={(e) => setEditingLengthDescription(e.target.value)}
+                            onBlur={(e) => updateLength(index, { name: editingLengthName || (typeof length === 'string' ? length : length.name), description: e.target.value })}
+                            rows={3}
+                            placeholder="Popis vlastností této délky..."
+                          />
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            onClick={() => {
+                              setEditingLength(null);
+                              setEditingLengthName('');
+                              setEditingLengthDescription('');
+                            }}
+                            size="sm"
+                          >
+                            Uložit
+                          </Button>
+                          <Button
+                            variant="outline"
+                            onClick={() => {
+                              setEditingLength(null);
+                              setEditingLengthName('');
+                              setEditingLengthDescription('');
+                            }}
+                            size="sm"
+                          >
+                            Zrušit
+                          </Button>
+                        </div>
                       </div>
-                      <div className="flex gap-2">
+                    ) : (
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <h3 className="font-semibold">{typeof length === 'string' ? length : length.name}</h3>
+                          {typeof length === 'object' && length.description && (
+                            <p className="text-sm text-muted-foreground mt-1 whitespace-pre-line">{length.description}</p>
+                          )}
+                        </div>
+                        <div className="flex gap-2">
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => setEditingLength(length)}
+                            onClick={() => {
+                              setEditingLength(length);
+                              setEditingLengthName(typeof length === 'string' ? length : length.name);
+                              setEditingLengthDescription(typeof length === 'object' ? length.description : '');
+                            }}
                           >
                             <Edit className="h-4 w-4" />
                           </Button>
@@ -455,7 +518,8 @@ export default function AdminWandComponents() {
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>
-                    </div>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -486,30 +550,82 @@ export default function AdminWandComponents() {
               <div className="grid gap-2">
                 {wandComponents?.flexibilities?.map((flex: any, index: number) => (
                   <div key={index} className="p-4 bg-muted/30 rounded-lg">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <h3 className="font-semibold">{typeof flex === 'string' ? flex : flex.name}</h3>
-                        {typeof flex === 'object' && flex.description && (
-                          <p className="text-sm text-muted-foreground mt-1 whitespace-pre-line">{flex.description}</p>
-                        )}
+                    {editingFlex === flex ? (
+                      <div className="space-y-3">
+                        <div>
+                          <Label htmlFor="flex-name">Název ohebnosti</Label>
+                          <Input
+                            id="flex-name"
+                            defaultValue={typeof flex === 'string' ? flex : flex.name}
+                            onBlur={(e) => updateFlex(index, { name: e.target.value, description: editingFlexDescription || (typeof flex === 'object' ? flex.description : '') })}
+                            placeholder="Ohebnost (např. Pevná)..."
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="flex-description">Popis ohebnosti</Label>
+                          <Textarea
+                            id="flex-description"
+                            defaultValue={typeof flex === 'object' ? flex.description : ''}
+                            onChange={(e) => setEditingFlexDescription(e.target.value)}
+                            onBlur={(e) => updateFlex(index, { name: editingFlexName || (typeof flex === 'string' ? flex : flex.name), description: e.target.value })}
+                            rows={3}
+                            placeholder="Popis vlastností této ohebnosti..."
+                          />
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            onClick={() => {
+                              setEditingFlex(null);
+                              setEditingFlexName('');
+                              setEditingFlexDescription('');
+                            }}
+                            size="sm"
+                          >
+                            Uložit
+                          </Button>
+                          <Button
+                            variant="outline"
+                            onClick={() => {
+                              setEditingFlex(null);
+                              setEditingFlexName('');
+                              setEditingFlexDescription('');
+                            }}
+                            size="sm"
+                          >
+                            Zrušit
+                          </Button>
+                        </div>
                       </div>
-                      <div className="flex gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setEditingFlex(flex)}
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="destructive"
-                          size="sm"
-                          onClick={() => removeFlex(flex)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                    ) : (
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <h3 className="font-semibold">{typeof flex === 'string' ? flex : flex.name}</h3>
+                          {typeof flex === 'object' && flex.description && (
+                            <p className="text-sm text-muted-foreground mt-1 whitespace-pre-line">{flex.description}</p>
+                          )}
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              setEditingFlex(flex);
+                              setEditingFlexName(typeof flex === 'string' ? flex : flex.name);
+                              setEditingFlexDescription(typeof flex === 'object' ? flex.description : '');
+                            }}
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => removeFlex(flex)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                 ))}
               </div>
