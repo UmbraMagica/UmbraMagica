@@ -50,6 +50,9 @@ export default function CharacterEditFixed() {
   // Get character ID from URL search params if available
   const urlParams = new URLSearchParams(window.location.search);
   const characterIdFromUrl = urlParams.get('characterId');
+  
+  // Debug: log what we get from URL
+  console.log('URL characterId:', characterIdFromUrl);
 
   const isAdmin = user?.role === 'admin';
 
