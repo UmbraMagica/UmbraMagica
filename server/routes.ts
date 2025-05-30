@@ -1214,7 +1214,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Update wand components (admin only)
   app.put("/api/admin/wand-components", requireAuth, async (req, res) => {
     try {
-      if (req.session.userRole !== 'admin') {
+      const user = await storage.getUser(req.session.userId!);
+      if (!user || user.role !== 'admin') {
         return res.status(403).json({ message: "Admin access required" });
       }
 
