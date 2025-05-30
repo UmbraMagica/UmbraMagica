@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { ArrowLeft, Edit, Plus, Save, Trash2, Wand2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { apiRequest } from "@/lib/queryClient";
 
 export default function AdminWandComponents() {
@@ -17,10 +17,20 @@ export default function AdminWandComponents() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
+  // Load saved active tab from localStorage
+  const [activeTab, setActiveTab] = useState(() => {
+    return localStorage.getItem('admin-wand-active-tab') || 'woods';
+  });
+  
   const [editingWood, setEditingWood] = useState<any | null>(null);
   const [editingCore, setEditingCore] = useState<any | null>(null);
   const [editingLength, setEditingLength] = useState<any | null>(null);
   const [editingFlex, setEditingFlex] = useState<any | null>(null);
+  
+  // Save active tab to localStorage when it changes
+  useEffect(() => {
+    localStorage.setItem('admin-wand-active-tab', activeTab);
+  }, [activeTab]);
   
   const [editingLengthName, setEditingLengthName] = useState("");
   const [editingLengthDescription, setEditingLengthDescription] = useState("");
@@ -217,7 +227,7 @@ export default function AdminWandComponents() {
         </div>
       </div>
 
-      <Tabs defaultValue="woods" className="w-full">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="woods">Dřevo</TabsTrigger>
           <TabsTrigger value="cores">Jádra</TabsTrigger>
