@@ -7,6 +7,8 @@ import { db } from "./db";
 import { z } from "zod";
 import session from "express-session";
 import connectPg from "connect-pg-simple";
+import multer from "multer";
+import sharp from "sharp";
 
 declare module "express-session" {
   interface SessionData {
@@ -96,6 +98,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
     req.user = user;
     next();
   };
+
+  // Multer configuration for avatar uploads
+  const upload = multer({
+    storage: multer.memoryStorage(),
+    limits: {
+      fileSize: 5 * 1024 * 1024, // 5MB limit
+    },
+    fileFilter: (req, file, cb) => {
+      if (file.mimetype.startsWith('image/')) {
+        cb(null, true);
+      } else {
+        cb(new Error('Only image files are allowed'));
+      }
+    },
+  });
 
   // Check username availability
   app.get("/api/auth/check-username", async (req, res) => {
@@ -281,6 +298,81 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error updating user role:", error);
       res.status(500).json({ message: "Failed to update user role" });
+    }
+  });
+
+  // Character avatar upload
+  app.post("/api/characters/:id/avatar", requireAuth, upload.single('avatar'), async (req, res) => {
+    try {
+      const characterId = parseInt(req.params.id);
+      const userId = req.session.userId!;
+      
+      if (!req.file) {
+        return res.status(400).json({ message: "No file uploaded" });
+      }
+      
+      // Check if the character belongs to the authenticated user
+      const character = await storage.getCharacter(characterId);
+      if (!character) {
+        return res.status(404).json({ message: "Character not found" });
+      }
+      
+      if (character.userId !== userId) {
+        return res.status(403).json({ message: "Not authorized to edit this character" });
+      }
+      
+      // Process the image with Sharp
+      const processedImage = await sharp(req.file.buffer)
+        .resize(150, 150, {
+          fit: 'cover',
+          position: 'center'
+        })
+        .jpeg({ quality: 80 })
+        .toBuffer();
+      
+      // Convert to base64
+      const base64Avatar = `data:image/jpeg;base64,${processedImage.toString('base64')}`;
+      
+      // Update character with new avatar
+      const updatedCharacter = await storage.updateCharacter(characterId, { avatar: base64Avatar });
+      
+      res.json({ 
+        message: "Avatar uploaded successfully", 
+        avatar: base64Avatar,
+        character: updatedCharacter 
+      });
+    } catch (error) {
+      console.error("Error uploading avatar:", error);
+      res.status(500).json({ message: "Failed to upload avatar" });
+    }
+  });
+
+  // Remove character avatar
+  app.delete("/api/characters/:id/avatar", requireAuth, async (req, res) => {
+    try {
+      const characterId = parseInt(req.params.id);
+      const userId = req.session.userId!;
+      
+      // Check if the character belongs to the authenticated user
+      const character = await storage.getCharacter(characterId);
+      if (!character) {
+        return res.status(404).json({ message: "Character not found" });
+      }
+      
+      if (character.userId !== userId) {
+        return res.status(403).json({ message: "Not authorized to edit this character" });
+      }
+      
+      // Remove avatar
+      const updatedCharacter = await storage.updateCharacter(characterId, { avatar: null });
+      
+      res.json({ 
+        message: "Avatar removed successfully",
+        character: updatedCharacter 
+      });
+    } catch (error) {
+      console.error("Error removing avatar:", error);
+      res.status(500).json({ message: "Failed to remove avatar" });
     }
   });
 
