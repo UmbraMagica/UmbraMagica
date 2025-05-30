@@ -249,6 +249,93 @@ export default function ChatRoom() {
     }
   };
 
+  const handleDownloadChat = async () => {
+    if (!currentRoomId) return;
+
+    try {
+      const response = await fetch(`/api/rooms/${currentRoomId}/download`, {
+        credentials: "include",
+      });
+      
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = response.headers.get('Content-Disposition')?.split('filename=')[1]?.replace(/"/g, '') || 'chat.txt';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+        
+        toast({
+          title: "Úspěch",
+          description: "Chat byl stažen",
+        });
+      } else {
+        throw new Error('Download failed');
+      }
+    } catch (error) {
+      toast({
+        title: "Chyba",
+        description: "Nepodařilo se stáhnout chat.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleArchiveMessages = async () => {
+    if (!currentRoomId || user?.role !== 'admin') return;
+
+    try {
+      const response = await apiRequest("POST", `/api/admin/rooms/${currentRoomId}/archive`);
+      const data = await response.json();
+      
+      toast({
+        title: "Úspěch",
+        description: data.message,
+      });
+      
+      // Refresh messages
+      queryClient.invalidateQueries({ queryKey: [`/api/chat/rooms/${currentRoomId}/messages`] });
+    } catch (error) {
+      toast({
+        title: "Chyba",
+        description: "Nepodařilo se archivovat zprávy.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleClearMessages = async () => {
+    if (!currentRoomId || user?.role !== 'admin') return;
+
+    if (!confirm('Opravdu chcete vymazat všechny zprávy z tohoto chatu? Archivované zprávy zůstanou zachovány.')) {
+      return;
+    }
+
+    try {
+      const response = await apiRequest("DELETE", `/api/admin/rooms/${currentRoomId}/clear`);
+      const data = await response.json();
+      
+      toast({
+        title: "Úspěch",
+        description: data.message,
+      });
+      
+      // Refresh messages
+      queryClient.invalidateQueries({ queryKey: [`/api/chat/rooms/${currentRoomId}/messages`] });
+      setLocalMessages([]);
+    } catch (error) {
+      toast({
+        title: "Chyba",
+        description: "Nepodařilo se vymazat zprávy.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const getCharacterInitials = (character: { firstName: string; lastName: string }) => {
     return `${character.firstName.charAt(0)}${character.lastName.charAt(0)}`;
   };
@@ -401,6 +488,44 @@ export default function ChatRoom() {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            {/* Chat Management Buttons */}
+            <Button
+              onClick={handleDownloadChat}
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-2"
+              title="Stáhnout obsah chatu"
+            >
+              <Download className="h-4 w-4" />
+              Stáhnout
+            </Button>
+            
+            {user?.role === 'admin' && (
+              <>
+                <Button
+                  onClick={handleArchiveMessages}
+                  variant="outline"
+                  size="sm"
+                  className="flex items-center gap-2"
+                  title="Archivovat zprávy (přesun do archivu)"
+                >
+                  <Archive className="h-4 w-4" />
+                  Archivovat
+                </Button>
+                
+                <Button
+                  onClick={handleClearMessages}
+                  variant="outline"
+                  size="sm"
+                  className="flex items-center gap-2 text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                  title="Vymazat zprávy z chatu (archiv zůstává)"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  Vymazat
+                </Button>
+              </>
+            )}
+            
             <div className={`h-2 w-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`} />
             <span className="text-sm text-muted-foreground">
               {isConnected ? 'Připojeno' : 'Odpojeno'}
