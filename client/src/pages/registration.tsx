@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowRight, ArrowLeft, Check, User } from "lucide-react";
+import { ArrowRight, ArrowLeft, Check, User, CheckCircle, XCircle, Loader2 } from "lucide-react";
+import { apiRequest } from "@/lib/queryClient";
 
 export default function Registration() {
   const [step, setStep] = useState(1);
@@ -22,12 +23,46 @@ export default function Registration() {
     birthDate: "",
   });
 
+  const [usernameStatus, setUsernameStatus] = useState<'idle' | 'checking' | 'available' | 'taken'>('idle');
+  const [passwordMatch, setPasswordMatch] = useState<boolean | null>(null);
+
   const { register, isRegisterPending } = useAuth();
   const { toast } = useToast();
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+    
+    // Check password match when either password field changes
+    if (field === 'password' || field === 'passwordConfirm') {
+      const updatedFormData = { ...formData, [field]: value };
+      if (updatedFormData.password && updatedFormData.passwordConfirm) {
+        setPasswordMatch(updatedFormData.password === updatedFormData.passwordConfirm);
+      } else {
+        setPasswordMatch(null);
+      }
+    }
   };
+
+  // Check username availability with debounce
+  useEffect(() => {
+    if (!formData.username || formData.username.length < 3) {
+      setUsernameStatus('idle');
+      return;
+    }
+
+    setUsernameStatus('checking');
+    const timeoutId = setTimeout(async () => {
+      try {
+        const response = await apiRequest("GET", `/api/auth/check-username?username=${encodeURIComponent(formData.username)}`);
+        const data = await response.json();
+        setUsernameStatus(data.available ? 'available' : 'taken');
+      } catch (error) {
+        setUsernameStatus('idle');
+      }
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [formData.username]);
 
   const validateStep1 = () => {
     const { username, email, password, passwordConfirm, inviteCode } = formData;
@@ -140,15 +175,33 @@ export default function Registration() {
               <form onSubmit={handleStep1Submit} className="space-y-4">
                 <div>
                   <Label className="block text-sm font-medium text-foreground mb-2">Uživatelské jméno</Label>
-                  <Input
-                    type="text"
-                    value={formData.username}
-                    onChange={(e) => handleInputChange('username', e.target.value)}
-                    placeholder="Jedinečné uživatelské jméno"
-                    className="rpg-input"
-                    required
-                  />
-                  <p className="text-xs text-muted-foreground mt-1">Musí být jedinečné v celém systému</p>
+                  <div className="relative">
+                    <Input
+                      type="text"
+                      value={formData.username}
+                      onChange={(e) => handleInputChange('username', e.target.value)}
+                      placeholder="Jedinečné uživatelské jméno"
+                      className={`rpg-input pr-10 ${
+                        usernameStatus === 'available' ? 'border-green-500' : 
+                        usernameStatus === 'taken' ? 'border-red-500' : ''
+                      }`}
+                      required
+                    />
+                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                      {usernameStatus === 'checking' && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
+                      {usernameStatus === 'available' && <CheckCircle className="h-4 w-4 text-green-500" />}
+                      {usernameStatus === 'taken' && <XCircle className="h-4 w-4 text-red-500" />}
+                    </div>
+                  </div>
+                  <p className={`text-xs mt-1 ${
+                    usernameStatus === 'available' ? 'text-green-600' :
+                    usernameStatus === 'taken' ? 'text-red-600' :
+                    'text-muted-foreground'
+                  }`}>
+                    {usernameStatus === 'available' ? 'Uživatelské jméno je dostupné' :
+                     usernameStatus === 'taken' ? 'Uživatelské jméno je již obsazeno' :
+                     'Musí být jedinečné v celém systému'}
+                  </p>
                 </div>
                 
                 <div>
@@ -177,14 +230,28 @@ export default function Registration() {
                 
                 <div>
                   <Label className="block text-sm font-medium text-foreground mb-2">Potvrzení hesla</Label>
-                  <Input
-                    type="password"
-                    value={formData.passwordConfirm}
-                    onChange={(e) => handleInputChange('passwordConfirm', e.target.value)}
-                    placeholder="Zopakujte heslo"
-                    className="rpg-input"
-                    required
-                  />
+                  <div className="relative">
+                    <Input
+                      type="password"
+                      value={formData.passwordConfirm}
+                      onChange={(e) => handleInputChange('passwordConfirm', e.target.value)}
+                      placeholder="Zopakujte heslo"
+                      className={`rpg-input pr-10 ${
+                        passwordMatch === true ? 'border-green-500' : 
+                        passwordMatch === false ? 'border-red-500' : ''
+                      }`}
+                      required
+                    />
+                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                      {passwordMatch === true && <CheckCircle className="h-4 w-4 text-green-500" />}
+                      {passwordMatch === false && <XCircle className="h-4 w-4 text-red-500" />}
+                    </div>
+                  </div>
+                  {passwordMatch !== null && (
+                    <p className={`text-xs mt-1 ${passwordMatch ? 'text-green-600' : 'text-red-600'}`}>
+                      {passwordMatch ? 'Hesla se shodují' : 'Hesla se neshodují'}
+                    </p>
+                  )}
                 </div>
                 
                 <div>

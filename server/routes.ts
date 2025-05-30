@@ -97,6 +97,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     next();
   };
 
+  // Check username availability
+  app.get("/api/auth/check-username", async (req, res) => {
+    try {
+      const { username } = req.query;
+      
+      if (!username || typeof username !== 'string') {
+        return res.status(400).json({ message: "Username is required" });
+      }
+
+      const existingUser = await storage.getUserByUsername(username);
+      res.json({ available: !existingUser });
+    } catch (error) {
+      console.error("Error checking username:", error);
+      res.status(500).json({ message: "Failed to check username availability" });
+    }
+  });
+
   // Auth routes
   app.get("/api/auth/user", requireAuth, async (req: any, res) => {
     try {
