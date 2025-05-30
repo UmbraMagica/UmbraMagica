@@ -90,8 +90,8 @@ export default function CharacterProfile() {
     return `${character.firstName}${character.middleName ? ` ${character.middleName}` : ''} ${character.lastName}`;
   };
 
-  // Check if current user can edit this character
-  const canEdit = user && (user.id === character.userId || user.role === 'admin');
+  // Only character owner can edit through profile page, admins use admin interface
+  const canEdit = user && user.id === character.userId;
 
   const characterAge = calculateGameAge(character.birthDate);
 
