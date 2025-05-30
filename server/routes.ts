@@ -705,6 +705,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get characters present in a room
+  app.get("/api/chat/rooms/:roomId/presence", requireAuth, async (req, res) => {
+    try {
+      const roomId = parseInt(req.params.roomId);
+      const characterIds = Array.from(roomPresence.get(roomId) || []);
+      
+      if (characterIds.length === 0) {
+        return res.json([]);
+      }
+
+      // Fetch character details
+      const characters = await Promise.all(
+        characterIds.map(async (characterId) => {
+          const character = await storage.getCharacter(characterId);
+          return character ? {
+            id: character.id,
+            firstName: character.firstName,
+            middleName: character.middleName,
+            lastName: character.lastName,
+            fullName: `${character.firstName}${character.middleName ? ` ${character.middleName}` : ''} ${character.lastName}`
+          } : null;
+        })
+      );
+
+      res.json(characters.filter(Boolean));
+    } catch (error) {
+      console.error("Error fetching room presence:", error);
+      res.status(500).json({ message: "Failed to fetch room presence" });
+    }
+  });
+
   // RPG Game mechanics - Dice and coin endpoints
   app.post("/api/game/dice-roll", requireAuth, async (req, res) => {
     try {
@@ -774,7 +805,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const wss = new WebSocketServer({ server: httpServer, path: '/ws' });
   
   // Store active WebSocket connections with user info
-  const activeConnections = new Map<WebSocket, { userId: number; characterId?: number }>();
+  const activeConnections = new Map<WebSocket, { userId: number; characterId?: number; roomId?: number }>();
+  
+  // Store room presence - which characters are in which rooms
+  const roomPresence = new Map<number, Set<number>>();
+
+  // Function to broadcast message to all clients in a specific room
+  function broadcastToRoom(roomId: number, message: any) {
+    activeConnections.forEach((connInfo, ws) => {
+      if (connInfo.roomId === roomId && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify(message));
+      }
+    });
+  }
 
   wss.on('connection', (ws, req) => {
     console.log('New WebSocket connection');
@@ -809,6 +852,55 @@ export async function registerRoutes(app: Express): Promise<Server> {
               characterId: message.characterId 
             });
             ws.send(JSON.stringify({ type: 'authenticated', success: true }));
+            break;
+            
+          case 'join_room':
+            const connInfo = activeConnections.get(ws);
+            if (!connInfo?.characterId) {
+              ws.send(JSON.stringify({ type: 'error', message: 'Not authenticated' }));
+              return;
+            }
+            
+            const roomId = parseInt(message.roomId);
+            if (!roomId) {
+              ws.send(JSON.stringify({ type: 'error', message: 'Invalid room ID' }));
+              return;
+            }
+            
+            // Remove character from previous room
+            if (connInfo.roomId) {
+              const oldRoomCharacters = roomPresence.get(connInfo.roomId);
+              if (oldRoomCharacters) {
+                oldRoomCharacters.delete(connInfo.characterId);
+                if (oldRoomCharacters.size === 0) {
+                  roomPresence.delete(connInfo.roomId);
+                }
+                // Notify old room about character leaving
+                broadcastToRoom(connInfo.roomId, {
+                  type: 'presence_update',
+                  characters: Array.from(oldRoomCharacters)
+                });
+              }
+            }
+            
+            // Add character to new room
+            if (!roomPresence.has(roomId)) {
+              roomPresence.set(roomId, new Set());
+            }
+            roomPresence.get(roomId)!.add(connInfo.characterId);
+            connInfo.roomId = roomId;
+            
+            // Notify new room about character joining
+            broadcastToRoom(roomId, {
+              type: 'presence_update',
+              characters: Array.from(roomPresence.get(roomId)!)
+            });
+            
+            ws.send(JSON.stringify({ 
+              type: 'room_joined', 
+              roomId,
+              characters: Array.from(roomPresence.get(roomId)!)
+            }));
             break;
             
           case 'chat_message':
@@ -963,8 +1055,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
 
     ws.on('close', () => {
-      activeConnections.delete(ws);
       console.log('WebSocket connection closed');
+      const connInfo = activeConnections.get(ws);
+      if (connInfo?.characterId && connInfo?.roomId) {
+        // Remove character from room presence
+        const roomCharacters = roomPresence.get(connInfo.roomId);
+        if (roomCharacters) {
+          roomCharacters.delete(connInfo.characterId);
+          if (roomCharacters.size === 0) {
+            roomPresence.delete(connInfo.roomId);
+          } else {
+            // Notify room about character leaving
+            broadcastToRoom(connInfo.roomId, {
+              type: 'presence_update',
+              characters: Array.from(roomCharacters)
+            });
+          }
+        }
+      }
+      activeConnections.delete(ws);
     });
   });
 
