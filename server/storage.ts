@@ -333,7 +333,7 @@ export class DatabaseStorage implements IStorage {
     return message;
   }
 
-  async getMessagesByRoom(roomId: number, limit: number = 50, offset: number = 0): Promise<(Message & { character: { firstName: string; middleName?: string | null; lastName: string } })[]> {
+  async getMessagesByRoom(roomId: number, limit: number = 50, offset: number = 0): Promise<(Message & { character: { firstName: string; middleName?: string | null; lastName: string; avatar?: string | null } })[]> {
     return db
       .select({
         id: messages.id,
@@ -346,6 +346,7 @@ export class DatabaseStorage implements IStorage {
           firstName: characters.firstName,
           middleName: characters.middleName,
           lastName: characters.lastName,
+          avatar: characters.avatar,
         },
       })
       .from(messages)

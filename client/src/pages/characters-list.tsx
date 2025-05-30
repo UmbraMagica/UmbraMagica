@@ -93,11 +93,7 @@ export default function CharactersList() {
           <Card key={character.id} className="hover:shadow-lg transition-shadow">
             <CardHeader className="pb-3">
               <div className="flex items-center gap-3">
-                <Avatar className="h-12 w-12">
-                  <AvatarFallback className="bg-primary/10 text-primary font-medium">
-                    {getCharacterInitials(character)}
-                  </AvatarFallback>
-                </Avatar>
+                <CharacterAvatar character={character} size="md" />
                 <div className="flex-1 min-w-0">
                   <Link href={`/characters/${character.id}`}>
                     <CardTitle className="text-lg truncate hover:text-primary transition-colors cursor-pointer">
