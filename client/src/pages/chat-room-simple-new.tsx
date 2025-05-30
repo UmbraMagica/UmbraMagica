@@ -289,7 +289,7 @@ export default function ChatRoom() {
     if (!currentRoomId || user?.role !== 'admin') return;
 
     try {
-      const response = await apiRequest("POST", `/api/admin/rooms/${currentRoomId}/archive`);
+      const response = await apiRequest("POST", `/api/chat/rooms/${currentRoomId}/archive`);
       const data = await response.json();
       
       toast({
