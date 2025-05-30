@@ -27,7 +27,7 @@ import {
   type InsertAdminActivityLog,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, and, desc, lt, gte, count } from "drizzle-orm";
+import { eq, and, desc, lt, gte, count, isNotNull } from "drizzle-orm";
 import bcrypt from "bcrypt";
 
 export interface IStorage {
@@ -107,6 +107,7 @@ export interface IStorage {
   
   // Cemetery operations
   killCharacter(characterId: number, deathReason: string, adminId: number): Promise<Character | undefined>;
+  reviveCharacter(characterId: number): Promise<Character | undefined>;
   getDeadCharacters(): Promise<Character[]>;
 }
 
@@ -748,11 +749,25 @@ export class DatabaseStorage implements IStorage {
     return killedCharacter;
   }
 
+  async reviveCharacter(characterId: number): Promise<Character | undefined> {
+    const [updatedCharacter] = await db
+      .update(characters)
+      .set({ 
+        deathDate: null,
+        deathReason: null,
+        updatedAt: new Date()
+      })
+      .where(eq(characters.id, characterId))
+      .returning();
+
+    return updatedCharacter;
+  }
+
   async getDeadCharacters(): Promise<Character[]> {
     return db
       .select()
       .from(characters)
-      .where(eq(characters.isActive, false))
+      .where(isNotNull(characters.deathDate))
       .orderBy(desc(characters.deathDate), desc(characters.createdAt));
   }
 }

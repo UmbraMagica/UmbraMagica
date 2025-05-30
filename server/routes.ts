@@ -1093,7 +1093,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
             // Check if character is alive (not in cemetery)
             const messageCharacterCheck = await storage.getCharacter(connectionInfo.characterId);
-            if (!messageCharacterCheck || !messageCharacterCheck.isActive) {
+            if (!messageCharacterCheck || messageCharacterCheck.deathDate) {
               ws.send(JSON.stringify({ 
                 type: 'error', 
                 message: 'Zemřelé postavy nemohou psát zprávy. Navštivte hřbitov pro více informací.' 
@@ -1150,7 +1150,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             
             // Get character info and check if alive
             const diceCharacter = await storage.getCharacter(diceConnectionInfo.characterId);
-            if (!diceCharacter || !diceCharacter.isActive) {
+            if (!diceCharacter || diceCharacter.deathDate) {
               ws.send(JSON.stringify({ 
                 type: 'error', 
                 message: 'Zemřelé postavy nemohou házet kostkou. Navštivte hřbitov pro více informací.' 
@@ -1207,7 +1207,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             
             // Get character info and check if alive
             const coinCharacter = await storage.getCharacter(coinConnectionInfo.characterId);
-            if (!coinCharacter || !coinCharacter.isActive) {
+            if (!coinCharacter || coinCharacter.deathDate) {
               ws.send(JSON.stringify({ 
                 type: 'error', 
                 message: 'Zemřelé postavy nemohou házet mincí. Navštivte hřbitov pro více informací.' 
@@ -1654,6 +1654,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching dead characters:", error);
       res.status(500).json({ message: "Failed to fetch cemetery data" });
+    }
+  });
+
+  // Revive character (admin only)
+  app.post("/api/characters/:id/revive", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const characterId = parseInt(req.params.id);
+      const adminId = req.session.userId!;
+      
+      const revivedCharacter = await storage.reviveCharacter(characterId);
+      
+      if (!revivedCharacter) {
+        return res.status(404).json({ message: "Character not found" });
+      }
+
+      // Log admin activity
+      await storage.logAdminActivity({
+        adminId,
+        action: 'character_revive',
+        targetUserId: revivedCharacter.userId,
+        details: `Postava ${revivedCharacter.firstName} ${revivedCharacter.lastName} byla oživena`
+      });
+      
+      res.json({ message: "Character revived successfully", character: revivedCharacter });
+    } catch (error) {
+      console.error("Error reviving character:", error);
+      res.status(500).json({ message: "Failed to revive character" });
     }
   });
 
