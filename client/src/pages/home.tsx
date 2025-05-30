@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import { useLocation } from "wouter";
 import { 
   Crown, 
   Home as HomeIcon, 
@@ -30,6 +31,7 @@ interface OnlineCharacter {
 export default function Home() {
   const { user, logout } = useAuth();
   const { toast } = useToast();
+  const [, setLocation] = useLocation();
 
 
 
@@ -41,6 +43,7 @@ export default function Home() {
   const handleLogout = async () => {
     try {
       await logout();
+      setLocation('/');
       toast({
         title: "Odhlášení",
         description: "Byli jste úspěšně odhlášeni",

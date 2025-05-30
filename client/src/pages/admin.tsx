@@ -94,6 +94,7 @@ export default function Admin() {
   const handleLogout = async () => {
     try {
       await logout();
+      setLocation('/');
       toast({
         title: "Odhlášení",
         description: "Byli jste úspěšně odhlášeni",
