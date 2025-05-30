@@ -1358,7 +1358,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Check if character has a wand
       const wand = await storage.getCharacterWand(parseInt(characterId));
       if (!wand) {
-        return res.status(400).json({ message: "Character needs a wand to cast spells. Visit Ollivanders first!" });
+        return res.status(400).json({ message: "Vaše postava potřebuje hůlku pro sesílání kouzel. Navštivte nejprve Ollivandera!" });
       }
 
       // Check if character has the spell

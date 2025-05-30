@@ -262,10 +262,21 @@ export default function ChatRoom() {
         await apiRequest("POST", "/api/chat/messages", messageData);
         setMessageInput("");
       }
-    } catch (error) {
+    } catch (error: any) {
+      let errorMessage = "Nepodařilo se odeslat zprávu.";
+      
+      // Check for specific wand-related error
+      if (error.message && error.message.includes("Character needs a wand to cast spells")) {
+        errorMessage = "Vaše postava potřebuje hůlku pro sesílání kouzel. Navštivte nejprve Ollivandera!";
+      } else if (error.message && error.message.includes("Character doesn't know this spell")) {
+        errorMessage = "Vaše postava nezná toto kouzlo.";
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
       toast({
         title: "Chyba",
-        description: "Nepodařilo se odeslat zprávu.",
+        description: errorMessage,
         variant: "destructive",
       });
     }
