@@ -422,7 +422,7 @@ export class DatabaseStorage implements IStorage {
     const result = await db
       .select({
         archivedAt: archivedMessages.archivedAt,
-        count: db.sql`count(*)`.as('count')
+        count: count()
       })
       .from(archivedMessages)
       .where(eq(archivedMessages.roomId, roomId))

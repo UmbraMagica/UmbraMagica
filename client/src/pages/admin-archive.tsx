@@ -179,23 +179,23 @@ export default function AdminArchive() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2">
-                  {archiveDates.length > 0 ? (
+                  {archiveDatesWithCounts.length > 0 ? (
                     <div className="space-y-1">
                       {/* Group dates by month/year */}
                       {(() => {
-                        const groupedDates = archiveDates.reduce((groups, date) => {
-                          const dateObj = new Date(date);
+                        const groupedDates = archiveDatesWithCounts.reduce((groups, item) => {
+                          const dateObj = new Date(item.date);
                           const monthYear = `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, '0')}`;
                           if (!groups[monthYear]) {
                             groups[monthYear] = [];
                           }
-                          groups[monthYear].push(date);
+                          groups[monthYear].push(item);
                           return groups;
-                        }, {} as Record<string, string[]>);
+                        }, {} as Record<string, typeof archiveDatesWithCounts>);
 
                         return Object.entries(groupedDates)
                           .sort(([a], [b]) => b.localeCompare(a))
-                          .map(([monthYear, dates]) => (
+                          .map(([monthYear, dateItems]) => (
                             <div key={monthYear} className="space-y-1">
                               <div className="text-xs font-medium text-muted-foreground px-2 py-1 bg-muted/50 rounded">
                                 {new Date(monthYear + '-01').toLocaleDateString('cs-CZ', { 
@@ -203,23 +203,28 @@ export default function AdminArchive() {
                                   month: 'long' 
                                 })}
                               </div>
-                              {dates
-                                .sort((a, b) => b.localeCompare(a))
-                                .map((date) => (
+                              {dateItems
+                                .sort((a, b) => b.date.localeCompare(a.date))
+                                .map((item) => (
                                   <Button
-                                    key={date}
-                                    variant={selectedArchiveDate === date ? "default" : "ghost"}
-                                    className="w-full justify-start pl-6"
+                                    key={item.date}
+                                    variant={selectedArchiveDate === item.date ? "default" : "ghost"}
+                                    className="w-full justify-between pl-6"
                                     onClick={() => {
-                                      setSelectedArchiveDate(date);
+                                      setSelectedArchiveDate(item.date);
                                       setPage(0);
                                     }}
                                   >
-                                    <FolderOpen className="h-3 w-3 mr-2" />
-                                    {new Date(date).toLocaleDateString('cs-CZ', {
-                                      day: 'numeric',
-                                      month: 'short'
-                                    })}
+                                    <div className="flex items-center">
+                                      <FolderOpen className="h-3 w-3 mr-2" />
+                                      {new Date(item.date).toLocaleDateString('cs-CZ', {
+                                        day: 'numeric',
+                                        month: 'short'
+                                      })}
+                                    </div>
+                                    <Badge variant="secondary" className="text-xs">
+                                      {item.count}
+                                    </Badge>
                                   </Button>
                                 ))
                               }
