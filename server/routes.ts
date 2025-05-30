@@ -331,20 +331,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/characters/online", requireAuth, async (req, res) => {
     try {
-      // Return all active characters from all users (representing online players)
-      const users = await storage.getAllUsers();
+      // Only return characters that are currently connected via WebSocket
       const onlineCharacters = [];
       
-      for (const user of users) {
-        const characters = await storage.getCharactersByUserId(user.id);
-        for (const character of characters) {
-          if (character.isActive) {
+      // Get characters from active WebSocket connections
+      for (const [userId, ws] of activeConnections) {
+        if (ws.readyState === WebSocket.OPEN && ws.currentCharacterId) {
+          const character = await storage.getCharacter(ws.currentCharacterId);
+          if (character && character.isActive) {
+            // Get the room name for location
+            let location = "Lobby";
+            if (ws.currentRoomId) {
+              const room = await storage.getChatRoom(ws.currentRoomId);
+              location = room ? room.name : "Neznámá lokace";
+            }
+            
             onlineCharacters.push({
               id: character.id,
               fullName: `${character.firstName}${character.middleName ? ` ${character.middleName}` : ''} ${character.lastName}`,
               firstName: character.firstName,
               lastName: character.lastName,
-              location: "Ulice",
+              location: location,
             });
           }
         }

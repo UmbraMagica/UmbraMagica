@@ -86,8 +86,32 @@ export default function CharacterEdit() {
     updateCharacterMutation.mutate(data);
   };
 
-  const characterAge = primaryCharacter ? 
-    new Date().getFullYear() - new Date(primaryCharacter.birthDate).getFullYear() : 0;
+  // Get current values for preview
+  const getCurrentValues = () => {
+    if (isAdmin) {
+      const values = adminForm.watch();
+      return {
+        firstName: values.firstName || primaryCharacter?.firstName || "",
+        middleName: values.middleName || primaryCharacter?.middleName || "",
+        lastName: values.lastName || primaryCharacter?.lastName || "",
+        birthDate: values.birthDate || primaryCharacter?.birthDate || "",
+        school: values.school || "",
+        description: values.description || "",
+      };
+    } else {
+      const values = userForm.watch();
+      return {
+        firstName: primaryCharacter?.firstName || "",
+        middleName: primaryCharacter?.middleName || "",
+        lastName: primaryCharacter?.lastName || "",
+        birthDate: primaryCharacter?.birthDate || "",
+        school: values.school || "",
+        description: values.description || "",
+      };
+    }
+  };
+
+  const currentValues = getCurrentValues();
 
   return (
     <div className="min-h-screen bg-background dark">
