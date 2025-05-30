@@ -17,6 +17,7 @@ import CharacterEdit from "@/pages/character-edit-simple";
 import CharactersList from "@/pages/characters-list";
 import CharacterProfile from "@/pages/character-profile";
 import UserSettings from "@/pages/user-settings";
+import Cemetery from "@/pages/cemetery";
 import NotFound from "@/pages/not-found";
 import { useEffect } from "react";
 import { apiRequest } from "./lib/queryClient";

@@ -104,6 +104,10 @@ export interface IStorage {
   // Multi-character operations
   setMainCharacter(userId: number, characterId: number): Promise<void>;
   getMainCharacter(userId: number): Promise<Character | undefined>;
+  
+  // Cemetery operations
+  killCharacter(characterId: number, deathReason: string, adminId: number): Promise<Character | undefined>;
+  getDeadCharacters(): Promise<Character[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -673,6 +677,83 @@ export class DatabaseStorage implements IStorage {
       .from(characters)
       .where(and(eq(characters.userId, userId), eq(characters.isMainCharacter, true)));
     return character;
+  }
+
+  // Cemetery operations
+  async killCharacter(characterId: number, deathReason: string, adminId: number): Promise<Character | undefined> {
+    const character = await this.getCharacter(characterId);
+    if (!character) {
+      throw new Error("Character not found");
+    }
+
+    // Get all user's active characters
+    const userCharacters = await db
+      .select()
+      .from(characters)
+      .where(and(eq(characters.userId, character.userId), eq(characters.isActive, true)));
+
+    // Kill the character
+    const [killedCharacter] = await db
+      .update(characters)
+      .set({
+        isActive: false,
+        deathDate: new Date().toISOString().split('T')[0], // Current date
+        deathReason,
+        updatedAt: new Date(),
+      })
+      .where(eq(characters.id, characterId))
+      .returning();
+
+    // Handle main character reassignment
+    if (character.isMainCharacter) {
+      const remainingActiveCharacters = userCharacters.filter(
+        c => c.id !== characterId && c.isActive
+      );
+
+      if (remainingActiveCharacters.length > 0) {
+        // If there are remaining active characters, make the oldest one main
+        const oldestCharacter = remainingActiveCharacters.sort(
+          (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+        )[0];
+
+        await db
+          .update(characters)
+          .set({ 
+            isMainCharacter: true,
+            updatedAt: new Date(),
+          })
+          .where(eq(characters.id, oldestCharacter.id));
+
+        // Remove main character flag from the killed character
+        await db
+          .update(characters)
+          .set({ 
+            isMainCharacter: false,
+            updatedAt: new Date(),
+          })
+          .where(eq(characters.id, characterId));
+      }
+      // If no remaining characters, keep the dead character as main
+    }
+
+    // Log admin activity
+    await this.logAdminActivity({
+      adminId,
+      action: "kill_character",
+      targetUserId: character.userId,
+      targetCharacterId: characterId,
+      details: `Killed character: ${character.firstName} ${character.lastName}. Reason: ${deathReason}`,
+    });
+
+    return killedCharacter;
+  }
+
+  async getDeadCharacters(): Promise<Character[]> {
+    return db
+      .select()
+      .from(characters)
+      .where(eq(characters.isActive, false))
+      .orderBy(desc(characters.deathDate), desc(characters.createdAt));
   }
 }
 

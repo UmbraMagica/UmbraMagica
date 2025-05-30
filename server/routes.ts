@@ -1593,5 +1593,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Cemetery routes
+  app.post("/api/admin/characters/:id/kill", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const characterId = parseInt(req.params.id);
+      const { deathReason } = req.body;
+      const adminId = req.session.userId!;
+      
+      if (!deathReason || deathReason.trim().length === 0) {
+        return res.status(400).json({ message: "Death reason is required" });
+      }
+      
+      const killedCharacter = await storage.killCharacter(characterId, deathReason.trim(), adminId);
+      
+      if (!killedCharacter) {
+        return res.status(404).json({ message: "Character not found" });
+      }
+      
+      res.json({ message: "Character killed successfully", character: killedCharacter });
+    } catch (error) {
+      console.error("Error killing character:", error);
+      res.status(500).json({ message: "Failed to kill character" });
+    }
+  });
+
+  app.get("/api/cemetery", async (req, res) => {
+    try {
+      const deadCharacters = await storage.getDeadCharacters();
+      res.json(deadCharacters);
+    } catch (error) {
+      console.error("Error fetching dead characters:", error);
+      res.status(500).json({ message: "Failed to fetch cemetery data" });
+    }
+  });
+
   return httpServer;
 }

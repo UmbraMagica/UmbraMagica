@@ -49,6 +49,8 @@ export const characters = pgTable("characters", {
   description: text("description"),
   isActive: boolean("is_active").default(true).notNull(),
   isMainCharacter: boolean("is_main_character").default(false).notNull(), // označuje hlavní postavu uživatele
+  deathDate: date("death_date"), // datum smrti postavy
+  deathReason: text("death_reason"), // důvod smrti
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
