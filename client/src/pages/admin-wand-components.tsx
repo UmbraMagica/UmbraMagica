@@ -144,13 +144,12 @@ export default function AdminWandComponents() {
     saveComponentsMutation.mutate(updatedComponents);
   };
 
-  const updateFlex = (index: number, newFlex: string) => {
-    if (!wandComponents || !newFlex.trim()) return;
+  const updateFlex = (index: number, updatedFlex: any) => {
+    if (!wandComponents) return;
     const updatedFlexes = [...wandComponents.flexibilities];
-    updatedFlexes[index] = newFlex.trim();
+    updatedFlexes[index] = updatedFlex;
     const updatedComponents = { ...wandComponents, flexibilities: updatedFlexes };
     saveComponentsMutation.mutate(updatedComponents);
-    setEditingFlex(null);
   };
 
   const addLength = () => {
@@ -165,14 +164,6 @@ export default function AdminWandComponents() {
     if (!wandComponents) return;
     const updatedLengths = wandComponents.lengths.filter((length: any) => length !== lengthToRemove);
     const updatedComponents = { ...wandComponents, lengths: updatedLengths };
-    saveComponentsMutation.mutate(updatedComponents);
-  };
-
-  const updateFlex = (index: number, updatedFlex: any) => {
-    if (!wandComponents) return;
-    const updatedFlexes = [...wandComponents.flexibilities];
-    updatedFlexes[index] = updatedFlex;
-    const updatedComponents = { ...wandComponents, flexibilities: updatedFlexes };
     saveComponentsMutation.mutate(updatedComponents);
   };
 
