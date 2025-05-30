@@ -52,7 +52,7 @@ export default function CharacterEditFixed() {
   const characterIdFromUrl = urlParams.get('characterId');
   
   // Debug: log what we get from URL
-  console.log('URL characterId:', characterIdFromUrl);
+  console.log('CHARACTER EDIT LOADED - URL characterId:', characterIdFromUrl, 'Full URL:', window.location.href);
 
   const isAdmin = user?.role === 'admin';
 
