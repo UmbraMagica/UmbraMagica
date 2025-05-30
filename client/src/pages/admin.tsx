@@ -49,6 +49,16 @@ export default function Admin() {
     staleTime: 30000,
   });
 
+  const { data: characterRequests = [] } = useQuery({
+    queryKey: ["/api/admin/character-requests"],
+    staleTime: 30000,
+  });
+
+  const { data: adminActivityLog = [] } = useQuery({
+    queryKey: ["/api/admin/activity-log"],
+    staleTime: 30000,
+  });
+
   const createInviteCodeMutation = useMutation({
     mutationFn: async (code: string) => {
       const response = await apiRequest("POST", "/api/admin/invite-codes", { code });
@@ -86,6 +96,50 @@ export default function Admin() {
       toast({
         title: "Chyba",
         description: error.message || "Nepodařilo se aktualizovat roli",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const approveCharacterRequestMutation = useMutation({
+    mutationFn: async ({ requestId, reviewNote }: { requestId: number; reviewNote?: string }) => {
+      const response = await apiRequest("POST", `/api/admin/character-requests/${requestId}/approve`, { reviewNote });
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Úspěch",
+        description: "Žádost o postavu byla schválena",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/character-requests"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/activity-log"] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Chyba",
+        description: error.message || "Nepodařilo se schválit žádost",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const rejectCharacterRequestMutation = useMutation({
+    mutationFn: async ({ requestId, reviewNote }: { requestId: number; reviewNote: string }) => {
+      const response = await apiRequest("POST", `/api/admin/character-requests/${requestId}/reject`, { reviewNote });
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Úspěch",
+        description: "Žádost o postavu byla zamítnuta",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/character-requests"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/activity-log"] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Chyba",
+        description: error.message || "Nepodařilo se zamítnout žádost",
         variant: "destructive",
       });
     },
@@ -423,6 +477,137 @@ export default function Admin() {
                     </Button>
                   </div>
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Character Requests Management */}
+        <div className="mt-8 grid grid-cols-1 gap-8">
+          <Card className="bg-card border-border">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-semibold text-foreground flex items-center">
+                  <UserPlus className="text-accent mr-3 h-5 w-5" />
+                  Žádosti o nové postavy
+                  {characterRequests.filter((req: any) => req.status === 'pending').length > 0 && (
+                    <Badge className="ml-2 bg-yellow-100 text-yellow-800">
+                      {characterRequests.filter((req: any) => req.status === 'pending').length} čeká
+                    </Badge>
+                  )}
+                </h2>
+              </div>
+
+              <div className="space-y-4">
+                {characterRequests.length > 0 ? (
+                  characterRequests.map((request: any) => (
+                    <div key={request.id} className="bg-muted/30 rounded-lg p-4 border-l-4 border-l-accent/30">
+                      <div className="flex items-start justify-between">
+                        <div className="space-y-2 flex-1">
+                          <div className="flex items-center space-x-2">
+                            <h4 className="font-medium text-foreground">
+                              {request.firstName} {request.middleName} {request.lastName}
+                            </h4>
+                            <Badge variant={request.status === 'pending' ? 'secondary' : request.status === 'approved' ? 'default' : 'destructive'}>
+                              {request.status === 'pending' ? 'Čeká na posouzení' : 
+                               request.status === 'approved' ? 'Schváleno' : 'Zamítnuto'}
+                            </Badge>
+                          </div>
+                          <div className="text-sm text-muted-foreground">
+                            <p>Uživatel: {request.user.username} ({request.user.email})</p>
+                            <p>Datum narození: {new Date(request.birthDate).toLocaleDateString('cs-CZ')}</p>
+                            {request.school && <p>Škola: {request.school}</p>}
+                          </div>
+                          <p className="text-sm">{request.reason}</p>
+                          {request.reviewNote && (
+                            <div className="p-3 bg-muted/50 rounded">
+                              <p className="text-sm font-medium">Poznámka administrátora:</p>
+                              <p className="text-sm">{request.reviewNote}</p>
+                            </div>
+                          )}
+                        </div>
+                        {request.status === 'pending' && (
+                          <div className="flex space-x-2 ml-4">
+                            <Button
+                              size="sm"
+                              onClick={() => {
+                                const reviewNote = prompt("Poznámka pro schválení (volitelné):");
+                                approveCharacterRequestMutation.mutate({ 
+                                  requestId: request.id, 
+                                  reviewNote: reviewNote || undefined 
+                                });
+                              }}
+                              disabled={approveCharacterRequestMutation.isPending}
+                              className="bg-green-600 hover:bg-green-700"
+                            >
+                              Schválit
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              onClick={() => {
+                                const reviewNote = prompt("Důvod zamítnutí (povinné):");
+                                if (reviewNote) {
+                                  rejectCharacterRequestMutation.mutate({ 
+                                    requestId: request.id, 
+                                    reviewNote 
+                                  });
+                                }
+                              }}
+                              disabled={rejectCharacterRequestMutation.isPending}
+                            >
+                              Zamítnout
+                            </Button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-8">
+                    <UserPlus className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                    <p className="text-muted-foreground">Žádné žádosti o nové postavy</p>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Admin Activity Log */}
+          <Card className="bg-card border-border">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-semibold text-foreground flex items-center">
+                  <Book className="text-accent mr-3 h-5 w-5" />
+                  Administrační aktivita
+                </h2>
+              </div>
+
+              <div className="space-y-3">
+                {adminActivityLog.length > 0 ? (
+                  adminActivityLog.slice(0, 10).map((activity: any) => (
+                    <div key={activity.id} className="bg-muted/30 rounded-lg p-3">
+                      <div className="flex items-center justify-between">
+                        <div className="space-y-1">
+                          <p className="text-sm font-medium text-foreground">{activity.action}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {activity.admin.username}
+                            {activity.targetUser && ` → ${activity.targetUser.username}`}
+                            {activity.details && ` • ${activity.details}`}
+                          </p>
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {new Date(activity.createdAt).toLocaleString('cs-CZ')}
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-8">
+                    <Book className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                    <p className="text-muted-foreground">Žádná administrační aktivita</p>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
