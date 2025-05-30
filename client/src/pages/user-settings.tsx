@@ -92,6 +92,28 @@ export default function UserSettings() {
     },
   });
 
+  // Delete character request mutation
+  const deleteRequestMutation = useMutation({
+    mutationFn: async (requestId: number) => {
+      const response = await apiRequest("DELETE", `/api/character-requests/${requestId}`);
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Žádost stažena",
+        description: "Vaše žádost o novou postavu byla úspěšně stažena.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/character-requests/my"] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Chyba",
+        description: error.message || "Nepodařilo se stáhnout žádost",
+        variant: "destructive",
+      });
+    },
+  });
+
   const onSubmit = (data: CharacterRequestForm) => {
     createRequestMutation.mutate(data);
   };
@@ -319,8 +341,25 @@ export default function UserSettings() {
                               </div>
                             )}
                           </div>
-                          <div className="text-xs text-muted-foreground">
-                            {formatDate(request.createdAt)}
+                          <div className="flex items-center space-x-2">
+                            <div className="text-xs text-muted-foreground">
+                              {formatDate(request.createdAt)}
+                            </div>
+                            {request.status === 'pending' && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => {
+                                  if (confirm("Opravdu chcete stáhnout tuto žádost? Tato akce je nevratná.")) {
+                                    deleteRequestMutation.mutate(request.id);
+                                  }
+                                }}
+                                disabled={deleteRequestMutation.isPending}
+                                className="text-xs"
+                              >
+                                Stáhnout žádost
+                              </Button>
+                            )}
                           </div>
                         </div>
                       </CardContent>

@@ -464,6 +464,21 @@ export class DatabaseStorage implements IStorage {
     return db.select().from(characterRequests).where(eq(characterRequests.userId, userId)).orderBy(desc(characterRequests.createdAt));
   }
 
+  async getCharacterRequestById(requestId: number): Promise<CharacterRequest | undefined> {
+    const [request] = await db
+      .select()
+      .from(characterRequests)
+      .where(eq(characterRequests.id, requestId));
+    return request;
+  }
+
+  async deleteCharacterRequest(requestId: number): Promise<boolean> {
+    const result = await db
+      .delete(characterRequests)
+      .where(eq(characterRequests.id, requestId));
+    return (result.rowCount || 0) > 0;
+  }
+
   async getPendingCharacterRequests(): Promise<(CharacterRequest & { user: { username: string; email: string } })[]> {
     return db
       .select({
