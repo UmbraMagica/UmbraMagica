@@ -767,7 +767,9 @@ export class DatabaseStorage implements IStorage {
     return db
       .select()
       .from(characters)
-      .where(isNotNull(characters.deathDate))
+      .where(and(
+        isNotNull(characters.deathDate)
+      ))
       .orderBy(desc(characters.deathDate), desc(characters.createdAt));
   }
 }

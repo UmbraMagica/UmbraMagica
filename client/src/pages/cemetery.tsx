@@ -1,9 +1,12 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
-import { ArrowLeft, Crown } from "lucide-react";
+import { ArrowLeft, Crown, HeartHandshake } from "lucide-react";
+import { apiRequest } from "@/lib/queryClient";
 
 interface DeadCharacter {
   id: number;
@@ -22,9 +25,34 @@ interface DeadCharacter {
 
 export default function Cemetery() {
   const { user } = useAuth();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const { data: deadCharacters = [], isLoading } = useQuery<DeadCharacter[]>({
     queryKey: ["/api/cemetery"],
+  });
+
+  // Revive character mutation (admin only)
+  const reviveCharacterMutation = useMutation({
+    mutationFn: async (characterId: number) => {
+      const response = await apiRequest("POST", `/api/characters/${characterId}/revive`);
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Postava oživena",
+        description: "Postava byla úspěšně oživena a vrácena mezi živé.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/cemetery"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/characters"] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Chyba při oživování",
+        description: error.message || "Nepodařilo se oživit postavu",
+        variant: "destructive",
+      });
+    },
   });
 
   const formatDate = (dateString: string) => {
@@ -95,11 +123,8 @@ export default function Cemetery() {
             {deadCharacters.map((character) => (
               <Card key={character.id} className="bg-slate-800/50 border-purple-500/20 backdrop-blur-sm">
                 <CardHeader className="pb-2">
-                  <CardTitle className="flex items-center gap-2 text-lg">
+                  <CardTitle className="flex items-center justify-between text-lg">
                     <span className="text-white">{getFullName(character)}</span>
-                    {character.isMainCharacter && (
-                      <Crown className="h-4 w-4 text-yellow-400" />
-                    )}
                   </CardTitle>
                   <div className="text-sm text-purple-300">
                     {formatDate(character.birthDate)} - {formatDate(character.deathDate)}
@@ -133,6 +158,19 @@ export default function Cemetery() {
                   <div className="text-xs text-purple-400">
                     Postava vytvořena: {formatDate(character.createdAt)}
                   </div>
+
+                  {user?.role === 'admin' && (
+                    <Button
+                      onClick={() => reviveCharacterMutation.mutate(character.id)}
+                      disabled={reviveCharacterMutation.isPending}
+                      variant="outline"
+                      size="sm"
+                      className="w-full mt-3 border-green-500/50 text-green-400 hover:bg-green-500/20"
+                    >
+                      <HeartHandshake className="h-4 w-4 mr-2" />
+                      {reviveCharacterMutation.isPending ? 'Oživování...' : 'Oživit postavu'}
+                    </Button>
+                  )}
                 </CardContent>
               </Card>
             ))}
