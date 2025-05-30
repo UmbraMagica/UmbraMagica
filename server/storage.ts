@@ -164,8 +164,8 @@ export interface IStorage {
   getAllWandComponents(): Promise<{
     woods: { name: string; description: string }[];
     cores: { name: string; category: string; description: string }[];
-    lengths: string[];
-    flexibilities: string[];
+    lengths: { name: string; description: string }[];
+    flexibilities: { name: string; description: string }[];
   }>;
   migrateExistingWandsToInventory(): Promise<number>;
   updateWandComponents(components: {
@@ -1212,8 +1212,8 @@ export class DatabaseStorage implements IStorage {
   async getAllWandComponents(): Promise<{
     woods: { name: string; description: string }[];
     cores: { name: string; category: string; description: string }[];
-    lengths: string[];
-    flexibilities: string[];
+    lengths: { name: string; description: string }[];
+    flexibilities: { name: string; description: string }[];
   }> {
     // Try to load from database first
     try {
@@ -1353,8 +1353,8 @@ export class DatabaseStorage implements IStorage {
   private storedWandComponents: {
     woods: { name: string; description: string }[];
     cores: { name: string; category: string; description: string }[];
-    lengths: string[];
-    flexibilities: string[];
+    lengths: { name: string; description: string }[];
+    flexibilities: { name: string; description: string }[];
   } | null = null;
 
   async updateWandComponents(components: {
