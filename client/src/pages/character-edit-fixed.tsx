@@ -17,11 +17,13 @@ import {
   Save,
   Calendar,
   UserCircle,
-  Lock
+  Lock,
+  Upload,
+  Camera
 } from "lucide-react";
 import { z } from "zod";
 import { useLocation } from "wouter";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 // Simple schema for user edits (only school and description)
 const userEditSchema = z.object({
@@ -47,6 +49,7 @@ export default function CharacterEditFixed() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const queryClient = useQueryClient();
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
 
   // Get character ID from URL search params if available
   const urlParams = new URLSearchParams(window.location.search);
@@ -128,6 +131,77 @@ export default function CharacterEditFixed() {
       });
     },
   });
+
+  // Avatar upload mutation
+  const uploadAvatarMutation = useMutation({
+    mutationFn: async (file: File) => {
+      if (!primaryCharacter?.id) {
+        throw new Error("Žádná postava k úpravě");
+      }
+      
+      const formData = new FormData();
+      formData.append('avatar', file);
+      
+      const response = await fetch(`/api/characters/${primaryCharacter.id}/avatar`, {
+        method: 'POST',
+        body: formData,
+        credentials: 'include',
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Nepodařilo se nahrát avatar');
+      }
+      
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Avatar nahrán",
+        description: "Profilový obrázek byl úspěšně aktualizován",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/characters"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/characters/main"] });
+      queryClient.invalidateQueries({ queryKey: [`/api/characters/${primaryCharacter?.id}`] });
+      setIsUploadingAvatar(false);
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Chyba",
+        description: error.message || "Nepodařilo se nahrát avatar",
+        variant: "destructive",
+      });
+      setIsUploadingAvatar(false);
+    },
+  });
+
+  const handleAvatarUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: "Neplatný soubor",
+        description: "Prosím vyberte obrázek (JPG, PNG, GIF)",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate file size (5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast({
+        title: "Soubor příliš velký",
+        description: "Obrázek může mít maximálně 5MB",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsUploadingAvatar(true);
+    uploadAvatarMutation.mutate(file);
+  };
 
   // Update form values when character data loads
   useEffect(() => {
@@ -378,6 +452,38 @@ export default function CharacterEditFixed() {
                       <p className="text-xs text-muted-foreground mt-1">
                         Můžete použít základní HTML tagy pro formátování textu.
                       </p>
+                    </div>
+                  </div>
+
+                  {/* Avatar Upload Section */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-medium text-foreground flex items-center">
+                      <Camera className="h-4 w-4 mr-2" />
+                      Profilový obrázek
+                    </h3>
+                    <div className="flex items-center space-x-4">
+                      <CharacterAvatar character={primaryCharacter} size="lg" className="h-20 w-20" />
+                      <div className="flex-1">
+                        <Label htmlFor="avatar" className="cursor-pointer">
+                          <div className="flex items-center space-x-2 p-3 border-2 border-dashed border-border rounded-lg hover:border-primary transition-colors">
+                            <Upload className="h-5 w-5 text-muted-foreground" />
+                            <span className="text-sm text-muted-foreground">
+                              {isUploadingAvatar ? "Nahrávám..." : "Klikněte pro nahrání nového obrázku"}
+                            </span>
+                          </div>
+                          <Input
+                            id="avatar"
+                            type="file"
+                            accept="image/*"
+                            onChange={handleAvatarUpload}
+                            disabled={isUploadingAvatar}
+                            className="hidden"
+                          />
+                        </Label>
+                        <p className="text-xs text-muted-foreground mt-2">
+                          Podporované formáty: JPG, PNG, GIF. Maximální velikost: 5MB
+                        </p>
+                      </div>
                     </div>
                   </div>
 
