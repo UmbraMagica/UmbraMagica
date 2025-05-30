@@ -127,6 +127,7 @@ export interface IStorage {
   // Spell operations
   getAllSpells(): Promise<Spell[]>;
   getSpell(id: number): Promise<Spell | undefined>;
+  getSpellByName(name: string): Promise<Spell | undefined>;
   createSpell(spell: InsertSpell): Promise<Spell>;
   updateSpell(id: number, updates: Partial<InsertSpell>): Promise<Spell | undefined>;
   deleteSpell(id: number): Promise<boolean>;
@@ -840,6 +841,11 @@ export class DatabaseStorage implements IStorage {
 
   async getSpell(id: number): Promise<Spell | undefined> {
     const [spell] = await db.select().from(spells).where(eq(spells.id, id));
+    return spell;
+  }
+
+  async getSpellByName(name: string): Promise<Spell | undefined> {
+    const [spell] = await db.select().from(spells).where(eq(spells.name, name));
     return spell;
   }
 
