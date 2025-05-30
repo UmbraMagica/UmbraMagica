@@ -1205,9 +1205,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
             const coinResult = Math.floor(Math.random() * 2) + 1;
             const coinSide = coinResult === 1 ? "panna" : "orel";
             
-            // Get character info first for immediate broadcast
+            // Get character info and check if alive
             const coinCharacter = await storage.getCharacter(coinConnectionInfo.characterId);
-            if (!coinCharacter) return;
+            if (!coinCharacter || !coinCharacter.isActive) {
+              ws.send(JSON.stringify({ 
+                type: 'error', 
+                message: 'Zemřelé postavy nemohou házet mincí. Navštivte hřbitov pro více informací.' 
+              }));
+              return;
+            }
 
             // Create message object for immediate broadcast
             const tempCoinMessage = {
