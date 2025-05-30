@@ -77,6 +77,7 @@ export default function CharacterProfile() {
   }
 
   const getCharacterInitials = (character: Character) => {
+    if (!character.firstName || !character.lastName) return "??";
     return `${character.firstName.charAt(0)}${character.lastName.charAt(0)}`;
   };
 
