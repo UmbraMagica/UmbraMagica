@@ -220,9 +220,11 @@ export default function UserSettings() {
             <CardContent className="space-y-4">
               {userCharacters.length > 0 ? (
                 <div className="space-y-3">
-                  <div className="text-sm text-muted-foreground mb-3">
-                    Vyberte svou primární postavu, která se zobrazí po přihlášení:
-                  </div>
+                  {userCharacters.length > 1 && (
+                    <div className="text-sm text-muted-foreground mb-3">
+                      Vyberte svou primární postavu, která se zobrazí po přihlášení:
+                    </div>
+                  )}
                   {userCharacters.map((character: any) => (
                     <div key={character.id} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
                       <div className="flex items-center space-x-3">
@@ -231,7 +233,7 @@ export default function UserSettings() {
                             <h4 className="font-medium text-foreground">
                               {character.firstName} {character.middleName} {character.lastName}
                             </h4>
-                            {mainCharacter?.id === character.id && (
+                            {userCharacters.length > 1 && mainCharacter?.id === character.id && (
                               <div className="flex items-center space-x-1">
                                 <span className="text-yellow-500">👑</span>
                                 <Badge className="bg-accent/20 text-accent">Primární</Badge>
@@ -248,7 +250,7 @@ export default function UserSettings() {
                         >
                           Zobrazit profil
                         </Button>
-                        {mainCharacter?.id !== character.id && (
+                        {userCharacters.length > 1 && mainCharacter?.id !== character.id && (
                           <Button
                             size="sm"
                             onClick={() => setMainCharacterMutation.mutate(character.id)}

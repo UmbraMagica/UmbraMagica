@@ -100,8 +100,8 @@ export const archivedMessages = pgTable("archived_messages", {
   id: serial("id").primaryKey(),
   originalMessageId: integer("original_message_id").notNull(),
   roomId: integer("room_id").notNull(),
-  characterId: integer("character_id").notNull(),
-  characterName: varchar("character_name", { length: 150 }).notNull(),
+  characterId: integer("character_id"), // nullable for admin messages
+  characterName: varchar("character_name", { length: 150 }), // nullable for admin messages
   content: text("content").notNull(),
   messageType: varchar("message_type", { length: 20 }).notNull(),
   originalCreatedAt: timestamp("original_created_at").notNull(),
