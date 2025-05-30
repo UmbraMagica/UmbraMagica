@@ -171,8 +171,8 @@ export interface IStorage {
   updateWandComponents(components: {
     woods: { name: string; description: string }[];
     cores: { name: string; category: string; description: string }[];
-    lengths: string[];
-    flexibilities: string[];
+    lengths: { name: string; description: string }[];
+    flexibilities: { name: string; description: string }[];
   }): Promise<void>;
 }
 
@@ -1179,30 +1179,23 @@ export class DatabaseStorage implements IStorage {
       "Topol", "Třešeň", "Vrba", "Vinná réva"
     ];
 
-    const lengths = [
-      '7"', '8"', '9"', '10"', '11"', '12"'
-    ];
-
-    const flexibilities = [
-      "Nezlomná", "Velmi nepoddajná", "Nepoddajná", "Mírně nepoddajná",
-      "Pevná", "Tvrdá", "Ohebná", "Pružná", "Velmi pružná", 
-      "Výjimečně poddajná", "Vrbovitá"
-    ];
-
+    // Get components from the main method to ensure consistency
+    const allComponents = await this.getAllWandComponents();
+    
     // Generate random selections
-    const randomCore = cores[Math.floor(Math.random() * cores.length)];
-    const randomWood = woods[Math.floor(Math.random() * woods.length)];
-    const randomLength = lengths[Math.floor(Math.random() * lengths.length)];
-    const randomFlexibility = flexibilities[Math.floor(Math.random() * flexibilities.length)];
+    const randomCore = allComponents.cores[Math.floor(Math.random() * allComponents.cores.length)];
+    const randomWood = allComponents.woods[Math.floor(Math.random() * allComponents.woods.length)];
+    const randomLength = allComponents.lengths[Math.floor(Math.random() * Math.min(allComponents.lengths.length, 6))]; // Limit to first 6 (up to 12")
+    const randomFlexibility = allComponents.flexibilities[Math.floor(Math.random() * allComponents.flexibilities.length)];
 
-    const description = `Hůlka z ${randomWood.toLowerCase()}, ${randomLength} dlouhá, ${randomFlexibility.toLowerCase()}, s jádrem ${randomCore.toLowerCase()}. Vybrána Ollivanderem osobně pro svého nového majitele.`;
+    const description = `Hůlka z ${randomWood.name.toLowerCase()}, ${randomLength.name} dlouhá, ${randomFlexibility.name.toLowerCase()}, s jádrem ${randomCore.name.toLowerCase()}. Vybrána Ollivanderem osobně pro svého nového majitele.`;
 
     const wandData: InsertWand = {
       characterId,
-      wood: randomWood,
-      core: randomCore,
-      length: randomLength,
-      flexibility: randomFlexibility,
+      wood: randomWood.name,
+      core: randomCore.name,
+      length: randomLength.name,
+      flexibility: randomFlexibility.name,
       description
     };
 
@@ -1219,7 +1212,12 @@ export class DatabaseStorage implements IStorage {
     try {
       const [configRow] = await db.select().from(configuration).where(eq(configuration.key, 'wand_components'));
       if (configRow && configRow.value) {
-        this.storedWandComponents = configRow.value as any;
+        this.storedWandComponents = configRow.value as {
+          woods: { name: string; description: string }[];
+          cores: { name: string; category: string; description: string }[];
+          lengths: { name: string; description: string }[];
+          flexibilities: { name: string; description: string }[];
+        };
         return this.storedWandComponents;
       }
     } catch (error) {
@@ -1230,7 +1228,17 @@ export class DatabaseStorage implements IStorage {
     if (this.storedWandComponents) {
       return this.storedWandComponents;
     }
+    
+    // If no stored components, return fallback
+    return this.getDefaultWandComponents();
+  }
 
+  private getDefaultWandComponents(): {
+    woods: { name: string; description: string }[];
+    cores: { name: string; category: string; description: string }[];
+    lengths: { name: string; description: string }[];
+    flexibilities: { name: string; description: string }[];
+  } {
     const woods = [
       { name: "Akácie", description: "Symbolizuje čistotu a obrození. Hůlky z akácie jsou velmi citlivé a vyžadují zkušeného čaroděje." },
       { name: "Anglický dub", description: "Síla a vytrvalost. Oblíbené u Aurorů a těch, kdo chrání ostatní." },
@@ -1295,12 +1303,27 @@ export class DatabaseStorage implements IStorage {
       { name: "🦴 Nehet ďasovce", category: "Méně ušlechtilé", description: "Brutální a primitivní magie založená na síle a agresi. Oblíbené u černokněžníků." }
     ];
 
-    const lengths = ['7"', '8"', '9"', '10"', '11"', '12"', '13"', '14"', '15"', '16"'];
+    const lengths = [
+      { name: "7\"", description: "Kratší hůlka, obvykle vybírá čaroděje s menším vzrůstem nebo ty, kdo preferují diskrétní magii." },
+      { name: "8\"", description: "Kompaktní délka ideální pro rychlé reakce a městskou magii. Snadno se skrývá a manipuluje." },
+      { name: "9\"", description: "Vyvážená kratší délka vhodná pro jemné a přesné kouzla. Oblíbená u mladších čarodějů." },
+      { name: "10\"", description: "Klasická délka poskytující dobrý poměr mezi kontrolou a silou. Vhodná pro většinu čarodějů." },
+      { name: "11\"", description: "Vyvážená hůlka s výbornou univerzálností. Populární volba pro studenty i zkušené mistry." },
+      { name: "12\"", description: "Standardní délka nabízející stabilitu a spolehlivost. Ideální pro formální magii a výuku." }
+    ];
 
     const flexibilities = [
-      "Nezlomná", "Velmi nepoddajná", "Nepoddajná", "Mírně nepoddajná",
-      "Pevná", "Tvrdá", "Ohebná", "Pružná", "Velmi pružná", 
-      "Výjimečně poddajná", "Vrbovitá"
+      { name: "Nezlomná", description: "Extrémně pevná a nepoddajná hůlka. Vhodná pro čaroděje s velmi silnou vůlí a nekompromisní povahou." },
+      { name: "Velmi nepoddajná", description: "Tvrdá hůlka vyžadující rozhodného majitele. Ideální pro ty, kdo preferují přímočaré a silné kouzla." },
+      { name: "Nepoddajná", description: "Pevná hůlka pro stabilní a spolehlivé čaroděje. Dobře drží tvar kouzel a odolává změnám." },
+      { name: "Mírně nepoddajná", description: "Lehce tužší hůlka nabízející dobrou kontrolu. Vhodná pro přesné a metodické čaroděje." },
+      { name: "Pevná", description: "Vyvážená ohebnost poskytující jak stabilitu, tak flexibilitu. Univerzální volba pro většinu kouzelníků." },
+      { name: "Tvrdá", description: "Poměrně pevná hůlka s dobrou odezvou. Ideální pro tradiční a formální magii." },
+      { name: "Ohebná", description: "Flexibilní hůlka přizpůsobující se stylu majitele. Vhodná pro kreativní a adaptabilní čaroděje." },
+      { name: "Pružná", description: "Velmi ohebná hůlka podporující inovativní kouzla. Preferuje experimentální a originální přístupy." },
+      { name: "Velmi pružná", description: "Extrémně flexibilní hůlka pro čaroděje s proměnlivou povahou. Vynikající pro improvisaci." },
+      { name: "Výjimečně poddajná", description: "Mimořádně ohebná hůlka pro ty nejvíce přizpůsobivé kouzelníky. Reaguje na nejjemnější pohyby." },
+      { name: "Vrbovitá", description: "Nejvíce poddajná možná ohebnost. Hůlka se téměř ohýbá s myšlenkami majitele, vyžaduje delikatní přístup." }
     ];
 
     return { woods, cores, lengths, flexibilities };
