@@ -39,26 +39,13 @@ export default function CharacterEdit() {
 
   const isAdmin = user?.role === 'admin';
 
-  // Force cache invalidation on component mount
-  useEffect(() => {
-    queryClient.invalidateQueries({ queryKey: ["/api/characters/main"] });
-    queryClient.invalidateQueries({ queryKey: ["/api/characters"] });
-  }, [queryClient]);
-
   // Fetch the main character
-  const { data: mainCharacter, isLoading: isLoadingMain } = useQuery<any>({
+  const { data: mainCharacter } = useQuery<any>({
     queryKey: ["/api/characters/main"],
     enabled: !!user,
-    staleTime: 0, // Always fetch fresh data
-    refetchOnMount: true,
-    refetchOnWindowFocus: true,
   });
 
   const primaryCharacter = mainCharacter;
-
-  // Debug logging
-  console.log("Edit page - Main character:", mainCharacter);
-  console.log("Edit page - Primary character:", primaryCharacter);
 
   // Regular user form (only school and description)
   const userForm = useForm<UserEditForm>({
