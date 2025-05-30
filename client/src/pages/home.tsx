@@ -93,7 +93,7 @@ export default function Home() {
     },
   });
 
-  const primaryCharacter = user?.characters?.[0];
+  const primaryCharacter = mainCharacter || userCharacters[0];
   const characterAge = primaryCharacter ? 
     calculateGameAge(primaryCharacter.birthDate) : 0;
 
@@ -227,7 +227,7 @@ export default function Home() {
                   </Button>
                   <Button 
                     className="bg-gradient-to-r from-primary to-secondary hover:from-secondary hover:to-primary text-primary-foreground p-4 h-auto rounded-lg transition-all duration-200 transform hover:scale-105 text-left justify-start"
-                    onClick={() => window.location.href = '/chat'}
+                    onClick={() => setLocation('/chat')}
                   >
                     <div>
                       <MessageCircle className="h-6 w-6 mb-2" />
