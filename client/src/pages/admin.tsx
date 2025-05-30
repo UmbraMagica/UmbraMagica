@@ -156,6 +156,59 @@ export default function Admin() {
     },
   });
 
+  const killCharacterMutation = useMutation({
+    mutationFn: async ({ characterId, deathReason }: { characterId: number; deathReason: string }) => {
+      const response = await apiRequest("POST", `/api/admin/characters/${characterId}/kill`, { deathReason });
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Úspěch",
+        description: "Postava byla označena jako zemřelá",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/characters/all"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/cemetery"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/activity-log"] });
+      setKillCharacterData(null);
+      setDeathReason("");
+      setShowConfirmKill(false);
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Chyba",
+        description: error.message || "Nepodařilo se označit postavu jako zemřelou",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleKillCharacter = (characterId: number, characterName: string) => {
+    setKillCharacterData({ id: characterId, name: characterName });
+    setDeathReason("");
+    setShowConfirmKill(false);
+  };
+
+  const confirmKillCharacter = () => {
+    if (!killCharacterData || !deathReason.trim()) {
+      toast({
+        title: "Chyba",
+        description: "Důvod smrti je povinný",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!showConfirmKill) {
+      setShowConfirmKill(true);
+      return;
+    }
+
+    killCharacterMutation.mutate({
+      characterId: killCharacterData.id,
+      deathReason: deathReason.trim(),
+    });
+  };
+
   const handleLogout = async () => {
     try {
       await logout();
@@ -578,6 +631,117 @@ export default function Admin() {
                   <div className="text-center py-8">
                     <UserPlus className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                     <p className="text-muted-foreground">Žádné žádosti o nové postavy</p>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Character Management & Cemetery */}
+          <Card className="bg-card border-border">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-semibold text-foreground flex items-center">
+                  <Skull className="text-red-400 mr-3 h-5 w-5" />
+                  Správa postav - Hřbitov
+                </h2>
+              </div>
+
+              <div className="space-y-4">
+                {allCharacters.filter((char: any) => char.isActive).length > 0 ? (
+                  allCharacters.filter((char: any) => char.isActive).map((character: any) => (
+                    <div key={character.id} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold">
+                          {character.firstName[0]}{character.lastName[0]}
+                        </div>
+                        <div>
+                          <h4 className="font-medium text-foreground">
+                            {character.firstName} {character.middleName} {character.lastName}
+                          </h4>
+                          <p className="text-sm text-muted-foreground">
+                            @{character.user?.username} • ID: {character.id}
+                          </p>
+                        </div>
+                      </div>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => handleKillCharacter(character.id, `${character.firstName} ${character.lastName}`)}
+                        className="flex items-center gap-2"
+                      >
+                        <Skull className="h-4 w-4" />
+                        Označit jako zemřelou
+                      </Button>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-8">
+                    <Users className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                    <p className="text-muted-foreground">Žádné aktivní postavy</p>
+                  </div>
+                )}
+
+                {/* Kill Character Dialog */}
+                {killCharacterData && (
+                  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+                    <div className="bg-card border border-border rounded-lg p-6 w-full max-w-md mx-4">
+                      <div className="flex items-center gap-3 mb-4">
+                        <AlertTriangle className="h-6 w-6 text-red-400" />
+                        <h3 className="text-lg font-semibold text-foreground">
+                          Označit postavu jako zemřelou
+                        </h3>
+                      </div>
+                      
+                      <p className="text-muted-foreground mb-4">
+                        Opravdu chcete označit postavu <strong>{killCharacterData.name}</strong> jako zemřelou?
+                        Tato akce je nevratná.
+                      </p>
+
+                      <div className="space-y-4">
+                        <div>
+                          <label className="text-sm font-medium text-foreground">
+                            Důvod smrti (povinné)
+                          </label>
+                          <Input
+                            value={deathReason}
+                            onChange={(e) => setDeathReason(e.target.value)}
+                            placeholder="Napište důvod smrti..."
+                            className="mt-1"
+                          />
+                        </div>
+
+                        {showConfirmKill && (
+                          <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
+                            <p className="text-sm text-red-400 font-medium">
+                              ⚠️ Poslední potvrzení: Klikněte znovu pro potvrzení smrti postavy
+                            </p>
+                          </div>
+                        )}
+
+                        <div className="flex gap-3">
+                          <Button
+                            variant="outline"
+                            onClick={() => {
+                              setKillCharacterData(null);
+                              setDeathReason("");
+                              setShowConfirmKill(false);
+                            }}
+                            className="flex-1"
+                          >
+                            Zrušit
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            onClick={confirmKillCharacter}
+                            disabled={killCharacterMutation.isPending || !deathReason.trim()}
+                            className="flex-1"
+                          >
+                            {showConfirmKill ? "POTVRDIT SMRT" : "Označit jako zemřelou"}
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>

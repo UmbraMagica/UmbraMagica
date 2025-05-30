@@ -1091,6 +1091,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
               return;
             }
 
+            // Check if character is alive (not in cemetery)
+            const messageCharacterCheck = await storage.getCharacter(connectionInfo.characterId);
+            if (!messageCharacterCheck || !messageCharacterCheck.isActive) {
+              ws.send(JSON.stringify({ 
+                type: 'error', 
+                message: 'Zemřelé postavy nemohou psát zprávy. Navštivte hřbitov pro více informací.' 
+              }));
+              return;
+            }
+
             // Validate message content
             const validatedMessage = insertMessageSchema.parse({
               roomId: message.roomId,
@@ -1138,9 +1148,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
             // Generate random dice roll (1-10)
             const diceResult = Math.floor(Math.random() * 10) + 1;
             
-            // Get character info first for immediate broadcast
+            // Get character info and check if alive
             const diceCharacter = await storage.getCharacter(diceConnectionInfo.characterId);
-            if (!diceCharacter) return;
+            if (!diceCharacter || !diceCharacter.isActive) {
+              ws.send(JSON.stringify({ 
+                type: 'error', 
+                message: 'Zemřelé postavy nemohou házet kostkou. Navštivte hřbitov pro více informací.' 
+              }));
+              return;
+            }
 
             // Create message object for immediate broadcast
             const tempDiceMessage = {
