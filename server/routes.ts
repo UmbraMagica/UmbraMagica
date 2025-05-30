@@ -1144,7 +1144,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Cast spell in chat
   app.post("/api/game/cast-spell", requireAuth, async (req, res) => {
     try {
-      const { roomId, characterId, spellId } = req.body;
+      const { roomId, characterId, spellId, message } = req.body;
       
       if (!roomId || !characterId || !spellId) {
         return res.status(400).json({ message: "roomId, characterId and spellId are required" });
@@ -1168,11 +1168,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const successRoll = Math.floor(Math.random() * 10) + 1;
       const isSuccess = successRoll >= 5; // 60% success rate
       
+      // Combine user message with spell casting result
+      const combinedContent = message ? 
+        `${message.trim()} *[Seslal kouzlo ${spell.name} (${successRoll}/10) - ${isSuccess ? 'Úspěch' : 'Neúspěch'}: ${spell.effect}]*` :
+        `*Seslal kouzlo ${spell.name} (${successRoll}/10) - ${isSuccess ? 'Úspěch' : 'Neúspěch'}: ${spell.effect}*`;
+      
       // Create spell cast message
       const spellMessage = await storage.createMessage({
         roomId: parseInt(roomId),
         characterId: parseInt(characterId),
-        content: `seslal kouzlo ${spell.name} (${successRoll}/10) - ${isSuccess ? 'Úspěch' : 'Neúspěch'}: ${spell.effect}`,
+        content: combinedContent,
         messageType: 'spell_cast',
       });
 

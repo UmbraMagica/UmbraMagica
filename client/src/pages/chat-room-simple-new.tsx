@@ -64,6 +64,7 @@ export default function ChatRoom() {
     fullName: string;
   }>>([]);
   const [showSpellDialog, setShowSpellDialog] = useState(false);
+  const [selectedSpell, setSelectedSpell] = useState<any>(null);
   
   const currentRoomId = roomId ? parseInt(roomId) : null;
 
@@ -232,14 +233,25 @@ export default function ChatRoom() {
     if (needsCharacter && !currentCharacter) return;
 
     try {
-      const messageData = {
-        roomId: currentRoomId,
-        characterId: currentCharacter?.id,
-        content: messageInput.trim(),
-        messageType: 'text'
-      };
-
-      await apiRequest("POST", "/api/chat/messages", messageData);
+      // If spell is selected, cast it with the message
+      if (selectedSpell) {
+        await apiRequest("POST", "/api/game/cast-spell", {
+          roomId: currentRoomId,
+          characterId: currentCharacter?.id,
+          spellId: selectedSpell.id,
+          message: messageInput.trim()
+        });
+        setSelectedSpell(null);
+      } else {
+        // Send regular message
+        const messageData = {
+          roomId: currentRoomId,
+          characterId: currentCharacter?.id,
+          content: messageInput.trim(),
+          messageType: 'text'
+        };
+        await apiRequest("POST", "/api/chat/messages", messageData);
+      }
       setMessageInput("");
     } catch (error) {
       toast({
@@ -284,27 +296,13 @@ export default function ChatRoom() {
     }
   };
 
-  const handleCastSpell = async (spellId: number) => {
-    if (!currentCharacter || !currentRoomId) return;
-
-    try {
-      await apiRequest("POST", "/api/game/cast-spell", {
-        roomId: currentRoomId,
-        characterId: currentCharacter.id,
-        spellId: spellId
-      });
-      setShowSpellDialog(false);
-      toast({
-        title: "Úspěch",
-        description: "Kouzlo bylo sesláno.",
-      });
-    } catch (error) {
-      toast({
-        title: "Chyba",
-        description: "Nepodařilo se seslat kouzlo.",
-        variant: "destructive",
-      });
-    }
+  const handleSelectSpell = (spell: any) => {
+    setSelectedSpell(spell);
+    setShowSpellDialog(false);
+    toast({
+      title: "Kouzlo vybráno",
+      description: `${spell.name} bude sesláno s dalším příspěvkem`,
+    });
   };
 
   const handleDownloadChat = async () => {
@@ -895,7 +893,7 @@ export default function ChatRoom() {
               </div>
             ) : (
               characterSpells.map((characterSpell: any) => (
-                <Card key={characterSpell.spell.id} className="cursor-pointer hover:bg-accent/50" onClick={() => handleCastSpell(characterSpell.spell.id)}>
+                <Card key={characterSpell.spell.id} className="cursor-pointer hover:bg-accent/50" onClick={() => handleSelectSpell(characterSpell.spell)}>
                   <CardContent className="p-4">
                     <div className="flex items-start justify-between">
                       <div>
