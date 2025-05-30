@@ -878,6 +878,46 @@ export default function ChatRoom() {
           )}
         </div>
       </div>
+
+      {/* Spell Selection Dialog */}
+      <Dialog open={showSpellDialog} onOpenChange={setShowSpellDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Wand2 className="h-5 w-5" />
+              Vyberte kouzlo
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3">
+            {characterSpells.length === 0 ? (
+              <div className="text-center py-4 text-muted-foreground">
+                Vaše postava nezná žádná kouzla.
+              </div>
+            ) : (
+              characterSpells.map((characterSpell: any) => (
+                <Card key={characterSpell.spell.id} className="cursor-pointer hover:bg-accent/50" onClick={() => handleCastSpell(characterSpell.spell.id)}>
+                  <CardContent className="p-4">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <h4 className="font-medium">{characterSpell.spell.name}</h4>
+                        <p className="text-sm text-muted-foreground mt-1">{characterSpell.spell.description}</p>
+                        <div className="flex gap-2 mt-2">
+                          <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">
+                            {characterSpell.spell.category}
+                          </span>
+                          <span className="text-xs bg-secondary px-2 py-1 rounded">
+                            {characterSpell.spell.type}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
