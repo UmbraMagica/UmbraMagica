@@ -54,9 +54,15 @@ export default function AdminArchive() {
     staleTime: 30000,
   });
 
-  const { data: archivedMessages = [], isLoading } = useQuery<ArchivedMessage[]>({
-    queryKey: [`/api/admin/rooms/${selectedRoomId}/archived`, page],
+  const { data: archiveDates = [] } = useQuery<string[]>({
+    queryKey: [`/api/admin/rooms/${selectedRoomId}/archive-dates`],
     enabled: !!selectedRoomId,
+    staleTime: 30000,
+  });
+
+  const { data: archivedMessages = [], isLoading } = useQuery<ArchivedMessage[]>({
+    queryKey: [`/api/admin/rooms/${selectedRoomId}/archived/${selectedArchiveDate}`, page],
+    enabled: !!selectedRoomId && !!selectedArchiveDate,
     staleTime: 10000,
   });
 
@@ -108,7 +114,7 @@ export default function AdminArchive() {
       </div>
 
       <div className="max-w-7xl mx-auto p-6">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Room Selection */}
           <div className="lg:col-span-1">
             <Card>
@@ -126,6 +132,7 @@ export default function AdminArchive() {
                     className="w-full justify-start"
                     onClick={() => {
                       setSelectedRoomId(room.id);
+                      setSelectedArchiveDate(null);
                       setPage(0);
                     }}
                   >
@@ -137,15 +144,51 @@ export default function AdminArchive() {
             </Card>
           </div>
 
+          {/* Archive Dates */}
+          {selectedRoomId && (
+            <div className="lg:col-span-1">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Calendar className="h-5 w-5" />
+                    Archivní složky
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  {archiveDates.length > 0 ? (
+                    archiveDates.map((date) => (
+                      <Button
+                        key={date}
+                        variant={selectedArchiveDate === date ? "default" : "ghost"}
+                        className="w-full justify-start"
+                        onClick={() => {
+                          setSelectedArchiveDate(date);
+                          setPage(0);
+                        }}
+                      >
+                        <Folder className="h-4 w-4 mr-2" />
+                        {new Date(date).toLocaleDateString('cs-CZ')}
+                      </Button>
+                    ))
+                  ) : (
+                    <p className="text-sm text-muted-foreground p-4">
+                      Žádné archivní složky
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
           {/* Archive Content */}
           <div className="lg:col-span-2">
-            {selectedRoom ? (
+            {selectedRoom && selectedArchiveDate ? (
               <Card>
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <CardTitle className="flex items-center gap-2">
                       <Calendar className="h-5 w-5" />
-                      Archiv: {selectedRoom.name}
+                      Archiv: {selectedRoom.name} - {new Date(selectedArchiveDate).toLocaleDateString('cs-CZ')}
                     </CardTitle>
                     <Button
                       onClick={handleDownloadArchive}
@@ -219,6 +262,13 @@ export default function AdminArchive() {
                       <p className="text-muted-foreground">V této místnosti nejsou žádné archivované zprávy.</p>
                     </div>
                   )}
+                </CardContent>
+              </Card>
+            ) : selectedRoom ? (
+              <Card>
+                <CardContent className="text-center py-12">
+                  <Folder className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-muted-foreground">Vyberte archivní složku pro zobrazení zpráv.</p>
                 </CardContent>
               </Card>
             ) : (
