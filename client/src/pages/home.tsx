@@ -93,7 +93,13 @@ export default function Home() {
                   <Users className="mr-2 h-4 w-4" />
                   Seznam postav
                 </Button>
-                <Button variant="ghost" className="text-foreground hover:text-accent" onClick={() => window.location.href = '/character/edit'}>
+                <Button variant="ghost" className="text-foreground hover:text-accent" onClick={() => {
+                  if (primaryCharacter) {
+                    window.location.href = `/characters/${primaryCharacter.id}`;
+                  } else {
+                    window.location.href = '/character/edit';
+                  }
+                }}>
                   <User className="mr-2 h-4 w-4" />
                   Moje postava
                 </Button>
