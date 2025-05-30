@@ -275,6 +275,9 @@ export default function CharacterEditSimple() {
 
                     <div className="space-y-2">
                       <Label htmlFor="description" className="text-foreground">Popis postavy</Label>
+                      <p className="text-xs text-muted-foreground">
+                        Podporuje HTML formátování: <code>&lt;b&gt;tučné&lt;/b&gt;</code>, <code>&lt;i&gt;kurzíva&lt;/i&gt;</code>, <code>&lt;u&gt;podtržené&lt;/u&gt;</code>, odkazy, obrázky
+                      </p>
                       <Textarea
                         id="description"
                         {...adminForm.register("description")}
@@ -337,6 +340,9 @@ export default function CharacterEditSimple() {
 
                     <div className="space-y-2">
                       <Label htmlFor="description" className="text-foreground">Popis postavy</Label>
+                      <p className="text-xs text-muted-foreground">
+                        Podporuje HTML formátování: <code>&lt;b&gt;tučné&lt;/b&gt;</code>, <code>&lt;i&gt;kurzíva&lt;/i&gt;</code>, <code>&lt;u&gt;podtržené&lt;/u&gt;</code>, odkazy, obrázky
+                      </p>
                       <Textarea
                         id="description"
                         {...userForm.register("description")}

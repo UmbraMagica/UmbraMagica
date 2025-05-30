@@ -215,9 +215,10 @@ export default function CharacterProfile() {
                       <h3 className="font-medium mb-3">Popis postavy</h3>
                       <div className="flex items-start gap-3">
                         <FileText className="h-4 w-4 text-muted-foreground mt-0.5" />
-                        <div className="text-sm text-muted-foreground leading-relaxed">
-                          {character.description}
-                        </div>
+                        <div 
+                          className="text-sm text-muted-foreground leading-relaxed prose prose-sm max-w-none"
+                          dangerouslySetInnerHTML={{ __html: character.description }}
+                        />
                       </div>
                     </div>
                   </>
