@@ -818,8 +818,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get all characters with user info
+  // Get user's own characters
   app.get("/api/characters", requireAuth, async (req, res) => {
+    try {
+      const characters = await storage.getCharactersByUserId(req.session.userId!);
+      res.json(characters);
+    } catch (error) {
+      console.error("Error fetching user characters:", error);
+      res.status(500).json({ message: "Failed to fetch characters" });
+    }
+  });
+
+  // Get all characters with user info (for admin/public use)
+  app.get("/api/characters/all", requireAuth, async (req, res) => {
     try {
       const users = await storage.getAllUsers();
       const allCharacters = [];
@@ -839,7 +850,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       res.json(allCharacters);
     } catch (error) {
-      console.error("Error fetching characters:", error);
+      console.error("Error fetching all characters:", error);
       res.status(500).json({ message: "Failed to fetch characters" });
     }
   });

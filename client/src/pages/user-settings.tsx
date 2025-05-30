@@ -68,6 +68,18 @@ export default function UserSettings() {
     enabled: !!user,
   });
 
+  // Fetch user's characters
+  const { data: userCharacters = [] } = useQuery({
+    queryKey: ["/api/characters"],
+    enabled: !!user,
+  });
+
+  // Fetch main character
+  const { data: mainCharacter } = useQuery({
+    queryKey: ["/api/characters/main"],
+    enabled: !!user,
+  });
+
   // Create character request mutation
   const createRequestMutation = useMutation({
     mutationFn: async (data: CharacterRequestForm) => {
@@ -109,6 +121,29 @@ export default function UserSettings() {
       toast({
         title: "Chyba",
         description: error.message || "Nepodařilo se stáhnout žádost",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Set main character mutation
+  const setMainCharacterMutation = useMutation({
+    mutationFn: async (characterId: number) => {
+      const response = await apiRequest("POST", `/api/characters/${characterId}/set-main`);
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Primární postava nastavena",
+        description: "Vaše primární postava byla úspěšně změněna.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/characters/main"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/characters"] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Chyba",
+        description: error.message || "Nepodařilo se nastavit primární postavu",
         variant: "destructive",
       });
     },
@@ -174,6 +209,66 @@ export default function UserSettings() {
         </div>
 
         <div className="grid grid-cols-1 gap-6">
+          {/* Primary Character Management */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <User className="h-5 w-5" />
+                Správa postav
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {userCharacters.length > 0 ? (
+                <div className="space-y-3">
+                  <div className="text-sm text-muted-foreground mb-3">
+                    Vyberte svou primární postavu, která se zobrazí po přihlášení:
+                  </div>
+                  {userCharacters.map((character: any) => (
+                    <div key={character.id} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
+                      <div className="flex items-center space-x-3">
+                        <div className="flex items-center space-x-2">
+                          <h4 className="font-medium text-foreground">
+                            {character.firstName} {character.middleName} {character.lastName}
+                          </h4>
+                          {mainCharacter?.id === character.id && (
+                            <Badge className="bg-accent/20 text-accent">Primární</Badge>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => window.location.href = `/characters/${character.id}`}
+                        >
+                          Zobrazit profil
+                        </Button>
+                        {mainCharacter?.id !== character.id && (
+                          <Button
+                            size="sm"
+                            onClick={() => setMainCharacterMutation.mutate(character.id)}
+                            disabled={setMainCharacterMutation.isPending}
+                            className="bg-accent hover:bg-accent/90"
+                          >
+                            Nastavit jako primární
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <User className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                  <p className="text-muted-foreground">Zatím nemáte žádné postavy</p>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Požádejte o vytvoření nové postavy níže
+                  </p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
           {/* Character Requests Section */}
           <Card>
             <CardHeader>

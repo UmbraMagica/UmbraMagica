@@ -30,7 +30,7 @@ export default function CharactersList() {
   const isAdmin = user?.role === 'admin';
 
   const { data: characters = [], isLoading } = useQuery<Character[]>({
-    queryKey: ["/api/characters"],
+    queryKey: ["/api/characters/all"],
   });
 
   const getCharacterInitials = (character: Character) => {
