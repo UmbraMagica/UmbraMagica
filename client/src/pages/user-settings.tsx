@@ -23,9 +23,7 @@ import {
   Home,
   ArrowLeft,
   UserPlus,
-  Settings,
-  Upload,
-  Trash2
+  Settings
 } from "lucide-react";
 import { CharacterAvatar } from "@/components/CharacterAvatar";
 
@@ -155,95 +153,8 @@ export default function UserSettings() {
     },
   });
 
-  // Upload avatar mutation
-  const uploadAvatarMutation = useMutation({
-    mutationFn: async ({ characterId, file }: { characterId: number; file: File }) => {
-      const formData = new FormData();
-      formData.append('avatar', file);
-      
-      const response = await fetch(`/api/characters/${characterId}/avatar`, {
-        method: 'POST',
-        body: formData,
-      });
-      
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to upload avatar');
-      }
-      
-      return response.json();
-    },
-    onSuccess: () => {
-      toast({
-        title: "Avatar nahrán",
-        description: "Profilový obrázek byl úspěšně nahrán.",
-      });
-      queryClient.invalidateQueries({ queryKey: ["/api/characters"] });
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Chyba",
-        description: error.message || "Nepodařilo se nahrát avatar",
-        variant: "destructive",
-      });
-    },
-  });
-
-  // Remove avatar mutation
-  const removeAvatarMutation = useMutation({
-    mutationFn: async (characterId: number) => {
-      const response = await apiRequest("DELETE", `/api/characters/${characterId}/avatar`);
-      return response.json();
-    },
-    onSuccess: () => {
-      toast({
-        title: "Avatar odstraněn",
-        description: "Profilový obrázek byl úspěšně odstraněn.",
-      });
-      queryClient.invalidateQueries({ queryKey: ["/api/characters"] });
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Chyba",
-        description: error.message || "Nepodařilo se odstranit avatar",
-        variant: "destructive",
-      });
-    },
-  });
-
   const onSubmit = (data: CharacterRequestForm) => {
     createRequestMutation.mutate(data);
-  };
-
-  // Handle avatar file selection
-  const handleAvatarUpload = (characterId: number, event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      // Validate file type
-      if (!file.type.startsWith('image/')) {
-        toast({
-          title: "Neplatný soubor",
-          description: "Prosím vyberte obrázek (JPG, PNG, WebP).",
-          variant: "destructive",
-        });
-        return;
-      }
-      
-      // Validate file size (5MB limit)
-      if (file.size > 5 * 1024 * 1024) {
-        toast({
-          title: "Soubor je příliš velký",
-          description: "Obrázek nesmí být větší než 5MB.",
-          variant: "destructive",
-        });
-        return;
-      }
-      
-      uploadAvatarMutation.mutate({ characterId, file });
-    }
-    
-    // Reset input
-    event.target.value = '';
   };
 
   const getStatusBadge = (status: string) => {
@@ -339,42 +250,19 @@ export default function UserSettings() {
                         </div>
                       </div>
                       <div className="flex items-center space-x-2">
-                        {/* Avatar Upload/Remove */}
-                        <div className="flex items-center space-x-1">
-                          <input
-                            type="file"
-                            accept="image/*"
-                            onChange={(e) => handleAvatarUpload(character.id, e)}
-                            className="hidden"
-                            id={`avatar-upload-${character.id}`}
-                          />
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => document.getElementById(`avatar-upload-${character.id}`)?.click()}
-                            disabled={uploadAvatarMutation.isPending}
-                          >
-                            <Upload className="h-4 w-4 mr-1" />
-                            {character.avatar ? 'Změnit avatar' : 'Nahrát avatar'}
-                          </Button>
-                          {character.avatar && (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => removeAvatarMutation.mutate(character.id)}
-                              disabled={removeAvatarMutation.isPending}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          )}
-                        </div>
-                        
                         <Button
                           variant="outline"
                           size="sm"
                           onClick={() => window.location.href = `/characters/${character.id}`}
                         >
                           Zobrazit profil
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => window.location.href = `/character/edit`}
+                        >
+                          Upravit
                         </Button>
                         {userCharacters.length > 1 && mainCharacter?.id !== (character as any)?.id && (
                           <Button

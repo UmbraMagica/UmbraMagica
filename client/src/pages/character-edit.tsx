@@ -367,34 +367,140 @@ export default function CharacterEdit() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {isAdmin ? (
+                  <form onSubmit={adminForm.handleSubmit(onSubmit)} className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="firstName" className="text-foreground">Jméno *</Label>
+                        <Input
+                          id="firstName"
+                          {...adminForm.register("firstName")}
+                          placeholder="Zadejte jméno"
+                          className="bg-muted border-border text-foreground"
+                        />
+                        {adminForm.formState.errors.firstName && (
+                          <p className="text-sm text-destructive">{adminForm.formState.errors.firstName.message}</p>
+                        )}
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="lastName" className="text-foreground">Příjmení *</Label>
+                        <Input
+                          id="lastName"
+                          {...adminForm.register("lastName")}
+                          placeholder="Zadejte příjmení"
+                          className="bg-muted border-border text-foreground"
+                        />
+                        {adminForm.formState.errors.lastName && (
+                          <p className="text-sm text-destructive">{adminForm.formState.errors.lastName.message}</p>
+                        )}
+                      </div>
+                    </div>
+
                     <div className="space-y-2">
-                      <Label htmlFor="firstName" className="text-foreground">Jméno *</Label>
+                      <Label htmlFor="middleName" className="text-foreground">Prostřední jméno</Label>
                       <Input
-                        id="firstName"
-                        {...form.register("firstName")}
-                        placeholder="Zadejte jméno"
+                        id="middleName"
+                        {...adminForm.register("middleName")}
+                        placeholder="Zadejte prostřední jméno (volitelné)"
                         className="bg-muted border-border text-foreground"
                       />
-                      {form.formState.errors.firstName && (
-                        <p className="text-sm text-destructive">{form.formState.errors.firstName.message}</p>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="birthDate" className="text-foreground">Datum narození *</Label>
+                      <Input
+                        id="birthDate"
+                        type="date"
+                        {...adminForm.register("birthDate")}
+                        className="bg-muted border-border text-foreground"
+                      />
+                      {adminForm.formState.errors.birthDate && (
+                        <p className="text-sm text-destructive">{adminForm.formState.errors.birthDate.message}</p>
                       )}
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="lastName" className="text-foreground">Příjmení *</Label>
+                      <Label htmlFor="school" className="text-foreground">Škola</Label>
                       <Input
-                        id="lastName"
-                        {...form.register("lastName")}
-                        placeholder="Zadejte příjmení"
+                        id="school"
+                        {...adminForm.register("school")}
+                        placeholder="Zadejte školu"
                         className="bg-muted border-border text-foreground"
                       />
-                      {form.formState.errors.lastName && (
-                        <p className="text-sm text-destructive">{form.formState.errors.lastName.message}</p>
-                      )}
                     </div>
-                  </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="description" className="text-foreground">Popis postavy</Label>
+                      <Textarea
+                        id="description"
+                        {...adminForm.register("description")}
+                        placeholder="Popište svou postavu..."
+                        className="bg-muted border-border text-foreground min-h-[120px]"
+                      />
+                    </div>
+
+                    <div className="flex items-center space-x-4 pt-4 border-t border-border">
+                      <Button
+                        type="submit"
+                        disabled={updateCharacterMutation.isPending}
+                        className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                      >
+                        <Save className="h-4 w-4 mr-2" />
+                        {updateCharacterMutation.isPending ? "Ukládám..." : "Uložit změny"}
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setLocation('/')}
+                        className="text-foreground border-border hover:bg-muted"
+                      >
+                        Zrušit
+                      </Button>
+                    </div>
+                  </form>
+                ) : (
+                  <form onSubmit={userForm.handleSubmit(onSubmit)} className="space-y-6">
+                    <div className="space-y-2">
+                      <Label htmlFor="school" className="text-foreground">Škola</Label>
+                      <Input
+                        id="school"
+                        {...userForm.register("school")}
+                        placeholder="Zadejte školu"
+                        className="bg-muted border-border text-foreground"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="description" className="text-foreground">Popis postavy</Label>
+                      <Textarea
+                        id="description"
+                        {...userForm.register("description")}
+                        placeholder="Popište svou postavu..."
+                        className="bg-muted border-border text-foreground min-h-[120px]"
+                      />
+                    </div>
+
+                    <div className="flex items-center space-x-4 pt-4 border-t border-border">
+                      <Button
+                        type="submit"
+                        disabled={updateCharacterMutation.isPending}
+                        className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                      >
+                        <Save className="h-4 w-4 mr-2" />
+                        {updateCharacterMutation.isPending ? "Ukládám..." : "Uložit změny"}
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setLocation('/')}
+                        className="text-foreground border-border hover:bg-muted"
+                      >
+                        Zrušit
+                      </Button>
+                    </div>
+                  </form>
+                )}
 
                   <div className="space-y-2">
                     <Label htmlFor="middleName" className="text-foreground">Prostřední jméno</Label>
