@@ -137,6 +137,7 @@ export default function AdminSpells() {
 
   const handleEdit = (spell: Spell) => {
     setEditingSpell(spell);
+    setIsQuickAdd(false); // Při editaci vždy používáme podrobnou formu
     setFormData({
       name: spell.name,
       description: spell.description,
@@ -164,6 +165,7 @@ export default function AdminSpells() {
   const handleCancel = () => {
     setIsCreating(false);
     setEditingSpell(null);
+    setIsQuickAdd(false);
     resetForm();
   };
 
@@ -238,90 +240,178 @@ export default function AdminSpells() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="md:col-span-2">
-                <label className="block text-sm font-medium mb-1">Název kouzla *</label>
-                <Input
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="Lumos"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Cíl kouzla</label>
-                <Select
-                  value={formData.targetType}
-                  onValueChange={(value: "self" | "other" | "object") => 
-                    setFormData({ ...formData, targetType: value })
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="self">Sebe</SelectItem>
-                    <SelectItem value="other">Jinou postavu</SelectItem>
-                    <SelectItem value="object">Předmět</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium mb-1">Kategorie *</label>
-                <Select
-                  value={formData.category}
-                  onValueChange={(value) => setFormData({ ...formData, category: value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Vyberte kategorii" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {categories.map((category) => (
-                      <SelectItem key={category} value={category}>
-                        {category}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Typ *</label>
-                <Select
-                  value={formData.type}
-                  onValueChange={(value) => setFormData({ ...formData, type: value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Vyberte typ" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {types.map((type) => (
-                      <SelectItem key={type} value={type}>
-                        {type}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Popis kouzla *</label>
-              <Textarea
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                placeholder="Krátký popis kouzla..."
-                rows={2}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Efekt kouzla *</label>
-              <Textarea
-                value={formData.effect}
-                onChange={(e) => setFormData({ ...formData, effect: e.target.value })}
-                placeholder="Detailní popis efektu kouzla..."
-                rows={3}
-              />
-            </div>
+            {isQuickAdd ? (
+              // Rychlá forma - pouze základní pole
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Název kouzla *</label>
+                    <Input
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      placeholder="Lumos"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Kategorie *</label>
+                    <Select
+                      value={formData.category}
+                      onValueChange={(value) => setFormData({ ...formData, category: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {categories.map((category) => (
+                          <SelectItem key={category} value={category}>
+                            {category}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Typ *</label>
+                    <Select
+                      value={formData.type}
+                      onValueChange={(value) => setFormData({ ...formData, type: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {types.map((type) => (
+                          <SelectItem key={type} value={type}>
+                            {type}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Cíl kouzla</label>
+                    <Select
+                      value={formData.targetType}
+                      onValueChange={(value: "self" | "other" | "object") => 
+                        setFormData({ ...formData, targetType: value })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="self">Sebe</SelectItem>
+                        <SelectItem value="other">Jinou postavu</SelectItem>
+                        <SelectItem value="object">Předmět</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Popis a efekt kouzla *</label>
+                  <Textarea
+                    value={formData.description}
+                    onChange={(e) => setFormData({ 
+                      ...formData, 
+                      description: e.target.value,
+                      effect: e.target.value // Pro rychlé přidání použijeme stejný text
+                    })}
+                    placeholder="Popis kouzla a jeho efektu..."
+                    rows={3}
+                  />
+                </div>
+              </>
+            ) : (
+              // Podrobná forma - všechna pole
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium mb-1">Název kouzla *</label>
+                    <Input
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      placeholder="Lumos"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Cíl kouzla</label>
+                    <Select
+                      value={formData.targetType}
+                      onValueChange={(value: "self" | "other" | "object") => 
+                        setFormData({ ...formData, targetType: value })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="self">Sebe</SelectItem>
+                        <SelectItem value="other">Jinou postavu</SelectItem>
+                        <SelectItem value="object">Předmět</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Kategorie *</label>
+                    <Select
+                      value={formData.category}
+                      onValueChange={(value) => setFormData({ ...formData, category: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Vyberte kategorii" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {categories.map((category) => (
+                          <SelectItem key={category} value={category}>
+                            {category}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Typ *</label>
+                    <Select
+                      value={formData.type}
+                      onValueChange={(value) => setFormData({ ...formData, type: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Vyberte typ" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {types.map((type) => (
+                          <SelectItem key={type} value={type}>
+                            {type}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Popis kouzla *</label>
+                  <Textarea
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    placeholder="Krátký popis kouzla..."
+                    rows={2}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Efekt kouzla *</label>
+                  <Textarea
+                    value={formData.effect}
+                    onChange={(e) => setFormData({ ...formData, effect: e.target.value })}
+                    placeholder="Detailní popis efektu kouzla..."
+                    rows={3}
+                  />
+                </div>
+              </>
+            )}
             <div className="flex gap-2">
               <Button
                 onClick={handleSubmit}
