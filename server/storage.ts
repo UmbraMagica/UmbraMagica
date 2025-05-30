@@ -1214,6 +1214,11 @@ export class DatabaseStorage implements IStorage {
     lengths: string[];
     flexibilities: string[];
   }> {
+    // Return stored components if they exist
+    if (this.storedWandComponents) {
+      return this.storedWandComponents;
+    }
+
     const woods = [
       { name: "Akácie", description: "Symbolizuje čistotu a obrození. Hůlky z akácie jsou velmi citlivé a vyžadují zkušeného čaroděje." },
       { name: "Anglický dub", description: "Síla a vytrvalost. Oblíbené u Aurorů a těch, kdo chrání ostatní." },
@@ -1333,16 +1338,22 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
+  private storedWandComponents: {
+    woods: { name: string; description: string }[];
+    cores: { name: string; category: string; description: string }[];
+    lengths: string[];
+    flexibilities: string[];
+  } | null = null;
+
   async updateWandComponents(components: {
     woods: { name: string; description: string }[];
     cores: { name: string; category: string; description: string }[];
     lengths: string[];
     flexibilities: string[];
   }): Promise<void> {
-    // For now, this will simply return the updated components
-    // In a full implementation, these would be stored in the database
-    // Currently using hardcoded values in getAllWandComponents()
-    console.log("Wand components updated:", components);
+    // Store updated components in memory
+    this.storedWandComponents = components;
+    console.log("Wand components updated and stored in memory:", components);
   }
 }
 
