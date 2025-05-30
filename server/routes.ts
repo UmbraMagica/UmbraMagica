@@ -357,6 +357,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Update existing characters to use game year dates
+  app.post("/api/admin/update-character-dates", requireAdmin, async (req, res) => {
+    try {
+      const users = await storage.getAllUsers();
+      let updatedCount = 0;
+
+      for (const user of users) {
+        const characters = await storage.getCharactersByUserId(user.id);
+        for (const character of characters) {
+          // Only update characters with modern birth dates (after 1926)
+          const birthYear = new Date(character.birthDate).getFullYear();
+          if (birthYear > 1926) {
+            // Convert to appropriate game year (1880-1910 range)
+            const gameAge = Math.max(16, Math.min(46, birthYear - 1970)); // Reasonable age range
+            const gameBirthYear = 1926 - gameAge;
+            const originalDate = new Date(character.birthDate);
+            const newBirthDate = new Date(gameBirthYear, originalDate.getMonth(), originalDate.getDate());
+            
+            await storage.updateCharacter(character.id, {
+              birthDate: newBirthDate.toISOString().split('T')[0]
+            });
+            updatedCount++;
+          }
+        }
+      }
+
+      res.json({ 
+        message: `Updated birth dates for ${updatedCount} characters to match game year 1926`,
+        updatedCount 
+      });
+    } catch (error) {
+      console.error("Error updating character dates:", error);
+      res.status(500).json({ message: "Failed to update character dates" });
+    }
+  });
+
   // Initialize test data
   app.post("/api/admin/init-test-data", async (req, res) => {
     try {
@@ -382,9 +418,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
         await storage.createCharacter({
           userId: adminUser.id,
-          firstName: "Správce",
-          lastName: "Systému",
-          birthDate: "1990-01-01",
+          firstName: "Gandalf",
+          middleName: "the",
+          lastName: "Grey",
+          birthDate: "1880-01-15", // Born in 1880, age 46 in 1926
+          isActive: true
         });
       }
 
@@ -401,9 +439,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
         await storage.createCharacter({
           userId: regularUser.id,
-          firstName: "Jan",
-          lastName: "Novák",
-          birthDate: "1995-05-15",
+          firstName: "Aragorn",
+          lastName: "Ranger",
+          birthDate: "1895-03-20", // Born in 1895, age 31 in 1926
+          isActive: true
+        });
+
+        await storage.createCharacter({
+          userId: regularUser.id,
+          firstName: "Frodo",
+          lastName: "Pytlík",
+          birthDate: "1902-09-22", // Born in 1902, age 24 in 1926
+          isActive: true
         });
       }
 

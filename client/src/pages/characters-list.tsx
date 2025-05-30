@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Users, Calendar, MapPin } from "lucide-react";
 import { format } from "date-fns";
 import { cs } from "date-fns/locale";
+import { calculateGameAge } from "@/lib/gameDate";
 
 interface Character {
   id: number;
@@ -36,16 +37,7 @@ export default function CharactersList() {
     return `${character.firstName}${character.middleName ? ` ${character.middleName}` : ''} ${character.lastName}`;
   };
 
-  const calculateAge = (birthDate: string) => {
-    const birth = new Date(birthDate);
-    const gameDate = new Date(1926, new Date().getMonth(), new Date().getDate());
-    let age = gameDate.getFullYear() - birth.getFullYear();
-    const monthDiff = gameDate.getMonth() - birth.getMonth();
-    if (monthDiff < 0 || (monthDiff === 0 && gameDate.getDate() < birth.getDate())) {
-      age--;
-    }
-    return age;
-  };
+
 
   if (isLoading) {
     return (
