@@ -64,6 +64,7 @@ function Router() {
           <Route path="/chat/room/:roomId" component={ChatRoom} />
           <Route path="/characters" component={CharactersList} />
           <Route path="/characters/:id" component={CharacterProfile} />
+          <Route path="/character/:id" component={CharacterProfile} />
         </>
       )}
       <Route component={NotFound} />
