@@ -637,7 +637,58 @@ export default function Admin() {
             </CardContent>
           </Card>
 
-          {/* Character Management & Cemetery */}
+          {/* Active Character Management */}
+          <Card className="bg-card border-border">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-semibold text-foreground flex items-center">
+                  <Users className="text-green-400 mr-3 h-5 w-5" />
+                  Správa živých postav
+                </h2>
+              </div>
+
+              <div className="space-y-4">
+                {allCharacters.filter((char: any) => !char.deathDate).length > 0 ? (
+                  allCharacters.filter((char: any) => !char.deathDate).map((character: any) => (
+                    <div key={character.id} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-blue-600 rounded-full flex items-center justify-center text-white font-semibold">
+                          {character.firstName[0]}{character.lastName[0]}
+                        </div>
+                        <div>
+                          <h4 className="font-medium text-foreground">
+                            {character.firstName} {character.middleName} {character.lastName}
+                          </h4>
+                          <p className="text-sm text-muted-foreground">
+                            {character.school || 'Bez školy'} • Vytvořeno: {new Date(character.createdAt).toLocaleDateString('cs-CZ')}
+                          </p>
+                        </div>
+                      </div>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => setKillCharacterData({
+                          id: character.id,
+                          name: `${character.firstName} ${character.lastName}`
+                        })}
+                        className="bg-red-600 hover:bg-red-700"
+                      >
+                        <Skull className="h-4 w-4 mr-1" />
+                        Označit jako zemřelou
+                      </Button>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-8">
+                    <Users className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                    <p className="text-muted-foreground">Žádné živé postavy</p>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Cemetery Management */}
           <Card className="bg-card border-border">
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-6">
@@ -648,8 +699,8 @@ export default function Admin() {
               </div>
 
               <div className="space-y-4">
-                {allCharacters.filter((char: any) => char.isActive).length > 0 ? (
-                  allCharacters.filter((char: any) => char.isActive).map((character: any) => (
+                {allCharacters.filter((char: any) => char.deathDate).length > 0 ? (
+                  allCharacters.filter((char: any) => char.deathDate).map((character: any) => (
                     <div key={character.id} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
                       <div className="flex items-center space-x-3">
                         <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold">
@@ -678,7 +729,7 @@ export default function Admin() {
                 ) : (
                   <div className="text-center py-8">
                     <Users className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                    <p className="text-muted-foreground">Žádné aktivní postavy</p>
+                    <p className="text-muted-foreground">Hřbitov je prázdný - všechny postavy jsou naživu</p>
                   </div>
                 )}
 
