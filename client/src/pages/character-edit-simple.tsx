@@ -84,7 +84,7 @@ export default function CharacterEditSimple() {
         description: "Postava byla úspěšně aktualizována",
       });
       queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/characters", primaryCharacter?.id] });
+      queryClient.invalidateQueries({ queryKey: [`/api/characters/${primaryCharacter?.id}`] });
       setLocation(`/character/${primaryCharacter?.id}`);
     },
     onError: (error: any) => {

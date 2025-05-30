@@ -33,7 +33,7 @@ export default function CharacterProfile() {
   const { user } = useAuth();
 
   const { data: character, isLoading, error } = useQuery<Character>({
-    queryKey: ["/api/characters", id],
+    queryKey: [`/api/characters/${id}`],
     enabled: !!id,
   });
 
@@ -88,9 +88,6 @@ export default function CharacterProfile() {
   };
 
   const getFullName = (character: Character) => {
-    console.log('Character in getFullName:', character);
-    console.log('firstName exists:', !!character?.firstName);
-    console.log('lastName exists:', !!character?.lastName);
     if (!character?.firstName || !character?.lastName) return "Neznámá postava";
     return `${character.firstName}${character.middleName ? ` ${character.middleName}` : ''} ${character.lastName}`;
   };
