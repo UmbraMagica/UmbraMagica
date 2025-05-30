@@ -91,6 +91,7 @@ export interface IStorage {
   getCharacterRequestsByUserId(userId: number): Promise<CharacterRequest[]>;
   getCharacterRequestById(requestId: number): Promise<CharacterRequest | undefined>;
   deleteCharacterRequest(requestId: number): Promise<boolean>;
+  getAllCharacterRequests(): Promise<(CharacterRequest & { user: { username: string; email: string } })[]>;
   getPendingCharacterRequests(): Promise<(CharacterRequest & { user: { username: string; email: string } })[]>;
   approveCharacterRequest(requestId: number, adminId: number, reviewNote?: string): Promise<Character>;
   rejectCharacterRequest(requestId: number, adminId: number, reviewNote: string): Promise<CharacterRequest>;
@@ -477,6 +478,33 @@ export class DatabaseStorage implements IStorage {
       .delete(characterRequests)
       .where(eq(characterRequests.id, requestId));
     return (result.rowCount || 0) > 0;
+  }
+
+  async getAllCharacterRequests(): Promise<(CharacterRequest & { user: { username: string; email: string } })[]> {
+    return db
+      .select({
+        id: characterRequests.id,
+        userId: characterRequests.userId,
+        firstName: characterRequests.firstName,
+        middleName: characterRequests.middleName,
+        lastName: characterRequests.lastName,
+        birthDate: characterRequests.birthDate,
+        school: characterRequests.school,
+        description: characterRequests.description,
+        reason: characterRequests.reason,
+        status: characterRequests.status,
+        reviewedBy: characterRequests.reviewedBy,
+        reviewedAt: characterRequests.reviewedAt,
+        reviewNote: characterRequests.reviewNote,
+        createdAt: characterRequests.createdAt,
+        user: {
+          username: users.username,
+          email: users.email,
+        },
+      })
+      .from(characterRequests)
+      .innerJoin(users, eq(characterRequests.userId, users.id))
+      .orderBy(desc(characterRequests.createdAt));
   }
 
   async getPendingCharacterRequests(): Promise<(CharacterRequest & { user: { username: string; email: string } })[]> {

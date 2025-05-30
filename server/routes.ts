@@ -1428,6 +1428,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin: Get all character requests
+  app.get("/api/admin/character-requests", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const requests = await storage.getAllCharacterRequests();
+      res.json(requests);
+    } catch (error) {
+      console.error("Error fetching character requests:", error);
+      res.status(500).json({ message: "Failed to fetch character requests" });
+    }
+  });
+
   // Admin: Get pending character requests
   app.get("/api/admin/character-requests/pending", requireAuth, requireAdmin, async (req, res) => {
     try {
