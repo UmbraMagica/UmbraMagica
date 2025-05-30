@@ -758,12 +758,12 @@ export default function ChatRoom() {
                   <Button
                     onClick={() => setShowSpellDialog(true)}
                     disabled={!isConnected || characterSpells.length === 0}
-                    variant="outline"
+                    variant={selectedSpell ? "default" : "outline"}
                     size="sm"
                     title="Seslat kouzlo"
                   >
                     <Wand2 className="h-4 w-4 mr-1" />
-                    Kouzlo
+                    {selectedSpell ? selectedSpell.name : "Kouzlo"}
                   </Button>
                 </div>
                 <div className="flex items-center gap-2">
