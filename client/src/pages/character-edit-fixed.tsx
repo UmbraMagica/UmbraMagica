@@ -84,8 +84,18 @@ export default function CharacterEditFixed() {
     },
   });
 
-  // Determine which character to use
-  const primaryCharacter = characterIdFromUrl ? specificCharacter : mainCharacter;
+  // Determine which character to use - handle if it's an array
+  let primaryCharacter;
+  if (characterIdFromUrl) {
+    primaryCharacter = specificCharacter;
+  } else {
+    primaryCharacter = mainCharacter;
+  }
+  
+  // If primaryCharacter is an array, get the first item
+  if (Array.isArray(primaryCharacter) && primaryCharacter.length > 0) {
+    primaryCharacter = primaryCharacter[0];
+  }
 
   const updateCharacterMutation = useMutation({
     mutationFn: async (data: UserEditForm | AdminEditForm) => {
