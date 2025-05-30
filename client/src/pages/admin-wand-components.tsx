@@ -17,7 +17,7 @@ export default function AdminWandComponents() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
-  const [editingWood, setEditingWood] = useState<string | null>(null);
+  const [editingWood, setEditingWood] = useState<any | null>(null);
   const [editingCore, setEditingCore] = useState<any | null>(null);
   const [editingLength, setEditingLength] = useState<string | null>(null);
   const [editingFlex, setEditingFlex] = useState<string | null>(null);
@@ -269,14 +269,14 @@ export default function AdminWandComponents() {
                                 <Label>Název</Label>
                                 <Input
                                   defaultValue={wood.name}
-                                  onChange={(e) => setEditingWood({ ...wood, name: e.target.value })}
+                                  onChange={(e) => setEditingWood(prev => ({ ...(prev || wood), name: e.target.value }))}
                                 />
                               </div>
                               <div>
                                 <Label>Popis</Label>
                                 <Textarea
                                   defaultValue={wood.description}
-                                  onChange={(e) => setEditingWood({ ...wood, description: e.target.value })}
+                                  onChange={(e) => setEditingWood(prev => ({ ...(prev || wood), description: e.target.value }))}
                                   rows={4}
                                 />
                               </div>

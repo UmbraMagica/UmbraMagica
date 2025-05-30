@@ -1334,7 +1334,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateWandComponents(components: {
-    woods: string[];
+    woods: { name: string; description: string }[];
     cores: { name: string; category: string; description: string }[];
     lengths: string[];
     flexibilities: string[];
