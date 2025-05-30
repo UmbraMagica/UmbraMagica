@@ -277,11 +277,24 @@ export default function ChatRoom() {
       
       console.log('Final error message:', errorMessage); // Debug log
       
+      // Show error as both toast and system message in chat
       toast({
         title: "Chyba",
         description: errorMessage,
         variant: "destructive",
       });
+      
+      // Also add error as a system message to the chat
+      const systemMessage = {
+        id: Date.now(),
+        roomId: currentRoomId,
+        characterId: null,
+        content: `🚫 ${errorMessage}`,
+        messageType: 'system',
+        createdAt: new Date().toISOString(),
+        character: null
+      };
+      setLocalMessages(prev => [systemMessage, ...prev]);
     }
   };
 
