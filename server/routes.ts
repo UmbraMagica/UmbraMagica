@@ -1169,9 +1169,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const isSuccess = successRoll >= 5; // 60% success rate
       
       // Combine user message with spell casting result
+      const spellResult = `*[Seslal kouzlo ${spell.name} (${successRoll}/10) - ${isSuccess ? 'Úspěch' : 'Neúspěch'}]*\n*${spell.effect}*`;
       const combinedContent = message ? 
-        `${message.trim()} *[Seslal kouzlo ${spell.name} (${successRoll}/10) - ${isSuccess ? 'Úspěch' : 'Neúspěch'}: ${spell.effect}]*` :
-        `*Seslal kouzlo ${spell.name} (${successRoll}/10) - ${isSuccess ? 'Úspěch' : 'Neúspěch'}: ${spell.effect}*`;
+        `${message.trim()}\n${spellResult}` :
+        spellResult;
       
       // Create spell cast message
       const spellMessage = await storage.createMessage({
