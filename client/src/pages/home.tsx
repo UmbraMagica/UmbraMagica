@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
 import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useState } from "react";
 import { 
   Crown, 
   Home as HomeIcon, 
@@ -35,6 +36,7 @@ export default function Home() {
   const { user, logout } = useAuth();
   const { toast } = useToast();
   const [, setLocation] = useLocation();
+  const [displayedCharacter, setDisplayedCharacter] = useState<any>(null);
 
 
 
@@ -94,9 +96,10 @@ export default function Home() {
     },
   });
 
-  const primaryCharacter = mainCharacter || userCharacters[0];
-  const characterAge = primaryCharacter ? 
-    calculateGameAge(primaryCharacter.birthDate) : 0;
+  // Use displayed character for UI, fallback to main character, then first available
+  const currentDisplayedCharacter = displayedCharacter || mainCharacter || userCharacters[0];
+  const characterAge = currentDisplayedCharacter ? 
+    calculateGameAge(currentDisplayedCharacter.birthDate) : 0;
 
 
 
@@ -138,8 +141,8 @@ export default function Home() {
                   Seznam postav
                 </Button>
                 <Button variant="ghost" className="text-foreground hover:text-accent" onClick={() => {
-                  if (primaryCharacter) {
-                    window.location.href = `/characters/${primaryCharacter.id}`;
+                  if (currentDisplayedCharacter) {
+                    window.location.href = `/characters/${currentDisplayedCharacter.id}`;
                   } else {
                     window.location.href = '/character/edit';
                   }
@@ -207,19 +210,19 @@ export default function Home() {
                   <Button 
                     variant="secondary" 
                     className="bg-muted hover:bg-primary text-foreground hover:text-primary-foreground p-4 h-auto rounded-lg transition-all duration-200 transform hover:scale-105 text-left justify-start"
-                    onClick={() => primaryCharacter && (window.location.href = `/characters/${primaryCharacter.id}`)}
+                    onClick={() => currentDisplayedCharacter && (window.location.href = `/characters/${currentDisplayedCharacter.id}`)}
                   >
                     <div className="flex items-center">
                       <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-lg mr-4">
-                        {primaryCharacter ? 
-                          `${primaryCharacter.firstName[0]}${primaryCharacter.lastName[0]}` : 
+                        {currentDisplayedCharacter ? 
+                          `${currentDisplayedCharacter.firstName[0]}${currentDisplayedCharacter.lastName[0]}` : 
                           'FB'
                         }
                       </div>
                       <div className="flex-1">
                         <div className="font-medium">
-                          {primaryCharacter ? 
-                            `${primaryCharacter.firstName} ${primaryCharacter.lastName}` : 
+                          {currentDisplayedCharacter ? 
+                            `${currentDisplayedCharacter.firstName} ${currentDisplayedCharacter.lastName}` : 
                             'Upravit postavu'
                           }
                         </div>
@@ -284,15 +287,15 @@ export default function Home() {
                   <User className="text-accent mr-3 h-5 w-5" />
                   Moje postava
                 </h3>
-                {primaryCharacter && (
+                {currentDisplayedCharacter && (
                   <div className="text-center">
                     <div className="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-full mx-auto mb-3 flex items-center justify-center">
                       <User className="text-primary-foreground h-8 w-8" />
                     </div>
                     <h4 className="font-medium text-foreground">
-                      {primaryCharacter.firstName}
-                      {primaryCharacter.middleName && ` ${primaryCharacter.middleName}`}
-                      {` ${primaryCharacter.lastName}`}
+                      {currentDisplayedCharacter.firstName}
+                      {currentDisplayedCharacter.middleName && ` ${currentDisplayedCharacter.middleName}`}
+                      {` ${currentDisplayedCharacter.lastName}`}
                     </h4>
                     <p className="text-sm text-muted-foreground">{characterAge} let</p>
                     <div className="mt-3">
@@ -324,9 +327,7 @@ export default function Home() {
                             : 'bg-muted/30'
                         }`}
                         onClick={() => {
-                          if (mainCharacter?.id !== character.id) {
-                            setMainCharacterMutation.mutate(character.id);
-                          }
+                          setDisplayedCharacter(character);
                         }}
                       >
                         <div className="flex items-center space-x-3">
