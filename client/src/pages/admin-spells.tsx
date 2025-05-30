@@ -5,12 +5,14 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Edit, Trash2, Wand2 } from "lucide-react";
+import { Plus, Edit, Trash2, Wand2, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { Spell } from "@shared/schema";
+import { useLocation } from "wouter";
 
 export default function AdminSpells() {
   const [isCreating, setIsCreating] = useState(false);
+  const [isQuickAdd, setIsQuickAdd] = useState(false);
   const [editingSpell, setEditingSpell] = useState<Spell | null>(null);
   const [formData, setFormData] = useState({
     name: "",
@@ -23,6 +25,23 @@ export default function AdminSpells() {
 
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [, setLocation] = useLocation();
+
+  // Predefined categories and types
+  const categories = [
+    "Kouzelné formule",
+    "Přeměňování", 
+    "Kletby",
+    "Obranná kouzla",
+    "Léčitelská kouzla",
+    "Útočná kouzla"
+  ];
+
+  const types = [
+    "Základní",
+    "Pokročilé", 
+    "Mistrovské"
+  ];
 
   const { data: spells = [], isLoading } = useQuery<Spell[]>({
     queryKey: ['/api/admin/spells'],
@@ -155,21 +174,58 @@ export default function AdminSpells() {
   return (
     <div className="container mx-auto p-6">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Wand2 className="h-8 w-8" />
-          Správa kouzel
-        </h1>
+        <div className="flex items-center gap-4">
+          <Button
+            onClick={() => setLocation('/admin')}
+            variant="outline"
+            size="sm"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Zpět do administrace
+          </Button>
+          <h1 className="text-3xl font-bold flex items-center gap-2">
+            <Wand2 className="h-8 w-8" />
+            Správa kouzel
+          </h1>
+        </div>
         <div className="flex gap-2">
           <Button
             onClick={() => initializeSpellsMutation.mutate()}
             disabled={initializeSpellsMutation.isPending}
             variant="outline"
+            size="sm"
           >
             {initializeSpellsMutation.isPending ? "Inicializuji..." : "Inicializovat základní kouzla"}
           </Button>
-          <Button onClick={() => setIsCreating(true)} disabled={isCreating}>
+          <Button 
+            onClick={() => {
+              setIsQuickAdd(true);
+              setIsCreating(true);
+              setFormData({
+                name: "",
+                description: "",
+                effect: "",
+                category: "Kouzelné formule",
+                type: "Základní",
+                targetType: "self"
+              });
+            }} 
+            disabled={isCreating}
+            size="sm"
+          >
             <Plus className="h-4 w-4 mr-2" />
-            Přidat kouzlo
+            Rychlé přidání
+          </Button>
+          <Button 
+            onClick={() => {
+              setIsQuickAdd(false);
+              setIsCreating(true);
+            }} 
+            disabled={isCreating}
+            variant="outline"
+            size="sm"
+          >
+            Podrobné přidání
           </Button>
         </div>
       </div>
@@ -177,32 +233,18 @@ export default function AdminSpells() {
       {isCreating && (
         <Card className="mb-6">
           <CardHeader>
-            <CardTitle>{editingSpell ? "Upravit kouzlo" : "Nové kouzlo"}</CardTitle>
+            <CardTitle>
+              {editingSpell ? "Upravit kouzlo" : isQuickAdd ? "Rychlé přidání kouzla" : "Nové kouzlo"}
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="md:col-span-2">
                 <label className="block text-sm font-medium mb-1">Název kouzla *</label>
                 <Input
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="Lumos"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Kategorie *</label>
-                <Input
-                  value={formData.category}
-                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  placeholder="Kouzelné formule"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Typ *</label>
-                <Input
-                  value={formData.type}
-                  onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-                  placeholder="Základní"
                 />
               </div>
               <div>
@@ -220,6 +262,44 @@ export default function AdminSpells() {
                     <SelectItem value="self">Sebe</SelectItem>
                     <SelectItem value="other">Jinou postavu</SelectItem>
                     <SelectItem value="object">Předmět</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Kategorie *</label>
+                <Select
+                  value={formData.category}
+                  onValueChange={(value) => setFormData({ ...formData, category: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Vyberte kategorii" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories.map((category) => (
+                      <SelectItem key={category} value={category}>
+                        {category}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Typ *</label>
+                <Select
+                  value={formData.type}
+                  onValueChange={(value) => setFormData({ ...formData, type: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Vyberte typ" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {types.map((type) => (
+                      <SelectItem key={type} value={type}>
+                        {type}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
