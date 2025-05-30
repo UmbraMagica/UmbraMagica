@@ -54,14 +54,25 @@ export default function CharacterEditFixed() {
   const isAdmin = user?.role === 'admin';
 
   // Always call hooks in the same order
-  const { data: mainCharacter } = useQuery<any>({
+  const { data: mainCharacter, isLoading: isLoadingMain } = useQuery<any>({
     queryKey: ["/api/characters/main"],
     enabled: !!user && !characterIdFromUrl, // Only fetch main character if no specific character requested
   });
 
-  const { data: specificCharacter } = useQuery<any>({
+  const { data: specificCharacter, isLoading: isLoadingSpecific } = useQuery<any>({
     queryKey: ["/api/characters", characterIdFromUrl],
     enabled: !!characterIdFromUrl && !!user,
+  });
+
+  // Debug logging
+  console.log('Character loading debug:', {
+    characterIdFromUrl,
+    mainCharacter,
+    specificCharacter,
+    isLoadingMain,
+    isLoadingSpecific,
+    enabled_main: !!user && !characterIdFromUrl,
+    enabled_specific: !!characterIdFromUrl && !!user
   });
 
   const userForm = useForm<UserEditForm>({
