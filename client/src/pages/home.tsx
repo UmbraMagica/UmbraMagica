@@ -355,7 +355,16 @@ export default function Home() {
                     Moje postavy
                   </h3>
                   <div className="space-y-2">
-                    {userCharacters.map((character: any) => (
+                    {userCharacters
+                      .sort((a: any, b: any) => {
+                        // Primary character first
+                        if (mainCharacter?.id === a.id) return -1;
+                        if (mainCharacter?.id === b.id) return 1;
+                        
+                        // Then sort alphabetically by first name
+                        return a.firstName.localeCompare(b.firstName, 'cs');
+                      })
+                      .map((character: any) => (
                       <div 
                         key={character.id} 
                         className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-colors hover:bg-muted/50 ${
