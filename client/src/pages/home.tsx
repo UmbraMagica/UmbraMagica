@@ -1,10 +1,11 @@
 import { useAuth } from "@/hooks/useAuth";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import { 
   Crown, 
   Home as HomeIcon, 
@@ -42,13 +43,13 @@ export default function Home() {
   });
 
   // Fetch user's characters for switching
-  const { data: userCharacters = [] } = useQuery({
+  const { data: userCharacters = [] } = useQuery<any[]>({
     queryKey: ["/api/characters"],
     enabled: !!user,
   });
 
   // Fetch main character
-  const { data: mainCharacter } = useQuery({
+  const { data: mainCharacter } = useQuery<any>({
     queryKey: ["/api/characters/main"],
     enabled: !!user,
   });
