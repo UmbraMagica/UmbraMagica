@@ -1,7 +1,8 @@
 import { useAuth } from "@/hooks/useAuth";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -24,7 +25,6 @@ import { characterEditSchema, characterAdminEditSchema } from "@shared/schema";
 import { z } from "zod";
 import { useLocation } from "wouter";
 import { CharacterAvatar } from "@/components/CharacterAvatar";
-import { useState, useRef } from "react";
 
 type UserEditForm = z.infer<typeof characterEditSchema>;
 type AdminEditForm = z.infer<typeof characterAdminEditSchema>;
@@ -37,15 +37,22 @@ export default function CharacterEdit() {
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const primaryCharacter = user?.characters?.[0] as any;
   const isAdmin = user?.role === 'admin';
+
+  // Fetch the main character
+  const { data: mainCharacter } = useQuery<any>({
+    queryKey: ["/api/characters/main"],
+    enabled: !!user,
+  });
+
+  const primaryCharacter = mainCharacter;
 
   // Regular user form (only school and description)
   const userForm = useForm<UserEditForm>({
     resolver: zodResolver(characterEditSchema),
     defaultValues: {
-      school: (primaryCharacter as any)?.school || "",
-      description: (primaryCharacter as any)?.description || "",
+      school: "",
+      description: "",
     },
   });
 
@@ -53,14 +60,33 @@ export default function CharacterEdit() {
   const adminForm = useForm<AdminEditForm>({
     resolver: zodResolver(characterAdminEditSchema),
     defaultValues: {
-      firstName: primaryCharacter?.firstName || "",
-      middleName: primaryCharacter?.middleName || "",
-      lastName: primaryCharacter?.lastName || "",
-      birthDate: primaryCharacter?.birthDate || "",
-      school: (primaryCharacter as any)?.school || "",
-      description: (primaryCharacter as any)?.description || "",
+      firstName: "",
+      middleName: "",
+      lastName: "",
+      birthDate: "",
+      school: "",
+      description: "",
     },
   });
+
+  // Update form values when character data loads
+  useEffect(() => {
+    if (primaryCharacter) {
+      userForm.reset({
+        school: primaryCharacter.school || "",
+        description: primaryCharacter.description || "",
+      });
+      
+      adminForm.reset({
+        firstName: primaryCharacter.firstName || "",
+        middleName: primaryCharacter.middleName || "",
+        lastName: primaryCharacter.lastName || "",
+        birthDate: primaryCharacter.birthDate || "",
+        school: primaryCharacter.school || "",
+        description: primaryCharacter.description || "",
+      });
+    }
+  }, [primaryCharacter, userForm, adminForm]);
 
   const currentForm = isAdmin ? adminForm : userForm;
 
