@@ -68,6 +68,14 @@ export function RoomDescription({ description }: RoomDescriptionProps) {
     return parts;
   };
 
+  // Convert markdown-style formatting to HTML
+  const processMarkdown = (text: string) => {
+    return text
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')  // **bold** -> <strong>bold</strong>
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')              // *italic* -> <em>italic</em>
+      .replace(/__(.*?)__/g, '<u>$1</u>');               // __underline__ -> <u>underline</u>
+  };
+
   // Process HTML formatting and room links
   const processDescription = (text: string) => {
     const linkedContent = createLinkedDescription(text);
@@ -82,11 +90,12 @@ export function RoomDescription({ description }: RoomDescriptionProps) {
       >
         {linkedContent.map((part, index) => {
           if (typeof part === 'string') {
-            // Process HTML formatting for string parts
+            // Process markdown formatting for string parts
+            const formattedText = processMarkdown(part);
             return (
               <span
                 key={index}
-                dangerouslySetInnerHTML={{ __html: part }}
+                dangerouslySetInnerHTML={{ __html: formattedText }}
               />
             );
           }
