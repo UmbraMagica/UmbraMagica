@@ -58,10 +58,7 @@ export default function Home() {
   const characterAge = primaryCharacter ? 
     calculateGameAge(primaryCharacter.birthDate) : 0;
 
-  // Debug
-  console.log('firstName value:', primaryCharacter?.firstName);
-  console.log('lastName value:', primaryCharacter?.lastName);
-  console.log('Full name would be:', `${primaryCharacter?.firstName} ${primaryCharacter?.lastName}`);
+
 
 
 
@@ -169,14 +166,14 @@ export default function Home() {
                   >
                     <div className="flex items-center">
                       <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-lg mr-4">
-                        {primaryCharacter?.firstName && primaryCharacter?.lastName ? 
+                        {primaryCharacter ? 
                           `${primaryCharacter.firstName[0]}${primaryCharacter.lastName[0]}` : 
                           'FB'
                         }
                       </div>
                       <div className="flex-1">
                         <div className="font-medium">
-                          {primaryCharacter?.firstName && primaryCharacter?.lastName ? 
+                          {primaryCharacter ? 
                             `${primaryCharacter.firstName} ${primaryCharacter.lastName}` : 
                             'Upravit postavu'
                           }
