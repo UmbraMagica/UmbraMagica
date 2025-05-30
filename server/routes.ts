@@ -1291,13 +1291,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Room not found" });
       }
 
-      const messages = await storage.getMessagesByRoom(roomId, 1000); // Get up to 1000 messages
+      // Get both current messages and archived messages
+      const currentMessages = await storage.getMessagesByRoom(roomId, 1000);
+      const archivedMessages = await storage.getArchivedMessages(roomId, 1000);
+      
+      // Combine and sort all messages by timestamp
+      const allMessages = [
+        ...currentMessages.map(msg => ({
+          content: msg.content,
+          characterName: `${msg.character.firstName}${msg.character.middleName ? ` ${msg.character.middleName}` : ''} ${msg.character.lastName}`,
+          createdAt: msg.createdAt,
+          messageType: msg.messageType
+        })),
+        ...archivedMessages.map(msg => ({
+          content: msg.content,
+          characterName: msg.characterName,
+          createdAt: msg.originalCreatedAt,
+          messageType: msg.messageType
+        }))
+      ].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
       
       // Format messages for download
-      const chatContent = messages.map(msg => {
-        const characterName = `${msg.character.firstName}${msg.character.middleName ? ` ${msg.character.middleName}` : ''} ${msg.character.lastName}`;
+      const chatContent = allMessages.map(msg => {
         const timestamp = new Date(msg.createdAt).toLocaleString('cs-CZ');
-        return `[${timestamp}] ${characterName}: ${msg.content}`;
+        return `[${timestamp}] ${msg.characterName}: ${msg.content}`;
       }).join('\n');
 
       const filename = `chat_${room.name.replace(/[^a-zA-Z0-9]/g, '_')}_${new Date().toISOString().split('T')[0]}.txt`;

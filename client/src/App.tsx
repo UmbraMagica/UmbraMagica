@@ -8,6 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 import Landing from "@/pages/landing";
 import Home from "@/pages/home";
 import Admin from "@/pages/admin";
+import AdminArchive from "@/pages/admin-archive";
 import Registration from "@/pages/registration";
 import ChatList from "@/pages/chat-list";
 import ChatCategories from "@/pages/chat-categories";
@@ -56,6 +57,7 @@ function Router() {
         <>
           <Route path="/" component={Home} />
           <Route path="/admin" component={Admin} />
+          <Route path="/admin/archive" component={AdminArchive} />
           <Route path="/home" component={Home} />
           <Route path="/character/edit" component={CharacterEdit} />
           <Route path="/chat" component={ChatCategories} />

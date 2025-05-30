@@ -23,7 +23,9 @@ import {
   Edit,
   ArrowUp,
   Book,
-  UserPlus
+  UserPlus,
+  Archive,
+  Home
 } from "lucide-react";
 
 interface AdminUser {
@@ -164,6 +166,14 @@ export default function Admin() {
                   <MessageCircle className="mr-2 h-4 w-4" />
                   Chaty
                 </Button>
+                <Button 
+                  variant="ghost" 
+                  className="text-foreground hover:text-accent"
+                  onClick={() => setLocation('/admin/archive')}
+                >
+                  <Archive className="mr-2 h-4 w-4" />
+                  Archiv zpráv
+                </Button>
               </div>
             </div>
             <div className="flex items-center space-x-4">
@@ -177,10 +187,11 @@ export default function Admin() {
               <Button 
                 variant="ghost" 
                 size="sm" 
+                onClick={() => setLocation('/')}
                 className="text-muted-foreground hover:text-accent"
                 title="Přepnout na uživatelské rozhraní"
               >
-                <User className="h-4 w-4" />
+                <Home className="h-4 w-4" />
               </Button>
               <Button 
                 variant="ghost" 
