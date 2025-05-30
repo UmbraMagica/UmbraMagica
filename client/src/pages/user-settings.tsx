@@ -322,21 +322,7 @@ export default function UserSettings() {
                     <div key={character.id} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
                       <div className="flex items-center space-x-3">
                         {/* Avatar */}
-                        <div className="relative">
-                          {character.avatar ? (
-                            <img
-                              src={character.avatar}
-                              alt={`${character.firstName} ${character.lastName}`}
-                              className="w-12 h-12 rounded-full object-cover border-2 border-muted"
-                            />
-                          ) : (
-                            <div className="w-12 h-12 rounded-full bg-primary/20 border-2 border-muted flex items-center justify-center">
-                              <span className="text-sm font-medium text-primary">
-                                {character.firstName.charAt(0)}{character.lastName.charAt(0)}
-                              </span>
-                            </div>
-                          )}
-                        </div>
+                        <CharacterAvatar character={character} size="md" />
                         
                         <div className="flex items-center space-x-2">
                           <div className="flex items-center space-x-2">
