@@ -17,6 +17,8 @@ import ChatRoom from "@/pages/chat-room-simple-new";
 import CharacterEdit from "@/pages/character-edit-fixed";
 import CharactersList from "@/pages/characters-list";
 import CharacterProfile from "@/pages/character-profile";
+import CharacterInventory from "@/pages/character-inventory";
+import CharacterJournal from "@/pages/character-journal";
 import UserSettings from "@/pages/user-settings";
 import Cemetery from "@/pages/cemetery";
 import NotFound from "@/pages/not-found";

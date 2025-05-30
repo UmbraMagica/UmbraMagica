@@ -1195,6 +1195,186 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Character Inventory API endpoints
+  app.get("/api/characters/:characterId/inventory", requireAuth, async (req, res) => {
+    try {
+      const characterId = parseInt(req.params.characterId);
+      
+      // Verify character belongs to user or user is admin
+      const character = await storage.getCharacter(characterId);
+      if (!character || (character.userId !== req.session.userId! && req.session.userRole !== 'admin')) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+      
+      const inventory = await storage.getCharacterInventory(characterId);
+      res.json(inventory);
+    } catch (error) {
+      console.error("Error getting inventory:", error);
+      res.status(500).json({ message: "Failed to get inventory" });
+    }
+  });
+
+  app.post("/api/characters/:characterId/inventory", requireAuth, async (req, res) => {
+    try {
+      const characterId = parseInt(req.params.characterId);
+      
+      // Verify character belongs to user or user is admin
+      const character = await storage.getCharacter(characterId);
+      if (!character || (character.userId !== req.session.userId! && req.session.userRole !== 'admin')) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+      
+      const item = await storage.addInventoryItem({
+        characterId,
+        ...req.body
+      });
+      res.json(item);
+    } catch (error) {
+      console.error("Error adding inventory item:", error);
+      res.status(500).json({ message: "Failed to add inventory item" });
+    }
+  });
+
+  app.patch("/api/inventory/:itemId", requireAuth, async (req, res) => {
+    try {
+      const itemId = parseInt(req.params.itemId);
+      
+      // Verify item belongs to user's character or user is admin
+      const item = await storage.getInventoryItem(itemId);
+      if (!item) {
+        return res.status(404).json({ message: "Item not found" });
+      }
+      
+      const character = await storage.getCharacter(item.characterId);
+      if (!character || (character.userId !== req.session.userId! && req.session.userRole !== 'admin')) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+      
+      const updatedItem = await storage.updateInventoryItem(itemId, req.body);
+      res.json(updatedItem);
+    } catch (error) {
+      console.error("Error updating inventory item:", error);
+      res.status(500).json({ message: "Failed to update inventory item" });
+    }
+  });
+
+  app.delete("/api/inventory/:itemId", requireAuth, async (req, res) => {
+    try {
+      const itemId = parseInt(req.params.itemId);
+      
+      // Verify item belongs to user's character or user is admin
+      const item = await storage.getInventoryItem(itemId);
+      if (!item) {
+        return res.status(404).json({ message: "Item not found" });
+      }
+      
+      const character = await storage.getCharacter(item.characterId);
+      if (!character || (character.userId !== req.session.userId! && req.session.userRole !== 'admin')) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+      
+      const success = await storage.deleteInventoryItem(itemId);
+      if (!success) {
+        return res.status(404).json({ message: "Item not found" });
+      }
+      
+      res.json({ message: "Item deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting inventory item:", error);
+      res.status(500).json({ message: "Failed to delete inventory item" });
+    }
+  });
+
+  // Character Journal API endpoints
+  app.get("/api/characters/:characterId/journal", requireAuth, async (req, res) => {
+    try {
+      const characterId = parseInt(req.params.characterId);
+      
+      // Verify character belongs to user or user is admin
+      const character = await storage.getCharacter(characterId);
+      if (!character || (character.userId !== req.session.userId! && req.session.userRole !== 'admin')) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+      
+      const journal = await storage.getCharacterJournal(characterId);
+      res.json(journal);
+    } catch (error) {
+      console.error("Error getting journal:", error);
+      res.status(500).json({ message: "Failed to get journal" });
+    }
+  });
+
+  app.post("/api/characters/:characterId/journal", requireAuth, async (req, res) => {
+    try {
+      const characterId = parseInt(req.params.characterId);
+      
+      // Verify character belongs to user or user is admin
+      const character = await storage.getCharacter(characterId);
+      if (!character || (character.userId !== req.session.userId! && req.session.userRole !== 'admin')) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+      
+      const entry = await storage.addJournalEntry({
+        characterId,
+        ...req.body
+      });
+      res.json(entry);
+    } catch (error) {
+      console.error("Error adding journal entry:", error);
+      res.status(500).json({ message: "Failed to add journal entry" });
+    }
+  });
+
+  app.patch("/api/journal/:entryId", requireAuth, async (req, res) => {
+    try {
+      const entryId = parseInt(req.params.entryId);
+      
+      // Verify entry belongs to user's character or user is admin
+      const entry = await storage.getJournalEntry(entryId);
+      if (!entry) {
+        return res.status(404).json({ message: "Entry not found" });
+      }
+      
+      const character = await storage.getCharacter(entry.characterId);
+      if (!character || (character.userId !== req.session.userId! && req.session.userRole !== 'admin')) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+      
+      const updatedEntry = await storage.updateJournalEntry(entryId, req.body);
+      res.json(updatedEntry);
+    } catch (error) {
+      console.error("Error updating journal entry:", error);
+      res.status(500).json({ message: "Failed to update journal entry" });
+    }
+  });
+
+  app.delete("/api/journal/:entryId", requireAuth, async (req, res) => {
+    try {
+      const entryId = parseInt(req.params.entryId);
+      
+      // Verify entry belongs to user's character or user is admin
+      const entry = await storage.getJournalEntry(entryId);
+      if (!entry) {
+        return res.status(404).json({ message: "Entry not found" });
+      }
+      
+      const character = await storage.getCharacter(entry.characterId);
+      if (!character || (character.userId !== req.session.userId! && req.session.userRole !== 'admin')) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+      
+      const success = await storage.deleteJournalEntry(entryId);
+      if (!success) {
+        return res.status(404).json({ message: "Entry not found" });
+      }
+      
+      res.json({ message: "Entry deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting journal entry:", error);
+      res.status(500).json({ message: "Failed to delete journal entry" });
+    }
+  });
+
   const httpServer = createServer(app);
   
   // WebSocket server for real-time chat
