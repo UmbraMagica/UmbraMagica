@@ -1215,7 +1215,18 @@ export class DatabaseStorage implements IStorage {
     lengths: string[];
     flexibilities: string[];
   }> {
-    // Return stored components if they exist
+    // Try to load from database first
+    try {
+      const [configRow] = await db.select().from(configuration).where(eq(configuration.key, 'wand_components'));
+      if (configRow && configRow.value) {
+        this.storedWandComponents = configRow.value as any;
+        return this.storedWandComponents;
+      }
+    } catch (error) {
+      console.error("Error loading wand components from database:", error);
+    }
+
+    // Return stored components if they exist in memory
     if (this.storedWandComponents) {
       return this.storedWandComponents;
     }
