@@ -251,9 +251,42 @@ export default function Home() {
                     Věštba na dnešní den
                   </h4>
                   <p className="text-sm text-amber-700 dark:text-amber-300 italic">
-                    "Hvězdy šeptají o nadcházejících změnách. Dnes je příznivý den pro nová přátelství 
-                    a objevování skrytých kouzel. Pozor na stíny v odpoledních hodinách - mohou skrývat 
-                    nečekané příležitosti."
+                    {(() => {
+                      const prophecies = [
+                        "Nastává týden bobrů: tento týden budou bobří hráze obzvlášť pevné. Pozor na záplavy.",
+                        "Hvězdy praví o týdnu jednorožců: magická energie bude silnější, ale pozor na falešné přátele.",
+                        "Nadchází období draků: vaše kouzla budou mocnější, ale kontrola obtížnější.",
+                        "Týden fénixů přináší znovuzrození: staré problémy se vyřeší, nové začátky se blíží.",
+                        "Období gryfů slibuje odvahu: nebojte se čelit výzvám, které vás čekají.",
+                        "Nastává čas bazilišků: opatrnost je na místě, ne vše je takové, jak se zdá.",
+                        "Týden hipogrifů přináší svobodu: cesty se otevírají, ale vyžadují respekt.",
+                        "Období centaurů věští moudrost: poslouchejte starší a zkušenější než vy.",
+                        "Nastává čas akromaněul: teamwork bude klíčový, ale pozor na pavučiny intrik.",
+                        "Týden thestrálů odhaluje skryté: uvidíte to, co jiní nevidí.",
+                        "Období domácích skřítků slibuje službu: pomoc přijde z nečekaných míst.",
+                        "Nastává čas kelpií: pozor na klamné vidiny a falešné sliby.",
+                        "Týden mandrágory přináší uzdravení: staré rány se začnou hojit.",
+                        "Období banší věští změny: konec jedné fáze, začátek nové.",
+                        "Nastává čas bowtrucklů: malé detaily budou důležitější než velké gesta.",
+                        "Týden nifflerů slibuje poklady: hledejte hodnotu v neočekávaných místech.",
+                        "Období pixies přináší zmatek: buďte připraveni na nečekané obraty.",
+                        "Nastává čas cornishských skřítků: chaos může přinést příležitosti.",
+                        "Týden veelů věští kouzla: krása může být zároveň nebezpečná.",
+                        "Období trollů varuje před unáhleností: pomalu a jistě vede k cíli.",
+                        "Nastává čas houseelů: věrnost bude odměněna nečekanými způsoby.",
+                        "Týden dementorů přináší stíny: hledejte světlo ve tmě, najdete ho.",
+                        "Období sfinx slibuje hádanky: odpovědi jsou blíže, než si myslíte.",
+                        "Nastává čas werewolfů: vaše druhá povaha se může projevit.",
+                        "Týden vampýrů věští nesmrtelnost: něco, co považujete za mrtvé, ožije.",
+                        "Období olbřímů varuje před silou: síla bez moudrosti je nebezpečná.",
+                        "Nastává čas koček: vaše intuice bude obzvlášť ostrá dnes.",
+                        "Týden sov přináší zprávy: důležitá komunikace je na cestě k vám.",
+                        "Období hadů slibuje transformaci: svlékněte starou kůži a obnovte se.",
+                        "Nastává čas krys: malé problémy mohou vyrůst, řešte je včas."
+                      ];
+                      const dayOfMonth = new Date().getDate();
+                      return `"${prophecies[(dayOfMonth - 1) % prophecies.length]}"`;
+                    })()}
                   </p>
                   <p className="text-xs text-amber-600 dark:text-amber-400 mt-2">
                     - Profesorka Trelawneyová
