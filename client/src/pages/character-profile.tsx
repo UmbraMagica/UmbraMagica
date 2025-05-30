@@ -37,12 +37,7 @@ export default function CharacterProfile() {
     enabled: !!id,
   });
 
-  // Debug character data
-  if (character) {
-    console.log("Character data in profile:", character);
-    console.log("firstName:", character.firstName, "type:", typeof character.firstName);
-    console.log("lastName:", character.lastName, "type:", typeof character.lastName);
-  }
+
 
   if (isLoading) {
     return (
@@ -161,68 +156,42 @@ export default function CharacterProfile() {
               <div className="space-y-4">
                 <div>
                   <h3 className="font-medium mb-3">Základní informace</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-3">
                     <div className="flex items-center gap-3">
                       <User className="h-4 w-4 text-muted-foreground" />
                       <div>
-                        <div className="text-sm font-medium">Jméno</div>
+                        <div className="text-sm font-medium">Celé jméno</div>
                         <div className="text-sm text-muted-foreground">
-                          {character.firstName}
-                        </div>
-                      </div>
-                    </div>
-                    {character.middleName && (
-                      <div className="flex items-center gap-3">
-                        <User className="h-4 w-4 text-muted-foreground" />
-                        <div>
-                          <div className="text-sm font-medium">Prostřední jméno</div>
-                          <div className="text-sm text-muted-foreground">
-                            {character.middleName}
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                    <div className="flex items-center gap-3">
-                      <User className="h-4 w-4 text-muted-foreground" />
-                      <div>
-                        <div className="text-sm font-medium">Příjmení</div>
-                        <div className="text-sm text-muted-foreground">
-                          {character.lastName}
+                          {getFullName(character)}
                         </div>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
                       <Calendar className="h-4 w-4 text-muted-foreground" />
                       <div>
-                        <div className="text-sm font-medium">Věk</div>
+                        <div className="text-sm font-medium">Věk a datum narození</div>
                         <div className="text-sm text-muted-foreground">
-                          {calculateGameAge(character.birthDate)} let
+                          {calculateGameAge(character.birthDate)} let {character.birthDate && (
+                            <>
+                              (nar. {character.birthDate ? 
+                                (() => {
+                                  try {
+                                    return format(new Date(character.birthDate), 'd. MMMM yyyy', { locale: cs });
+                                  } catch {
+                                    return character.birthDate;
+                                  }
+                                })()
+                                : 'Nezadáno'
+                              })
+                            </>
+                          )}
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <Separator />
 
-                <div>
-                  <h3 className="font-medium mb-3">Datum narození</h3>
-                  <div className="flex items-center gap-3">
-                    <Calendar className="h-4 w-4 text-muted-foreground" />
-                    <div className="text-sm">
-                      {character.birthDate ? 
-                        (() => {
-                          try {
-                            return format(new Date(character.birthDate), 'd. MMMM yyyy', { locale: cs });
-                          } catch {
-                            return character.birthDate;
-                          }
-                        })()
-                        : 'Nezadáno'
-                      }
-                    </div>
-                  </div>
-                </div>
 
                 {character.school && (
                   <>
@@ -260,33 +229,6 @@ export default function CharacterProfile() {
 
         {/* Sidebar */}
         <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Kontakt</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <User className="h-4 w-4 text-muted-foreground" />
-                  <div>
-                    <div className="text-sm font-medium">Hráč</div>
-                    <div className="text-sm text-muted-foreground">
-                      {character.user?.username || 'Neznámý uživatel'}
-                    </div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Mail className="h-4 w-4 text-muted-foreground" />
-                  <div>
-                    <div className="text-sm font-medium">Email</div>
-                    <div className="text-sm text-muted-foreground">
-                      {character.user?.email || 'Nezadán email'}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
 
           <Card>
             <CardHeader>
