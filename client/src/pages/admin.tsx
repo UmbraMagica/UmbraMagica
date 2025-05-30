@@ -630,11 +630,18 @@ export default function Admin() {
           {/* Role & Permission Management */}
           <Card className="bg-card border-border">
             <CardContent className="p-6">
-              <h2 className="text-xl font-semibold text-foreground mb-6 flex items-center">
+              <h2 className="text-xl font-semibold text-foreground mb-6 flex items-center cursor-pointer"
+                  onClick={() => setIsUserManagementCollapsed(!isUserManagementCollapsed)}>
                 <Shield className="text-accent mr-3 h-5 w-5" />
                 Správa rolí a oprávnění
+                {isUserManagementCollapsed ? (
+                  <ChevronDown className="ml-2 h-4 w-4" />
+                ) : (
+                  <ChevronUp className="ml-2 h-4 w-4" />
+                )}
               </h2>
 
+              {!isUserManagementCollapsed && (
               <div className="space-y-4">
                 <div className="bg-muted/30 rounded-lg p-4">
                   <h3 className="font-medium text-foreground mb-3">Dostupné role</h3>
@@ -696,6 +703,7 @@ export default function Admin() {
                   </div>
                 </div>
               </div>
+              )}
             </CardContent>
           </Card>
         </div>
