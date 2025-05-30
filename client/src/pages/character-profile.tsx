@@ -264,7 +264,7 @@ export default function CharacterProfile() {
                   <div>
                     <div className="text-sm font-medium">Hráč</div>
                     <div className="text-sm text-muted-foreground">
-                      {character.user.username}
+                      {character.user?.username || 'Neznámý uživatel'}
                     </div>
                   </div>
                 </div>
@@ -273,7 +273,7 @@ export default function CharacterProfile() {
                   <div>
                     <div className="text-sm font-medium">Email</div>
                     <div className="text-sm text-muted-foreground">
-                      {character.user.email}
+                      {character.user?.email || 'Nezadán email'}
                     </div>
                   </div>
                 </div>
