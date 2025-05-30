@@ -266,7 +266,7 @@ export default function ChatRoom() {
       let errorMessage = "Nepodařilo se odeslat zprávu.";
       
       // Check for specific wand-related error
-      if (error.message && error.message.includes("potřebuje hůlku pro sesílání kouzel")) {
+      if (error.message && (error.message.includes("potřebuje hůlku") || error.message.includes("needs a wand"))) {
         errorMessage = error.message; // Use the server message directly
       } else if (error.message && error.message.includes("Character doesn't know this spell")) {
         errorMessage = "Vaše postava nezná toto kouzlo.";
