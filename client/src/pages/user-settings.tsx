@@ -68,11 +68,14 @@ export default function UserSettings() {
     enabled: !!user,
   });
 
-  // Fetch user's characters
-  const { data: userCharacters = [] } = useQuery({
+  // Fetch user's characters (filter only alive characters)
+  const { data: allUserCharacters = [] } = useQuery({
     queryKey: ["/api/characters"],
     enabled: !!user,
   });
+
+  // Filter only alive characters (not in cemetery)
+  const userCharacters = allUserCharacters.filter((char: any) => char.isActive);
 
   // Fetch main character
   const { data: mainCharacter } = useQuery({

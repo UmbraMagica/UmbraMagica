@@ -1637,11 +1637,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         adminId,
         action: 'character_death',
         targetUserId: killedCharacter.userId,
-        details: `Postava ${killedCharacter.firstName} ${killedCharacter.lastName} byla označena jako mrtvá. Důvod: ${deathReason.trim()}`,
-        metadata: JSON.stringify({ 
-          characterId: killedCharacter.id, 
-          deathReason: deathReason.trim() 
-        })
+        details: `Postava ${killedCharacter.firstName} ${killedCharacter.lastName} byla označena jako mrtvá. Důvod: ${deathReason.trim()}`
       });
       
       res.json({ message: "Character killed successfully", character: killedCharacter });
