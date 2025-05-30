@@ -56,7 +56,7 @@ export default function CharacterEditFixed() {
   // Always call hooks in the same order
   const { data: mainCharacter } = useQuery<any>({
     queryKey: ["/api/characters/main"],
-    enabled: !!user,
+    enabled: !!user && !characterIdFromUrl, // Only fetch main character if no specific character requested
   });
 
   const { data: specificCharacter } = useQuery<any>({
