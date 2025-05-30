@@ -161,14 +161,14 @@ export interface IStorage {
   deleteWand(wandId: number): Promise<boolean>;
   generateRandomWand(characterId: number): Promise<Wand>;
   getAllWandComponents(): Promise<{
-    woods: string[];
+    woods: { name: string; description: string }[];
     cores: { name: string; category: string; description: string }[];
     lengths: string[];
     flexibilities: string[];
   }>;
   migrateExistingWandsToInventory(): Promise<number>;
   updateWandComponents(components: {
-    woods: string[];
+    woods: { name: string; description: string }[];
     cores: { name: string; category: string; description: string }[];
     lengths: string[];
     flexibilities: string[];
@@ -1209,17 +1209,45 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllWandComponents(): Promise<{
-    woods: string[];
+    woods: { name: string; description: string }[];
     cores: { name: string; category: string; description: string }[];
     lengths: string[];
     flexibilities: string[];
   }> {
     const woods = [
-      "Akácie", "Anglický dub", "Borovice", "Buk", "Cedr", "Cesmína", "Cypřiš", 
-      "Černý bez", "Černý ořech", "Červený dub", "Dřín", "Eben", "Habr", "Hloh", 
-      "Hrušeň", "Jabloň", "Jasan", "Javor", "Jedle", "Jeřáb", "Jilm", "Kaštan", 
-      "Lípa stříbřitá", "Líska", "Modřín", "Ořech", "Růže", "Smrk", "Tis", 
-      "Topol", "Třešeň", "Vrba", "Vinná réva"
+      { name: "Akácie", description: "Symbolizuje čistotu a obrození. Hůlky z akácie jsou velmi citlivé a vyžadují zkušeného čaroděje." },
+      { name: "Anglický dub", description: "Síla a vytrvalost. Oblíbené u Aurorů a těch, kdo chrání ostatní." },
+      { name: "Borovice", description: "Nezávislost a originalita. Hůlky z borovice si vybírají kreativní a nekonvenční čaroděje." },
+      { name: "Buk", description: "Moudrost a porozumění. Ideální pro studenty a učence kouzelného umění." },
+      { name: "Cedr", description: "Věrnost a ochrana. Hůlky z cedru jsou známé svou stabilitou a spolehlivostí." },
+      { name: "Cesmína", description: "Ochrana a přemáhání zla. Symbolizuje štěstí a obranu proti temným silám." },
+      { name: "Cypřiš", description: "Smrt a znovuzrození. Spojení s věčností a cykly života." },
+      { name: "Černý bez", description: "Tajemství a mystika. Spojení s magií předků a duchovním světem." },
+      { name: "Černý ořech", description: "Mistrovství a vnitřní síla. Vybírá si čaroděje s silnou vůlí a disciplínou." },
+      { name: "Červený dub", description: "Vášeň a energie. Posiluje emotivní a bojová kouzla." },
+      { name: "Dřín", description: "Tvrdost a odolnost. Spolehlivé pro obranná kouzla a ochranu." },
+      { name: "Eben", description: "Elegance a síla. Vzácné dřevo pro sofistikovaná a mocná kouzla." },
+      { name: "Habr", description: "Jemnost a složitá kouzla. Oblíbené u čarodějů specializujících se na transfiguraci." },
+      { name: "Hloh", description: "Ochrana a léčení. Ideální pro léčivá a očistná kouzla." },
+      { name: "Hrušeň", description: "Plodnost a hojnost. Podporuje růstová a léčivá kouzla." },
+      { name: "Jabloň", description: "Láska a harmonie. Ideální pro kouzla spojená s emocemi a vztahy." },
+      { name: "Jasan", description: "Spojení světů. Výborné pro věštby a komunikaci s duchy." },
+      { name: "Javor", description: "Rovnováha a stabilita. Univerzální dřevo vhodné pro mnoho typů kouzel." },
+      { name: "Jedle", description: "Věčný život a regenerace. Specializace na léčivá a omlazující kouzla." },
+      { name: "Jeřáb", description: "Ochrana před zlem. Tradiční ochranné dřevo proti temným silám." },
+      { name: "Jilm", description: "Dignita a síla charakteru. Vybírá si čaroděje s pevnými zásadami." },
+      { name: "Kaštan", description: "Spravedlnost a pravda. Oblíbené u soudců a vyšetřovatelů." },
+      { name: "Lípa stříbřitá", description: "Komunikace a výmluvnost. Ideální pro čaroděje pracující s lidmi." },
+      { name: "Líska", description: "Moudrost a divokost. Spojení s přírodní magií a starými znalostmi." },
+      { name: "Modřín", description: "Odvaha a noví začátky. Podporuje průkopnické čaroděje." },
+      { name: "Ořech", description: "Inteligence a inovace. Vybírá si vynálezce a teoretiky magie." },
+      { name: "Růže", description: "Láska a krása. Ideální pro esteticky založené čaroděje." },
+      { name: "Smrk", description: "Odolnost a přežití. Spolehlivé v náročných podmínkách." },
+      { name: "Tis", description: "Smrt a znovuzrození. Mocné dřevo s vazbou na cykly života a smrti." },
+      { name: "Topol", description: "Komunikace a výměna energií. Usnadňuje spojení mezi čaroději." },
+      { name: "Třešeň", description: "Krása a elegance. Ideální pro umělecky založené čaroděje." },
+      { name: "Vrba", description: "Flexibilita a přizpůsobivost. Ohebné jako mysl svého majitele." },
+      { name: "Vinná réva", description: "Radost a oslava. Podporuje pozitivní magii a společenská kouzla." }
     ];
 
     const cores = [

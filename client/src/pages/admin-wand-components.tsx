@@ -22,7 +22,7 @@ export default function AdminWandComponents() {
   const [editingLength, setEditingLength] = useState<string | null>(null);
   const [editingFlex, setEditingFlex] = useState<string | null>(null);
   
-  const [newWood, setNewWood] = useState("");
+  const [newWood, setNewWood] = useState({ name: "", description: "" });
   const [newCore, setNewCore] = useState({ name: "", category: "", description: "" });
   const [newLength, setNewLength] = useState("");
   const [newFlex, setNewFlex] = useState("");
@@ -84,16 +84,16 @@ export default function AdminWandComponents() {
   };
 
   const addWood = () => {
-    if (!newWood.trim() || !wandComponents) return;
-    const updatedWoods = [...wandComponents.woods, newWood.trim()];
+    if (!newWood.name.trim() || !newWood.description.trim() || !wandComponents) return;
+    const updatedWoods = [...wandComponents.woods, { name: newWood.name.trim(), description: newWood.description.trim() }];
     const updatedComponents = { ...wandComponents, woods: updatedWoods };
     saveComponentsMutation.mutate(updatedComponents);
-    setNewWood("");
+    setNewWood({ name: "", description: "" });
   };
 
-  const removeWood = (woodToRemove: string) => {
+  const removeWood = (woodToRemove: any) => {
     if (!wandComponents) return;
-    const updatedWoods = wandComponents.woods.filter((wood: string) => wood !== woodToRemove);
+    const updatedWoods = wandComponents.woods.filter((wood: any) => wood.name !== woodToRemove.name);
     const updatedComponents = { ...wandComponents, woods: updatedWoods };
     saveComponentsMutation.mutate(updatedComponents);
   };
