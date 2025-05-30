@@ -159,7 +159,7 @@ export default function CharacterEditFixed() {
     );
   }
 
-  if (primaryCharacter && primaryCharacter.userId !== user?.id && !isAdmin) {
+  if (primaryCharacter && primaryCharacter.userId !== user.id && !isAdmin) {
     return (
       <div className="container mx-auto p-6">
         <div className="text-center">
