@@ -219,7 +219,15 @@ export default function UserSettings() {
                           <Input
                             id="birthDate"
                             type="date"
+                            min="1860-01-01"
+                            max="1910-12-31"
                             {...form.register("birthDate")}
+                            onFocus={(e) => {
+                              // Nastavit výchozí rok na herní dobu
+                              if (!e.target.value) {
+                                e.target.value = "1900-01-01";
+                              }
+                            }}
                           />
                           <p className="text-xs text-muted-foreground mt-1">
                             Roky 1860-1910 (věk v roce 1926: 16-66 let)
