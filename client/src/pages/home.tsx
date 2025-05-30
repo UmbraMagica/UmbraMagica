@@ -31,6 +31,7 @@ interface OnlineCharacter {
   firstName: string;
   lastName: string;
   location: string;
+  avatar?: string | null;
 }
 
 export default function Home() {
@@ -384,7 +385,7 @@ export default function Home() {
                 <div className="space-y-3">
                   {onlineCharacters.map((character) => (
                     <div key={character.id} className="flex items-center space-x-3">
-                      <CharacterAvatar character={{ firstName: character.firstName, lastName: character.lastName, avatar: null }} size="sm" />
+                      <CharacterAvatar character={character} size="sm" />
                       <div className="flex-1">
                         <p className="text-sm font-medium text-foreground">{character.fullName}</p>
                         <p className="text-xs text-muted-foreground">v {character.location}</p>

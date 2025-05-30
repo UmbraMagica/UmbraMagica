@@ -901,7 +901,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
             firstName: character.firstName,
             middleName: character.middleName,
             lastName: character.lastName,
-            fullName: `${character.firstName}${character.middleName ? ` ${character.middleName}` : ''} ${character.lastName}`
+            fullName: `${character.firstName}${character.middleName ? ` ${character.middleName}` : ''} ${character.lastName}`,
+            avatar: character.avatar
           } : null;
         })
       );
