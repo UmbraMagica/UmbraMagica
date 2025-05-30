@@ -890,16 +890,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
             roomPresence.get(roomId)!.add(connInfo.characterId);
             connInfo.roomId = roomId;
             
+            // Get character details for presence update
+            const characterIds = Array.from(roomPresence.get(roomId)!);
+            const characters = await Promise.all(
+              characterIds.map(async (characterId) => {
+                const character = await storage.getCharacter(characterId);
+                return character ? {
+                  id: character.id,
+                  firstName: character.firstName,
+                  middleName: character.middleName,
+                  lastName: character.lastName,
+                  fullName: `${character.firstName}${character.middleName ? ` ${character.middleName}` : ''} ${character.lastName}`
+                } : null;
+              })
+            );
+            const validCharacters = characters.filter(Boolean);
+            
             // Notify new room about character joining
             broadcastToRoom(roomId, {
               type: 'presence_update',
-              characters: Array.from(roomPresence.get(roomId)!)
+              characters: validCharacters
             });
             
             ws.send(JSON.stringify({ 
               type: 'room_joined', 
               roomId,
-              characters: Array.from(roomPresence.get(roomId)!)
+              characters: validCharacters
             }));
             break;
             

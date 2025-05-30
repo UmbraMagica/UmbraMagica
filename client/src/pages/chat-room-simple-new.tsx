@@ -483,93 +483,92 @@ export default function ChatRoom() {
       <div className="w-80 border-l bg-muted/30 flex flex-col">
         {/* Panel Header - matches main header */}
         <div className="flex-none p-4 border-b bg-card h-[84px] flex items-center justify-between w-full">
-            <div className="flex items-center gap-2">
-              <BookOpen className="h-4 w-4" />
-              <span className="font-medium">Informace o místnosti</span>
+          <div className="flex items-center gap-2">
+            <BookOpen className="h-4 w-4" />
+            <span className="font-medium">Informace o místnosti</span>
+          </div>
+          {user?.role === 'admin' && (
+            <div className="flex gap-2">
+              {isEditingDescription ? (
+                <>
+                  <Button
+                    onClick={handleSaveDescription}
+                    variant="default"
+                    size="sm"
+                    className="flex items-center gap-1"
+                  >
+                    <Save className="h-4 w-4" />
+                    Uložit
+                  </Button>
+                  <Button
+                    onClick={handleCancelEdit}
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center gap-1"
+                  >
+                    <X className="h-4 w-4" />
+                    Zrušit
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  onClick={handleEditDescription}
+                  variant="outline"
+                  size="sm"
+                  className="flex items-center gap-1"
+                >
+                  <Edit3 className="h-4 w-4" />
+                  Upravit
+                </Button>
+              )}
             </div>
-              {user?.role === 'admin' && (
-                <div className="flex gap-2">
-                  {isEditingDescription ? (
-                    <>
-                      <Button
-                        onClick={handleSaveDescription}
-                        variant="default"
-                        size="sm"
-                        className="flex items-center gap-1"
-                      >
-                        <Save className="h-4 w-4" />
-                        Uložit
-                      </Button>
-                      <Button
-                        onClick={handleCancelEdit}
-                        variant="outline"
-                        size="sm"
-                        className="flex items-center gap-1"
-                      >
-                        <X className="h-4 w-4" />
-                        Zrušit
-                      </Button>
-                    </>
+          )}
+        </div>
+
+        {/* Panel Content */}
+        <div className="flex-1 p-4 overflow-y-auto space-y-4">
+          {/* Room Presence */}
+          <RoomPresence roomId={currentRoomId!} onlineCharacters={presentCharacters} />
+          
+          {/* Room Description */}
+          {(currentRoom.longDescription || user?.role === 'admin') && (
+            <div>
+              {isEditingDescription ? (
+                <div className="space-y-3">
+                  <div className="text-sm font-medium text-foreground">Popis místnosti</div>
+                  <Textarea
+                    value={editedDescription}
+                    onChange={(e) => setEditedDescription(e.target.value)}
+                    placeholder="Zadejte popis místnosti..."
+                    className="min-h-64 text-sm w-full resize-none"
+                    rows={12}
+                  />
+                  <div className="text-xs text-muted-foreground border-t pt-2">
+                    <div className="font-medium mb-1">Formátování:</div>
+                    <div>**tučné** → <strong>tučné</strong></div>
+                    <div>*kurzíva* → <em>kurzíva</em></div>
+                    <div>__podtržené__ → <u>podtržené</u></div>
+                    <div className="mt-2">
+                      <div className="font-medium mb-1">Odkazy na chaty:</div>
+                      <div>[Ulice] → vytvoří odkaz na chat "Ulice"</div>
+                      <div>[Příčná ulice] → vytvoří odkaz na kategorie</div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <div className="text-sm font-medium text-foreground mb-2">Popis místnosti</div>
+                  {currentRoom.longDescription ? (
+                    <RoomDescription description={currentRoom.longDescription} />
                   ) : (
-                    <Button
-                      onClick={handleEditDescription}
-                      variant="outline"
-                      size="sm"
-                      className="flex items-center gap-1"
-                    >
-                      <Edit3 className="h-4 w-4" />
-                      Upravit
-                    </Button>
+                    <div className="text-sm text-muted-foreground">
+                      {user?.role === 'admin' ? "Žádný popis místnosti. Klikněte na upravit pro přidání popisu." : ""}
+                    </div>
                   )}
                 </div>
               )}
-          </div>
-
-          {/* Panel Content */}
-          <div className="flex-1 p-4 overflow-y-auto space-y-4">
-            {/* Room Presence */}
-            <RoomPresence roomId={currentRoomId!} onlineCharacters={presentCharacters} />
-            
-            {/* Room Description */}
-            {(currentRoom.longDescription || user?.role === 'admin') && (
-              <div>
-                {isEditingDescription ? (
-                  <div className="space-y-3">
-                    <div className="text-sm font-medium text-foreground">Popis místnosti</div>
-                    <Textarea
-                      value={editedDescription}
-                      onChange={(e) => setEditedDescription(e.target.value)}
-                      placeholder="Zadejte popis místnosti..."
-                      className="min-h-64 text-sm w-full resize-none"
-                      rows={12}
-                    />
-                    <div className="text-xs text-muted-foreground border-t pt-2">
-                      <div className="font-medium mb-1">Formátování:</div>
-                      <div>**tučné** → <strong>tučné</strong></div>
-                      <div>*kurzíva* → <em>kurzíva</em></div>
-                      <div>__podtržené__ → <u>podtržené</u></div>
-                      <div className="mt-2">
-                        <div className="font-medium mb-1">Odkazy na chaty:</div>
-                        <div>[Ulice] → vytvoří odkaz na chat "Ulice"</div>
-                        <div>[Příčná ulice] → vytvoří odkaz na kategorie</div>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div>
-                    <div className="text-sm font-medium text-foreground mb-2">Popis místnosti</div>
-                    {currentRoom.longDescription ? (
-                      <RoomDescription description={currentRoom.longDescription} />
-                    ) : (
-                      <div className="text-sm text-muted-foreground">
-                        {user?.role === 'admin' ? "Žádný popis místnosti. Klikněte na upravit pro přidání popisu." : ""}
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
