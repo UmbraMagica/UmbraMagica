@@ -318,11 +318,16 @@ export default function Home() {
                     {userCharacters.map((character: any) => (
                       <div 
                         key={character.id} 
-                        className={`flex items-center justify-between p-3 rounded-lg ${
+                        className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-colors hover:bg-muted/50 ${
                           mainCharacter?.id === character.id 
                             ? 'bg-accent/20 border border-accent/30' 
                             : 'bg-muted/30'
                         }`}
+                        onClick={() => {
+                          if (mainCharacter?.id !== character.id) {
+                            setMainCharacterMutation.mutate(character.id);
+                          }
+                        }}
                       >
                         <div className="flex items-center space-x-3">
                           <div className="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center">
