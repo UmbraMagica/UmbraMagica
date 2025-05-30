@@ -555,6 +555,27 @@ export default function AdminWandComponents() {
           </Card>
         </TabsContent>
       </Tabs>
+      
+      {/* Copyright notice */}
+      <div className="mt-8 p-4 border-t border-gray-200 dark:border-gray-700 text-xs text-gray-500 dark:text-gray-400">
+        <p className="mb-2">
+          <strong>Originální text od J.K. Rowlingové.</strong>
+        </p>
+        <p className="mb-2">
+          Zdroj textu v původním jazyce a náhledového obrázku:{" "}
+          <a 
+            href="https://www.pottermore.com/writing-by-jk-rowling/wand-woods" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-blue-600 dark:text-blue-400 hover:underline"
+          >
+            https://www.pottermore.com/writing-by-jk-rowling/wand-woods
+          </a>
+        </p>
+        <p>
+          Duševní vlastnictví překladů vlastních jmen, názvů a pojmů patří pánům Pavlu a Vladimíru Medkovým.
+        </p>
+      </div>
     </div>
   );
 }
