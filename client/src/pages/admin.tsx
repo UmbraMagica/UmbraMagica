@@ -146,8 +146,8 @@ export default function Admin() {
                 <span className="text-xl fantasy-font font-bold text-accent">RPG Realm Admin</span>
               </div>
               <div className="hidden md:ml-10 md:flex md:space-x-8">
-                <Button variant="ghost" className="text-accent hover:text-orange-400">
-                  <Gauge className="mr-2 h-4 w-4" />
+                <Button variant="ghost" className="text-accent hover:text-orange-400" onClick={() => setLocation('/')}>
+                  <Home className="mr-2 h-4 w-4" />
                   Dashboard
                 </Button>
                 <Button variant="ghost" className="text-foreground hover:text-accent">

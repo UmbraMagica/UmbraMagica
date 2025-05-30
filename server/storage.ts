@@ -21,8 +21,7 @@ import {
   type ArchivedMessage,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, and, desc, lt } from "drizzle-orm";
-import { gte } from "drizzle-orm";
+import { eq, and, desc, lt, gte, count } from "drizzle-orm";
 import bcrypt from "bcrypt";
 
 export interface IStorage {
@@ -78,6 +77,7 @@ export interface IStorage {
   deleteAllMessages(): Promise<void>;
   clearRoomMessages(roomId: number): Promise<number>;
   getArchiveDates(roomId: number): Promise<string[]>;
+  getArchiveDatesWithCounts(roomId: number): Promise<{ date: string; count: number }[]>;
   getArchivedMessagesByDate(roomId: number, archiveDate: string, limit?: number, offset?: number): Promise<ArchivedMessage[]>;
 }
 
@@ -415,6 +415,24 @@ export class DatabaseStorage implements IStorage {
       .orderBy(desc(archivedMessages.archivedAt));
     
     return dates.map(d => d.archivedAt.toISOString().split('T')[0]); // Return YYYY-MM-DD format
+  }
+
+  async getArchiveDatesWithCounts(roomId: number): Promise<{ date: string; count: number }[]> {
+    // Get archive dates with message counts for a room
+    const result = await db
+      .select({
+        archivedAt: archivedMessages.archivedAt,
+        count: db.sql`count(*)`.as('count')
+      })
+      .from(archivedMessages)
+      .where(eq(archivedMessages.roomId, roomId))
+      .groupBy(archivedMessages.archivedAt)
+      .orderBy(desc(archivedMessages.archivedAt));
+    
+    return result.map(r => ({
+      date: r.archivedAt.toISOString().split('T')[0],
+      count: Number(r.count)
+    }));
   }
 
   async getArchivedMessagesByDate(roomId: number, archiveDate: string, limit: number = 50, offset: number = 0): Promise<ArchivedMessage[]> {

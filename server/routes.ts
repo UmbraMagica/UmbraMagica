@@ -1343,12 +1343,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Admin: Get archive dates for a room
+  // Admin: Get archive dates for a room with message counts
   app.get("/api/admin/rooms/:roomId/archive-dates", requireAuth, requireAdmin, async (req, res) => {
     try {
       const roomId = parseInt(req.params.roomId);
-      const archiveDates = await storage.getArchiveDates(roomId);
-      res.json(archiveDates);
+      const archiveDatesWithCounts = await storage.getArchiveDatesWithCounts(roomId);
+      res.json(archiveDatesWithCounts);
     } catch (error) {
       console.error("Error fetching archive dates:", error);
       res.status(500).json({ message: "Failed to fetch archive dates" });

@@ -54,7 +54,7 @@ export default function AdminArchive() {
     staleTime: 30000,
   });
 
-  const { data: archiveDates = [] } = useQuery<string[]>({
+  const { data: archiveDatesWithCounts = [] } = useQuery<{ date: string; count: number }[]>({
     queryKey: [`/api/admin/rooms/${selectedRoomId}/archive-dates`],
     enabled: !!selectedRoomId,
     staleTime: 30000,
@@ -125,21 +125,45 @@ export default function AdminArchive() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
-                {rooms.map((room) => (
-                  <Button
-                    key={room.id}
-                    variant={selectedRoomId === room.id ? "default" : "ghost"}
-                    className="w-full justify-start"
-                    onClick={() => {
-                      setSelectedRoomId(room.id);
-                      setSelectedArchiveDate(null);
-                      setPage(0);
-                    }}
-                  >
-                    <MessageSquare className="h-4 w-4 mr-2" />
-                    {room.name}
-                  </Button>
-                ))}
+                {(() => {
+                  // Group rooms by first letter for better organization
+                  const groupedRooms = rooms.reduce((groups, room) => {
+                    const firstLetter = room.name.charAt(0).toUpperCase();
+                    if (!groups[firstLetter]) {
+                      groups[firstLetter] = [];
+                    }
+                    groups[firstLetter].push(room);
+                    return groups;
+                  }, {} as Record<string, typeof rooms>);
+
+                  return Object.entries(groupedRooms)
+                    .sort(([a], [b]) => a.localeCompare(b))
+                    .map(([letter, roomsInGroup]) => (
+                      <div key={letter} className="space-y-1">
+                        <div className="text-xs font-medium text-muted-foreground px-2 py-1 bg-muted/50 rounded">
+                          {letter}
+                        </div>
+                        {roomsInGroup
+                          .sort((a, b) => a.name.localeCompare(b.name))
+                          .map((room) => (
+                            <Button
+                              key={room.id}
+                              variant={selectedRoomId === room.id ? "default" : "ghost"}
+                              className="w-full justify-start pl-6"
+                              onClick={() => {
+                                setSelectedRoomId(room.id);
+                                setSelectedArchiveDate(null);
+                                setPage(0);
+                              }}
+                            >
+                              <MessageSquare className="h-3 w-3 mr-2" />
+                              {room.name}
+                            </Button>
+                          ))
+                        }
+                      </div>
+                    ));
+                })()}
               </CardContent>
             </Card>
           </div>
@@ -156,20 +180,53 @@ export default function AdminArchive() {
                 </CardHeader>
                 <CardContent className="space-y-2">
                   {archiveDates.length > 0 ? (
-                    archiveDates.map((date) => (
-                      <Button
-                        key={date}
-                        variant={selectedArchiveDate === date ? "default" : "ghost"}
-                        className="w-full justify-start"
-                        onClick={() => {
-                          setSelectedArchiveDate(date);
-                          setPage(0);
-                        }}
-                      >
-                        <Folder className="h-4 w-4 mr-2" />
-                        {new Date(date).toLocaleDateString('cs-CZ')}
-                      </Button>
-                    ))
+                    <div className="space-y-1">
+                      {/* Group dates by month/year */}
+                      {(() => {
+                        const groupedDates = archiveDates.reduce((groups, date) => {
+                          const dateObj = new Date(date);
+                          const monthYear = `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, '0')}`;
+                          if (!groups[monthYear]) {
+                            groups[monthYear] = [];
+                          }
+                          groups[monthYear].push(date);
+                          return groups;
+                        }, {} as Record<string, string[]>);
+
+                        return Object.entries(groupedDates)
+                          .sort(([a], [b]) => b.localeCompare(a))
+                          .map(([monthYear, dates]) => (
+                            <div key={monthYear} className="space-y-1">
+                              <div className="text-xs font-medium text-muted-foreground px-2 py-1 bg-muted/50 rounded">
+                                {new Date(monthYear + '-01').toLocaleDateString('cs-CZ', { 
+                                  year: 'numeric', 
+                                  month: 'long' 
+                                })}
+                              </div>
+                              {dates
+                                .sort((a, b) => b.localeCompare(a))
+                                .map((date) => (
+                                  <Button
+                                    key={date}
+                                    variant={selectedArchiveDate === date ? "default" : "ghost"}
+                                    className="w-full justify-start pl-6"
+                                    onClick={() => {
+                                      setSelectedArchiveDate(date);
+                                      setPage(0);
+                                    }}
+                                  >
+                                    <FolderOpen className="h-3 w-3 mr-2" />
+                                    {new Date(date).toLocaleDateString('cs-CZ', {
+                                      day: 'numeric',
+                                      month: 'short'
+                                    })}
+                                  </Button>
+                                ))
+                              }
+                            </div>
+                          ));
+                      })()}
+                    </div>
                   ) : (
                     <p className="text-sm text-muted-foreground p-4">
                       Žádné archivní složky
