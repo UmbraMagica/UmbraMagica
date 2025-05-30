@@ -1141,6 +1141,50 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Bulk import spells (admin only)
+  app.post("/api/admin/spells/bulk-import", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const { spells } = req.body;
+      
+      if (!Array.isArray(spells) || spells.length === 0) {
+        return res.status(400).json({ message: "Spells array is required" });
+      }
+
+      let imported = 0;
+      let skipped = 0;
+
+      for (const spellData of spells) {
+        try {
+          // Validate spell data
+          const validatedData = spellSchema.parse(spellData);
+          
+          // Check if spell already exists
+          const existingSpell = await storage.getSpellByName(validatedData.name);
+          if (existingSpell) {
+            skipped++;
+            continue;
+          }
+
+          // Create the spell
+          await storage.createSpell(validatedData);
+          imported++;
+        } catch (error) {
+          console.error(`Error importing spell ${spellData.name}:`, error);
+          skipped++;
+        }
+      }
+
+      res.json({ 
+        message: `Import completed: ${imported} spells imported, ${skipped} skipped`,
+        imported,
+        skipped
+      });
+    } catch (error) {
+      console.error("Error bulk importing spells:", error);
+      res.status(500).json({ message: "Failed to bulk import spells" });
+    }
+  });
+
   // Cast spell in chat
   app.post("/api/game/cast-spell", requireAuth, async (req, res) => {
     try {

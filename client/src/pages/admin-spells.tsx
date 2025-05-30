@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Edit, Trash2, Wand2, ArrowLeft, Search, Filter } from "lucide-react";
+import { Plus, Edit, Trash2, Wand2, ArrowLeft, Search, Filter, Upload, FileText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { Spell } from "@shared/schema";
 import { useLocation } from "wouter";
@@ -15,6 +15,8 @@ import { useLocation } from "wouter";
 export default function AdminSpells() {
   const [isCreating, setIsCreating] = useState(false);
   const [editingSpell, setEditingSpell] = useState<Spell | null>(null);
+  const [showImport, setShowImport] = useState(false);
+  const [importData, setImportData] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     effect: "",
@@ -145,6 +147,30 @@ export default function AdminSpells() {
     },
   });
 
+  const bulkImportMutation = useMutation({
+    mutationFn: async (spellsData: Array<{name: string, effect: string, category: string, type: string, targetType: string}>) => {
+      const response = await fetch('/api/admin/spells/bulk-import', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ spells: spellsData }),
+      });
+      if (!response.ok) throw new Error('Failed to import spells');
+      return response.json();
+    },
+    onSuccess: (data) => {
+      toast({ 
+        title: "Import dokončen", 
+        description: `Úspěšně importováno ${data.imported} kouzel, ${data.skipped} přeskočeno`
+      });
+      setShowImport(false);
+      setImportData("");
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/spells'] });
+    },
+    onError: () => {
+      toast({ title: "Chyba", description: "Nepodařilo se importovat kouzla", variant: "destructive" });
+    },
+  });
+
   const resetForm = () => {
     setFormData({
       name: "",
@@ -186,6 +212,74 @@ export default function AdminSpells() {
     resetForm();
   };
 
+  const handleBulkImport = () => {
+    if (!importData.trim()) {
+      toast({ title: "Chyba", description: "Zadejte data pro import", variant: "destructive" });
+      return;
+    }
+
+    try {
+      // Parse CSV/TSV data
+      const lines = importData.trim().split('\n');
+      const spellsData = [];
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue;
+
+        // Support both comma and tab separation
+        const parts = line.includes('\t') ? line.split('\t') : line.split(',');
+        
+        if (parts.length < 4) {
+          toast({ 
+            title: "Chyba formátu", 
+            description: `Řádek ${i + 1}: Očekávány 4 sloupce (název, kategorie, typ, efekt)`, 
+            variant: "destructive" 
+          });
+          return;
+        }
+
+        const [name, category, type, effect, targetType = "self"] = parts.map(p => p.trim().replace(/^["']|["']$/g, ''));
+
+        // Validate category and type
+        if (!categories.includes(category)) {
+          toast({ 
+            title: "Neplatná kategorie", 
+            description: `Řádek ${i + 1}: "${category}" není platná kategorie`, 
+            variant: "destructive" 
+          });
+          return;
+        }
+
+        if (!types.includes(type)) {
+          toast({ 
+            title: "Neplatný typ", 
+            description: `Řádek ${i + 1}: "${type}" není platný typ`, 
+            variant: "destructive" 
+          });
+          return;
+        }
+
+        spellsData.push({
+          name,
+          effect,
+          category,
+          type,
+          targetType: targetType as "self" | "other" | "object" | "both"
+        });
+      }
+
+      if (spellsData.length === 0) {
+        toast({ title: "Chyba", description: "Žádná data k importu", variant: "destructive" });
+        return;
+      }
+
+      bulkImportMutation.mutate(spellsData);
+    } catch (error) {
+      toast({ title: "Chyba zpracování", description: "Nepodařilo se zpracovat data", variant: "destructive" });
+    }
+  };
+
   if (isLoading) {
     return <div className="flex justify-center p-8">Načítání kouzel...</div>;
   }
@@ -215,6 +309,15 @@ export default function AdminSpells() {
             size="sm"
           >
             {initializeSpellsMutation.isPending ? "Inicializuji..." : "Inicializovat základní kouzla"}
+          </Button>
+          <Button 
+            onClick={() => setShowImport(true)}
+            disabled={showImport}
+            variant="outline"
+            size="sm"
+          >
+            <Upload className="h-4 w-4 mr-2" />
+            Hromadný import
           </Button>
           <Button 
             onClick={() => {
@@ -312,6 +415,62 @@ export default function AdminSpells() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Bulk Import */}
+      {showImport && (
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <FileText className="h-5 w-5" />
+              Hromadný import kouzel
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="bg-muted/30 p-4 rounded-lg">
+              <h4 className="font-medium mb-2">Formát dat:</h4>
+              <p className="text-sm text-muted-foreground mb-2">
+                Zadejte data oddelená čárkami nebo tabulátory. Každý řádek představuje jedno kouzlo.
+              </p>
+              <p className="text-xs font-mono bg-background p-2 rounded border">
+                Název,Kategorie,Typ,Efekt[,Cíl]
+              </p>
+              <div className="text-xs text-muted-foreground mt-2">
+                <p><strong>Kategorie:</strong> {categories.join(", ")}</p>
+                <p><strong>Typ:</strong> {types.join(", ")}</p>
+                <p><strong>Cíl (volitelný):</strong> self, other, object, both (výchozí: self)</p>
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Data kouzel</label>
+              <Textarea
+                value={importData}
+                onChange={(e) => setImportData(e.target.value)}
+                placeholder="Lumos,Kouzelné formule,Základní,Rozsvítí konec hůlky jako svítilnu,self
+Nox,Kouzelné formule,Základní,Zhasne světlo vyvolané kouzlem Lumos,self"
+                rows={8}
+                className="font-mono text-sm"
+              />
+            </div>
+            <div className="flex gap-2">
+              <Button
+                onClick={handleBulkImport}
+                disabled={bulkImportMutation.isPending}
+              >
+                {bulkImportMutation.isPending ? "Importuji..." : "Importovat kouzla"}
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  setShowImport(false);
+                  setImportData("");
+                }}
+              >
+                Zrušit
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {isCreating && (
         <Card className="mb-6">
