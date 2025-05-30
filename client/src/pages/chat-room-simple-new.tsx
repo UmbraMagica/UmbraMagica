@@ -10,7 +10,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { Link } from "wouter";
-import { ArrowLeft, Edit3, Save, X, BookOpen, Download, Archive, Trash2 } from "lucide-react";
+import { ArrowLeft, Edit3, Save, X, BookOpen, Download, Archive, Trash2, Wand2 } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { RoomDescription } from "@/components/RoomDescription";
 import { RoomPresence } from "@/components/RoomPresence";

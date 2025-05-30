@@ -24,7 +24,7 @@ export default function AdminSpells() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: spells = [], isLoading } = useQuery({
+  const { data: spells = [], isLoading } = useQuery<Spell[]>({
     queryKey: ['/api/admin/spells'],
   });
 
@@ -268,7 +268,7 @@ export default function AdminSpells() {
             </CardContent>
           </Card>
         ) : (
-          spells.map((spell: Spell) => (
+          spells.map((spell) => (
             <Card key={spell.id}>
               <CardContent className="pt-6">
                 <div className="flex justify-between items-start">
