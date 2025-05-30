@@ -22,6 +22,7 @@ import {
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, desc, lt } from "drizzle-orm";
+import { gte } from "drizzle-orm";
 import bcrypt from "bcrypt";
 
 export interface IStorage {
@@ -76,6 +77,8 @@ export interface IStorage {
   // Additional message operations
   deleteAllMessages(): Promise<void>;
   clearRoomMessages(roomId: number): Promise<number>;
+  getArchiveDates(roomId: number): Promise<string[]>;
+  getArchivedMessagesByDate(roomId: number, archiveDate: string, limit?: number, offset?: number): Promise<ArchivedMessage[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -401,6 +404,38 @@ export class DatabaseStorage implements IStorage {
     // Delete only messages from specific room (keep archived)
     const deleteResult = await db.delete(messages).where(eq(messages.roomId, roomId));
     return deleteResult.rowCount || 0;
+  }
+
+  async getArchiveDates(roomId: number): Promise<string[]> {
+    // Get distinct archive dates for a room
+    const dates = await db
+      .selectDistinct({ archivedAt: archivedMessages.archivedAt })
+      .from(archivedMessages)
+      .where(eq(archivedMessages.roomId, roomId))
+      .orderBy(desc(archivedMessages.archivedAt));
+    
+    return dates.map(d => d.archivedAt.toISOString().split('T')[0]); // Return YYYY-MM-DD format
+  }
+
+  async getArchivedMessagesByDate(roomId: number, archiveDate: string, limit: number = 50, offset: number = 0): Promise<ArchivedMessage[]> {
+    // Parse the date to get start and end of day
+    const startDate = new Date(archiveDate);
+    const endDate = new Date(archiveDate);
+    endDate.setDate(endDate.getDate() + 1);
+    
+    return db
+      .select()
+      .from(archivedMessages)
+      .where(
+        and(
+          eq(archivedMessages.roomId, roomId),
+          gte(archivedMessages.archivedAt, startDate),
+          lt(archivedMessages.archivedAt, endDate)
+        )
+      )
+      .orderBy(desc(archivedMessages.originalCreatedAt))
+      .limit(limit)
+      .offset(offset);
   }
 }
 

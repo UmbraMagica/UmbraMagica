@@ -12,7 +12,9 @@ import {
   Users,
   Download,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Folder,
+  FolderOpen
 } from "lucide-react";
 
 interface ChatRoom {
@@ -37,6 +39,7 @@ export default function AdminArchive() {
   const { user } = useAuth();
   const [, setLocation] = useLocation();
   const [selectedRoomId, setSelectedRoomId] = useState<number | null>(null);
+  const [selectedArchiveDate, setSelectedArchiveDate] = useState<string | null>(null);
   const [page, setPage] = useState(0);
   const limit = 50;
 

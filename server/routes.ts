@@ -1343,5 +1343,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin: Get archive dates for a room
+  app.get("/api/admin/rooms/:roomId/archive-dates", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const roomId = parseInt(req.params.roomId);
+      const archiveDates = await storage.getArchiveDates(roomId);
+      res.json(archiveDates);
+    } catch (error) {
+      console.error("Error fetching archive dates:", error);
+      res.status(500).json({ message: "Failed to fetch archive dates" });
+    }
+  });
+
+  // Admin: Get archived messages by date
+  app.get("/api/admin/rooms/:roomId/archived/:date", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const roomId = parseInt(req.params.roomId);
+      const archiveDate = req.params.date;
+      const limit = parseInt(req.query.limit as string) || 50;
+      const offset = parseInt(req.query.offset as string) || 0;
+      
+      const archivedMessages = await storage.getArchivedMessagesByDate(roomId, archiveDate, limit, offset);
+      res.json(archivedMessages);
+    } catch (error) {
+      console.error("Error fetching archived messages by date:", error);
+      res.status(500).json({ message: "Failed to fetch archived messages" });
+    }
+  });
+
   return httpServer;
 }
