@@ -3,7 +3,10 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Wand2, Sparkles, ArrowLeft, Eye, EyeOff } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Wand2, Sparkles, ArrowLeft, Eye, EyeOff, Settings, Shuffle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
 import type { Wand } from "@shared/schema";
@@ -13,6 +16,15 @@ export default function Ollivanders() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [showWandDetails, setShowWandDetails] = useState(false);
+  
+  // Custom wand creation state
+  const [customWand, setCustomWand] = useState({
+    wood: "",
+    core: "",
+    length: "",
+    flexibility: "",
+    description: ""
+  });
 
   // Get current user and main character
   const { data: user } = useQuery({
@@ -29,7 +41,12 @@ export default function Ollivanders() {
     enabled: !!mainCharacter?.id
   });
 
-  // Visit Ollivanders mutation
+  // Get wand components for manual selection
+  const { data: wandComponents } = useQuery({
+    queryKey: ['/api/wand-components']
+  });
+
+  // Visit Ollivanders mutation (random wand)
   const visitOllivandersMutation = useMutation({
     mutationFn: async () => {
       if (!mainCharacter?.id) throw new Error("No character selected");
@@ -52,6 +69,48 @@ export default function Ollivanders() {
         description: `${mainCharacter?.firstName} získal novou hůlku od pana Ollivandera!`
       });
       queryClient.invalidateQueries({ queryKey: [`/api/characters/${mainCharacter?.id}/wand`] });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Chyba",
+        description: error.message,
+        variant: "destructive"
+      });
+    }
+  });
+
+  // Create custom wand mutation
+  const createCustomWandMutation = useMutation({
+    mutationFn: async () => {
+      if (!mainCharacter?.id) throw new Error("No character selected");
+      
+      const response = await fetch(`/api/characters/${mainCharacter.id}/create-custom-wand`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(customWand)
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to create custom wand');
+      }
+      
+      return response.json();
+    },
+    onSuccess: (newWand: Wand) => {
+      toast({
+        title: "Hůlka vytvořena!",
+        description: `${mainCharacter?.firstName} si pečlivě vybral svou jedinečnou hůlku!`
+      });
+      queryClient.invalidateQueries({ queryKey: [`/api/characters/${mainCharacter?.id}/wand`] });
+      // Reset form
+      setCustomWand({
+        wood: "",
+        core: "",
+        length: "",
+        flexibility: "",
+        description: ""
+      });
     },
     onError: (error: Error) => {
       toast({
@@ -200,8 +259,8 @@ export default function Ollivanders() {
             </CardHeader>
             <CardContent className="space-y-4">
               <p className="text-muted-foreground">
-                Pan Ollivander pozorně sleduje vaši postavu a je připraven vám pomoci najít tu pravou hůlku. 
-                Zkuste několik hůlek a on vám vybere tu, která si vás zvolí.
+                Pan Ollivander pozorně sleduje vaši postavu a je připraven vám pomoci najít tu pravou hůlku.
+                Můžete nechat výběr na něm, nebo si pečlivě vybrat jednotlivé komponenty sami.
               </p>
               
               <div className="bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-800 p-4 rounded-lg">
@@ -210,15 +269,133 @@ export default function Ollivanders() {
                 </p>
               </div>
 
-              <Button
-                onClick={() => visitOllivandersMutation.mutate()}
-                disabled={visitOllivandersMutation.isPending}
-                size="lg"
-                className="w-full"
-              >
-                <Wand2 className="h-5 w-5 mr-2" />
-                {visitOllivandersMutation.isPending ? "Vybírám hůlku..." : "Navštívit pana Ollivandera"}
-              </Button>
+              <Tabs defaultValue="random" className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="random" className="flex items-center gap-2">
+                    <Shuffle className="h-4 w-4" />
+                    Náhodný výběr
+                  </TabsTrigger>
+                  <TabsTrigger value="custom" className="flex items-center gap-2">
+                    <Settings className="h-4 w-4" />
+                    Vlastní výběr
+                  </TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="random" className="space-y-4">
+                  <p className="text-sm text-muted-foreground">
+                    Nechte pana Ollivandera vybrat hůlku, která si vás zvolí. Každá hůlka je jedinečná
+                    a pan Ollivander má zkušenosti s párovániím hůlek s jejich budoucími majiteli.
+                  </p>
+                  <Button
+                    onClick={() => visitOllivandersMutation.mutate()}
+                    disabled={visitOllivandersMutation.isPending}
+                    size="lg"
+                    className="w-full"
+                  >
+                    <Wand2 className="h-5 w-5 mr-2" />
+                    {visitOllivandersMutation.isPending ? "Vybírám hůlku..." : "Nechat Ollivandera vybrat"}
+                  </Button>
+                </TabsContent>
+
+                <TabsContent value="custom" className="space-y-4">
+                  <p className="text-sm text-muted-foreground">
+                    Vyberte si jednotlivé komponenty hůlky podle svých preferencí. Pan Ollivander
+                    respektuje vaše přání a pomůže vám vytvořit jedinečnou hůlku.
+                  </p>
+                  
+                  {wandComponents && (
+                    <div className="grid gap-4">
+                      {/* Wood Selection */}
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Dřevo hůlky</label>
+                        <Select value={customWand.wood} onValueChange={(value) => setCustomWand(prev => ({ ...prev, wood: value }))}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Vyberte dřevo..." />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {wandComponents.woods?.map((wood: string) => (
+                              <SelectItem key={wood} value={wood}>{wood}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {/* Core Selection */}
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Jádro hůlky</label>
+                        <Select value={customWand.core} onValueChange={(value) => setCustomWand(prev => ({ ...prev, core: value }))}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Vyberte jádro..." />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {wandComponents.cores?.map((core: any) => (
+                              <SelectItem key={core.name} value={core.name}>
+                                <div className="flex flex-col">
+                                  <span>{core.name}</span>
+                                  <span className="text-xs text-muted-foreground">
+                                    {core.category} - {core.description}
+                                  </span>
+                                </div>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {/* Length Selection */}
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Délka hůlky</label>
+                        <Select value={customWand.length} onValueChange={(value) => setCustomWand(prev => ({ ...prev, length: value }))}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Vyberte délku..." />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {wandComponents.lengths?.map((length: string) => (
+                              <SelectItem key={length} value={length}>{length}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {/* Flexibility Selection */}
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Ohebnost hůlky</label>
+                        <Select value={customWand.flexibility} onValueChange={(value) => setCustomWand(prev => ({ ...prev, flexibility: value }))}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Vyberte ohebnost..." />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {wandComponents.flexibilities?.map((flexibility: string) => (
+                              <SelectItem key={flexibility} value={flexibility}>{flexibility}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {/* Custom Description */}
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Vlastní popis (volitelný)</label>
+                        <Textarea
+                          value={customWand.description}
+                          onChange={(e) => setCustomWand(prev => ({ ...prev, description: e.target.value }))}
+                          placeholder="Můžete přidat vlastní popis hůlky..."
+                          rows={3}
+                        />
+                      </div>
+
+                      <Button
+                        onClick={() => createCustomWandMutation.mutate()}
+                        disabled={createCustomWandMutation.isPending || !customWand.wood || !customWand.core || !customWand.length || !customWand.flexibility}
+                        size="lg"
+                        className="w-full"
+                      >
+                        <Wand2 className="h-5 w-5 mr-2" />
+                        {createCustomWandMutation.isPending ? "Vytvářím hůlku..." : "Vytvořit vlastní hůlku"}
+                      </Button>
+                    </div>
+                  )}
+                </TabsContent>
+              </Tabs>
             </CardContent>
           </Card>
         )}

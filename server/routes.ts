@@ -1197,7 +1197,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Visit Ollivanders to get a wand
+  // Get wand components for selection
+  app.get("/api/wand-components", requireAuth, async (req, res) => {
+    try {
+      const components = await storage.getAllWandComponents();
+      res.json(components);
+    } catch (error) {
+      console.error("Error fetching wand components:", error);
+      res.status(500).json({ message: "Failed to fetch wand components" });
+    }
+  });
+
+  // Visit Ollivanders to get a wand (random)
   app.post("/api/characters/:id/visit-ollivanders", requireAuth, async (req, res) => {
     try {
       const characterId = parseInt(req.params.id);
@@ -1220,6 +1231,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error visiting Ollivanders:", error);
       res.status(500).json({ message: "Failed to visit Ollivanders" });
+    }
+  });
+
+  // Create custom wand (manual selection)
+  app.post("/api/characters/:id/create-custom-wand", requireAuth, async (req, res) => {
+    try {
+      const characterId = parseInt(req.params.id);
+      const { wood, core, length, flexibility, description } = req.body;
+      
+      // Verify character belongs to user or user is admin
+      const character = await storage.getCharacter(characterId);
+      if (!character || (character.userId !== req.session.userId! && req.session.userRole !== 'admin')) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+
+      // Check if character already has a wand
+      const existingWand = await storage.getCharacterWand(characterId);
+      if (existingWand) {
+        return res.status(400).json({ message: "Character already has a wand" });
+      }
+
+      // Validate inputs
+      if (!wood || !core || !length || !flexibility) {
+        return res.status(400).json({ message: "All wand components are required" });
+      }
+
+      // Create custom wand
+      const wandData = {
+        characterId,
+        wood,
+        core,
+        length,
+        flexibility,
+        description: description || `Hůlka z ${wood.toLowerCase()}, ${length} dlouhá, ${flexibility.toLowerCase()}, s jádrem ${core.toLowerCase()}. Pečlivě vybrána podle přání svého majitele.`
+      };
+
+      const wand = await storage.createWand(wandData);
+      res.json(wand);
+    } catch (error) {
+      console.error("Error creating custom wand:", error);
+      res.status(500).json({ message: "Failed to create custom wand" });
     }
   });
 

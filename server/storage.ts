@@ -160,6 +160,12 @@ export interface IStorage {
   updateWand(wandId: number, updates: Partial<InsertWand>): Promise<Wand | undefined>;
   deleteWand(wandId: number): Promise<boolean>;
   generateRandomWand(characterId: number): Promise<Wand>;
+  getAllWandComponents(): Promise<{
+    woods: string[];
+    cores: { name: string; category: string; description: string }[];
+    lengths: string[];
+    flexibilities: string[];
+  }>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -1103,12 +1109,59 @@ export class DatabaseStorage implements IStorage {
   }
 
   async generateRandomWand(characterId: number): Promise<Wand> {
-    // Define wand components
-    const cores = [
+    // Define wand components - Basic cores (most common)
+    const basicCores = [
       "🐉 Blána z dračího srdce",
       "🦄 Vlas z hřívy jednorožce", 
       "🔥 Pero fénixe"
     ];
+
+    // Rare cores from magical plants
+    const plantCores = [
+      "🌱 Kořen mandragory (sušený, očarovaný)",
+      "🌸 Květ Asfodelu (uchovaný v kouzelnické pryskyřici)",
+      "🍃 List měsíční kapradiny"
+    ];
+
+    // Very rare cores from magical creatures
+    const creatureCores = [
+      "🐺 Zub vlkodlaka",
+      "🕷️ Jed z akromantule (zakonzervovaný v vláknu)",
+      "🐍 Hadí jazyk (vzácný exemplář)",
+      "🦉 Opeření z noční můry (stínového hippogryfa)"
+    ];
+
+    // Elemental and mineral cores
+    const elementalCores = [
+      "🪨 Dračí kámen (Bloodstone)",
+      "🖤 Obsidián s runovým leptem",
+      "🔮 Měsíční kámen",
+      "⚡ Rudý jantar s duší hmyzího krále"
+    ];
+
+    // Less noble cores
+    const lesserCores = [
+      "🧝‍♀️ Vlas víly",
+      "🦴 Nehet ďasovce"
+    ];
+
+    // Weight the selection toward basic cores (80% chance)
+    const randomChance = Math.random();
+    let selectedCores;
+    
+    if (randomChance < 0.8) {
+      selectedCores = basicCores;
+    } else if (randomChance < 0.9) {
+      selectedCores = plantCores;
+    } else if (randomChance < 0.95) {
+      selectedCores = elementalCores;
+    } else if (randomChance < 0.98) {
+      selectedCores = creatureCores;
+    } else {
+      selectedCores = lesserCores;
+    }
+
+    const cores = selectedCores;
 
     const woods = [
       "Akácie", "Anglický dub", "Borovice", "Buk", "Cedr", "Cesmína", "Cypřiš", 
@@ -1146,6 +1199,59 @@ export class DatabaseStorage implements IStorage {
     };
 
     return this.createWand(wandData);
+  }
+
+  async getAllWandComponents(): Promise<{
+    woods: string[];
+    cores: { name: string; category: string; description: string }[];
+    lengths: string[];
+    flexibilities: string[];
+  }> {
+    const woods = [
+      "Akácie", "Anglický dub", "Borovice", "Buk", "Cedr", "Cesmína", "Cypřiš", 
+      "Černý bez", "Černý ořech", "Červený dub", "Dřín", "Eben", "Habr", "Hloh", 
+      "Hrušeň", "Jabloň", "Jasan", "Javor", "Jedle", "Jeřáb", "Jilm", "Kaštan", 
+      "Lípa stříbřitá", "Líska", "Modřín", "Ořech", "Růže", "Smrk", "Tis", 
+      "Topol", "Třešeň", "Vrba", "Vinná réva"
+    ];
+
+    const cores = [
+      // Basic cores
+      { name: "🐉 Blána z dračího srdce", category: "Základní", description: "Nejsilnější jádro, ideální pro bojová kouzla" },
+      { name: "🦄 Vlas z hřívy jednorožce", category: "Základní", description: "Nejvěrnější jádro, vhodné pro léčivá kouzla" },
+      { name: "🔥 Pero fénixe", category: "Základní", description: "Nejřídší jádro, schopné největších kouzel" },
+      
+      // Plant cores
+      { name: "🌱 Kořen mandragory (sušený, očarovaný)", category: "Rostlinné", description: "Silné spojení se zemí a životní silou. Nestabilní při destruktivních kouzlech." },
+      { name: "🌸 Květ Asfodelu (uchovaný v kouzelnické pryskyřici)", category: "Rostlinné", description: "Vztah ke smrti a přechodu mezi světy. Emočně náročné – vytahuje potlačené vzpomínky." },
+      { name: "🍃 List měsíční kapradiny", category: "Rostlinné", description: "Posiluje iluze, neviditelnost, astrální projekci. Méně vhodné pro přímý souboj." },
+      
+      // Creature cores
+      { name: "🐺 Zub vlkodlaka", category: "Tvorové", description: "Posiluje útočná kouzla, proměny a zvyšuje magickou agresi. Může negativně ovlivnit psychiku." },
+      { name: "🕷️ Jed z akromantule (zakonzervovaný v vláknu)", category: "Tvorové", description: "Výborné pro subtilní, jedovatou magii. Vytváří neklid v rukou čistých mágů." },
+      { name: "🐍 Hadí jazyk (vzácný exemplář)", category: "Tvorové", description: "Vhodné pro hadomluvy, šepoty, temná zaklínadla. Extrémně vzácné a nestabilní." },
+      { name: "🦉 Opeření z noční můry (stínového hippogryfa)", category: "Tvorové", description: "Posiluje kouzla spánku, vizí, nočních přeludů. Citlivé na světlo." },
+      
+      // Elemental cores
+      { name: "🪨 Dračí kámen (Bloodstone)", category: "Elementární", description: "Vztah k oběti a krvi. Odebírá uživateli část energie při silných kouzlech." },
+      { name: "🖤 Obsidián s runovým leptem", category: "Elementární", description: "Skvělý pro magii štítů, run, ochranných kleteb. Těžkopádný při spontánní magii." },
+      { name: "🔮 Měsíční kámen", category: "Elementární", description: "Posiluje ženskou magii, věštění, vodní a lunární kouzla. Méně stabilní při černé magii." },
+      { name: "⚡ Rudý jantar s duší hmyzího krále", category: "Elementární", description: "Podporuje experimentální magii a alchymii. Občas vykazuje nezávislé chování." },
+      
+      // Lesser cores
+      { name: "🧝‍♀️ Vlas víly", category: "Méně ušlechtilé", description: "Krásné a třpytivé, ale nestálé a nevyzpytatelné. Rychle ztrácí moc a náchylné k selháním." },
+      { name: "🦴 Nehet ďasovce", category: "Méně ušlechtilé", description: "Brutální a primitivní magie založená na síle a agresi. Oblíbené u černokněžníků." }
+    ];
+
+    const lengths = ['7"', '8"', '9"', '10"', '11"', '12"', '13"', '14"', '15"', '16"'];
+
+    const flexibilities = [
+      "Nezlomná", "Velmi nepoddajná", "Nepoddajná", "Mírně nepoddajná",
+      "Pevná", "Tvrdá", "Ohebná", "Pružná", "Velmi pružná", 
+      "Výjimečně poddajná", "Vrbovitá"
+    ];
+
+    return { woods, cores, lengths, flexibilities };
   }
 }
 
