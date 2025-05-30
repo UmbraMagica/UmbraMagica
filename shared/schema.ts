@@ -238,6 +238,18 @@ export const characterSpells = pgTable("character_spells", {
   learnedAt: timestamp("learned_at").defaultNow().notNull(),
 });
 
+// Wands table
+export const wands = pgTable("wands", {
+  id: serial("id").primaryKey(),
+  characterId: serial("character_id").references(() => characters.id).unique(), // One wand per character
+  wood: varchar("wood", { length: 50 }).notNull(),
+  core: varchar("core", { length: 100 }).notNull(),
+  length: varchar("length", { length: 20 }).notNull(),
+  flexibility: varchar("flexibility", { length: 50 }).notNull(),
+  description: text("description"),
+  acquiredAt: timestamp("acquired_at").defaultNow().notNull(),
+});
+
 // Spell relations
 export const spellsRelations = relations(spells, ({ many }) => ({
   characterSpells: many(characterSpells),
@@ -251,6 +263,14 @@ export const characterSpellsRelations = relations(characterSpells, ({ one }) => 
   spell: one(spells, {
     fields: [characterSpells.spellId],
     references: [spells.id],
+  }),
+}));
+
+// Wand relations
+export const wandsRelations = relations(wands, ({ one }) => ({
+  character: one(characters, {
+    fields: [wands.characterId],
+    references: [characters.id],
   }),
 }));
 
@@ -431,6 +451,23 @@ export const spellSchema = z.object({
   targetType: z.enum(["self", "other", "object", "both"]).default("self"),
 });
 
+export const insertWandSchema = createInsertSchema(wands).pick({
+  characterId: true,
+  wood: true,
+  core: true,
+  length: true,
+  flexibility: true,
+  description: true,
+});
+
+export const wandSchema = z.object({
+  wood: z.string().min(1, "Dřevo hůlky je povinné").max(50),
+  core: z.string().min(1, "Jádro hůlky je povinné").max(100),
+  length: z.string().min(1, "Délka hůlky je povinná").max(20),
+  flexibility: z.string().min(1, "Ohebnost hůlky je povinná").max(50),
+  description: z.string().optional(),
+});
+
 export const insertInventoryItemSchema = createInsertSchema(characterInventory).pick({
   characterId: true,
   itemName: true,
@@ -502,3 +539,5 @@ export type InventoryItem = typeof characterInventory.$inferSelect;
 export type InsertInventoryItem = typeof characterInventory.$inferInsert;
 export type JournalEntry = typeof characterJournal.$inferSelect;
 export type InsertJournalEntry = typeof characterJournal.$inferInsert;
+export type Wand = typeof wands.$inferSelect;
+export type InsertWand = typeof wands.$inferInsert;

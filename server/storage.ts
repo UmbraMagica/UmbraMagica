@@ -37,6 +37,9 @@ import {
   type InsertInventoryItem,
   type JournalEntry,
   type InsertJournalEntry,
+  type Wand,
+  type InsertWand,
+  wands,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, desc, lt, gte, count, isNotNull } from "drizzle-orm";
