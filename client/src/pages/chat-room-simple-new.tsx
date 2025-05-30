@@ -14,6 +14,7 @@ import { ArrowLeft, Edit3, Save, X, BookOpen, Download, Archive, Trash2 } from "
 import { Textarea } from "@/components/ui/textarea";
 import { RoomDescription } from "@/components/RoomDescription";
 import { RoomPresence } from "@/components/RoomPresence";
+import { CharacterAvatar } from "@/components/CharacterAvatar";
 
 interface ChatRoom {
   id: number;
@@ -35,6 +36,7 @@ interface ChatMessage {
     firstName: string;
     middleName?: string | null;
     lastName: string;
+    avatar?: string | null;
   };
 }
 
@@ -567,11 +569,7 @@ export default function ChatRoom() {
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
           {localMessages.map((message) => (
             <div key={message.id} className="flex items-start gap-3">
-              <Avatar className="h-8 w-8 flex-shrink-0">
-                <AvatarFallback className="text-xs bg-primary/10">
-                  {getCharacterInitials(message.character)}
-                </AvatarFallback>
-              </Avatar>
+              <CharacterAvatar character={message.character} size="sm" />
               <div className="flex-1 min-w-0">
                 <div className="flex items-baseline gap-2 mb-1">
                   <Link 
@@ -693,11 +691,7 @@ export default function ChatRoom() {
           )}
           
           <div className="flex items-end gap-3">
-            <Avatar className="h-10 w-10 flex-shrink-0">
-              <AvatarFallback className="bg-primary/10">
-                {getCurrentUserInitials()}
-              </AvatarFallback>
-            </Avatar>
+            {currentCharacter && <CharacterAvatar character={currentCharacter} size="md" />}
             <div className="flex-1 space-y-2">
               <Input
                 value={messageInput}

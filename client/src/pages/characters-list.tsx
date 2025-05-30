@@ -9,6 +9,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { format } from "date-fns";
 import { cs } from "date-fns/locale";
 import { calculateGameAge } from "@/lib/gameDate";
+import { CharacterAvatar } from "@/components/CharacterAvatar";
 
 interface Character {
   id: number;
@@ -18,6 +19,7 @@ interface Character {
   lastName: string;
   birthDate: string;
   isActive: boolean;
+  avatar?: string | null;
   user: {
     username: string;
   };
