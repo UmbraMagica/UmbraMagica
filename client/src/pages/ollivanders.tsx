@@ -313,8 +313,13 @@ export default function Ollivanders() {
                             <SelectValue placeholder="Vyberte dřevo..." />
                           </SelectTrigger>
                           <SelectContent>
-                            {wandComponents.woods?.map((wood: string) => (
-                              <SelectItem key={wood} value={wood}>{wood}</SelectItem>
+                            {wandComponents.woods?.map((wood: any) => (
+                              <SelectItem key={wood.name} value={wood.name}>
+                                <div>
+                                  <div className="font-medium">{wood.name}</div>
+                                  <div className="text-xs text-muted-foreground">{wood.description}</div>
+                                </div>
+                              </SelectItem>
                             ))}
                           </SelectContent>
                         </Select>
