@@ -203,7 +203,16 @@ export default function CharacterProfile() {
                   <div className="flex items-center gap-3">
                     <Calendar className="h-4 w-4 text-muted-foreground" />
                     <div className="text-sm">
-                      {format(new Date(character.birthDate), 'd. MMMM yyyy', { locale: cs })}
+                      {character.birthDate ? 
+                        (() => {
+                          try {
+                            return format(new Date(character.birthDate), 'd. MMMM yyyy', { locale: cs });
+                          } catch {
+                            return character.birthDate;
+                          }
+                        })()
+                        : 'Nezadáno'
+                      }
                     </div>
                   </div>
                 </div>
