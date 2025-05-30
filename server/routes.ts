@@ -1402,6 +1402,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Delete user's pending character request
+  app.delete("/api/character-requests/:id", requireAuth, async (req, res) => {
+    try {
+      const requestId = parseInt(req.params.id);
+      const request = await storage.getCharacterRequestById(requestId);
+      
+      if (!request) {
+        return res.status(404).json({ message: "Request not found" });
+      }
+      
+      if (request.userId !== req.session.userId) {
+        return res.status(403).json({ message: "Not authorized to delete this request" });
+      }
+      
+      if (request.status !== 'pending') {
+        return res.status(400).json({ message: "Can only delete pending requests" });
+      }
+      
+      await storage.deleteCharacterRequest(requestId);
+      res.json({ message: "Request deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting character request:", error);
+      res.status(500).json({ message: "Failed to delete character request" });
+    }
+  });
+
   // Admin: Get pending character requests
   app.get("/api/admin/character-requests/pending", requireAuth, requireAdmin, async (req, res) => {
     try {

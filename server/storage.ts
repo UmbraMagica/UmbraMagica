@@ -89,6 +89,8 @@ export interface IStorage {
   // Character request operations
   createCharacterRequest(request: InsertCharacterRequest): Promise<CharacterRequest>;
   getCharacterRequestsByUserId(userId: number): Promise<CharacterRequest[]>;
+  getCharacterRequestById(requestId: number): Promise<CharacterRequest | undefined>;
+  deleteCharacterRequest(requestId: number): Promise<boolean>;
   getPendingCharacterRequests(): Promise<(CharacterRequest & { user: { username: string; email: string } })[]>;
   approveCharacterRequest(requestId: number, adminId: number, reviewNote?: string): Promise<Character>;
   rejectCharacterRequest(requestId: number, adminId: number, reviewNote: string): Promise<CharacterRequest>;
@@ -586,7 +588,6 @@ export class DatabaseStorage implements IStorage {
       })
       .from(adminActivityLog)
       .innerJoin(users, eq(adminActivityLog.adminId, users.id))
-      .leftJoin(users.as("targetUsers"), eq(adminActivityLog.targetUserId, users.id))
       .orderBy(desc(adminActivityLog.createdAt))
       .limit(limit)
       .offset(offset);
