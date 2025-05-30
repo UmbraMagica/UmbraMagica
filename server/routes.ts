@@ -1246,5 +1246,85 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   })();
 
+  // Admin: Delete ALL messages from database (complete cleanup)
+  app.delete("/api/admin/messages/all", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      // Delete all messages and archived messages
+      await storage.deleteAllMessages();
+      res.json({ message: "All messages deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting all messages:", error);
+      res.status(500).json({ message: "Failed to delete messages" });
+    }
+  });
+
+  // Admin: Archive messages (move to archived_messages and delete from messages)
+  app.post("/api/admin/rooms/:roomId/archive", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const roomId = parseInt(req.params.roomId);
+      const archivedCount = await storage.archiveMessages(roomId);
+      res.json({ message: `${archivedCount} messages archived successfully` });
+    } catch (error) {
+      console.error("Error archiving messages:", error);
+      res.status(500).json({ message: "Failed to archive messages" });
+    }
+  });
+
+  // Admin: Clear chat (delete only from messages, keep archived)
+  app.delete("/api/admin/rooms/:roomId/clear", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const roomId = parseInt(req.params.roomId);
+      const deletedCount = await storage.clearRoomMessages(roomId);
+      res.json({ message: `${deletedCount} messages cleared from chat` });
+    } catch (error) {
+      console.error("Error clearing room messages:", error);
+      res.status(500).json({ message: "Failed to clear messages" });
+    }
+  });
+
+  // Download chat content (for users and admins)
+  app.get("/api/rooms/:roomId/download", requireAuth, async (req, res) => {
+    try {
+      const roomId = parseInt(req.params.roomId);
+      const room = await storage.getChatRoom(roomId);
+      if (!room) {
+        return res.status(404).json({ message: "Room not found" });
+      }
+
+      const messages = await storage.getMessagesByRoom(roomId, 1000); // Get up to 1000 messages
+      
+      // Format messages for download
+      const chatContent = messages.map(msg => {
+        const characterName = `${msg.character.firstName}${msg.character.middleName ? ` ${msg.character.middleName}` : ''} ${msg.character.lastName}`;
+        const timestamp = new Date(msg.createdAt).toLocaleString('cs-CZ');
+        return `[${timestamp}] ${characterName}: ${msg.content}`;
+      }).join('\n');
+
+      const filename = `chat_${room.name.replace(/[^a-zA-Z0-9]/g, '_')}_${new Date().toISOString().split('T')[0]}.txt`;
+      
+      res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+      res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+      res.send(chatContent);
+    } catch (error) {
+      console.error("Error downloading chat:", error);
+      res.status(500).json({ message: "Failed to download chat" });
+    }
+  });
+
+  // Admin: Get archived messages
+  app.get("/api/admin/rooms/:roomId/archived", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const roomId = parseInt(req.params.roomId);
+      const limit = parseInt(req.query.limit as string) || 50;
+      const offset = parseInt(req.query.offset as string) || 0;
+      
+      const archivedMessages = await storage.getArchivedMessages(roomId, limit, offset);
+      res.json(archivedMessages);
+    } catch (error) {
+      console.error("Error fetching archived messages:", error);
+      res.status(500).json({ message: "Failed to fetch archived messages" });
+    }
+  });
+
   return httpServer;
 }

@@ -72,6 +72,10 @@ export interface IStorage {
   // Archive operations
   archiveMessages(roomId: number, beforeDate?: Date): Promise<number>;
   getArchivedMessages(roomId: number, limit?: number, offset?: number): Promise<ArchivedMessage[]>;
+  
+  // Additional message operations
+  deleteAllMessages(): Promise<void>;
+  clearRoomMessages(roomId: number): Promise<number>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -385,6 +389,18 @@ export class DatabaseStorage implements IStorage {
       .orderBy(desc(archivedMessages.originalCreatedAt))
       .limit(limit)
       .offset(offset);
+  }
+
+  async deleteAllMessages(): Promise<void> {
+    // Delete all messages and archived messages
+    await db.delete(messages);
+    await db.delete(archivedMessages);
+  }
+
+  async clearRoomMessages(roomId: number): Promise<number> {
+    // Delete only messages from specific room (keep archived)
+    const deleteResult = await db.delete(messages).where(eq(messages.roomId, roomId));
+    return deleteResult.rowCount || 0;
   }
 }
 
