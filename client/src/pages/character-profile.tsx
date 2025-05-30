@@ -132,7 +132,7 @@ export default function CharacterProfile() {
                         </Badge>
                       </div>
                       <div className="text-sm text-muted-foreground">
-                        Hraje: @{character.user.username}
+                        Hraje: @{character.user?.username || 'Neznámý uživatel'}
                       </div>
                     </div>
                     {canEdit && (
