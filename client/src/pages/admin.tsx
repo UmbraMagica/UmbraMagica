@@ -398,6 +398,10 @@ export default function Admin() {
                   <UsersRound className="mr-2 h-4 w-4" />
                   Postavy
                 </Button>
+                <Button variant="ghost" className="text-foreground hover:text-accent" onClick={() => setLocation('/admin/spells')}>
+                  <Book className="mr-2 h-4 w-4" />
+                  Kouzla
+                </Button>
                 <Button 
                   variant="ghost" 
                   className="text-foreground hover:text-accent"

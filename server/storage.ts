@@ -846,7 +846,7 @@ export class DatabaseStorage implements IStorage {
     
     // Then delete the spell
     const result = await db.delete(spells).where(eq(spells.id, id));
-    return result.rowCount > 0;
+    return (result.rowCount ?? 0) > 0;
   }
 
   // Character spell operations
@@ -880,7 +880,75 @@ export class DatabaseStorage implements IStorage {
         eq(characterSpells.characterId, characterId),
         eq(characterSpells.spellId, spellId)
       ));
-    return result.rowCount > 0;
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  // Initialize default spells and add them to all existing characters
+  async initializeDefaultSpells(): Promise<void> {
+    const defaultSpells = [
+      {
+        name: "Carpe Retractum",
+        description: "Vytvoří světelné lano, které slouží k přitažení předmětu k sesílateli",
+        effect: "Vytvoří světelné lano, které slouží k přitažení předmětu k sesílateli, pokud je použito na pevně ukotvený předmět, může se naopak přitáhnout sesílatel.",
+        category: "Kouzelné formule",
+        type: "Základní",
+        targetType: "object" as const,
+      },
+      {
+        name: "Lumos",
+        description: "Rozsvítí konec hůlky jako svítilnu",
+        effect: "Rozsvítí konec hůlky jako svítilnu.",
+        category: "Kouzelné formule", 
+        type: "Základní",
+        targetType: "self" as const,
+      },
+      {
+        name: "Nox",
+        description: "Zhasne světlo vyvolané kouzlem Lumos",
+        effect: "Zhasne světlo vyvolané kouzlem Lumos.",
+        category: "Kouzelné formule",
+        type: "Základní",
+        targetType: "self" as const,
+      }
+    ];
+
+    // Create spells if they don't exist
+    for (const spellData of defaultSpells) {
+      // Check if spell already exists
+      const existingSpells = await db.select().from(spells).where(eq(spells.name, spellData.name));
+      
+      let spell;
+      if (existingSpells.length === 0) {
+        // Create new spell
+        [spell] = await db.insert(spells).values(spellData).returning();
+        console.log(`Created spell: ${spell.name}`);
+      } else {
+        spell = existingSpells[0];
+        console.log(`Spell already exists: ${spell.name}`);
+      }
+
+      // Add spell to all existing characters who don't have it
+      const allCharacters = await db.select().from(characters);
+      for (const character of allCharacters) {
+        // Check if character already has this spell
+        const existingCharacterSpell = await db
+          .select()
+          .from(characterSpells)
+          .where(and(
+            eq(characterSpells.characterId, character.id),
+            eq(characterSpells.spellId, spell.id)
+          ));
+
+        if (existingCharacterSpell.length === 0) {
+          // Add spell to character
+          await db.insert(characterSpells).values({
+            characterId: character.id,
+            spellId: spell.id,
+          });
+          console.log(`Added spell ${spell.name} to character ${character.firstName} ${character.lastName}`);
+        }
+      }
+    }
   }
 }
 

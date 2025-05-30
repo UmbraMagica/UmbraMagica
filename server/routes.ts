@@ -1130,6 +1130,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Initialize default spells (admin only)
+  app.post("/api/admin/spells/initialize", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      await storage.initializeDefaultSpells();
+      res.json({ message: "Default spells initialized and added to all characters" });
+    } catch (error) {
+      console.error("Error initializing default spells:", error);
+      res.status(500).json({ message: "Failed to initialize default spells" });
+    }
+  });
+
   // Cast spell in chat
   app.post("/api/game/cast-spell", requireAuth, async (req, res) => {
     try {
