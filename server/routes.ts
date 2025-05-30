@@ -1684,5 +1684,79 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin: Ban user
+  app.post("/api/admin/users/:id/ban", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const userId = parseInt(req.params.id);
+      const { banReason } = req.body;
+      const adminId = req.session.userId!;
+      
+      if (!banReason || banReason.trim().length === 0) {
+        return res.status(400).json({ message: "Ban reason is required" });
+      }
+      
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      if (user.role === 'admin') {
+        return res.status(400).json({ message: "Cannot ban admin users" });
+      }
+      
+      // Update user status to banned
+      await storage.banUser(userId, banReason.trim());
+      
+      // Log admin activity
+      await storage.logAdminActivity({
+        adminId,
+        action: 'user_ban',
+        targetUserId: userId,
+        details: `Uživatel ${user.username} byl zabanován. Důvod: ${banReason.trim()}`
+      });
+      
+      res.json({ message: "User banned successfully" });
+    } catch (error) {
+      console.error("Error banning user:", error);
+      res.status(500).json({ message: "Failed to ban user" });
+    }
+  });
+
+  // Admin: Reset user password
+  app.post("/api/admin/users/:id/reset-password", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const userId = parseInt(req.params.id);
+      const adminId = req.session.userId!;
+      
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Generate temporary password
+      const tempPassword = Math.random().toString(36).slice(-8);
+      const hashedPassword = await storage.hashPassword(tempPassword);
+      
+      // Update user password
+      await storage.resetUserPassword(userId, hashedPassword);
+      
+      // Log admin activity
+      await storage.logAdminActivity({
+        adminId,
+        action: 'password_reset',
+        targetUserId: userId,
+        details: `Heslo pro uživatele ${user.username} bylo resetováno`
+      });
+      
+      res.json({ 
+        message: "Password reset successfully", 
+        newPassword: tempPassword 
+      });
+    } catch (error) {
+      console.error("Error resetting password:", error);
+      res.status(500).json({ message: "Failed to reset password" });
+    }
+  });
+
   return httpServer;
 }

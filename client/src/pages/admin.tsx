@@ -1020,6 +1020,69 @@ export default function Admin() {
             </div>
           </div>
         )}
+
+        {/* Ban User Dialog */}
+        {banUserData && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <div className="bg-card border border-border rounded-lg p-6 w-full max-w-md mx-4">
+              <div className="flex items-center gap-3 mb-4">
+                <AlertTriangle className="h-6 w-6 text-red-400" />
+                <h3 className="text-lg font-semibold text-foreground">
+                  Zabanovat uživatele
+                </h3>
+              </div>
+              
+              <p className="text-muted-foreground mb-4">
+                Opravdu chcete zabanovat uživatele <strong>{banUserData.username}</strong>?
+                Uživatel nebude moci přistupovat k aplikaci.
+              </p>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium text-foreground">
+                    Důvod zákazu (povinné)
+                  </label>
+                  <Input
+                    value={banReason}
+                    onChange={(e) => setBanReason(e.target.value)}
+                    placeholder="Napište důvod zákazu..."
+                    className="mt-1"
+                  />
+                </div>
+
+                {showConfirmBan && (
+                  <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
+                    <p className="text-sm text-red-400 font-medium">
+                      ⚠️ Poslední potvrzení: Klikněte znovu pro potvrzení zákazu
+                    </p>
+                  </div>
+                )}
+
+                <div className="flex gap-3">
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setBanUserData(null);
+                      setBanReason("");
+                      setShowConfirmBan(false);
+                    }}
+                    className="flex-1"
+                  >
+                    Zrušit
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    onClick={confirmBanUser}
+                    disabled={banUserMutation.isPending || !banReason.trim()}
+                    className="flex-1"
+                  >
+                    {showConfirmBan ? "POTVRDIT ZÁKAZ" : "Zabanovat uživatele"}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
