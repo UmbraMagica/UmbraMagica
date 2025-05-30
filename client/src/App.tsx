@@ -16,6 +16,7 @@ import ChatRoom from "@/pages/chat-room-simple-new";
 import CharacterEdit from "@/pages/character-edit-simple";
 import CharactersList from "@/pages/characters-list";
 import CharacterProfile from "@/pages/character-profile";
+import UserSettings from "@/pages/user-settings";
 import NotFound from "@/pages/not-found";
 import { useEffect } from "react";
 import { apiRequest } from "./lib/queryClient";
@@ -60,6 +61,7 @@ function Router() {
           <Route path="/admin/archive" component={AdminArchive} />
           <Route path="/home" component={Home} />
           <Route path="/character/edit" component={CharacterEdit} />
+          <Route path="/settings" component={UserSettings} />
           <Route path="/chat" component={ChatCategories} />
           <Route path="/chat-categories" component={ChatCategories} />
           <Route path="/chat/list" component={ChatList} />

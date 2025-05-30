@@ -15,7 +15,8 @@ import {
   History, 
   Users, 
   Circle,
-  DoorOpen
+  DoorOpen,
+  Settings
 } from "lucide-react";
 import { GameDate } from "@/components/GameDate";
 import { calculateGameAge } from "@/lib/gameDate";
@@ -109,6 +110,10 @@ export default function Home() {
                 }}>
                   <User className="mr-2 h-4 w-4" />
                   Moje postava
+                </Button>
+                <Button variant="ghost" className="text-foreground hover:text-accent" onClick={() => window.location.href = '/settings'}>
+                  <Settings className="mr-2 h-4 w-4" />
+                  Nastavení
                 </Button>
                 {user?.role === 'admin' && (
                   <Button variant="ghost" className="text-amber-400 hover:text-amber-300" onClick={() => window.location.href = '/admin'}>
