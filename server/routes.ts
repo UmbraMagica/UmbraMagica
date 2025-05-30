@@ -736,6 +736,60 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get all characters with user info
+  app.get("/api/characters", requireAuth, async (req, res) => {
+    try {
+      const users = await storage.getAllUsers();
+      const allCharacters = [];
+
+      for (const user of users) {
+        const characters = await storage.getCharactersByUserId(user.id);
+        for (const character of characters) {
+          allCharacters.push({
+            ...character,
+            user: {
+              username: user.username,
+              email: user.email
+            }
+          });
+        }
+      }
+
+      res.json(allCharacters);
+    } catch (error) {
+      console.error("Error fetching characters:", error);
+      res.status(500).json({ message: "Failed to fetch characters" });
+    }
+  });
+
+  // Get specific character with user info
+  app.get("/api/characters/:id", requireAuth, async (req, res) => {
+    try {
+      const characterId = parseInt(req.params.id);
+      const character = await storage.getCharacter(characterId);
+      
+      if (!character) {
+        return res.status(404).json({ message: "Character not found" });
+      }
+
+      const user = await storage.getUser(character.userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      res.json({
+        ...character,
+        user: {
+          username: user.username,
+          email: user.email
+        }
+      });
+    } catch (error) {
+      console.error("Error fetching character:", error);
+      res.status(500).json({ message: "Failed to fetch character" });
+    }
+  });
+
   // RPG Game mechanics - Dice and coin endpoints
   app.post("/api/game/dice-roll", requireAuth, async (req, res) => {
     try {

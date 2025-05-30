@@ -13,6 +13,8 @@ import ChatList from "@/pages/chat-list";
 import ChatCategories from "@/pages/chat-categories";
 import ChatRoom from "@/pages/chat-room-simple-new";
 import CharacterEdit from "@/pages/character-edit";
+import CharactersList from "@/pages/characters-list";
+import CharacterProfile from "@/pages/character-profile";
 import NotFound from "@/pages/not-found";
 import { useEffect } from "react";
 import { apiRequest } from "./lib/queryClient";
@@ -60,6 +62,8 @@ function Router() {
           <Route path="/chat-categories" component={ChatCategories} />
           <Route path="/chat/list" component={ChatList} />
           <Route path="/chat/room/:roomId" component={ChatRoom} />
+          <Route path="/characters" component={CharactersList} />
+          <Route path="/characters/:id" component={CharacterProfile} />
         </>
       )}
       <Route component={NotFound} />

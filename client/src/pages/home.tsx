@@ -84,11 +84,15 @@ export default function Home() {
                   <HomeIcon className="mr-2 h-4 w-4" />
                   Dashboard
                 </Button>
-                <Button variant="ghost" className="text-foreground hover:text-accent">
+                <Button variant="ghost" className="text-foreground hover:text-accent" onClick={() => window.location.href = '/chat'}>
                   <MessageCircle className="mr-2 h-4 w-4" />
                   Herní chaty
                 </Button>
-                <Button variant="ghost" className="text-foreground hover:text-accent">
+                <Button variant="ghost" className="text-foreground hover:text-accent" onClick={() => window.location.href = '/characters'}>
+                  <Users className="mr-2 h-4 w-4" />
+                  Seznam postav
+                </Button>
+                <Button variant="ghost" className="text-foreground hover:text-accent" onClick={() => window.location.href = '/character/edit'}>
                   <User className="mr-2 h-4 w-4" />
                   Moje postava
                 </Button>

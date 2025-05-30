@@ -401,9 +401,12 @@ export default function ChatRoom() {
               </Avatar>
               <div className="flex-1 min-w-0">
                 <div className="flex items-baseline gap-2 mb-1">
-                  <span className="font-medium text-sm">
+                  <Link 
+                    href={`/characters/${message.characterId}`}
+                    className="font-medium text-sm hover:text-primary hover:underline cursor-pointer"
+                  >
                     {message.character.firstName} {message.character.lastName}
-                  </span>
+                  </Link>
                   <span className="text-xs text-muted-foreground">
                     {new Date(message.createdAt).toLocaleTimeString('cs-CZ', {
                       hour: '2-digit',
