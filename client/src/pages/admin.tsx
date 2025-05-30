@@ -25,7 +25,9 @@ import {
   Book,
   UserPlus,
   Archive,
-  Home
+  Home,
+  Skull,
+  AlertTriangle
 } from "lucide-react";
 
 interface AdminUser {
@@ -43,6 +45,9 @@ export default function Admin() {
   const queryClient = useQueryClient();
   const [, setLocation] = useLocation();
   const [newInviteCode, setNewInviteCode] = useState("");
+  const [killCharacterData, setKillCharacterData] = useState<{ id: number; name: string } | null>(null);
+  const [deathReason, setDeathReason] = useState("");
+  const [showConfirmKill, setShowConfirmKill] = useState(false);
 
   const { data: users = [] } = useQuery<AdminUser[]>({
     queryKey: ["/api/users"],
@@ -56,6 +61,12 @@ export default function Admin() {
 
   const { data: adminActivityLog = [] } = useQuery({
     queryKey: ["/api/admin/activity-log"],
+    staleTime: 30000,
+  });
+
+  // Fetch all characters for cemetery management
+  const { data: allCharacters = [] } = useQuery({
+    queryKey: ["/api/characters/all"],
     staleTime: 30000,
   });
 

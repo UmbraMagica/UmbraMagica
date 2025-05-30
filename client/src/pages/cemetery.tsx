@@ -98,7 +98,7 @@ export default function Cemetery() {
                   <CardTitle className="flex items-center gap-2 text-lg">
                     <span className="text-white">{getFullName(character)}</span>
                     {character.isMainCharacter && (
-                      <Crown className="h-4 w-4 text-yellow-400" title="Primární postava" />
+                      <Crown className="h-4 w-4 text-yellow-400" />
                     )}
                   </CardTitle>
                   <div className="text-sm text-purple-300">

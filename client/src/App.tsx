@@ -70,6 +70,7 @@ function Router() {
           <Route path="/characters" component={CharactersList} />
           <Route path="/characters/:id" component={CharacterProfile} />
           <Route path="/character/:id" component={CharacterProfile} />
+          <Route path="/cemetery" component={Cemetery} />
         </>
       )}
       <Route component={NotFound} />
