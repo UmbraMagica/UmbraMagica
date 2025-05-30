@@ -207,6 +207,36 @@ export default function CharacterProfile() {
                     </div>
                   </div>
                 </div>
+
+                {character.school && (
+                  <>
+                    <Separator />
+                    <div>
+                      <h3 className="font-medium mb-3">Škola</h3>
+                      <div className="flex items-center gap-3">
+                        <GraduationCap className="h-4 w-4 text-muted-foreground" />
+                        <div className="text-sm">
+                          {character.school}
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {character.description && (
+                  <>
+                    <Separator />
+                    <div>
+                      <h3 className="font-medium mb-3">Popis postavy</h3>
+                      <div className="flex items-start gap-3">
+                        <FileText className="h-4 w-4 text-muted-foreground mt-0.5" />
+                        <div className="text-sm text-muted-foreground leading-relaxed">
+                          {character.description}
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
             </CardContent>
           </Card>
