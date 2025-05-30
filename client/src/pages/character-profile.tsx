@@ -169,22 +169,22 @@ export default function CharacterProfile() {
                     <div className="flex items-center gap-3">
                       <Calendar className="h-4 w-4 text-muted-foreground" />
                       <div>
-                        <div className="text-sm font-medium">Věk a datum narození</div>
+                        <div className="text-sm font-medium">Datum narození a věk</div>
                         <div className="text-sm text-muted-foreground">
-                          {calculateGameAge(character.birthDate)} let {character.birthDate && (
-                            <>
-                              (nar. {character.birthDate ? 
-                                (() => {
-                                  try {
-                                    return format(new Date(character.birthDate), 'd. MMMM yyyy', { locale: cs });
-                                  } catch {
-                                    return character.birthDate;
-                                  }
-                                })()
-                                : 'Nezadáno'
-                              })
-                            </>
-                          )}
+                          {character.birthDate ? 
+                            (() => {
+                              try {
+                                const date = new Date(character.birthDate);
+                                const day = date.getDate().toString().padStart(2, '0');
+                                const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                                const year = date.getFullYear();
+                                return `${day}.${month}.${year} (${calculateGameAge(character.birthDate)} let)`;
+                              } catch {
+                                return `${character.birthDate} (${calculateGameAge(character.birthDate)} let)`;
+                              }
+                            })()
+                            : 'Nezadáno'
+                          }
                         </div>
                       </div>
                     </div>
