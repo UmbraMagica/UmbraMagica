@@ -209,6 +209,20 @@ export const loginSchema = z.object({
   password: z.string().min(1),
 });
 
+export const characterEditSchema = z.object({
+  school: z.string().optional(),
+  description: z.string().optional(),
+});
+
+export const characterAdminEditSchema = z.object({
+  firstName: z.string().min(1, "First name is required"),
+  middleName: z.string().optional(),
+  lastName: z.string().min(1, "Last name is required"),
+  birthDate: z.string().min(1, "Birth date is required"),
+  school: z.string().optional(),
+  description: z.string().optional(),
+});
+
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 export type Character = typeof characters.$inferSelect;

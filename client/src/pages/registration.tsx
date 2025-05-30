@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowRight, ArrowLeft, Check, User, CheckCircle, XCircle, Loader2 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
+import { calculateGameAge } from "@/lib/gameDate";
 
 export default function Registration() {
   const [step, setStep] = useState(1);
@@ -349,7 +350,11 @@ export default function Registration() {
                     required
                   />
                   <p className="text-xs text-muted-foreground mt-1">
-                    Rok 1926, vhodný věk pro novou postavu je 16-66 let (narození 1860-1910)
+                    {formData.birthDate ? (
+                      `Věk v roce 1926: ${calculateGameAge(formData.birthDate)} let`
+                    ) : (
+                      'Rok 1926, vhodný věk pro novou postavu je 16-66 let (narození 1860-1910)'
+                    )}
                   </p>
                 </div>
 
