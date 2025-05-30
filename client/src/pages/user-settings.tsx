@@ -227,12 +227,17 @@ export default function UserSettings() {
                     <div key={character.id} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
                       <div className="flex items-center space-x-3">
                         <div className="flex items-center space-x-2">
-                          <h4 className="font-medium text-foreground">
-                            {character.firstName} {character.middleName} {character.lastName}
-                          </h4>
-                          {mainCharacter?.id === character.id && (
-                            <Badge className="bg-accent/20 text-accent">Primární</Badge>
-                          )}
+                          <div className="flex items-center space-x-2">
+                            <h4 className="font-medium text-foreground">
+                              {character.firstName} {character.middleName} {character.lastName}
+                            </h4>
+                            {mainCharacter?.id === character.id && (
+                              <div className="flex items-center space-x-1">
+                                <span className="text-yellow-500">👑</span>
+                                <Badge className="bg-accent/20 text-accent">Primární</Badge>
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </div>
                       <div className="flex items-center space-x-2">

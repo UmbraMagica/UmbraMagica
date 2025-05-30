@@ -859,6 +859,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/characters/:id", requireAuth, async (req, res) => {
     try {
       const characterId = parseInt(req.params.id);
+      
+      if (isNaN(characterId)) {
+        return res.status(400).json({ message: "Invalid character ID" });
+      }
+      
       const character = await storage.getCharacter(characterId);
       
       if (!character) {

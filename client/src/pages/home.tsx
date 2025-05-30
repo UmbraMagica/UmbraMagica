@@ -343,9 +343,12 @@ export default function Home() {
                           </div>
                         </div>
                         {mainCharacter?.id === character.id && (
-                          <Badge className="bg-accent/20 text-accent text-xs">
-                            Aktivní
-                          </Badge>
+                          <div className="flex items-center space-x-1">
+                            <span className="text-yellow-500">👑</span>
+                            <Badge className="bg-accent/20 text-accent text-xs">
+                              Aktivní
+                            </Badge>
+                          </div>
                         )}
                       </div>
                     ))}
