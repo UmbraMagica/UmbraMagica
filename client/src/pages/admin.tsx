@@ -51,11 +51,11 @@ export default function Admin() {
   const [killCharacterData, setKillCharacterData] = useState<{ id: number; name: string } | null>(null);
   const [deathReason, setDeathReason] = useState("");
   const [showConfirmKill, setShowConfirmKill] = useState(false);
-  const [isCemeteryCollapsed, setIsCemeteryCollapsed] = useState(false);
-  const [isLiveCharactersCollapsed, setIsLiveCharactersCollapsed] = useState(false);
-  const [isAdminActivityCollapsed, setIsAdminActivityCollapsed] = useState(false);
-  const [isCharacterRequestsCollapsed, setIsCharacterRequestsCollapsed] = useState(false);
-  const [isUserManagementCollapsed, setIsUserManagementCollapsed] = useState(false);
+  const [isCemeteryCollapsed, setIsCemeteryCollapsed] = useState(true);
+  const [isLiveCharactersCollapsed, setIsLiveCharactersCollapsed] = useState(true);
+  const [isAdminActivityCollapsed, setIsAdminActivityCollapsed] = useState(true);
+  const [isCharacterRequestsCollapsed, setIsCharacterRequestsCollapsed] = useState(true);
+  const [isUserManagementCollapsed, setIsUserManagementCollapsed] = useState(true);
   const [banUserData, setBanUserData] = useState<{ id: number; username: string } | null>(null);
   const [resetPasswordData, setResetPasswordData] = useState<{ id: number; username: string } | null>(null);
   const [showConfirmBan, setShowConfirmBan] = useState(false);
@@ -708,8 +708,82 @@ export default function Admin() {
           </Card>
         </div>
 
-        {/* Character Requests Management */}
+        {/* Live Character Management */}
         <div className="mt-8 grid grid-cols-1 gap-8">
+          <Card className="bg-card border-border">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-semibold text-foreground flex items-center cursor-pointer" 
+                    onClick={() => setIsLiveCharactersCollapsed(!isLiveCharactersCollapsed)}>
+                  <Users className="text-green-400 mr-3 h-5 w-5" />
+                  Správa živých postav
+                  {isLiveCharactersCollapsed ? (
+                    <ChevronDown className="ml-2 h-4 w-4" />
+                  ) : (
+                    <ChevronUp className="ml-2 h-4 w-4" />
+                  )}
+                </h2>
+              </div>
+
+              {!isLiveCharactersCollapsed && (
+              <div className="space-y-4 max-h-96 overflow-y-auto">
+                {allCharacters.filter((char: any) => !char.deathDate).sort((a: any, b: any) => 
+                  `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`, 'cs')
+                ).length > 0 ? (
+                  allCharacters.filter((char: any) => !char.deathDate).sort((a: any, b: any) => 
+                    `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`, 'cs')
+                  ).map((character: any) => (
+                    <div key={character.id} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-blue-600 rounded-full flex items-center justify-center text-white font-semibold">
+                          {character.firstName[0]}{character.lastName[0]}
+                        </div>
+                        <div>
+                          <h4 className="font-medium text-foreground">
+                            {character.firstName} {character.middleName} {character.lastName}
+                          </h4>
+                          <p className="text-sm text-muted-foreground">
+                            {character.school || 'Bez školy'} • Vytvořeno: {new Date(character.createdAt).toLocaleDateString('cs-CZ')}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setLocation(`/characters/${character.id}`)}
+                          className="flex items-center gap-2"
+                        >
+                          <Edit className="h-4 w-4" />
+                          Upravit
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => setKillCharacterData({
+                            id: character.id,
+                            name: `${character.firstName} ${character.lastName}`
+                          })}
+                          className="bg-red-600 hover:bg-red-700"
+                        >
+                          <Skull className="h-4 w-4 mr-1" />
+                          Označit jako zemřelou
+                        </Button>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-8">
+                    <Users className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                    <p className="text-muted-foreground">Žádné živé postavy</p>
+                  </div>
+                )}
+              </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Character Requests Management */}
           <Card className="bg-card border-border">
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-6">
@@ -800,80 +874,6 @@ export default function Admin() {
                   <div className="text-center py-8">
                     <UserPlus className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                     <p className="text-muted-foreground">Žádné žádosti o nové postavy</p>
-                  </div>
-                )}
-              </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Active Character Management */}
-          <Card className="bg-card border-border">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-foreground flex items-center cursor-pointer" 
-                    onClick={() => setIsLiveCharactersCollapsed(!isLiveCharactersCollapsed)}>
-                  <Users className="text-green-400 mr-3 h-5 w-5" />
-                  Správa živých postav
-                  {isLiveCharactersCollapsed ? (
-                    <ChevronDown className="ml-2 h-4 w-4" />
-                  ) : (
-                    <ChevronUp className="ml-2 h-4 w-4" />
-                  )}
-                </h2>
-              </div>
-
-              {!isLiveCharactersCollapsed && (
-              <div className="space-y-4 max-h-96 overflow-y-auto">
-                {allCharacters.filter((char: any) => !char.deathDate).sort((a: any, b: any) => 
-                  `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`, 'cs')
-                ).length > 0 ? (
-                  allCharacters.filter((char: any) => !char.deathDate).sort((a: any, b: any) => 
-                    `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`, 'cs')
-                  ).map((character: any) => (
-                    <div key={character.id} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-blue-600 rounded-full flex items-center justify-center text-white font-semibold">
-                          {character.firstName[0]}{character.lastName[0]}
-                        </div>
-                        <div>
-                          <h4 className="font-medium text-foreground">
-                            {character.firstName} {character.middleName} {character.lastName}
-                          </h4>
-                          <p className="text-sm text-muted-foreground">
-                            {character.school || 'Bez školy'} • Vytvořeno: {new Date(character.createdAt).toLocaleDateString('cs-CZ')}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setLocation(`/characters/${character.id}`)}
-                          className="flex items-center gap-2"
-                        >
-                          <Edit className="h-4 w-4" />
-                          Upravit
-                        </Button>
-                        <Button
-                          variant="destructive"
-                          size="sm"
-                          onClick={() => setKillCharacterData({
-                            id: character.id,
-                            name: `${character.firstName} ${character.lastName}`
-                          })}
-                          className="bg-red-600 hover:bg-red-700"
-                        >
-                          <Skull className="h-4 w-4 mr-1" />
-                          Označit jako zemřelou
-                        </Button>
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <div className="text-center py-8">
-                    <Users className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                    <p className="text-muted-foreground">Žádné živé postavy</p>
                   </div>
                 )}
               </div>

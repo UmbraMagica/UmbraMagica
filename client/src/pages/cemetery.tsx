@@ -56,7 +56,10 @@ export default function Cemetery() {
   });
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('cs-CZ');
+    const date = new Date(dateString);
+    const gameYear = 1926;
+    const gameDate = new Date(gameYear, date.getMonth(), date.getDate());
+    return gameDate.toLocaleDateString('cs-CZ');
   };
 
   const calculateAge = (birthDate: string, deathDate: string) => {
@@ -158,19 +161,6 @@ export default function Cemetery() {
                   <div className="text-xs text-purple-400">
                     Postava vytvořena: {formatDate(character.createdAt)}
                   </div>
-
-                  {user?.role === 'admin' && (
-                    <Button
-                      onClick={() => reviveCharacterMutation.mutate(character.id)}
-                      disabled={reviveCharacterMutation.isPending}
-                      variant="outline"
-                      size="sm"
-                      className="w-full mt-3 border-green-500/50 text-green-400 hover:bg-green-500/20"
-                    >
-                      <HeartHandshake className="h-4 w-4 mr-2" />
-                      {reviveCharacterMutation.isPending ? 'Oživování...' : 'Oživit postavu'}
-                    </Button>
-                  )}
                 </CardContent>
               </Card>
             ))}
