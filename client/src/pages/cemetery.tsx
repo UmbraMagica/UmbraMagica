@@ -103,10 +103,6 @@ export default function Cemetery() {
                       <strong>Důvod smrti:</strong> {character.deathReason}
                     </div>
                   )}
-                  
-                  <div className="text-xs text-purple-400">
-                    Postava vytvořena: {formatDate(character.createdAt)}
-                  </div>
                 </CardContent>
               </Card>
             ))}
