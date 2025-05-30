@@ -1185,6 +1185,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get character's wand
+  app.get("/api/characters/:id/wand", requireAuth, async (req, res) => {
+    try {
+      const characterId = parseInt(req.params.id);
+      const wand = await storage.getCharacterWand(characterId);
+      res.json(wand);
+    } catch (error) {
+      console.error("Error fetching character wand:", error);
+      res.status(500).json({ message: "Failed to fetch character wand" });
+    }
+  });
+
+  // Visit Ollivanders to get a wand
+  app.post("/api/characters/:id/visit-ollivanders", requireAuth, async (req, res) => {
+    try {
+      const characterId = parseInt(req.params.id);
+      
+      // Verify character belongs to user or user is admin
+      const character = await storage.getCharacter(characterId);
+      if (!character || (character.userId !== req.session.userId! && req.session.userRole !== 'admin')) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+
+      // Check if character already has a wand
+      const existingWand = await storage.getCharacterWand(characterId);
+      if (existingWand) {
+        return res.status(400).json({ message: "Character already has a wand" });
+      }
+
+      // Generate a random wand for the character
+      const wand = await storage.generateRandomWand(characterId);
+      res.json(wand);
+    } catch (error) {
+      console.error("Error visiting Ollivanders:", error);
+      res.status(500).json({ message: "Failed to visit Ollivanders" });
+    }
+  });
+
   // Cast spell in chat
   app.post("/api/game/cast-spell", requireAuth, async (req, res) => {
     try {
@@ -1192,6 +1230,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       if (!roomId || !characterId || !spellId) {
         return res.status(400).json({ message: "roomId, characterId and spellId are required" });
+      }
+
+      // Check if character has a wand
+      const wand = await storage.getCharacterWand(parseInt(characterId));
+      if (!wand) {
+        return res.status(400).json({ message: "Character needs a wand to cast spells. Visit Ollivanders first!" });
       }
 
       // Check if character has the spell

@@ -153,6 +153,13 @@ export interface IStorage {
   addJournalEntry(entry: InsertJournalEntry): Promise<JournalEntry>;
   updateJournalEntry(id: number, updates: Partial<InsertJournalEntry>): Promise<JournalEntry | undefined>;
   deleteJournalEntry(id: number): Promise<boolean>;
+  
+  // Wand operations
+  getCharacterWand(characterId: number): Promise<Wand | undefined>;
+  createWand(wand: InsertWand): Promise<Wand>;
+  updateWand(wandId: number, updates: Partial<InsertWand>): Promise<Wand | undefined>;
+  deleteWand(wandId: number): Promise<boolean>;
+  generateRandomWand(characterId: number): Promise<Wand>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -1060,6 +1067,85 @@ export class DatabaseStorage implements IStorage {
       .delete(characterJournal)
       .where(eq(characterJournal.id, id));
     return (result.rowCount ?? 0) > 0;
+  }
+
+  // Wand operations
+  async getCharacterWand(characterId: number): Promise<Wand | undefined> {
+    const [wand] = await db
+      .select()
+      .from(wands)
+      .where(eq(wands.characterId, characterId));
+    return wand;
+  }
+
+  async createWand(insertWand: InsertWand): Promise<Wand> {
+    const [wand] = await db
+      .insert(wands)
+      .values(insertWand)
+      .returning();
+    return wand;
+  }
+
+  async updateWand(id: number, updates: Partial<InsertWand>): Promise<Wand | undefined> {
+    const [wand] = await db
+      .update(wands)
+      .set(updates)
+      .where(eq(wands.id, id))
+      .returning();
+    return wand;
+  }
+
+  async deleteWand(id: number): Promise<boolean> {
+    const result = await db
+      .delete(wands)
+      .where(eq(wands.id, id));
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  async generateRandomWand(characterId: number): Promise<Wand> {
+    // Define wand components
+    const cores = [
+      "🐉 Blána z dračího srdce",
+      "🦄 Vlas z hřívy jednorožce", 
+      "🔥 Pero fénixe"
+    ];
+
+    const woods = [
+      "Akácie", "Anglický dub", "Borovice", "Buk", "Cedr", "Cesmína", "Cypřiš", 
+      "Černý bez", "Černý ořech", "Červený dub", "Dřín", "Eben", "Habr", "Hloh", 
+      "Hrušeň", "Jabloň", "Jasan", "Javor", "Jedle", "Jeřáb", "Jilm", "Kaštan", 
+      "Lípa stříbřitá", "Líska", "Modřín", "Ořech", "Růže", "Smrk", "Tis", 
+      "Topol", "Třešeň", "Vrba", "Vinná réva"
+    ];
+
+    const lengths = [
+      '7"', '8"', '9"', '10"', '11"', '12"', '13"', '14"', '15"', '16"'
+    ];
+
+    const flexibilities = [
+      "Nezlomná", "Velmi nepoddajná", "Nepoddajná", "Mírně nepoddajná",
+      "Pevná", "Tvrdá", "Ohebná", "Pružná", "Velmi pružná", 
+      "Výjimečně poddajná", "Vrbovitá"
+    ];
+
+    // Generate random selections
+    const randomCore = cores[Math.floor(Math.random() * cores.length)];
+    const randomWood = woods[Math.floor(Math.random() * woods.length)];
+    const randomLength = lengths[Math.floor(Math.random() * lengths.length)];
+    const randomFlexibility = flexibilities[Math.floor(Math.random() * flexibilities.length)];
+
+    const description = `Hůlka z ${randomWood.toLowerCase()}, ${randomLength} dlouhá, ${randomFlexibility.toLowerCase()}, s jádrem ${randomCore.toLowerCase()}. Vybrána Ollivanderem osobně pro svého nového majitele.`;
+
+    const wandData: InsertWand = {
+      characterId,
+      wood: randomWood,
+      core: randomCore,
+      length: randomLength,
+      flexibility: randomFlexibility,
+      description
+    };
+
+    return this.createWand(wandData);
   }
 }
 
