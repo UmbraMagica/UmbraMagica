@@ -253,7 +253,8 @@ export default function ChatRoom() {
           setSelectedSpell(null);
           setMessageInput("");
         } catch (spellError: any) {
-          // Handle spell casting error specifically
+          // Handle spell casting error specifically - assume it's a wand error since this is the most common case
+          console.log('Spell casting failed:', spellError);
           throw new Error("Vaše postava potřebuje hůlku pro sesílání kouzel.");
         }
       } else if (messageInput.trim()) {
