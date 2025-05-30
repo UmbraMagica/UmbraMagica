@@ -17,6 +17,7 @@ import {
   DoorOpen
 } from "lucide-react";
 import { GameDate } from "@/components/GameDate";
+import { calculateGameAge } from "@/lib/gameDate";
 
 interface OnlineCharacter {
   id: number;
@@ -55,7 +56,7 @@ export default function Home() {
 
   const primaryCharacter = user?.characters?.[0];
   const characterAge = primaryCharacter ? 
-    1926 - new Date(primaryCharacter.birthDate).getFullYear() : 0;
+    calculateGameAge(primaryCharacter.birthDate) : 0;
 
   // Game date calculation - year 1926, current day/month
   const currentDate = new Date();
