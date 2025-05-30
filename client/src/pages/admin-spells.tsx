@@ -14,15 +14,13 @@ import { useLocation } from "wouter";
 
 export default function AdminSpells() {
   const [isCreating, setIsCreating] = useState(false);
-  const [isQuickAdd, setIsQuickAdd] = useState(false);
   const [editingSpell, setEditingSpell] = useState<Spell | null>(null);
   const [formData, setFormData] = useState({
     name: "",
-    description: "",
     effect: "",
     category: "",
     type: "",
-    targetType: "self" as "self" | "other" | "object"
+    targetType: "self" as "self" | "other" | "object" | "both"
   });
 
   // Filters and search
@@ -60,7 +58,6 @@ export default function AdminSpells() {
     return spells.filter(spell => {
       const matchesSearch = searchTerm === "" || 
         spell.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        spell.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
         spell.effect.toLowerCase().includes(searchTerm.toLowerCase());
       
       const matchesCategory = categoryFilter === "all" || spell.category === categoryFilter;

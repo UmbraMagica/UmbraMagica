@@ -222,11 +222,10 @@ export const adminActivityLogRelations = relations(adminActivityLog, ({ one }) =
 export const spells = pgTable("spells", {
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 100 }).notNull().unique(),
-  description: text("description").notNull(),
   effect: text("effect").notNull(),
   category: varchar("category", { length: 50 }).notNull(), // "Kouzelné formule", "Bojová kouzla", atd.
   type: varchar("type", { length: 50 }).notNull(), // "Základní", "Pokročilé", "Mistrské"
-  targetType: varchar("target_type", { length: 20 }).default("self").notNull(), // "self", "other", "object"
+  targetType: varchar("target_type", { length: 20 }).default("self").notNull(), // "self", "other", "object", "both"
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
@@ -413,7 +412,6 @@ export const characterRequestSchema = z.object({
 
 export const insertSpellSchema = createInsertSchema(spells).pick({
   name: true,
-  description: true,
   effect: true,
   category: true,
   type: true,
@@ -427,11 +425,10 @@ export const insertCharacterSpellSchema = createInsertSchema(characterSpells).pi
 
 export const spellSchema = z.object({
   name: z.string().min(1, "Název kouzla je povinný").max(100),
-  description: z.string().min(1, "Popis kouzla je povinný"),
   effect: z.string().min(1, "Popis efektu je povinný"),
   category: z.string().min(1, "Kategorie je povinná").max(50),
   type: z.string().min(1, "Typ je povinný").max(50),
-  targetType: z.enum(["self", "other", "object"]).default("self"),
+  targetType: z.enum(["self", "other", "object", "both"]).default("self"),
 });
 
 export const insertInventoryItemSchema = createInsertSchema(characterInventory).pick({
