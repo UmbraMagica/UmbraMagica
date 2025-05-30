@@ -90,12 +90,18 @@ export default function ChatRoom() {
   // Current character for chat (use main character or first available)
   const currentCharacter = mainCharacter || userCharacters[0];
   
-  if (!currentCharacter?.firstName || !currentCharacter?.lastName) {
+  // Check if user needs a character (non-admin users need a character)
+  const needsCharacter = user?.role !== 'admin';
+  
+  if (needsCharacter && (!currentCharacter?.firstName || !currentCharacter?.lastName)) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <h2 className="text-xl font-semibold mb-2">Postava nenalezena</h2>
           <p className="text-muted-foreground">Pro přístup do chatu potřebujete aktivní postavu.</p>
+          <Link href="/character/edit">
+            <Button className="mt-4">Vytvořit postavu</Button>
+          </Link>
         </div>
       </div>
     );
@@ -207,12 +213,15 @@ export default function ChatRoom() {
   }, [currentRoomId, user]);
 
   const handleSendMessage = async () => {
-    if (!messageInput.trim() || !currentCharacter || !currentRoomId) return;
+    if (!messageInput.trim() || !currentRoomId) return;
+    
+    // For non-admin users, require a character
+    if (needsCharacter && !currentCharacter) return;
 
     try {
       const messageData = {
         roomId: currentRoomId,
-        characterId: currentCharacter.id,
+        characterId: currentCharacter?.id,
         content: messageInput.trim(),
         messageType: 'text'
       };

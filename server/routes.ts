@@ -691,10 +691,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       console.log("POST /api/chat/messages - Request body:", req.body);
       const { roomId, characterId, content, messageType } = req.body;
+      const user = req.session.userId ? await storage.getUser(req.session.userId) : null;
       
-      if (!roomId || !characterId || !content) {
-        console.log("Missing required fields:", { roomId, characterId, content });
-        return res.status(400).json({ message: "roomId, characterId, and content are required" });
+      // For admins, characterId is optional
+      if (!roomId || !content || (user?.role !== 'admin' && !characterId)) {
+        console.log("Missing required fields:", { roomId, characterId, content, isAdmin: user?.role === 'admin' });
+        return res.status(400).json({ message: "roomId and content are required" });
       }
       
       if (content.length < 1 || content.length > 5000) {
@@ -704,7 +706,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const messageData = {
         roomId: parseInt(roomId),
-        characterId: parseInt(characterId),
+        characterId: characterId ? parseInt(characterId) : null,
         content: content.trim(),
         messageType: messageType || "text"
       };
