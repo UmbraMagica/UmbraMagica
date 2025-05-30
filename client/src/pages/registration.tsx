@@ -214,15 +214,7 @@ export default function Registration() {
                 </Link>
               </div>
 
-              {/* Test invite codes info */}
-              <div className="mt-6 p-4 bg-muted/20 rounded-lg border border-border/50">
-                <h4 className="text-sm font-medium text-accent mb-2">Testovací zvací kódy:</h4>
-                <div className="text-xs text-muted-foreground space-y-1">
-                  <p>WELCOME2024</p>
-                  <p>ADMIN_INVITE</p>
-                  <p>USER_INVITE</p>
-                </div>
-              </div>
+
             </CardContent>
           </Card>
         )}
