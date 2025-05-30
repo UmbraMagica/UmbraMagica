@@ -290,6 +290,7 @@ export default function ChatRoom() {
       // Always use Czech wand message for spell casting errors
       if (selectedSpell) {
         errorMessage = "Vaše postava potřebuje hůlku pro sesílání kouzel.";
+        console.log('SPELL ERROR DETECTED - Using Czech message:', errorMessage);
       } else if (error.message && error.message.includes("Character doesn't know this spell")) {
         errorMessage = "Vaše postava nezná toto kouzlo.";
       } else if (error.message) {
