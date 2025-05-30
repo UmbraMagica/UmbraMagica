@@ -303,11 +303,31 @@ export default function Home() {
                       {` ${currentDisplayedCharacter.lastName}`}
                     </h4>
                     <p className="text-sm text-muted-foreground">{characterAge} let</p>
-                    <div className="mt-3">
+                    <div className="mt-3 space-y-2">
                       <Badge className="bg-green-500/20 text-green-400 hover:bg-green-500/30">
                         <Circle className="h-3 w-3 mr-1 fill-current" />
                         Online
                       </Badge>
+                      <div className="flex gap-2 mt-3">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setLocation(`/characters/${currentDisplayedCharacter.id}`)}
+                          className="text-xs"
+                        >
+                          <User className="h-3 w-3 mr-1" />
+                          Zobrazit profil
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setLocation(`/character-edit?characterId=${currentDisplayedCharacter.id}`)}
+                          className="text-xs"
+                        >
+                          <Settings className="h-3 w-3 mr-1" />
+                          Upravit profil
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 )}

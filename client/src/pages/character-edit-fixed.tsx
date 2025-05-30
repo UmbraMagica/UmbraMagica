@@ -64,16 +64,7 @@ export default function CharacterEditFixed() {
     enabled: !!characterIdFromUrl && !!user,
   });
 
-  // Debug logging
-  console.log('Character loading debug:', {
-    characterIdFromUrl,
-    mainCharacter,
-    specificCharacter,
-    isLoadingMain,
-    isLoadingSpecific,
-    enabled_main: !!user && !characterIdFromUrl,
-    enabled_specific: !!characterIdFromUrl && !!user
-  });
+
 
   const userForm = useForm<UserEditForm>({
     resolver: zodResolver(userEditSchema),
