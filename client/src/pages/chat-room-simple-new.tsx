@@ -102,35 +102,38 @@ export default function ChatRoom() {
       fetch(`/api/chat/rooms/${currentRoomId}/messages`).then(res => res.json()),
     enabled: !!currentRoomId,
     refetchInterval: 5000,
+    staleTime: 0, // Always consider data stale
   });
 
-  // Clear local messages and invalidate cache when room changes
+  // Clear local messages when room changes
   useEffect(() => {
     if (currentRoomId) {
       setLocalMessages([]);
-      setOnlineCharacters([]);
-      // Invalidate and refetch data for the new room
-      queryClient.invalidateQueries({ queryKey: ["/api/chat/rooms", currentRoomId, "messages"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/characters/online"] });
+      // Force refetch of messages for the new room
+      queryClient.invalidateQueries({ 
+        queryKey: ["/api/chat/rooms", currentRoomId, "messages"],
+        exact: true 
+      });
     }
   }, [currentRoomId, queryClient]);
 
   // Update local messages when server messages change
   useEffect(() => {
-    if (messages.length > 0) {
-      console.log("Messages data:", messages);
-      console.log("Messages loading:", messagesLoading);
-      console.log("Messages error:", null);
-      console.log("Current room ID:", currentRoomId);
-      
-      // Sort messages by creation date (newest first for display)
-      const sortedMessages = [...messages].sort(
-        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      );
-      setLocalMessages(sortedMessages);
-    } else if (messages.length === 0 && !messagesLoading) {
-      // Clear local messages if no messages are returned
-      setLocalMessages([]);
+    if (Array.isArray(messages)) {
+      if (messages.length > 0) {
+        console.log("Messages data:", messages);
+        console.log("Messages loading:", messagesLoading);
+        console.log("Current room ID:", currentRoomId);
+        
+        // Sort messages by creation date (newest first for display)
+        const sortedMessages = [...messages].sort(
+          (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+        setLocalMessages(sortedMessages);
+      } else if (!messagesLoading) {
+        // Clear local messages if no messages are returned
+        setLocalMessages([]);
+      }
     }
   }, [messages, messagesLoading, currentRoomId]);
 
