@@ -164,14 +164,14 @@ export default function Home() {
                   >
                     <div className="flex items-center">
                       <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-lg mr-4">
-                        {primaryCharacter && primaryCharacter.firstName && primaryCharacter.lastName ? 
+                        {primaryCharacter?.firstName && primaryCharacter?.lastName ? 
                           `${primaryCharacter.firstName[0]}${primaryCharacter.lastName[0]}` : 
                           'FB'
                         }
                       </div>
                       <div className="flex-1">
                         <div className="font-medium">
-                          {primaryCharacter && primaryCharacter.firstName && primaryCharacter.lastName ? 
+                          {primaryCharacter?.firstName && primaryCharacter?.lastName ? 
                             `${primaryCharacter.firstName} ${primaryCharacter.lastName}` : 
                             'Upravit postavu'
                           }
