@@ -75,8 +75,21 @@ export default function ChatRoom() {
     );
   }
 
-  // Safety check for character data
-  const currentCharacter = user?.characters?.[0];
+  // Fetch user's characters for switching
+  const { data: userCharacters = [] } = useQuery<any[]>({
+    queryKey: ["/api/characters"],
+    enabled: !!user,
+  });
+
+  // Fetch main character
+  const { data: mainCharacter } = useQuery<any>({
+    queryKey: ["/api/characters/main"],
+    enabled: !!user,
+  });
+
+  // Current character for chat (use main character or first available)
+  const currentCharacter = mainCharacter || userCharacters[0];
+  
   if (!currentCharacter?.firstName || !currentCharacter?.lastName) {
     return (
       <div className="flex items-center justify-center min-h-screen">
