@@ -159,6 +159,14 @@ export default function CharacterEditFixed() {
     );
   }
 
+  // Debug check
+  console.log('Debug editace postavy:', {
+    primaryCharacter,
+    userId: user?.id,
+    isAdmin,
+    hasAccess: !primaryCharacter || primaryCharacter.userId === user?.id || isAdmin
+  });
+
   if (primaryCharacter && primaryCharacter.userId !== user.id && !isAdmin) {
     return (
       <div className="container mx-auto p-6">
@@ -166,6 +174,9 @@ export default function CharacterEditFixed() {
           <h3 className="text-lg font-medium mb-2">Přístup zamítnut</h3>
           <p className="text-muted-foreground">
             Nemáte oprávnění upravovat tuto postavu.
+          </p>
+          <p className="text-xs text-muted-foreground mt-2">
+            Debug: Character user ID: {primaryCharacter.userId}, Your user ID: {user.id}
           </p>
           <Button 
             className="mt-4" 
