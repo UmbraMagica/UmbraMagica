@@ -5,7 +5,8 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, Calendar, User, Mail, Clock } from "lucide-react";
+import { ArrowLeft, Calendar, User, Mail, Clock, Edit3, GraduationCap, FileText } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 import { format } from "date-fns";
 import { cs } from "date-fns/locale";
 import { calculateGameAge } from "@/lib/gameDate";
@@ -18,6 +19,8 @@ interface Character {
   lastName: string;
   birthDate: string;
   isActive: boolean;
+  school?: string;
+  description?: string;
   user: {
     username: string;
     email: string;
@@ -27,6 +30,7 @@ interface Character {
 export default function CharacterProfile() {
   const { id } = useParams();
   const [, setLocation] = useLocation();
+  const { user } = useAuth();
 
   const { data: character, isLoading, error } = useQuery<Character>({
     queryKey: ["/api/characters", id],
@@ -86,7 +90,10 @@ export default function CharacterProfile() {
     return `${character.firstName}${character.middleName ? ` ${character.middleName}` : ''} ${character.lastName}`;
   };
 
+  // Check if current user can edit this character
+  const canEdit = user && (user.id === character.userId || user.role === 'admin');
 
+  const characterAge = calculateGameAge(character.birthDate);
 
   return (
     <div className="container mx-auto p-6 max-w-4xl">
@@ -114,16 +121,31 @@ export default function CharacterProfile() {
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1">
-                  <CardTitle className="text-2xl mb-2">
-                    {getFullName(character)}
-                  </CardTitle>
-                  <div className="flex items-center gap-2 mb-2">
-                    <Badge variant={character.isActive ? "default" : "secondary"}>
-                      {character.isActive ? "Aktivní postava" : "Neaktivní postava"}
-                    </Badge>
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    Hraje: @{character.user.username}
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <CardTitle className="text-2xl mb-2">
+                        {getFullName(character)}
+                      </CardTitle>
+                      <div className="flex items-center gap-2 mb-2">
+                        <Badge variant={character.isActive ? "default" : "secondary"}>
+                          {character.isActive ? "Aktivní postava" : "Neaktivní postava"}
+                        </Badge>
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        Hraje: @{character.user.username}
+                      </div>
+                    </div>
+                    {canEdit && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setLocation('/character/edit')}
+                        className="flex items-center gap-2"
+                      >
+                        <Edit3 className="h-4 w-4" />
+                        Upravit
+                      </Button>
+                    )}
                   </div>
                 </div>
               </div>
