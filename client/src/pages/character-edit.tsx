@@ -39,13 +39,19 @@ export default function CharacterEdit() {
 
   const isAdmin = user?.role === 'admin';
 
-  // Fetch the main character
+  // Fetch the main character first to get its ID
   const { data: mainCharacter } = useQuery<any>({
     queryKey: ["/api/characters/main"],
     enabled: !!user,
   });
 
-  const primaryCharacter = mainCharacter;
+  // Then fetch the specific character data directly
+  const { data: characterData } = useQuery<any>({
+    queryKey: ["/api/characters", mainCharacter?.id],
+    enabled: !!mainCharacter?.id,
+  });
+
+  const primaryCharacter = characterData || mainCharacter;
 
   // Regular user form (only school and description)
   const userForm = useForm<UserEditForm>({
