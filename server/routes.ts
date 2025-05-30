@@ -1227,6 +1227,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Generate a random wand for the character
       const wand = await storage.generateRandomWand(characterId);
+      
+      // Add wand to character's inventory
+      await storage.addInventoryItem({
+        characterId,
+        itemName: `Hůlka (${wand.wood})`,
+        itemDescription: wand.description || `${wand.wood}, ${wand.length}, ${wand.flexibility}, ${wand.core}`,
+        quantity: 1,
+        category: "Wand",
+        rarity: "Epic",
+        value: 700, // 7 galleons for a wand
+        isEquipped: true,
+        notes: "Hlavní hůlka postavy pro sesílání kouzel"
+      });
+      
       res.json(wand);
     } catch (error) {
       console.error("Error visiting Ollivanders:", error);
@@ -1268,6 +1282,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       };
 
       const wand = await storage.createWand(wandData);
+      
+      // Add wand to character's inventory
+      await storage.addInventoryItem({
+        characterId,
+        itemName: `Hůlka (${wand.wood})`,
+        itemDescription: wand.description || `${wand.wood}, ${wand.length}, ${wand.flexibility}, ${wand.core}`,
+        quantity: 1,
+        category: "Wand",
+        rarity: "Epic",
+        value: 700, // 7 galleons for a wand
+        isEquipped: true,
+        notes: "Vlastní hůlka vybraná u Ollivandera"
+      });
+      
       res.json(wand);
     } catch (error) {
       console.error("Error creating custom wand:", error);
