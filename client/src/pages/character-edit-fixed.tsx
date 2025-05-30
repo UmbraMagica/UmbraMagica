@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { calculateGameAge } from "@/lib/gameDate";
+import { CharacterAvatar } from "@/components/CharacterAvatar";
 import { 
   User, 
   ArrowLeft,
@@ -236,8 +237,8 @@ export default function CharacterEditFixed() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-center">
-                <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full mx-auto mb-4 flex items-center justify-center text-white font-bold text-2xl">
-                  {primaryCharacter.firstName?.[0] || "?"}{primaryCharacter.lastName?.[0] || "?"}
+                <div className="w-24 h-24 mx-auto mb-4">
+                  <CharacterAvatar character={primaryCharacter} size="lg" />
                 </div>
                 <h3 className="font-semibold text-lg text-foreground mb-2">
                   {primaryCharacter.firstName} {primaryCharacter.middleName && `${primaryCharacter.middleName} `}{primaryCharacter.lastName}
