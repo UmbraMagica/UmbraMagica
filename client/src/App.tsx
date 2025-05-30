@@ -54,7 +54,7 @@ function Router() {
         </>
       ) : (
         <>
-          <Route path="/" component={user.role === "admin" ? Admin : Home} />
+          <Route path="/" component={Home} />
           <Route path="/admin" component={Admin} />
           <Route path="/home" component={Home} />
           <Route path="/character/edit" component={CharacterEdit} />
