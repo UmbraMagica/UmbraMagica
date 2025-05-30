@@ -786,71 +786,6 @@ export default function Admin() {
             </CardContent>
           </Card>
 
-          {/* Kill Character Dialog */}
-          {killCharacterData && (
-            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-                    <div className="bg-card border border-border rounded-lg p-6 w-full max-w-md mx-4">
-                      <div className="flex items-center gap-3 mb-4">
-                        <AlertTriangle className="h-6 w-6 text-red-400" />
-                        <h3 className="text-lg font-semibold text-foreground">
-                          Označit postavu jako zemřelou
-                        </h3>
-                      </div>
-                      
-                      <p className="text-muted-foreground mb-4">
-                        Opravdu chcete označit postavu <strong>{killCharacterData.name}</strong> jako zemřelou?
-                        Tato akce je nevratná.
-                      </p>
-
-                      <div className="space-y-4">
-                        <div>
-                          <label className="text-sm font-medium text-foreground">
-                            Důvod smrti (povinné)
-                          </label>
-                          <Input
-                            value={deathReason}
-                            onChange={(e) => setDeathReason(e.target.value)}
-                            placeholder="Napište důvod smrti..."
-                            className="mt-1"
-                          />
-                        </div>
-
-                        {showConfirmKill && (
-                          <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
-                            <p className="text-sm text-red-400 font-medium">
-                              ⚠️ Poslední potvrzení: Klikněte znovu pro potvrzení smrti postavy
-                            </p>
-                          </div>
-                        )}
-
-                        <div className="flex gap-3">
-                          <Button
-                            variant="outline"
-                            onClick={() => {
-                              setKillCharacterData(null);
-                              setDeathReason("");
-                              setShowConfirmKill(false);
-                            }}
-                            className="flex-1"
-                          >
-                            Zrušit
-                          </Button>
-                          <Button
-                            variant="destructive"
-                            onClick={confirmKillCharacter}
-                            disabled={killCharacterMutation.isPending || !deathReason.trim()}
-                            className="flex-1"
-                          >
-                            {showConfirmKill ? "POTVRDIT SMRT" : "Označit jako zemřelou"}
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-            </CardContent>
-          </Card>
-
           {/* Admin Activity Log */}
           <Card className="bg-card border-border">
             <CardContent className="p-6">
@@ -890,6 +825,69 @@ export default function Admin() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Kill Character Dialog */}
+        {killCharacterData && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <div className="bg-card border border-border rounded-lg p-6 w-full max-w-md mx-4">
+              <div className="flex items-center gap-3 mb-4">
+                <AlertTriangle className="h-6 w-6 text-red-400" />
+                <h3 className="text-lg font-semibold text-foreground">
+                  Označit postavu jako zemřelou
+                </h3>
+              </div>
+              
+              <p className="text-muted-foreground mb-4">
+                Opravdu chcete označit postavu <strong>{killCharacterData.name}</strong> jako zemřelou?
+                Tato akce je nevratná.
+              </p>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium text-foreground">
+                    Důvod smrti (povinné)
+                  </label>
+                  <Input
+                    value={deathReason}
+                    onChange={(e) => setDeathReason(e.target.value)}
+                    placeholder="Napište důvod smrti..."
+                    className="mt-1"
+                  />
+                </div>
+
+                {showConfirmKill && (
+                  <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
+                    <p className="text-sm text-red-400 font-medium">
+                      ⚠️ Poslední potvrzení: Klikněte znovu pro potvrzení smrti postavy
+                    </p>
+                  </div>
+                )}
+
+                <div className="flex gap-3">
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setKillCharacterData(null);
+                      setDeathReason("");
+                      setShowConfirmKill(false);
+                    }}
+                    className="flex-1"
+                  >
+                    Zrušit
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    onClick={confirmKillCharacter}
+                    disabled={killCharacterMutation.isPending || !deathReason.trim()}
+                    className="flex-1"
+                  >
+                    {showConfirmKill ? "POTVRDIT SMRT" : "Označit jako zemřelou"}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
