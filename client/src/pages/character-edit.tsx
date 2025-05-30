@@ -275,7 +275,7 @@ export default function CharacterEdit() {
   const currentValues = getCurrentValues();
 
   // Show loading while character data is being fetched
-  if (isLoadingMain || !primaryCharacter) {
+  if (!primaryCharacter) {
     return (
       <div className="container mx-auto p-6">
         <div className="text-center">
