@@ -140,7 +140,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllUsers(): Promise<User[]> {
-    return db.select().from(users).orderBy(desc(users.createdAt));
+    return await db.select().from(users);
   }
 
   // Character operations
@@ -150,7 +150,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getCharactersByUserId(userId: number): Promise<Character[]> {
-    return db.select().from(characters).where(eq(characters.userId, userId)).orderBy(desc(characters.createdAt));
+    return await db.select().from(characters).where(eq(characters.userId, userId));
   }
 
   async createCharacter(insertCharacter: InsertCharacter): Promise<Character> {
@@ -173,122 +173,138 @@ export class DatabaseStorage implements IStorage {
     return character;
   }
 
-  // Authentication and invite codes remain same...
+  // Invite code operations
   async getInviteCode(code: string): Promise<InviteCode | undefined> {
     const [inviteCode] = await db.select().from(inviteCodes).where(eq(inviteCodes.code, code));
     return inviteCode;
   }
 
   async createInviteCode(insertInviteCode: InsertInviteCode): Promise<InviteCode> {
-    const [inviteCode] = await db.insert(inviteCodes).values(insertInviteCode).returning();
+    const [inviteCode] = await db
+      .insert(inviteCodes)
+      .values(insertInviteCode)
+      .returning();
     return inviteCode;
   }
 
   async useInviteCode(code: string, userId: number): Promise<boolean> {
-    try {
-      await db
-        .update(inviteCodes)
-        .set({ isUsed: true, usedBy: userId, usedAt: new Date() })
-        .where(eq(inviteCodes.code, code));
-      return true;
-    } catch {
-      return false;
-    }
+    const [result] = await db
+      .update(inviteCodes)
+      .set({ 
+        isUsed: true, 
+        usedBy: userId, 
+        usedAt: new Date() 
+      })
+      .where(and(
+        eq(inviteCodes.code, code),
+        eq(inviteCodes.isUsed, false)
+      ))
+      .returning();
+    
+    return !!result;
   }
 
+  // Authentication
   async validateUser(username: string, password: string): Promise<User | null> {
     const user = await this.getUserByUsername(username);
     if (!user) return null;
-
-    const isValidPassword = await bcrypt.compare(password, user.password);
-    return isValidPassword ? user : null;
+    
+    const isValid = await bcrypt.compare(password, user.password);
+    return isValid ? user : null;
   }
 
   async hashPassword(password: string): Promise<string> {
-    return bcrypt.hash(password, 10);
+    return await bcrypt.hash(password, 12);
   }
 
-  // Chat operations (keeping existing implementation)
+  // Chat operations
   async getChatRoom(id: number): Promise<ChatRoom | undefined> {
-    const [room] = await db.select().from(chatRooms).where(eq(chatRooms.id, id));
-    return room;
+    const result = await db.select().from(chatRooms).where(eq(chatRooms.id, id));
+    return result[0];
   }
 
   async getChatRoomByName(name: string): Promise<ChatRoom | undefined> {
-    const [room] = await db.select().from(chatRooms).where(eq(chatRooms.name, name));
-    return room;
+    const result = await db.select().from(chatRooms).where(eq(chatRooms.name, name));
+    return result[0];
   }
 
   async createChatRoom(insertChatRoom: InsertChatRoom): Promise<ChatRoom> {
-    const [room] = await db.insert(chatRooms).values(insertChatRoom).returning();
-    return room;
+    const result = await db.insert(chatRooms).values(insertChatRoom).returning();
+    return result[0];
   }
 
   async updateChatRoom(id: number, updates: Partial<InsertChatRoom>): Promise<ChatRoom | undefined> {
-    const [room] = await db
-      .update(chatRooms)
+    const result = await db.update(chatRooms)
       .set(updates)
       .where(eq(chatRooms.id, id))
       .returning();
-    return room;
+    return result[0];
   }
 
   async getAllChatRooms(): Promise<ChatRoom[]> {
-    return db.select().from(chatRooms).orderBy(chatRooms.sortOrder);
+    console.log("Getting all chat rooms from database...");
+    const result = await db.select().from(chatRooms).orderBy(chatRooms.sortOrder, chatRooms.name);
+    console.log("Database returned:", result);
+    return result;
   }
 
   async getChatRoomsByCategory(categoryId: number): Promise<ChatRoom[]> {
-    return db.select().from(chatRooms).where(eq(chatRooms.categoryId, categoryId)).orderBy(chatRooms.sortOrder);
+    const result = await db.select().from(chatRooms)
+      .where(eq(chatRooms.categoryId, categoryId))
+      .orderBy(chatRooms.sortOrder, chatRooms.name);
+    return result;
   }
 
+  // Chat category operations
   async getChatCategory(id: number): Promise<ChatCategory | undefined> {
-    const [category] = await db.select().from(chatCategories).where(eq(chatCategories.id, id));
-    return category;
+    const result = await db.select().from(chatCategories).where(eq(chatCategories.id, id));
+    return result[0];
   }
 
   async getChatCategoryByName(name: string): Promise<ChatCategory | undefined> {
-    const [category] = await db.select().from(chatCategories).where(eq(chatCategories.name, name));
-    return category;
+    const result = await db.select().from(chatCategories).where(eq(chatCategories.name, name));
+    return result[0];
   }
 
   async createChatCategory(insertChatCategory: InsertChatCategory): Promise<ChatCategory> {
-    const [category] = await db.insert(chatCategories).values(insertChatCategory).returning();
-    return category;
+    const result = await db.insert(chatCategories).values(insertChatCategory).returning();
+    return result[0];
   }
 
   async getAllChatCategories(): Promise<ChatCategory[]> {
-    return db.select().from(chatCategories).orderBy(chatCategories.sortOrder);
+    const result = await db.select().from(chatCategories).orderBy(chatCategories.sortOrder, chatCategories.name);
+    return result;
   }
 
   async getChatCategoriesWithChildren(): Promise<(ChatCategory & { children: ChatCategory[], rooms: ChatRoom[] })[]> {
-    const categories = await db.select().from(chatCategories).orderBy(chatCategories.sortOrder);
-    const rooms = await db.select().from(chatRooms).orderBy(chatRooms.sortOrder);
-
-    const categoryMap = new Map<number, ChatCategory & { children: ChatCategory[], rooms: ChatRoom[] }>();
+    const allCategories = await db.select().from(chatCategories).orderBy(chatCategories.sortOrder, chatCategories.name);
+    const allRooms = await db.select().from(chatRooms).orderBy(chatRooms.sortOrder, chatRooms.name);
+    
+    // Build tree structure
+    const categoriesMap = new Map<number, ChatCategory & { children: ChatCategory[], rooms: ChatRoom[] }>();
     
     // Initialize all categories
-    categories.forEach(category => {
-      categoryMap.set(category.id, { ...category, children: [], rooms: [] });
+    allCategories.forEach(cat => {
+      categoriesMap.set(cat.id, { ...cat, children: [], rooms: [] });
     });
-
+    
     // Add rooms to categories
-    rooms.forEach(room => {
+    allRooms.forEach(room => {
       if (room.categoryId) {
-        const category = categoryMap.get(room.categoryId);
+        const category = categoriesMap.get(room.categoryId);
         if (category) {
           category.rooms.push(room);
         }
       }
     });
-
-    // Build hierarchy
+    
+    // Build parent-child relationships
     const rootCategories: (ChatCategory & { children: ChatCategory[], rooms: ChatRoom[] })[] = [];
     
-    categories.forEach(category => {
-      const categoryWithChildren = categoryMap.get(category.id)!;
-      
-      if (category.parentId) {
-        const parent = categoryMap.get(category.parentId);
+    allCategories.forEach(cat => {
+      const categoryWithChildren = categoriesMap.get(cat.id)!;
+      if (cat.parentId) {
+        const parent = categoriesMap.get(cat.parentId);
         if (parent) {
           parent.children.push(categoryWithChildren);
         }
@@ -296,18 +312,18 @@ export class DatabaseStorage implements IStorage {
         rootCategories.push(categoryWithChildren);
       }
     });
-
+    
     return rootCategories;
   }
 
-  // Message operations (keeping existing)
+  // Message operations
   async getMessage(id: number): Promise<Message | undefined> {
-    const [message] = await db.select().from(messages).where(eq(messages.id, id));
-    return message;
+    const result = await db.select().from(messages).where(eq(messages.id, id));
+    return result[0];
   }
 
   async getMessagesByRoom(roomId: number, limit: number = 50, offset: number = 0): Promise<(Message & { character: { firstName: string; middleName?: string | null; lastName: string } })[]> {
-    return db
+    const result = await db
       .select({
         id: messages.id,
         roomId: messages.roomId,
@@ -327,28 +343,27 @@ export class DatabaseStorage implements IStorage {
       .orderBy(desc(messages.createdAt))
       .limit(limit)
       .offset(offset);
+    
+    return result; // Return in descending order (newest first) for chat display
   }
 
   async createMessage(insertMessage: InsertMessage): Promise<Message> {
-    const [message] = await db.insert(messages).values(insertMessage).returning();
-    return message;
+    const result = await db.insert(messages).values(insertMessage).returning();
+    return result[0];
   }
 
   async deleteMessage(id: number): Promise<boolean> {
-    try {
-      await db.delete(messages).where(eq(messages.id, id));
-      return true;
-    } catch {
-      return false;
-    }
+    const result = await db.delete(messages).where(eq(messages.id, id));
+    return (result.rowCount || 0) > 0;
   }
 
-  // Archive operations (keeping existing)
+  // Archive operations
   async archiveMessages(roomId: number, beforeDate?: Date): Promise<number> {
     const whereCondition = beforeDate 
       ? and(eq(messages.roomId, roomId), lt(messages.createdAt, beforeDate))
       : eq(messages.roomId, roomId);
 
+    // First, get messages to archive with character names
     const messagesToArchive = await db
       .select({
         id: messages.id,
@@ -357,9 +372,11 @@ export class DatabaseStorage implements IStorage {
         content: messages.content,
         messageType: messages.messageType,
         createdAt: messages.createdAt,
-        characterName: characters.firstName,
-        characterLastName: characters.lastName,
-        characterMiddleName: characters.middleName,
+        characterName: {
+          firstName: characters.firstName,
+          middleName: characters.middleName,
+          lastName: characters.lastName,
+        },
       })
       .from(messages)
       .innerJoin(characters, eq(messages.characterId, characters.id))
@@ -369,17 +386,20 @@ export class DatabaseStorage implements IStorage {
       return 0;
     }
 
+    // Insert into archive table
     const archiveData = messagesToArchive.map(msg => ({
       originalMessageId: msg.id,
       roomId: msg.roomId,
       characterId: msg.characterId,
-      characterName: `${msg.characterName}${msg.characterMiddleName ? ' ' + msg.characterMiddleName : ''} ${msg.characterLastName}`,
+      characterName: `${msg.characterName.firstName}${msg.characterName.middleName ? ` ${msg.characterName.middleName}` : ''} ${msg.characterName.lastName}`,
       content: msg.content,
       messageType: msg.messageType,
       originalCreatedAt: msg.createdAt,
     }));
 
     await db.insert(archivedMessages).values(archiveData);
+
+    // Delete original messages
     const deleteResult = await db.delete(messages).where(whereCondition);
     
     return deleteResult.rowCount || 0;
@@ -396,26 +416,30 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteAllMessages(): Promise<void> {
+    // Delete all messages and archived messages
     await db.delete(messages);
     await db.delete(archivedMessages);
   }
 
   async clearRoomMessages(roomId: number): Promise<number> {
+    // Delete only messages from specific room (keep archived)
     const deleteResult = await db.delete(messages).where(eq(messages.roomId, roomId));
     return deleteResult.rowCount || 0;
   }
 
   async getArchiveDates(roomId: number): Promise<string[]> {
+    // Get distinct archive dates for a room
     const dates = await db
       .selectDistinct({ archivedAt: archivedMessages.archivedAt })
       .from(archivedMessages)
       .where(eq(archivedMessages.roomId, roomId))
       .orderBy(desc(archivedMessages.archivedAt));
     
-    return dates.map(d => d.archivedAt.toISOString().split('T')[0]);
+    return dates.map(d => d.archivedAt.toISOString().split('T')[0]); // Return YYYY-MM-DD format
   }
 
   async getArchiveDatesWithCounts(roomId: number): Promise<{ date: string; count: number }[]> {
+    // Get archive dates with message counts for a room
     const result = await db
       .select({
         archivedAt: archivedMessages.archivedAt,
@@ -433,10 +457,11 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getArchivedMessagesByDate(roomId: number, archiveDate: string, limit: number = 50, offset: number = 0): Promise<ArchivedMessage[]> {
+    // Parse the date to get start and end of day
     const startDate = new Date(archiveDate);
-    const endDate = new Date(startDate);
+    const endDate = new Date(archiveDate);
     endDate.setDate(endDate.getDate() + 1);
-
+    
     return db
       .select()
       .from(archivedMessages)

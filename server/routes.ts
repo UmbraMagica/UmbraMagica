@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
-import { registrationSchema, loginSchema, insertCharacterSchema, insertMessageSchema, characterEditSchema, characterAdminEditSchema, chatRooms } from "@shared/schema";
+import { registrationSchema, loginSchema, insertCharacterSchema, insertMessageSchema, characterEditSchema, characterAdminEditSchema, characterRequestSchema, chatRooms } from "@shared/schema";
 import { db } from "./db";
 import { z } from "zod";
 import session from "express-session";
@@ -1368,6 +1368,126 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching archived messages by date:", error);
       res.status(500).json({ message: "Failed to fetch archived messages" });
+    }
+  });
+
+  // Character request endpoints
+  
+  // Create character request
+  app.post("/api/character-requests", requireAuth, async (req, res) => {
+    try {
+      const validatedData = characterRequestSchema.parse(req.body);
+      const characterRequest = await storage.createCharacterRequest({
+        ...validatedData,
+        userId: req.session.userId!,
+      });
+      res.json(characterRequest);
+    } catch (error) {
+      console.error("Error creating character request:", error);
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid input", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to create character request" });
+    }
+  });
+
+  // Get user's character requests
+  app.get("/api/character-requests/my", requireAuth, async (req, res) => {
+    try {
+      const requests = await storage.getCharacterRequestsByUserId(req.session.userId!);
+      res.json(requests);
+    } catch (error) {
+      console.error("Error fetching character requests:", error);
+      res.status(500).json({ message: "Failed to fetch character requests" });
+    }
+  });
+
+  // Admin: Get pending character requests
+  app.get("/api/admin/character-requests/pending", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const requests = await storage.getPendingCharacterRequests();
+      res.json(requests);
+    } catch (error) {
+      console.error("Error fetching pending character requests:", error);
+      res.status(500).json({ message: "Failed to fetch pending requests" });
+    }
+  });
+
+  // Admin: Approve character request
+  app.post("/api/admin/character-requests/:id/approve", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const requestId = parseInt(req.params.id);
+      const { reviewNote } = req.body;
+      
+      const character = await storage.approveCharacterRequest(requestId, req.session.userId!, reviewNote);
+      res.json({ message: "Character request approved", character });
+    } catch (error) {
+      console.error("Error approving character request:", error);
+      res.status(500).json({ message: "Failed to approve character request" });
+    }
+  });
+
+  // Admin: Reject character request
+  app.post("/api/admin/character-requests/:id/reject", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const requestId = parseInt(req.params.id);
+      const { reviewNote } = req.body;
+      
+      if (!reviewNote || reviewNote.trim().length < 10) {
+        return res.status(400).json({ message: "Review note is required and must be at least 10 characters long" });
+      }
+      
+      const request = await storage.rejectCharacterRequest(requestId, req.session.userId!, reviewNote);
+      res.json({ message: "Character request rejected", request });
+    } catch (error) {
+      console.error("Error rejecting character request:", error);
+      res.status(500).json({ message: "Failed to reject character request" });
+    }
+  });
+
+  // Multi-character operations
+  
+  // Set main character
+  app.post("/api/characters/:id/set-main", requireAuth, async (req, res) => {
+    try {
+      const characterId = parseInt(req.params.id);
+      
+      // Verify character belongs to user
+      const character = await storage.getCharacter(characterId);
+      if (!character || character.userId !== req.session.userId!) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+      
+      await storage.setMainCharacter(req.session.userId!, characterId);
+      res.json({ message: "Main character updated" });
+    } catch (error) {
+      console.error("Error setting main character:", error);
+      res.status(500).json({ message: "Failed to set main character" });
+    }
+  });
+
+  // Get user's main character
+  app.get("/api/characters/main", requireAuth, async (req, res) => {
+    try {
+      const mainCharacter = await storage.getMainCharacter(req.session.userId!);
+      res.json(mainCharacter || null);
+    } catch (error) {
+      console.error("Error fetching main character:", error);
+      res.status(500).json({ message: "Failed to fetch main character" });
+    }
+  });
+
+  // Admin activity log
+  app.get("/api/admin/activity-log", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const limit = parseInt(req.query.limit as string) || 50;
+      const offset = parseInt(req.query.offset as string) || 0;
+      
+      const activityLog = await storage.getAdminActivityLog(limit, offset);
+      res.json(activityLog);
+    } catch (error) {
+      console.error("Error fetching admin activity log:", error);
+      res.status(500).json({ message: "Failed to fetch activity log" });
     }
   });
 
