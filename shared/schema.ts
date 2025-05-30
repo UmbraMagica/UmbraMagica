@@ -4,6 +4,7 @@ import {
   varchar,
   timestamp,
   jsonb,
+  json,
   index,
   serial,
   integer,
@@ -301,6 +302,15 @@ export const characterJournal = pgTable("character_journal", {
   mood: varchar("mood", { length: 20 }), // "Happy", "Sad", "Excited", "Worried", etc.
   location: varchar("location", { length: 100 }), // Where the entry was written
   tags: text("tags").array(), // Tags for categorizing entries
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Configuration table for storing wand components and other settings
+export const configuration = pgTable("configuration", {
+  id: serial("id").primaryKey(),
+  key: varchar("key", { length: 100 }).notNull().unique(),
+  value: jsonb("value").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

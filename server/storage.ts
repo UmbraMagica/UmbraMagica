@@ -12,6 +12,7 @@ import {
   characterSpells,
   characterInventory,
   characterJournal,
+  configuration,
   type User,
   type InsertUser,
   type Character,
@@ -1351,9 +1352,28 @@ export class DatabaseStorage implements IStorage {
     lengths: string[];
     flexibilities: string[];
   }): Promise<void> {
-    // Store updated components in memory
-    this.storedWandComponents = components;
-    console.log("Wand components updated and stored in memory:", components);
+    try {
+      // Store components in database
+      await db.insert(configuration)
+        .values({
+          key: 'wand_components',
+          value: components
+        })
+        .onConflictDoUpdate({
+          target: configuration.key,
+          set: {
+            value: components,
+            updatedAt: new Date()
+          }
+        });
+      
+      // Also store in memory for performance
+      this.storedWandComponents = components;
+      console.log("Wand components updated and stored in database:", components);
+    } catch (error) {
+      console.error("Error storing wand components:", error);
+      throw error;
+    }
   }
 }
 
