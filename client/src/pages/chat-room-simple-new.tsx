@@ -227,13 +227,13 @@ export default function ChatRoom() {
   }, [currentRoomId, user]);
 
   const handleSendMessage = async () => {
-    if (!messageInput.trim() || !currentRoomId) return;
+    if (!currentRoomId) return;
     
     // For non-admin users, require a character
     if (needsCharacter && !currentCharacter) return;
 
     try {
-      // If spell is selected, cast it with the message
+      // If spell is selected, cast it with the message (even if message is empty)
       if (selectedSpell) {
         await apiRequest("POST", "/api/game/cast-spell", {
           roomId: currentRoomId,
@@ -242,8 +242,9 @@ export default function ChatRoom() {
           message: messageInput.trim()
         });
         setSelectedSpell(null);
-      } else {
-        // Send regular message
+        setMessageInput("");
+      } else if (messageInput.trim()) {
+        // Send regular message only if there's content
         const messageData = {
           roomId: currentRoomId,
           characterId: currentCharacter?.id,
@@ -251,8 +252,8 @@ export default function ChatRoom() {
           messageType: 'text'
         };
         await apiRequest("POST", "/api/chat/messages", messageData);
+        setMessageInput("");
       }
-      setMessageInput("");
     } catch (error) {
       toast({
         title: "Chyba",
@@ -755,16 +756,31 @@ export default function ChatRoom() {
                   >
                     🪙 Mince
                   </Button>
-                  <Button
-                    onClick={() => setShowSpellDialog(true)}
-                    disabled={!isConnected || characterSpells.length === 0}
-                    variant={selectedSpell ? "default" : "outline"}
-                    size="sm"
-                    title="Seslat kouzlo"
-                  >
-                    <Wand2 className="h-4 w-4 mr-1" />
-                    {selectedSpell ? selectedSpell.name : "Kouzlo"}
-                  </Button>
+                  {selectedSpell ? (
+                    <div className="flex items-center gap-1">
+                      <Button
+                        onClick={() => setSelectedSpell(null)}
+                        variant="default"
+                        size="sm"
+                        title="Zrušit vybrané kouzlo"
+                      >
+                        <Wand2 className="h-4 w-4 mr-1" />
+                        {selectedSpell.name}
+                        <X className="h-3 w-3 ml-1" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button
+                      onClick={() => setShowSpellDialog(true)}
+                      disabled={!isConnected || characterSpells.length === 0}
+                      variant="outline"
+                      size="sm"
+                      title="Vybrat kouzlo"
+                    >
+                      <Wand2 className="h-4 w-4 mr-1" />
+                      Kouzlo
+                    </Button>
+                  )}
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-muted-foreground">
@@ -772,10 +788,10 @@ export default function ChatRoom() {
                   </span>
                   <Button
                     onClick={handleSendMessage}
-                    disabled={!messageInput.trim() || messageInput.length < 1 || messageInput.length > 5000}
+                    disabled={!isConnected || (!messageInput.trim() && !selectedSpell) || messageInput.length > 5000}
                     size="sm"
                   >
-                    Odeslat
+                    {selectedSpell ? "Seslat kouzlo" : "Odeslat"}
                   </Button>
                 </div>
               </div>
