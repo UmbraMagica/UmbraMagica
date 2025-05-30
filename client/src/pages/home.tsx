@@ -86,6 +86,16 @@ export default function Home() {
                   <HomeIcon className="mr-2 h-4 w-4" />
                   Domov
                 </Button>
+                <Button variant="ghost" className="text-foreground hover:text-accent" onClick={() => setLocation('/settings')}>
+                  <Settings className="mr-2 h-4 w-4" />
+                  Nastavení
+                </Button>
+                {user?.role === 'admin' && (
+                  <Button variant="ghost" className="text-amber-400 hover:text-amber-300" onClick={() => setLocation('/admin')}>
+                    <Crown className="mr-2 h-4 w-4" />
+                    Administrace
+                  </Button>
+                )}
               </div>
             </div>
             <div className="flex items-center space-x-4">
