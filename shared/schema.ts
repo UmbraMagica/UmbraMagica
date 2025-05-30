@@ -250,6 +250,24 @@ export const insertChatRoomSchema = createInsertSchema(chatRooms).pick({
   sortOrder: true,
 });
 
+export const insertCharacterRequestSchema = createInsertSchema(characterRequests).pick({
+  firstName: true,
+  middleName: true,
+  lastName: true,
+  birthDate: true,
+  school: true,
+  description: true,
+  reason: true,
+});
+
+export const insertAdminActivityLogSchema = createInsertSchema(adminActivityLog).pick({
+  action: true,
+  targetUserId: true,
+  targetCharacterId: true,
+  targetRequestId: true,
+  details: true,
+});
+
 export const registrationSchema = z.object({
   username: z.string().min(3).max(50),
   email: z.string().email(),
@@ -286,6 +304,22 @@ export const characterAdminEditSchema = z.object({
   description: z.string().optional(),
 });
 
+export const characterRequestSchema = z.object({
+  firstName: z.string().min(1, "First name is required").max(50),
+  middleName: z.string().max(50).optional(),
+  lastName: z.string().min(1, "Last name is required").max(50),
+  birthDate: z.string().refine(date => {
+    const d = new Date(date);
+    const year = d.getFullYear();
+    return !isNaN(d.getTime()) && year >= 1860 && year <= 1910;
+  }, {
+    message: "Birth date must be between 1860-1910"
+  }),
+  school: z.string().max(100).optional(),
+  description: z.string().optional(),
+  reason: z.string().min(10, "Please provide a reason for creating this character").max(500),
+});
+
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 export type Character = typeof characters.$inferSelect;
@@ -299,3 +333,7 @@ export type InsertChatRoom = typeof chatRooms.$inferInsert;
 export type Message = typeof messages.$inferSelect;
 export type InsertMessage = typeof messages.$inferInsert;
 export type ArchivedMessage = typeof archivedMessages.$inferSelect;
+export type CharacterRequest = typeof characterRequests.$inferSelect;
+export type InsertCharacterRequest = typeof characterRequests.$inferInsert;
+export type AdminActivityLog = typeof adminActivityLog.$inferSelect;
+export type InsertAdminActivityLog = typeof adminActivityLog.$inferInsert;

@@ -6,6 +6,8 @@ import {
   chatRooms,
   messages,
   archivedMessages,
+  characterRequests,
+  adminActivityLog,
   type User,
   type InsertUser,
   type Character,
@@ -19,6 +21,10 @@ import {
   type Message,
   type InsertMessage,
   type ArchivedMessage,
+  type CharacterRequest,
+  type InsertCharacterRequest,
+  type AdminActivityLog,
+  type InsertAdminActivityLog,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, desc, lt, gte, count } from "drizzle-orm";
@@ -79,6 +85,21 @@ export interface IStorage {
   getArchiveDates(roomId: number): Promise<string[]>;
   getArchiveDatesWithCounts(roomId: number): Promise<{ date: string; count: number }[]>;
   getArchivedMessagesByDate(roomId: number, archiveDate: string, limit?: number, offset?: number): Promise<ArchivedMessage[]>;
+  
+  // Character request operations
+  createCharacterRequest(request: InsertCharacterRequest): Promise<CharacterRequest>;
+  getCharacterRequestsByUserId(userId: number): Promise<CharacterRequest[]>;
+  getPendingCharacterRequests(): Promise<(CharacterRequest & { user: { username: string; email: string } })[]>;
+  approveCharacterRequest(requestId: number, adminId: number, reviewNote?: string): Promise<Character>;
+  rejectCharacterRequest(requestId: number, adminId: number, reviewNote: string): Promise<CharacterRequest>;
+  
+  // Admin activity log operations
+  logAdminActivity(activity: InsertAdminActivityLog): Promise<AdminActivityLog>;
+  getAdminActivityLog(limit?: number, offset?: number): Promise<(AdminActivityLog & { admin: { username: string }; targetUser?: { username: string } })[]>;
+  
+  // Multi-character operations
+  setMainCharacter(userId: number, characterId: number): Promise<void>;
+  getMainCharacter(userId: number): Promise<Character | undefined>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -454,6 +475,169 @@ export class DatabaseStorage implements IStorage {
       .orderBy(desc(archivedMessages.originalCreatedAt))
       .limit(limit)
       .offset(offset);
+  }
+
+  // Character request operations
+  async createCharacterRequest(request: InsertCharacterRequest): Promise<CharacterRequest> {
+    const [characterRequest] = await db.insert(characterRequests).values(request).returning();
+    return characterRequest;
+  }
+
+  async getCharacterRequestsByUserId(userId: number): Promise<CharacterRequest[]> {
+    return db.select().from(characterRequests).where(eq(characterRequests.userId, userId)).orderBy(desc(characterRequests.createdAt));
+  }
+
+  async getPendingCharacterRequests(): Promise<(CharacterRequest & { user: { username: string; email: string } })[]> {
+    return db
+      .select({
+        id: characterRequests.id,
+        userId: characterRequests.userId,
+        firstName: characterRequests.firstName,
+        middleName: characterRequests.middleName,
+        lastName: characterRequests.lastName,
+        birthDate: characterRequests.birthDate,
+        school: characterRequests.school,
+        description: characterRequests.description,
+        reason: characterRequests.reason,
+        status: characterRequests.status,
+        reviewedBy: characterRequests.reviewedBy,
+        reviewedAt: characterRequests.reviewedAt,
+        reviewNote: characterRequests.reviewNote,
+        createdAt: characterRequests.createdAt,
+        user: {
+          username: users.username,
+          email: users.email,
+        },
+      })
+      .from(characterRequests)
+      .innerJoin(users, eq(characterRequests.userId, users.id))
+      .where(eq(characterRequests.status, "pending"))
+      .orderBy(desc(characterRequests.createdAt));
+  }
+
+  async approveCharacterRequest(requestId: number, adminId: number, reviewNote?: string): Promise<Character> {
+    const [request] = await db.select().from(characterRequests).where(eq(characterRequests.id, requestId));
+    if (!request) {
+      throw new Error("Character request not found");
+    }
+
+    // Update request status
+    await db
+      .update(characterRequests)
+      .set({
+        status: "approved",
+        reviewedBy: adminId,
+        reviewedAt: new Date(),
+        reviewNote,
+      })
+      .where(eq(characterRequests.id, requestId));
+
+    // Create the character
+    const [character] = await db
+      .insert(characters)
+      .values({
+        userId: request.userId,
+        firstName: request.firstName,
+        middleName: request.middleName,
+        lastName: request.lastName,
+        birthDate: request.birthDate,
+        school: request.school,
+        description: request.description,
+        isActive: true,
+        isMainCharacter: false,
+      })
+      .returning();
+
+    // Log admin activity
+    await this.logAdminActivity({
+      adminId,
+      action: "approve_character",
+      targetUserId: request.userId,
+      targetCharacterId: character.id,
+      targetRequestId: requestId,
+      details: `Approved character: ${request.firstName} ${request.lastName}`,
+    });
+
+    return character;
+  }
+
+  async rejectCharacterRequest(requestId: number, adminId: number, reviewNote: string): Promise<CharacterRequest> {
+    const [request] = await db
+      .update(characterRequests)
+      .set({
+        status: "rejected",
+        reviewedBy: adminId,
+        reviewedAt: new Date(),
+        reviewNote,
+      })
+      .where(eq(characterRequests.id, requestId))
+      .returning();
+
+    // Log admin activity
+    await this.logAdminActivity({
+      adminId,
+      action: "reject_character",
+      targetUserId: request.userId,
+      targetRequestId: requestId,
+      details: `Rejected character request: ${request.firstName} ${request.lastName}`,
+    });
+
+    return request;
+  }
+
+  // Admin activity log operations
+  async logAdminActivity(activity: InsertAdminActivityLog): Promise<AdminActivityLog> {
+    const [log] = await db.insert(adminActivityLog).values(activity).returning();
+    return log;
+  }
+
+  async getAdminActivityLog(limit: number = 50, offset: number = 0): Promise<(AdminActivityLog & { admin: { username: string }; targetUser?: { username: string } })[]> {
+    return db
+      .select({
+        id: adminActivityLog.id,
+        adminId: adminActivityLog.adminId,
+        action: adminActivityLog.action,
+        targetUserId: adminActivityLog.targetUserId,
+        targetCharacterId: adminActivityLog.targetCharacterId,
+        targetRequestId: adminActivityLog.targetRequestId,
+        details: adminActivityLog.details,
+        createdAt: adminActivityLog.createdAt,
+        admin: {
+          username: users.username,
+        },
+        targetUser: {
+          username: users.username,
+        },
+      })
+      .from(adminActivityLog)
+      .innerJoin(users, eq(adminActivityLog.adminId, users.id))
+      .leftJoin(users.as("targetUsers"), eq(adminActivityLog.targetUserId, users.id))
+      .orderBy(desc(adminActivityLog.createdAt))
+      .limit(limit)
+      .offset(offset);
+  }
+
+  // Multi-character operations
+  async setMainCharacter(userId: number, characterId: number): Promise<void> {
+    // First, unset all main characters for this user
+    await db
+      .update(characters)
+      .set({ isMainCharacter: false })
+      .where(eq(characters.userId, userId));
+
+    // Set the new main character
+    await db
+      .update(characters)
+      .set({ isMainCharacter: true })
+      .where(and(eq(characters.id, characterId), eq(characters.userId, userId)));
+  }
+
+  async getMainCharacter(userId: number): Promise<Character | undefined> {
+    const [character] = await db
+      .select()
+      .from(characters)
+      .where(and(eq(characters.userId, userId), eq(characters.isMainCharacter, true)));
+    return character;
   }
 }
 
