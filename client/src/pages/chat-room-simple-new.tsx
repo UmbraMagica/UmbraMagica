@@ -104,6 +104,17 @@ export default function ChatRoom() {
     refetchInterval: 5000,
   });
 
+  // Clear local messages and invalidate cache when room changes
+  useEffect(() => {
+    if (currentRoomId) {
+      setLocalMessages([]);
+      setOnlineCharacters([]);
+      // Invalidate and refetch data for the new room
+      queryClient.invalidateQueries({ queryKey: ["/api/chat/rooms", currentRoomId, "messages"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/characters/online"] });
+    }
+  }, [currentRoomId, queryClient]);
+
   // Update local messages when server messages change
   useEffect(() => {
     if (messages.length > 0) {
@@ -117,6 +128,9 @@ export default function ChatRoom() {
         (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       );
       setLocalMessages(sortedMessages);
+    } else if (messages.length === 0 && !messagesLoading) {
+      // Clear local messages if no messages are returned
+      setLocalMessages([]);
     }
   }, [messages, messagesLoading, currentRoomId]);
 
