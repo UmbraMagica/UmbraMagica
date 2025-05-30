@@ -65,6 +65,7 @@ export default function ChatRoom() {
   }>>([]);
   const [showSpellDialog, setShowSpellDialog] = useState(false);
   const [selectedSpell, setSelectedSpell] = useState<any>(null);
+  const [chatCharacter, setChatCharacter] = useState<any>(null);
   
   const currentRoomId = roomId ? parseInt(roomId) : null;
 
@@ -95,8 +96,15 @@ export default function ChatRoom() {
     enabled: !!user,
   });
 
-  // Current character for chat (use main character or first available alive character)
-  const currentCharacter = (mainCharacter && !mainCharacter.deathDate) ? mainCharacter : userCharacters[0];
+  // Current character for chat (use chat-specific character if set, otherwise main character)
+  const currentCharacter = chatCharacter || ((mainCharacter && !mainCharacter.deathDate) ? mainCharacter : userCharacters[0]);
+
+  // Initialize chat character to main character when data loads
+  useEffect(() => {
+    if (mainCharacter && !chatCharacter) {
+      setChatCharacter(mainCharacter);
+    }
+  }, [mainCharacter, chatCharacter]);
 
   // Fetch character's spells
   const { data: characterSpells = [] } = useQuery<any[]>({
@@ -687,21 +695,11 @@ export default function ChatRoom() {
                     size="sm"
                     onClick={() => {
                       if (currentCharacter?.id !== character.id) {
-                        apiRequest("POST", `/api/characters/${character.id}/set-main`)
-                          .then(() => {
-                            queryClient.invalidateQueries({ queryKey: ["/api/characters/main"] });
-                            toast({
-                              title: "Postava změněna",
-                              description: `Nyní píšete jako ${character.firstName} ${character.lastName}`,
-                            });
-                          })
-                          .catch(() => {
-                            toast({
-                              title: "Chyba",
-                              description: "Nepodařilo se změnit postavu",
-                              variant: "destructive",
-                            });
-                          });
+                        setChatCharacter(character);
+                        toast({
+                          title: "Postava změněna",
+                          description: `Nyní píšete jako ${character.firstName} ${character.lastName}`,
+                        });
                       }
                     }}
                     className="text-xs"
