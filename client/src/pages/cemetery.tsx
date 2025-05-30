@@ -20,80 +20,24 @@ interface DeadCharacter {
 }
 
 export default function Cemetery() {
-  const { user } = useAuth();
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
-
   const { data: deadCharacters = [], isLoading } = useQuery<DeadCharacter[]>({
     queryKey: ["/api/cemetery"],
   });
 
-  // Revive character mutation (admin only)
-  const reviveCharacterMutation = useMutation({
-    mutationFn: async (characterId: number) => {
-      const response = await apiRequest("POST", `/api/characters/${characterId}/revive`);
-      return response.json();
-    },
-    onSuccess: () => {
-      toast({
-        title: "Postava oživena",
-        description: "Postava byla úspěšně oživena a vrácena mezi živé.",
-      });
-      queryClient.invalidateQueries({ queryKey: ["/api/cemetery"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/characters"] });
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Chyba při oživování",
-        description: error.message || "Nepodařilo se oživit postavu",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const formatDate = (dateString: string) => {
+  // Format date to show game year (1926) instead of real year
+  const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
-    const gameYear = 1926;
-    const gameDate = new Date(gameYear, date.getMonth(), date.getDate());
-    return gameDate.toLocaleDateString('cs-CZ');
-  };
-
-  const calculateAge = (birthDate: string, deathDate: string) => {
-    const birth = new Date(birthDate);
-    const death = new Date(deathDate);
-    let age = death.getFullYear() - birth.getFullYear();
-    const monthDiff = death.getMonth() - birth.getMonth();
-    
-    if (monthDiff < 0 || (monthDiff === 0 && death.getDate() < birth.getDate())) {
-      age--;
-    }
-    
-    return age;
-  };
-
-  const getFullName = (character: DeadCharacter) => {
-    const parts = [character.firstName];
-    if (character.middleName) {
-      parts.push(character.middleName);
-    }
-    parts.push(character.lastName);
-    return parts.join(' ');
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    return `${day}. ${month}. 1926`;
   };
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white p-6">
+      <div className="min-h-screen bg-gradient-to-br from-purple-950 via-slate-900 to-black p-4">
         <div className="max-w-6xl mx-auto">
-          <div className="flex items-center gap-4 mb-8">
-            <Link href="/home" className="text-purple-300 hover:text-white transition-colors">
-              <ArrowLeft className="h-6 w-6" />
-            </Link>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-              🪦 Hřbitov
-            </h1>
-          </div>
-          <div className="flex justify-center items-center py-12">
-            <div className="text-xl text-purple-300">Načítání hřbitova...</div>
+          <div className="flex items-center justify-center min-h-[60vh]">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-400"></div>
           </div>
         </div>
       </div>
@@ -101,56 +45,62 @@ export default function Cemetery() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white p-6">
+    <div className="min-h-screen bg-gradient-to-br from-purple-950 via-slate-900 to-black p-4">
       <div className="max-w-6xl mx-auto">
-        <div className="flex items-center gap-4 mb-8">
-          <Link href="/home" className="text-purple-300 hover:text-white transition-colors">
-            <ArrowLeft className="h-6 w-6" />
+        {/* Header */}
+        <div className="mb-8 text-center">
+          <Link
+            href="/"
+            className="inline-flex items-center text-purple-300 hover:text-purple-200 transition-colors mb-6 group"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" />
+            Zpět na hlavní stránku
           </Link>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-            🪦 Hřbitov
+          
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-200 to-pink-200 bg-clip-text text-transparent mb-4">
+            ⚰️ Hřbitov
           </h1>
+          
+          <p className="text-purple-300 text-lg max-w-2xl mx-auto">
+            Místo věčného odpočinku pro naše padlé hrdiny. Jejich příběhy zůstávají navždy v našich srdcích.
+          </p>
         </div>
 
+        {/* Dead Characters Grid */}
         {deadCharacters.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="text-xl text-purple-300 mb-4">Zatím zde nikdo nespočívá.</div>
-            <div className="text-purple-400">Všechny postavy jsou stále naživu.</div>
+          <div className="text-center py-16">
+            <div className="text-6xl mb-4">🕊️</div>
+            <h2 className="text-2xl font-semibold text-purple-200 mb-2">
+              Hřbitov je prázdný
+            </h2>
+            <p className="text-purple-400">
+              Zatím zde nespočívají žádné postavy.
+            </p>
           </div>
         ) : (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {deadCharacters.map((character) => (
-              <Card key={character.id} className="bg-slate-800/50 border-purple-500/20 backdrop-blur-sm">
-                <CardHeader className="pb-2">
-                  <CardTitle className="flex items-center justify-between text-lg">
-                    <span className="text-white">{getFullName(character)}</span>
-                  </CardTitle>
-                  <div className="text-sm text-purple-300">
-                    {formatDate(character.birthDate)} - {formatDate(character.deathDate)}
-                  </div>
-                  <div className="text-xs text-purple-400">
-                    Věk při smrti: {calculateAge(character.birthDate, character.deathDate)} let
+              <Card key={character.id} className="bg-slate-800/50 border-purple-500/30 hover:border-purple-400/50 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/20">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-purple-200 text-xl flex items-center gap-2">
+                      ⚰️
+                      {character.firstName}
+                      {character.middleName && ` ${character.middleName}`}
+                      {" "}
+                      {character.lastName}
+                    </CardTitle>
                   </div>
                 </CardHeader>
+                
                 <CardContent className="space-y-3">
-                  {character.school && (
-                    <Badge variant="outline" className="text-purple-300 border-purple-500">
-                      {character.school}
-                    </Badge>
-                  )}
-                  
-                  <div className="p-3 bg-slate-900/50 rounded-lg border border-red-500/20">
-                    <div className="text-xs text-red-300 font-medium mb-1">Příčina smrti:</div>
-                    <div className="text-sm text-red-200">{character.deathReason}</div>
+                  <div className="text-sm text-purple-300">
+                    <strong>Datum smrti:</strong> {formatDate(character.deathDate)}
                   </div>
-
-                  {character.description && (
-                    <div className="text-sm text-purple-200 bg-slate-900/30 p-3 rounded-lg">
-                      <div 
-                        dangerouslySetInnerHTML={{ 
-                          __html: character.description.replace(/\n/g, '<br>') 
-                        }} 
-                      />
+                  
+                  {character.deathReason && (
+                    <div className="text-sm text-purple-300">
+                      <strong>Důvod smrti:</strong> {character.deathReason}
                     </div>
                   )}
                   
