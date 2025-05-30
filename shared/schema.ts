@@ -48,6 +48,7 @@ export const characters = pgTable("characters", {
   school: varchar("school", { length: 100 }),
   description: text("description"),
   isActive: boolean("is_active").default(true).notNull(),
+  isMainCharacter: boolean("is_main_character").default(false).notNull(), // označuje hlavní postavu uživatele
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
@@ -107,9 +108,41 @@ export const archivedMessages = pgTable("archived_messages", {
   archivedAt: timestamp("archived_at").defaultNow().notNull(),
 });
 
+// Character requests table - žádosti o nové postavy
+export const characterRequests = pgTable("character_requests", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  firstName: varchar("first_name", { length: 50 }).notNull(),
+  middleName: varchar("middle_name", { length: 50 }),
+  lastName: varchar("last_name", { length: 50 }).notNull(),
+  birthDate: date("birth_date").notNull(),
+  school: varchar("school", { length: 100 }),
+  description: text("description"),
+  reason: text("reason"), // důvod pro vytvoření postavy
+  status: varchar("status", { length: 20 }).default("pending").notNull(), // pending, approved, rejected
+  reviewedBy: integer("reviewed_by").references(() => users.id),
+  reviewedAt: timestamp("reviewed_at"),
+  reviewNote: text("review_note"), // poznámka administrátora
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Admin activity log - log aktivit administrátorů
+export const adminActivityLog = pgTable("admin_activity_log", {
+  id: serial("id").primaryKey(),
+  adminId: integer("admin_id").references(() => users.id).notNull(),
+  action: varchar("action", { length: 50 }).notNull(), // approve_character, reject_character, etc.
+  targetUserId: integer("target_user_id").references(() => users.id),
+  targetCharacterId: integer("target_character_id").references(() => characters.id),
+  targetRequestId: integer("target_request_id").references(() => characterRequests.id),
+  details: text("details"), // dodatečné informace o akci
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   characters: many(characters),
+  characterRequests: many(characterRequests),
+  adminActions: many(adminActivityLog),
 }));
 
 export const charactersRelations = relations(characters, ({ one, many }) => ({
@@ -145,6 +178,36 @@ export const messagesRelations = relations(messages, ({ one }) => ({
   room: one(chatRooms, {
     fields: [messages.roomId],
     references: [chatRooms.id],
+  }),
+}));
+
+export const characterRequestsRelations = relations(characterRequests, ({ one }) => ({
+  user: one(users, {
+    fields: [characterRequests.userId],
+    references: [users.id],
+  }),
+  reviewer: one(users, {
+    fields: [characterRequests.reviewedBy],
+    references: [users.id],
+  }),
+}));
+
+export const adminActivityLogRelations = relations(adminActivityLog, ({ one }) => ({
+  admin: one(users, {
+    fields: [adminActivityLog.adminId],
+    references: [users.id],
+  }),
+  targetUser: one(users, {
+    fields: [adminActivityLog.targetUserId],
+    references: [users.id],
+  }),
+  targetCharacter: one(characters, {
+    fields: [adminActivityLog.targetCharacterId],
+    references: [characters.id],
+  }),
+  targetRequest: one(characterRequests, {
+    fields: [adminActivityLog.targetRequestId],
+    references: [characterRequests.id],
   }),
 }));
 
