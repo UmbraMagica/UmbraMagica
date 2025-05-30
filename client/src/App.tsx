@@ -13,7 +13,7 @@ import Registration from "@/pages/registration";
 import ChatList from "@/pages/chat-list";
 import ChatCategories from "@/pages/chat-categories";
 import ChatRoom from "@/pages/chat-room-simple-new";
-import CharacterEdit from "@/pages/character-edit-simple";
+import CharacterEdit from "@/pages/character-edit-fixed";
 import CharactersList from "@/pages/characters-list";
 import CharacterProfile from "@/pages/character-profile";
 import UserSettings from "@/pages/user-settings";

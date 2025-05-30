@@ -60,7 +60,7 @@ export default function CharacterEditSimple() {
   // Fetch specific character if ID provided in URL
   const { data: specificCharacter } = useQuery<any>({
     queryKey: ["/api/characters", characterIdFromUrl],
-    enabled: !!characterIdFromUrl,
+    enabled: !!characterIdFromUrl && !!user,
   });
 
   // Use specific character if available, otherwise main character
