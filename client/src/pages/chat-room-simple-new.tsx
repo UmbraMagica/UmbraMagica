@@ -5,6 +5,7 @@ import { useParams } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useState, useEffect, useRef } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
@@ -62,6 +63,7 @@ export default function ChatRoom() {
     lastName: string;
     fullName: string;
   }>>([]);
+  const [showSpellDialog, setShowSpellDialog] = useState(false);
   
   const currentRoomId = roomId ? parseInt(roomId) : null;
 
@@ -94,6 +96,12 @@ export default function ChatRoom() {
 
   // Current character for chat (use main character or first available alive character)
   const currentCharacter = (mainCharacter && !mainCharacter.deathDate) ? mainCharacter : userCharacters[0];
+
+  // Fetch character's spells
+  const { data: characterSpells = [] } = useQuery<any[]>({
+    queryKey: [`/api/characters/${currentCharacter?.id}/spells`],
+    enabled: !!currentCharacter?.id,
+  });
   
   // Check if user needs a character (non-admin users need a character)
   const needsCharacter = user?.role !== 'admin';
@@ -271,6 +279,29 @@ export default function ChatRoom() {
       toast({
         title: "Chyba",
         description: "Nepodařilo se hodit mincí.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleCastSpell = async (spellId: number) => {
+    if (!currentCharacter || !currentRoomId) return;
+
+    try {
+      await apiRequest("POST", "/api/game/cast-spell", {
+        roomId: currentRoomId,
+        characterId: currentCharacter.id,
+        spellId: spellId
+      });
+      setShowSpellDialog(false);
+      toast({
+        title: "Úspěch",
+        description: "Kouzlo bylo sesláno.",
+      });
+    } catch (error) {
+      toast({
+        title: "Chyba",
+        description: "Nepodařilo se seslat kouzlo.",
         variant: "destructive",
       });
     }
@@ -725,6 +756,16 @@ export default function ChatRoom() {
                     title="Hodit mincí (1d2)"
                   >
                     🪙 Mince
+                  </Button>
+                  <Button
+                    onClick={() => setShowSpellDialog(true)}
+                    disabled={!isConnected || characterSpells.length === 0}
+                    variant="outline"
+                    size="sm"
+                    title="Seslat kouzlo"
+                  >
+                    <Wand2 className="h-4 w-4 mr-1" />
+                    Kouzlo
                   </Button>
                 </div>
                 <div className="flex items-center gap-2">
