@@ -9,27 +9,21 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { calculateGameAge } from "@/lib/gameDate";
 import { 
   User, 
   ArrowLeft,
   Save,
   Calendar,
-  UserCircle
+  UserCircle,
+  Lock
 } from "lucide-react";
-import { insertCharacterSchema } from "../../../shared/schema";
+import { characterEditSchema, characterAdminEditSchema } from "@shared/schema";
 import { z } from "zod";
 import { useLocation } from "wouter";
 
-const characterEditSchema = insertCharacterSchema.pick({
-  firstName: true,
-  middleName: true,
-  lastName: true,
-  birthDate: true,
-  school: true,
-  description: true,
-});
-
 type CharacterEditForm = z.infer<typeof characterEditSchema>;
+type CharacterAdminEditForm = z.infer<typeof characterAdminEditSchema>;
 
 export default function CharacterEdit() {
   const { user } = useAuth();
@@ -38,14 +32,20 @@ export default function CharacterEdit() {
   const queryClient = useQueryClient();
 
   const primaryCharacter = user?.characters?.[0];
+  const isAdmin = user?.role === 'admin';
 
-  const form = useForm<CharacterEditForm>({
-    resolver: zodResolver(characterEditSchema),
+  // Use different schemas based on user role
+  const currentSchema = isAdmin ? characterAdminEditSchema : characterEditSchema;
+  
+  const form = useForm<CharacterEditForm | CharacterAdminEditForm>({
+    resolver: zodResolver(currentSchema),
     defaultValues: {
-      firstName: primaryCharacter?.firstName || "",
-      middleName: primaryCharacter?.middleName || "",
-      lastName: primaryCharacter?.lastName || "",
-      birthDate: primaryCharacter?.birthDate || "",
+      ...(isAdmin && {
+        firstName: primaryCharacter?.firstName || "",
+        middleName: primaryCharacter?.middleName || "",
+        lastName: primaryCharacter?.lastName || "",
+        birthDate: primaryCharacter?.birthDate || "",
+      }),
       school: (primaryCharacter as any)?.school || "",
       description: (primaryCharacter as any)?.description || "",
     },
