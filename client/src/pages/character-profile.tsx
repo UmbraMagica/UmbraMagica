@@ -37,6 +37,13 @@ export default function CharacterProfile() {
     enabled: !!id,
   });
 
+  // Debug character data
+  if (character) {
+    console.log("Character data in profile:", character);
+    console.log("firstName:", character.firstName, "type:", typeof character.firstName);
+    console.log("lastName:", character.lastName, "type:", typeof character.lastName);
+  }
+
   if (isLoading) {
     return (
       <div className="container mx-auto p-6">
