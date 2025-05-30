@@ -39,12 +39,19 @@ export default function CharacterEdit() {
 
   const isAdmin = user?.role === 'admin';
 
+  // Force cache invalidation on component mount
+  useEffect(() => {
+    queryClient.invalidateQueries({ queryKey: ["/api/characters/main"] });
+    queryClient.invalidateQueries({ queryKey: ["/api/characters"] });
+  }, [queryClient]);
+
   // Fetch the main character
   const { data: mainCharacter, isLoading: isLoadingMain } = useQuery<any>({
     queryKey: ["/api/characters/main"],
     enabled: !!user,
     staleTime: 0, // Always fetch fresh data
-    cacheTime: 0, // Don't cache
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
   });
 
   const primaryCharacter = mainCharacter;
@@ -279,6 +286,17 @@ export default function CharacterEdit() {
   };
 
   const currentValues = getCurrentValues();
+
+  // Show loading while character data is being fetched
+  if (isLoadingMain || !primaryCharacter) {
+    return (
+      <div className="container mx-auto p-6">
+        <div className="text-center">
+          <p>Načítám data postavy...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background dark">
