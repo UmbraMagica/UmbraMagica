@@ -6,11 +6,14 @@ async function throwIfResNotOk(res: Response) {
       // Clone response to avoid consuming the body
       const resClone = res.clone();
       const errorData = await resClone.json();
+      console.log('API Error Response:', errorData); // Debug log
       throw new Error(errorData.message || `${res.status}: ${res.statusText}`);
     } catch (parseError) {
+      console.log('JSON Parse Error:', parseError); // Debug log
       // If JSON parsing fails, fallback to text from original response
       try {
         const text = await res.text();
+        console.log('Error Response Text:', text); // Debug log
         throw new Error(text || `${res.status}: ${res.statusText}`);
       } catch {
         throw new Error(`${res.status}: ${res.statusText}`);

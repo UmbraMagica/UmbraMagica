@@ -29,8 +29,8 @@ export default function AdminWandComponents() {
   
   const [newWood, setNewWood] = useState({ name: "", description: "" });
   const [newCore, setNewCore] = useState({ name: "", category: "", description: "" });
-  const [newLength, setNewLength] = useState("");
-  const [newFlex, setNewFlex] = useState("");
+  const [newLength, setNewLength] = useState({ name: "", description: "" });
+  const [newFlex, setNewFlex] = useState({ name: "", description: "" });
 
   // Get wand components
   const { data: wandComponents, isLoading } = useQuery({
@@ -153,11 +153,14 @@ export default function AdminWandComponents() {
   };
 
   const addLength = () => {
-    if (!newLength.trim() || !wandComponents) return;
-    const updatedLengths = [...wandComponents.lengths, newLength.trim()];
+    if (!newLength.name.trim() || !wandComponents) return;
+    const updatedLengths = [...wandComponents.lengths, {
+      name: newLength.name.trim(),
+      description: newLength.description.trim()
+    }];
     const updatedComponents = { ...wandComponents, lengths: updatedLengths };
     saveComponentsMutation.mutate(updatedComponents);
-    setNewLength("");
+    setNewLength({ name: "", description: "" });
   };
 
   const removeLength = (lengthToRemove: any) => {
@@ -168,11 +171,14 @@ export default function AdminWandComponents() {
   };
 
   const addFlex = () => {
-    if (!newFlex.trim() || !wandComponents) return;
-    const updatedFlexes = [...wandComponents.flexibilities, newFlex.trim()];
+    if (!newFlex.name.trim() || !wandComponents) return;
+    const updatedFlexes = [...wandComponents.flexibilities, {
+      name: newFlex.name.trim(),
+      description: newFlex.description.trim()
+    }];
     const updatedComponents = { ...wandComponents, flexibilities: updatedFlexes };
     saveComponentsMutation.mutate(updatedComponents);
-    setNewFlex("");
+    setNewFlex({ name: "", description: "" });
   };
 
   const removeFlex = (flexToRemove: any) => {
@@ -419,16 +425,25 @@ export default function AdminWandComponents() {
             </CardHeader>
             <CardContent className="space-y-4">
               {/* Add new length */}
-              <div className="flex gap-2">
-                <Input
-                  placeholder="Délka (např. 17&quot;)..."
-                  value={newLength}
-                  onChange={(e) => setNewLength(e.target.value)}
-                />
-                <Button onClick={addLength} disabled={!newLength.trim()}>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Přidat
-                </Button>
+              <div className="space-y-3 p-4 bg-muted/20 rounded-lg">
+                <h4 className="font-medium">Přidat novou délku</h4>
+                <div className="space-y-2">
+                  <Input
+                    placeholder="Název délky (např. 17&quot;)..."
+                    value={newLength.name}
+                    onChange={(e) => setNewLength({...newLength, name: e.target.value})}
+                  />
+                  <Textarea
+                    placeholder="Popis vlastností této délky..."
+                    value={newLength.description}
+                    onChange={(e) => setNewLength({...newLength, description: e.target.value})}
+                    rows={2}
+                  />
+                  <Button onClick={addLength} disabled={!newLength.name.trim()}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Přidat délku
+                  </Button>
+                </div>
               </div>
 
               {/* Lengths list */}
@@ -525,16 +540,25 @@ export default function AdminWandComponents() {
             </CardHeader>
             <CardContent className="space-y-4">
               {/* Add new flexibility */}
-              <div className="flex gap-2">
-                <Input
-                  placeholder="Typ ohebnosti..."
-                  value={newFlex}
-                  onChange={(e) => setNewFlex(e.target.value)}
-                />
-                <Button onClick={addFlex} disabled={!newFlex.trim()}>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Přidat
-                </Button>
+              <div className="space-y-3 p-4 bg-muted/20 rounded-lg">
+                <h4 className="font-medium">Přidat novou ohebnost</h4>
+                <div className="space-y-2">
+                  <Input
+                    placeholder="Název ohebnosti (např. Středně ohebná)..."
+                    value={newFlex.name}
+                    onChange={(e) => setNewFlex({...newFlex, name: e.target.value})}
+                  />
+                  <Textarea
+                    placeholder="Popis vlastností této ohebnosti..."
+                    value={newFlex.description}
+                    onChange={(e) => setNewFlex({...newFlex, description: e.target.value})}
+                    rows={2}
+                  />
+                  <Button onClick={addFlex} disabled={!newFlex.name.trim()}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Přidat ohebnost
+                  </Button>
+                </div>
               </div>
 
               {/* Flexibilities list */}
