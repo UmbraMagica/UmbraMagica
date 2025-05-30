@@ -9,6 +9,7 @@ import { useState, useEffect, useRef } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { Link } from "wouter";
 import { ArrowLeft, Edit3, Save, X, BookOpen } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { RoomDescription } from "@/components/RoomDescription";

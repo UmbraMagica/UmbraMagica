@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "wouter";
 import { Users, Circle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -61,9 +62,12 @@ export function RoomPresence({ roomId, onlineCharacters }: RoomPresenceProps) {
                 </AvatarFallback>
               </Avatar>
               <div className="flex items-center gap-2 flex-1 min-w-0">
-                <span className="text-xs text-foreground truncate">
+                <Link 
+                  href={`/characters/${character.id}`}
+                  className="text-xs text-foreground truncate hover:text-primary hover:underline cursor-pointer"
+                >
                   {character.fullName}
-                </span>
+                </Link>
                 <Circle className="h-2 w-2 text-green-500 fill-current flex-shrink-0" />
               </div>
             </div>
