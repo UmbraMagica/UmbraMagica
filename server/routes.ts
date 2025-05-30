@@ -1171,7 +1171,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Combine user message with spell casting result
       const spellResult = `[Seslal kouzlo ${spell.name} (${successRoll}/10) - ${isSuccess ? 'Úspěch' : 'Neúspěch'}] ${spell.effect}`;
       const combinedContent = message ? 
-        `${message.trim()} | ${spellResult}` :
+        `${message.trim()}\n${spellResult}` :
         spellResult;
       
       // Create spell cast message
