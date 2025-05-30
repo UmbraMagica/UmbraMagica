@@ -8,6 +8,8 @@ import {
   archivedMessages,
   characterRequests,
   adminActivityLog,
+  spells,
+  characterSpells,
   type User,
   type InsertUser,
   type Character,
@@ -25,6 +27,10 @@ import {
   type InsertCharacterRequest,
   type AdminActivityLog,
   type InsertAdminActivityLog,
+  type Spell,
+  type InsertSpell,
+  type CharacterSpell,
+  type InsertCharacterSpell,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, desc, lt, gte, count, isNotNull } from "drizzle-orm";
@@ -111,6 +117,18 @@ export interface IStorage {
   killCharacter(characterId: number, deathReason: string, adminId: number): Promise<Character | undefined>;
   reviveCharacter(characterId: number): Promise<Character | undefined>;
   getDeadCharacters(): Promise<Character[]>;
+  
+  // Spell operations
+  getAllSpells(): Promise<Spell[]>;
+  getSpell(id: number): Promise<Spell | undefined>;
+  createSpell(spell: InsertSpell): Promise<Spell>;
+  updateSpell(id: number, updates: Partial<InsertSpell>): Promise<Spell | undefined>;
+  deleteSpell(id: number): Promise<boolean>;
+  
+  // Character spell operations
+  getCharacterSpells(characterId: number): Promise<(CharacterSpell & { spell: Spell })[]>;
+  addSpellToCharacter(characterId: number, spellId: number): Promise<CharacterSpell>;
+  removeSpellFromCharacter(characterId: number, spellId: number): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -790,6 +808,79 @@ export class DatabaseStorage implements IStorage {
         isNotNull(characters.deathDate)
       ))
       .orderBy(desc(characters.deathDate), desc(characters.createdAt));
+  }
+
+  // Spell operations
+  async getAllSpells(): Promise<Spell[]> {
+    return db
+      .select()
+      .from(spells)
+      .orderBy(spells.category, spells.name);
+  }
+
+  async getSpell(id: number): Promise<Spell | undefined> {
+    const [spell] = await db.select().from(spells).where(eq(spells.id, id));
+    return spell;
+  }
+
+  async createSpell(insertSpell: InsertSpell): Promise<Spell> {
+    const [spell] = await db
+      .insert(spells)
+      .values(insertSpell)
+      .returning();
+    return spell;
+  }
+
+  async updateSpell(id: number, updates: Partial<InsertSpell>): Promise<Spell | undefined> {
+    const [spell] = await db
+      .update(spells)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(spells.id, id))
+      .returning();
+    return spell;
+  }
+
+  async deleteSpell(id: number): Promise<boolean> {
+    // First remove spell from all characters
+    await db.delete(characterSpells).where(eq(characterSpells.spellId, id));
+    
+    // Then delete the spell
+    const result = await db.delete(spells).where(eq(spells.id, id));
+    return result.rowCount > 0;
+  }
+
+  // Character spell operations
+  async getCharacterSpells(characterId: number): Promise<(CharacterSpell & { spell: Spell })[]> {
+    return db
+      .select({
+        id: characterSpells.id,
+        characterId: characterSpells.characterId,
+        spellId: characterSpells.spellId,
+        learnedAt: characterSpells.learnedAt,
+        spell: spells,
+      })
+      .from(characterSpells)
+      .innerJoin(spells, eq(characterSpells.spellId, spells.id))
+      .where(eq(characterSpells.characterId, characterId))
+      .orderBy(spells.category, spells.name);
+  }
+
+  async addSpellToCharacter(characterId: number, spellId: number): Promise<CharacterSpell> {
+    const [characterSpell] = await db
+      .insert(characterSpells)
+      .values({ characterId, spellId })
+      .returning();
+    return characterSpell;
+  }
+
+  async removeSpellFromCharacter(characterId: number, spellId: number): Promise<boolean> {
+    const result = await db
+      .delete(characterSpells)
+      .where(and(
+        eq(characterSpells.characterId, characterId),
+        eq(characterSpells.spellId, spellId)
+      ));
+    return result.rowCount > 0;
   }
 }
 

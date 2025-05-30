@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
-import { registrationSchema, loginSchema, insertCharacterSchema, insertMessageSchema, characterEditSchema, characterAdminEditSchema, characterRequestSchema, chatRooms } from "@shared/schema";
+import { registrationSchema, loginSchema, insertCharacterSchema, insertMessageSchema, characterEditSchema, characterAdminEditSchema, characterRequestSchema, chatRooms, spellSchema, insertSpellSchema, insertCharacterSpellSchema } from "@shared/schema";
 import { db } from "./db";
 import { z } from "zod";
 import session from "express-session";
@@ -1055,6 +1055,126 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error flipping coin:", error);
       res.status(500).json({ message: "Failed to flip coin" });
+    }
+  });
+
+  // Spell management endpoints
+  
+  // Get all spells (for admin)
+  app.get("/api/admin/spells", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const spells = await storage.getAllSpells();
+      res.json(spells);
+    } catch (error) {
+      console.error("Error fetching spells:", error);
+      res.status(500).json({ message: "Failed to fetch spells" });
+    }
+  });
+
+  // Create new spell (admin only)
+  app.post("/api/admin/spells", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const validatedData = spellSchema.parse(req.body);
+      const spell = await storage.createSpell(validatedData);
+      res.json(spell);
+    } catch (error) {
+      console.error("Error creating spell:", error);
+      res.status(500).json({ message: "Failed to create spell" });
+    }
+  });
+
+  // Update spell (admin only)
+  app.put("/api/admin/spells/:id", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const spellId = parseInt(req.params.id);
+      const validatedData = spellSchema.parse(req.body);
+      const spell = await storage.updateSpell(spellId, validatedData);
+      
+      if (!spell) {
+        return res.status(404).json({ message: "Spell not found" });
+      }
+      
+      res.json(spell);
+    } catch (error) {
+      console.error("Error updating spell:", error);
+      res.status(500).json({ message: "Failed to update spell" });
+    }
+  });
+
+  // Delete spell (admin only)
+  app.delete("/api/admin/spells/:id", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const spellId = parseInt(req.params.id);
+      const success = await storage.deleteSpell(spellId);
+      
+      if (!success) {
+        return res.status(404).json({ message: "Spell not found" });
+      }
+      
+      res.json({ message: "Spell deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting spell:", error);
+      res.status(500).json({ message: "Failed to delete spell" });
+    }
+  });
+
+  // Get character's spells
+  app.get("/api/characters/:id/spells", requireAuth, async (req, res) => {
+    try {
+      const characterId = parseInt(req.params.id);
+      const spells = await storage.getCharacterSpells(characterId);
+      res.json(spells);
+    } catch (error) {
+      console.error("Error fetching character spells:", error);
+      res.status(500).json({ message: "Failed to fetch character spells" });
+    }
+  });
+
+  // Cast spell in chat
+  app.post("/api/game/cast-spell", requireAuth, async (req, res) => {
+    try {
+      const { roomId, characterId, spellId } = req.body;
+      
+      if (!roomId || !characterId || !spellId) {
+        return res.status(400).json({ message: "roomId, characterId and spellId are required" });
+      }
+
+      // Check if character has the spell
+      const characterSpells = await storage.getCharacterSpells(parseInt(characterId));
+      const hasSpell = characterSpells.some(cs => cs.spell.id === parseInt(spellId));
+      
+      if (!hasSpell) {
+        return res.status(403).json({ message: "Character doesn't know this spell" });
+      }
+
+      // Get spell details
+      const spell = await storage.getSpell(parseInt(spellId));
+      if (!spell) {
+        return res.status(404).json({ message: "Spell not found" });
+      }
+
+      // Roll for success (1d10)
+      const successRoll = Math.floor(Math.random() * 10) + 1;
+      const isSuccess = successRoll >= 5; // 60% success rate
+      
+      // Create spell cast message
+      const spellMessage = await storage.createMessage({
+        roomId: parseInt(roomId),
+        characterId: parseInt(characterId),
+        content: `seslal kouzlo ${spell.name} (${successRoll}/10) - ${isSuccess ? 'Úspěch' : 'Neúspěch'}: ${spell.effect}`,
+        messageType: 'spell_cast',
+      });
+
+      res.json({ 
+        spell: spell,
+        successRoll: successRoll,
+        isSuccess: isSuccess,
+        message: spellMessage,
+        success: true 
+      });
+    } catch (error) {
+      console.error("Error casting spell:", error);
+      res.status(500).json({ message: "Failed to cast spell" });
     }
   });
 
