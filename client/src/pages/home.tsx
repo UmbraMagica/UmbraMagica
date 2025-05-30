@@ -58,6 +58,8 @@ export default function Home() {
   const characterAge = primaryCharacter ? 
     calculateGameAge(primaryCharacter.birthDate) : 0;
 
+
+
   // Game date calculation - year 1926, current day/month
   const currentDate = new Date();
   const gameDateString = `${currentDate.getDate()}. ${currentDate.toLocaleDateString('cs-CZ', { month: 'long' })} 1926`;
