@@ -16,11 +16,15 @@ import {
   Save,
   Calendar,
   UserCircle,
-  Lock
+  Lock,
+  Upload,
+  X
 } from "lucide-react";
 import { characterEditSchema, characterAdminEditSchema } from "@shared/schema";
 import { z } from "zod";
 import { useLocation } from "wouter";
+import { CharacterAvatar } from "@/components/CharacterAvatar";
+import { useState, useRef } from "react";
 
 type UserEditForm = z.infer<typeof characterEditSchema>;
 type AdminEditForm = z.infer<typeof characterAdminEditSchema>;
@@ -30,8 +34,10 @@ export default function CharacterEdit() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const queryClient = useQueryClient();
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const primaryCharacter = user?.characters?.[0];
+  const primaryCharacter = user?.characters?.[0] as any;
   const isAdmin = user?.role === 'admin';
 
   // Regular user form (only school and description)
@@ -71,7 +77,8 @@ export default function CharacterEdit() {
         description: "Postava byla úspěšně aktualizována",
       });
       queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
-      setLocation("/");
+      queryClient.invalidateQueries({ queryKey: ["/api/characters"] });
+      setLocation(`/characters/${primaryCharacter?.id}`);
     },
     onError: (error: any) => {
       toast({
@@ -82,8 +89,125 @@ export default function CharacterEdit() {
     },
   });
 
+  const uploadAvatarMutation = useMutation({
+    mutationFn: async (file: File) => {
+      if (!primaryCharacter?.id) {
+        throw new Error("Žádná postava k nahrání avataru");
+      }
+      
+      const formData = new FormData();
+      formData.append('avatar', file);
+      
+      const response = await fetch(`/api/characters/${primaryCharacter.id}/avatar`, {
+        method: 'POST',
+        body: formData,
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Nepodařilo se nahrát avatar');
+      }
+      
+      return response.json();
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "Úspěch",
+        description: "Avatar byl úspěšně nahrán",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/characters"] });
+      setAvatarPreview(null);
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Chyba",
+        description: error.message || "Nepodařilo se nahrát avatar",
+        variant: "destructive",
+      });
+      setAvatarPreview(null);
+    },
+  });
+
+  const removeAvatarMutation = useMutation({
+    mutationFn: async () => {
+      if (!primaryCharacter?.id) {
+        throw new Error("Žádná postava k odstranění avataru");
+      }
+      
+      const response = await fetch(`/api/characters/${primaryCharacter.id}/avatar`, {
+        method: 'DELETE',
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Nepodařilo se odstranit avatar');
+      }
+      
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Úspěch",
+        description: "Avatar byl úspěšně odstraněn",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/characters"] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Chyba",
+        description: error.message || "Nepodařilo se odstranit avatar",
+        variant: "destructive",
+      });
+    },
+  });
+
   const onSubmit = (data: UserEditForm | AdminEditForm) => {
     updateCharacterMutation.mutate(data);
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: "Chyba",
+        description: "Prosím vyberte obrázek",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate file size (5MB limit)
+    if (file.size > 5 * 1024 * 1024) {
+      toast({
+        title: "Chyba", 
+        description: "Obrázek je příliš velký. Maximální velikost je 5MB.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Create preview
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setAvatarPreview(e.target?.result as string);
+    };
+    reader.readAsDataURL(file);
+
+    // Upload the file
+    uploadAvatarMutation.mutate(file);
+  };
+
+  const handleUploadClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleRemoveAvatar = () => {
+    removeAvatarMutation.mutate();
   };
 
   // Get current values for preview
@@ -154,15 +278,74 @@ export default function CharacterEdit() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-center">
-                <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full mx-auto mb-4 flex items-center justify-center text-white font-bold text-2xl">
-                  {form.watch("firstName")?.[0] || "?"}{form.watch("lastName")?.[0] || "?"}
+                <div className="mb-4">
+                  {avatarPreview ? (
+                    <img
+                      src={avatarPreview}
+                      alt="Avatar náhled"
+                      className="w-24 h-24 rounded-full mx-auto object-cover border-2 border-muted"
+                    />
+                  ) : primaryCharacter?.avatar ? (
+                    <img
+                      src={primaryCharacter.avatar}
+                      alt="Současný avatar"
+                      className="w-24 h-24 rounded-full mx-auto object-cover border-2 border-muted"
+                    />
+                  ) : (
+                    <CharacterAvatar 
+                      character={{
+                        firstName: getCurrentValues().firstName,
+                        lastName: getCurrentValues().lastName,
+                        avatar: null
+                      }} 
+                      size="lg" 
+                      className="w-24 h-24 mx-auto"
+                    />
+                  )}
+                </div>
+                
+                {/* Avatar management */}
+                <div className="mb-4 space-y-2">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="hidden"
+                  />
+                  
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={handleUploadClick}
+                    disabled={uploadAvatarMutation.isPending}
+                    className="w-full"
+                  >
+                    <Upload className="w-4 h-4 mr-2" />
+                    {uploadAvatarMutation.isPending ? "Nahrávám..." : "Nahrát avatar"}
+                  </Button>
+                  
+                  {(primaryCharacter?.avatar || avatarPreview) && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={handleRemoveAvatar}
+                      disabled={removeAvatarMutation.isPending}
+                      className="w-full text-destructive hover:text-destructive"
+                    >
+                      <X className="w-4 h-4 mr-2" />
+                      {removeAvatarMutation.isPending ? "Odstraňuji..." : "Odstranit avatar"}
+                    </Button>
+                  )}
                 </div>
                 <h3 className="font-semibold text-lg text-foreground mb-2">
-                  {form.watch("firstName") || "Jméno"} {form.watch("middleName") && `${form.watch("middleName")} `}{form.watch("lastName") || "Příjmení"}
+                  {getCurrentValues().firstName || "Jméno"} {getCurrentValues().middleName && `${getCurrentValues().middleName} `}{getCurrentValues().lastName || "Příjmení"}
                 </h3>
                 <p className="text-muted-foreground text-sm mb-3">
-                  {form.watch("birthDate") ? 
-                    `${1926 - new Date(form.watch("birthDate")).getFullYear()} let` : 
+                  {getCurrentValues().birthDate ? 
+                    `${calculateGameAge(getCurrentValues().birthDate)} let` : 
                     "Věk nezadán"
                   }
                 </p>
