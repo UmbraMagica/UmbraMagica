@@ -6,6 +6,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { ArrowLeft, Users, MapPin, ChevronDown, ChevronRight } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
 
 interface ChatCategory {
   id: number;
@@ -152,6 +153,8 @@ function CategoryCard({ category }: { category: ChatCategory }) {
 }
 
 export default function ChatCategories() {
+  const { user } = useAuth();
+  
   const { data: categories, isLoading, error } = useQuery({
     queryKey: ["/api/chat/categories"],
     queryFn: async () => {
@@ -174,8 +177,10 @@ export default function ChatCategories() {
     },
   });
 
-  // Get rooms without categories (legacy rooms)
-  const uncategorizedRooms = allRooms?.filter(room => !room.categoryId) || [];
+  // Get rooms without categories (legacy rooms) - only show to admins
+  const uncategorizedRooms = (user?.role === 'admin') 
+    ? (allRooms?.filter(room => !room.categoryId) || [])
+    : [];
 
   if (isLoading) {
     return (
@@ -247,7 +252,7 @@ export default function ChatCategories() {
             <CardContent>
               <div className="grid gap-2">
                 {uncategorizedRooms.map((room) => (
-                  <Link key={room.id} href={`/chat/${room.id}`}>
+                  <Link key={room.id} href={`/chat/room/${room.id}`}>
                     <Button 
                       variant="outline" 
                       className="w-full justify-start h-auto p-3"
