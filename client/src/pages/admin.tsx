@@ -52,6 +52,10 @@ export default function Admin() {
   const [deathReason, setDeathReason] = useState("");
   const [showConfirmKill, setShowConfirmKill] = useState(false);
   const [isCemeteryCollapsed, setIsCemeteryCollapsed] = useState(false);
+  const [banUserData, setBanUserData] = useState<{ id: number; username: string } | null>(null);
+  const [resetPasswordData, setResetPasswordData] = useState<{ id: number; username: string } | null>(null);
+  const [showConfirmBan, setShowConfirmBan] = useState(false);
+  const [banReason, setBanReason] = useState("");
 
   const { data: users = [] } = useQuery<AdminUser[]>({
     queryKey: ["/api/users"],
@@ -209,6 +213,53 @@ export default function Admin() {
     },
   });
 
+  const banUserMutation = useMutation({
+    mutationFn: async ({ userId, banReason }: { userId: number; banReason: string }) => {
+      const response = await apiRequest("POST", `/api/admin/users/${userId}/ban`, { banReason });
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Úspěch",
+        description: "Uživatel byl zabanován",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/users"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/activity-log"] });
+      setBanUserData(null);
+      setBanReason("");
+      setShowConfirmBan(false);
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Chyba",
+        description: error.message || "Nepodařilo se zabanovat uživatele",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const resetPasswordMutation = useMutation({
+    mutationFn: async (userId: number) => {
+      const response = await apiRequest("POST", `/api/admin/users/${userId}/reset-password`);
+      return response.json();
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "Úspěch",
+        description: `Heslo bylo resetováno na: ${data.newPassword}`,
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/activity-log"] });
+      setResetPasswordData(null);
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Chyba",
+        description: error.message || "Nepodařilo se resetovat heslo",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleKillCharacter = (characterId: number, characterName: string) => {
     setKillCharacterData({ id: characterId, name: characterName });
     setDeathReason("");
@@ -218,6 +269,39 @@ export default function Admin() {
   const handleResurrectCharacter = (characterId: number, characterName: string) => {
     if (confirm(`Opravdu chcete oživit postavu ${characterName}? Tato akce odstraní datum smrti a postava se znovu stane aktivní.`)) {
       resurrectCharacterMutation.mutate(characterId);
+    }
+  };
+
+  const handleBanUser = (userId: number, username: string) => {
+    setBanUserData({ id: userId, username });
+    setBanReason("");
+    setShowConfirmBan(false);
+  };
+
+  const confirmBanUser = () => {
+    if (!banUserData || !banReason.trim()) {
+      toast({
+        title: "Chyba",
+        description: "Důvod zákazu je povinný",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!showConfirmBan) {
+      setShowConfirmBan(true);
+      return;
+    }
+
+    banUserMutation.mutate({
+      userId: banUserData.id,
+      banReason: banReason.trim()
+    });
+  };
+
+  const handleResetPassword = (userId: number, username: string) => {
+    if (confirm(`Opravdu chcete resetovat heslo pro uživatele ${username}? Bude vygenerováno nové dočasné heslo.`)) {
+      resetPasswordMutation.mutate(userId);
     }
   };
 
@@ -462,8 +546,16 @@ export default function Admin() {
                 </form>
               </div>
 
-              <div className="space-y-3">
-                {users.map((user) => (
+              <div className="space-y-3 max-h-96 overflow-y-auto">
+                {users
+                  .sort((a, b) => {
+                    // First sort by role (admin first)
+                    if (a.role === 'admin' && b.role !== 'admin') return -1;
+                    if (a.role !== 'admin' && b.role === 'admin') return 1;
+                    // Then sort alphabetically by username
+                    return a.username.localeCompare(b.username, 'cs');
+                  })
+                  .map((user) => (
                   <div key={user.id} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
                     <div className="flex items-center space-x-3">
                       <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
@@ -490,15 +582,40 @@ export default function Admin() {
                       }>
                         {user.role.toUpperCase()}
                       </Badge>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => toggleUserRole(user.id, user.role)}
-                        disabled={updateRoleMutation.isPending}
-                        className="text-accent hover:text-secondary"
-                      >
-                        <Edit className="h-4 w-4" />
-                      </Button>
+                      <div className="flex gap-1">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => toggleUserRole(user.id, user.role)}
+                          disabled={updateRoleMutation.isPending}
+                          className="text-accent hover:text-secondary"
+                          title="Změnit roli"
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleResetPassword(user.id, user.username)}
+                          disabled={resetPasswordMutation.isPending}
+                          className="text-blue-400 hover:text-blue-300"
+                          title="Resetovat heslo"
+                        >
+                          <ArrowUp className="h-4 w-4" />
+                        </Button>
+                        {user.role !== "admin" && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleBanUser(user.id, user.username)}
+                            disabled={banUserMutation.isPending}
+                            className="text-red-400 hover:text-red-300"
+                            title="Zabanovat uživatele"
+                          >
+                            <UserPlus className="h-4 w-4" />
+                          </Button>
+                        )}
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -680,9 +797,13 @@ export default function Admin() {
                 </h2>
               </div>
 
-              <div className="space-y-4">
-                {allCharacters.filter((char: any) => !char.deathDate).length > 0 ? (
-                  allCharacters.filter((char: any) => !char.deathDate).map((character: any) => (
+              <div className="space-y-4 max-h-96 overflow-y-auto">
+                {allCharacters.filter((char: any) => !char.deathDate).sort((a: any, b: any) => 
+                  `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`, 'cs')
+                ).length > 0 ? (
+                  allCharacters.filter((char: any) => !char.deathDate).sort((a: any, b: any) => 
+                    `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`, 'cs')
+                  ).map((character: any) => (
                     <div key={character.id} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
                       <div className="flex items-center space-x-3">
                         <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-blue-600 rounded-full flex items-center justify-center text-white font-semibold">
@@ -697,18 +818,29 @@ export default function Admin() {
                           </p>
                         </div>
                       </div>
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => setKillCharacterData({
-                          id: character.id,
-                          name: `${character.firstName} ${character.lastName}`
-                        })}
-                        className="bg-red-600 hover:bg-red-700"
-                      >
-                        <Skull className="h-4 w-4 mr-1" />
-                        Označit jako zemřelou
-                      </Button>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setLocation(`/characters/${character.id}`)}
+                          className="flex items-center gap-2"
+                        >
+                          <Edit className="h-4 w-4" />
+                          Upravit
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => setKillCharacterData({
+                            id: character.id,
+                            name: `${character.firstName} ${character.lastName}`
+                          })}
+                          className="bg-red-600 hover:bg-red-700"
+                        >
+                          <Skull className="h-4 w-4 mr-1" />
+                          Označit jako zemřelou
+                        </Button>
+                      </div>
                     </div>
                   ))
                 ) : (
