@@ -96,10 +96,22 @@ export default function Home() {
                   <User className="mr-2 h-4 w-4" />
                   Moje postava
                 </Button>
+                {user?.role === 'admin' && (
+                  <Button variant="ghost" className="text-amber-400 hover:text-amber-300" onClick={() => window.location.href = '/admin'}>
+                    <Crown className="mr-2 h-4 w-4" />
+                    Administrace
+                  </Button>
+                )}
               </div>
             </div>
             <div className="flex items-center space-x-4">
               <div className="text-sm text-muted-foreground">{user?.username}</div>
+              {user?.role === 'admin' && (
+                <div className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-amber-500/20 text-amber-400">
+                  <Crown className="h-3 w-3 mr-1" />
+                  Admin
+                </div>
+              )}
               <Button variant="ghost" size="sm" className="bg-muted hover:bg-primary text-foreground hover:text-primary-foreground">
                 <User className="h-4 w-4" />
               </Button>
