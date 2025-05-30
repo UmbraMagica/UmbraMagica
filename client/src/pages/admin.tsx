@@ -52,6 +52,8 @@ export default function Admin() {
   const [deathReason, setDeathReason] = useState("");
   const [showConfirmKill, setShowConfirmKill] = useState(false);
   const [isCemeteryCollapsed, setIsCemeteryCollapsed] = useState(false);
+  const [isLiveCharactersCollapsed, setIsLiveCharactersCollapsed] = useState(false);
+  const [isAdminActivityCollapsed, setIsAdminActivityCollapsed] = useState(false);
   const [banUserData, setBanUserData] = useState<{ id: number; username: string } | null>(null);
   const [resetPasswordData, setResetPasswordData] = useState<{ id: number; username: string } | null>(null);
   const [showConfirmBan, setShowConfirmBan] = useState(false);
@@ -791,12 +793,19 @@ export default function Admin() {
           <Card className="bg-card border-border">
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-foreground flex items-center">
+                <h2 className="text-xl font-semibold text-foreground flex items-center cursor-pointer" 
+                    onClick={() => setIsLiveCharactersCollapsed(!isLiveCharactersCollapsed)}>
                   <Users className="text-green-400 mr-3 h-5 w-5" />
                   Správa živých postav
+                  {isLiveCharactersCollapsed ? (
+                    <ChevronDown className="ml-2 h-4 w-4" />
+                  ) : (
+                    <ChevronUp className="ml-2 h-4 w-4" />
+                  )}
                 </h2>
               </div>
 
+              {!isLiveCharactersCollapsed && (
               <div className="space-y-4 max-h-96 overflow-y-auto">
                 {allCharacters.filter((char: any) => !char.deathDate).sort((a: any, b: any) => 
                   `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`, 'cs')
@@ -850,6 +859,7 @@ export default function Admin() {
                   </div>
                 )}
               </div>
+              )}
             </CardContent>
           </Card>
 
@@ -922,11 +932,19 @@ export default function Admin() {
           <Card className="bg-card border-border">
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-foreground flex items-center">
+                <h2 className="text-xl font-semibold text-foreground flex items-center cursor-pointer" 
+                    onClick={() => setIsAdminActivityCollapsed(!isAdminActivityCollapsed)}>
                   <Book className="text-accent mr-3 h-5 w-5" />
                   Administrační aktivita
+                  {isAdminActivityCollapsed ? (
+                    <ChevronDown className="ml-2 h-4 w-4" />
+                  ) : (
+                    <ChevronUp className="ml-2 h-4 w-4" />
+                  )}
                 </h2>
               </div>
+
+              {!isAdminActivityCollapsed && (
 
               <div className="space-y-3">
                 {adminActivityLog.length > 0 ? (
