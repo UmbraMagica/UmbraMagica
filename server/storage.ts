@@ -10,6 +10,8 @@ import {
   adminActivityLog,
   spells,
   characterSpells,
+  characterInventory,
+  characterJournal,
   type User,
   type InsertUser,
   type Character,
@@ -31,6 +33,10 @@ import {
   type InsertSpell,
   type CharacterSpell,
   type InsertCharacterSpell,
+  type InventoryItem,
+  type InsertInventoryItem,
+  type JournalEntry,
+  type InsertJournalEntry,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, desc, lt, gte, count, isNotNull } from "drizzle-orm";

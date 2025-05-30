@@ -255,7 +255,52 @@ export const characterSpellsRelations = relations(characterSpells, ({ one }) => 
   }),
 }));
 
+// Character Inventory table
+export const characterInventory = pgTable("character_inventory", {
+  id: serial("id").primaryKey(),
+  characterId: serial("character_id").references(() => characters.id).notNull(),
+  itemName: varchar("item_name", { length: 100 }).notNull(),
+  itemDescription: text("item_description"),
+  quantity: integer("quantity").default(1).notNull(),
+  category: varchar("category", { length: 50 }).notNull(), // "Wand", "Potion", "Book", "Clothes", "Other"
+  rarity: varchar("rarity", { length: 20 }).default("Common").notNull(), // "Common", "Uncommon", "Rare", "Epic", "Legendary"
+  value: integer("value").default(0), // Value in galleons/sickles/knuts
+  isEquipped: boolean("is_equipped").default(false).notNull(),
+  notes: text("notes"), // Additional notes about the item
+  acquiredAt: timestamp("acquired_at").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
 
+// Character Journal/Diary table
+export const characterJournal = pgTable("character_journal", {
+  id: serial("id").primaryKey(),
+  characterId: serial("character_id").references(() => characters.id).notNull(),
+  title: varchar("title", { length: 200 }).notNull(),
+  content: text("content").notNull(),
+  entryDate: date("entry_date").notNull(), // Game date (1926)
+  isPrivate: boolean("is_private").default(true).notNull(), // Whether only character owner can see it
+  mood: varchar("mood", { length: 20 }), // "Happy", "Sad", "Excited", "Worried", etc.
+  location: varchar("location", { length: 100 }), // Where the entry was written
+  tags: text("tags").array(), // Tags for categorizing entries
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Inventory relations
+export const characterInventoryRelations = relations(characterInventory, ({ one }) => ({
+  character: one(characters, {
+    fields: [characterInventory.characterId],
+    references: [characters.id],
+  }),
+}));
+
+// Journal relations
+export const characterJournalRelations = relations(characterJournal, ({ one }) => ({
+  character: one(characters, {
+    fields: [characterJournal.characterId],
+    references: [characters.id],
+  }),
+}));
 
 // Schemas for validation
 export const insertUserSchema = createInsertSchema(users).pick({
@@ -389,6 +434,52 @@ export const spellSchema = z.object({
   targetType: z.enum(["self", "other", "object"]).default("self"),
 });
 
+export const insertInventoryItemSchema = createInsertSchema(characterInventory).pick({
+  characterId: true,
+  itemName: true,
+  itemDescription: true,
+  quantity: true,
+  category: true,
+  rarity: true,
+  value: true,
+  isEquipped: true,
+  notes: true,
+});
+
+export const inventoryItemSchema = z.object({
+  itemName: z.string().min(1, "Název předmětu je povinný").max(100),
+  itemDescription: z.string().optional(),
+  quantity: z.number().min(1, "Množství musí být alespoň 1").default(1),
+  category: z.enum(["Wand", "Potion", "Book", "Clothes", "Jewelry", "Tool", "Other"]),
+  rarity: z.enum(["Common", "Uncommon", "Rare", "Epic", "Legendary"]).default("Common"),
+  value: z.number().min(0, "Hodnota nemůže být záporná").default(0),
+  isEquipped: z.boolean().default(false),
+  notes: z.string().optional(),
+});
+
+export const insertJournalEntrySchema = createInsertSchema(characterJournal).pick({
+  characterId: true,
+  title: true,
+  content: true,
+  entryDate: true,
+  isPrivate: true,
+  mood: true,
+  location: true,
+  tags: true,
+});
+
+export const journalEntrySchema = z.object({
+  title: z.string().min(1, "Název záznamu je povinný").max(200),
+  content: z.string().min(1, "Obsah záznamu je povinný"),
+  entryDate: z.string().refine(date => !isNaN(Date.parse(date)), {
+    message: "Neplatný formát data"
+  }),
+  isPrivate: z.boolean().default(true),
+  mood: z.enum(["Happy", "Sad", "Excited", "Worried", "Angry", "Peaceful", "Confused", "Determined"]).optional(),
+  location: z.string().max(100).optional(),
+  tags: z.array(z.string()).default([]),
+});
+
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 export type Character = typeof characters.$inferSelect;
@@ -410,3 +501,7 @@ export type Spell = typeof spells.$inferSelect;
 export type InsertSpell = typeof spells.$inferInsert;
 export type CharacterSpell = typeof characterSpells.$inferSelect;
 export type InsertCharacterSpell = typeof characterSpells.$inferInsert;
+export type InventoryItem = typeof characterInventory.$inferSelect;
+export type InsertInventoryItem = typeof characterInventory.$inferInsert;
+export type JournalEntry = typeof characterJournal.$inferSelect;
+export type InsertJournalEntry = typeof characterJournal.$inferInsert;
