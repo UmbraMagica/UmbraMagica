@@ -41,6 +41,18 @@ export default function Home() {
     staleTime: 30000, // 30 seconds
   });
 
+  // Fetch user's characters for switching
+  const { data: userCharacters = [] } = useQuery({
+    queryKey: ["/api/characters"],
+    enabled: !!user,
+  });
+
+  // Fetch main character
+  const { data: mainCharacter } = useQuery({
+    queryKey: ["/api/characters/main"],
+    enabled: !!user,
+  });
+
   const handleLogout = async () => {
     try {
       await logout();
@@ -57,6 +69,28 @@ export default function Home() {
       });
     }
   };
+
+  // Set main character mutation
+  const setMainCharacterMutation = useMutation({
+    mutationFn: async (characterId: number) => {
+      const response = await apiRequest("POST", `/api/characters/${characterId}/set-main`);
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Aktivní postava změněna",
+        description: "Vaše aktivní postava byla úspěšně změněna.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/characters/main"] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Chyba",
+        description: error.message || "Nepodařilo se změnit aktivní postavu",
+        variant: "destructive",
+      });
+    },
+  });
 
   const primaryCharacter = user?.characters?.[0];
   const characterAge = primaryCharacter ? 
@@ -268,6 +302,67 @@ export default function Home() {
                 )}
               </CardContent>
             </Card>
+
+            {/* Character Switcher */}
+            {userCharacters.length > 1 && (
+              <Card className="bg-card border-border">
+                <CardContent className="p-6">
+                  <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center">
+                    <Users className="text-accent mr-3 h-5 w-5" />
+                    Přepnout postavu
+                  </h3>
+                  <div className="space-y-2">
+                    {userCharacters.map((character: any) => (
+                      <div 
+                        key={character.id} 
+                        className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-colors ${
+                          mainCharacter?.id === character.id 
+                            ? 'bg-accent/20 border border-accent/30' 
+                            : 'bg-muted/30 hover:bg-muted/50'
+                        }`}
+                        onClick={() => {
+                          if (mainCharacter?.id !== character.id) {
+                            setMainCharacterMutation.mutate(character.id);
+                          }
+                        }}
+                      >
+                        <div className="flex items-center space-x-3">
+                          <div className="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center">
+                            <span className="text-primary-foreground text-sm font-medium">
+                              {character.firstName[0]}{character.lastName[0]}
+                            </span>
+                          </div>
+                          <div>
+                            <p className="font-medium text-foreground text-sm">
+                              {character.firstName} {character.lastName}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              {calculateGameAge(character.birthDate)} let
+                            </p>
+                          </div>
+                        </div>
+                        {mainCharacter?.id === character.id && (
+                          <Badge className="bg-accent/20 text-accent text-xs">
+                            Aktivní
+                          </Badge>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-4 pt-4 border-t border-border">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full"
+                      onClick={() => setLocation('/settings')}
+                    >
+                      <Settings className="h-4 w-4 mr-2" />
+                      Spravovat postavy
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Online Characters */}
             <Card className="bg-card border-border">
