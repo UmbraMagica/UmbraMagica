@@ -17,7 +17,11 @@ import {
   Users, 
   Circle,
   Settings,
-  Wand2
+  Wand2,
+  BookOpen,
+  ScrollText,
+  Globe,
+  Newspaper
 } from "lucide-react";
 import { GameDate } from "@/components/GameDate";
 import { calculateGameAge } from "@/lib/gameDate";
