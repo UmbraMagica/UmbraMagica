@@ -51,8 +51,7 @@ export default function CharacterEditFixed() {
   const urlParams = new URLSearchParams(window.location.search);
   const characterIdFromUrl = urlParams.get('characterId');
   
-  // Debug: log what we get from URL
-  console.log('CHARACTER EDIT LOADED - URL characterId:', characterIdFromUrl, 'Full URL:', window.location.href);
+
 
   const isAdmin = user?.role === 'admin';
 
@@ -102,8 +101,7 @@ export default function CharacterEditFixed() {
     primaryCharacter = primaryCharacter[0];
   }
   
-  // Debug: log what character we end up with
-  console.log('Final primaryCharacter:', primaryCharacter, 'From URL ID:', characterIdFromUrl, 'specificCharacter:', specificCharacter, 'mainCharacter:', mainCharacter);
+
 
   const updateCharacterMutation = useMutation({
     mutationFn: async (data: UserEditForm | AdminEditForm) => {
