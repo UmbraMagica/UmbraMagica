@@ -69,7 +69,7 @@ export default function UserSettings() {
   });
 
   // Fetch user's characters (filter only alive characters)
-  const { data: allUserCharacters = [] } = useQuery({
+  const { data: allUserCharacters = [] } = useQuery<any[]>({
     queryKey: ["/api/characters"],
     enabled: !!user,
   });
@@ -78,7 +78,7 @@ export default function UserSettings() {
   const userCharacters = allUserCharacters.filter((char: any) => !char.deathDate);
 
   // Fetch main character
-  const { data: mainCharacter } = useQuery({
+  const { data: mainCharacter } = useQuery<any>({
     queryKey: ["/api/characters/main"],
     enabled: !!user,
   });
@@ -236,7 +236,7 @@ export default function UserSettings() {
                             <h4 className="font-medium text-foreground">
                               {character.firstName} {character.middleName} {character.lastName}
                             </h4>
-                            {userCharacters.length > 1 && mainCharacter?.id === character.id && (
+                            {userCharacters.length > 1 && mainCharacter?.id === (character as any)?.id && (
                               <div className="flex items-center space-x-1">
                                 <span className="text-yellow-500">👑</span>
                                 <Badge className="bg-accent/20 text-accent">Primární</Badge>

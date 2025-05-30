@@ -66,18 +66,18 @@ export default function Admin() {
     staleTime: 30000,
   });
 
-  const { data: characterRequests = [] } = useQuery({
+  const { data: characterRequests = [] } = useQuery<any[]>({
     queryKey: ["/api/admin/character-requests"],
     staleTime: 30000,
   });
 
-  const { data: adminActivityLog = [] } = useQuery({
+  const { data: adminActivityLog = [] } = useQuery<any[]>({
     queryKey: ["/api/admin/activity-log"],
     staleTime: 30000,
   });
 
   // Fetch all characters for cemetery management
-  const { data: allCharacters = [] } = useQuery({
+  const { data: allCharacters = [] } = useQuery<any[]>({
     queryKey: ["/api/characters/all"],
     staleTime: 30000,
   });

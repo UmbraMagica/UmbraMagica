@@ -1580,6 +1580,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Verify the original character belongs to the user
+      if (!message.characterId) {
+        return res.status(400).json({ message: "Message has no character assigned" });
+      }
+      
       const originalCharacter = await storage.getCharacter(message.characterId);
       if (!originalCharacter || originalCharacter.userId !== req.session.userId!) {
         return res.status(403).json({ message: "You can only reassign your own messages" });
