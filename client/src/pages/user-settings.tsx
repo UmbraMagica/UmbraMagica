@@ -75,7 +75,7 @@ export default function UserSettings() {
   });
 
   // Filter only alive characters (not in cemetery)
-  const userCharacters = allUserCharacters.filter((char: any) => char.isActive);
+  const userCharacters = allUserCharacters.filter((char: any) => !char.deathDate);
 
   // Fetch main character
   const { data: mainCharacter } = useQuery({

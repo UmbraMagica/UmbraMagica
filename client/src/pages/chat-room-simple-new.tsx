@@ -82,7 +82,7 @@ export default function ChatRoom() {
   });
 
   // Filter only alive characters (not in cemetery)
-  const userCharacters = allUserCharacters.filter((char: any) => char.isActive);
+  const userCharacters = allUserCharacters.filter((char: any) => !char.deathDate);
 
   // Fetch main character
   const { data: mainCharacter } = useQuery<any>({
@@ -91,7 +91,7 @@ export default function ChatRoom() {
   });
 
   // Current character for chat (use main character or first available alive character)
-  const currentCharacter = (mainCharacter && mainCharacter.isActive) ? mainCharacter : userCharacters[0];
+  const currentCharacter = (mainCharacter && !mainCharacter.deathDate) ? mainCharacter : userCharacters[0];
   
   // Check if user needs a character (non-admin users need a character)
   const needsCharacter = user?.role !== 'admin';
