@@ -1283,7 +1283,7 @@ export class DatabaseStorage implements IStorage {
             quantity: 1,
             category: "Wand",
             rarity: "Epic",
-            value: 700, // 7 galleons for a wand
+            value: 7, // 7 galleons for a wand
             isEquipped: true,
             notes: "Migrace existující hůlky do inventáře"
           });

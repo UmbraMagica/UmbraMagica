@@ -1254,7 +1254,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         quantity: 1,
         category: "Wand",
         rarity: "Epic",
-        value: 700, // 7 galleons for a wand
+        value: 7, // 7 galleons for a wand
         isEquipped: true,
         notes: "Hlavní hůlka postavy pro sesílání kouzel"
       });
@@ -1309,7 +1309,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         quantity: 1,
         category: "Wand",
         rarity: "Epic",
-        value: 700, // 7 galleons for a wand
+        value: 7, // 7 galleons for a wand
         isEquipped: true,
         notes: "Vlastní hůlka vybraná u Ollivandera"
       });
