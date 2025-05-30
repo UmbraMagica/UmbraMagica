@@ -107,7 +107,7 @@ export default function CharactersList() {
                 <div className="space-y-2">
                   <div className="flex items-center gap-2 text-sm">
                     <Calendar className="h-4 w-4 text-muted-foreground" />
-                    <span>{calculateAge(character.birthDate)} let</span>
+                    <span>{calculateGameAge(character.birthDate)} let</span>
                     <span className="text-muted-foreground">
                       (nar. {format(new Date(character.birthDate), 'd. MMMM yyyy', { locale: cs })})
                     </span>

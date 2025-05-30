@@ -131,7 +131,7 @@ export default function CharacterEdit() {
                 </h3>
                 <p className="text-muted-foreground text-sm mb-3">
                   {form.watch("birthDate") ? 
-                    `${new Date().getFullYear() - new Date(form.watch("birthDate")).getFullYear()} let` : 
+                    `${1926 - new Date(form.watch("birthDate")).getFullYear()} let` : 
                     "Věk nezadán"
                   }
                 </p>
