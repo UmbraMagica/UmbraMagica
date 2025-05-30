@@ -263,6 +263,7 @@ export default function ChatRoom() {
         setMessageInput("");
       }
     } catch (error: any) {
+      console.log('Cast spell error:', error); // Debug log
       let errorMessage = "Nepodařilo se odeslat zprávu.";
       
       // Check for specific wand-related error
@@ -273,6 +274,8 @@ export default function ChatRoom() {
       } else if (error.message) {
         errorMessage = error.message;
       }
+      
+      console.log('Final error message:', errorMessage); // Debug log
       
       toast({
         title: "Chyba",
