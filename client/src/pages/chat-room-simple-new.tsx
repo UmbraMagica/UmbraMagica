@@ -321,6 +321,9 @@ export default function ChatRoom() {
         }
       };
       setLocalMessages(prev => [systemMessage, ...prev]);
+      
+      // Clear the selected spell to reset the state
+      setSelectedSpell(null);
     }
   };
 
