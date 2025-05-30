@@ -1525,6 +1525,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Change character for a message (within 5 minutes)
+  app.patch("/api/chat/messages/:id/character", requireAuth, async (req, res) => {
+    try {
+      const messageId = parseInt(req.params.id);
+      const { characterId } = req.body;
+      
+      if (!characterId) {
+        return res.status(400).json({ message: "Character ID is required" });
+      }
+      
+      // Get the message
+      const message = await storage.getMessage(messageId);
+      if (!message) {
+        return res.status(404).json({ message: "Message not found" });
+      }
+      
+      // Check if message is within 5 minutes
+      const messageTime = new Date(message.createdAt);
+      const now = new Date();
+      const timeDiffMinutes = (now.getTime() - messageTime.getTime()) / (1000 * 60);
+      
+      if (timeDiffMinutes > 5) {
+        return res.status(403).json({ message: "Message can only be reassigned within 5 minutes of posting" });
+      }
+      
+      // Verify the original character belongs to the user
+      const originalCharacter = await storage.getCharacter(message.characterId);
+      if (!originalCharacter || originalCharacter.userId !== req.session.userId!) {
+        return res.status(403).json({ message: "You can only reassign your own messages" });
+      }
+      
+      // Verify the new character belongs to the user
+      const newCharacter = await storage.getCharacter(characterId);
+      if (!newCharacter || newCharacter.userId !== req.session.userId!) {
+        return res.status(403).json({ message: "You can only reassign to your own characters" });
+      }
+      
+      // Update the message
+      await storage.updateMessageCharacter(messageId, characterId);
+      
+      res.json({ message: "Message character updated successfully" });
+    } catch (error) {
+      console.error("Error updating message character:", error);
+      res.status(500).json({ message: "Failed to update message character" });
+    }
+  });
+
   // Admin activity log
   app.get("/api/admin/activity-log", requireAuth, requireAdmin, async (req, res) => {
     try {

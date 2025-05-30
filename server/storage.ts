@@ -74,6 +74,7 @@ export interface IStorage {
   getMessagesByRoom(roomId: number, limit?: number, offset?: number): Promise<(Message & { character: { firstName: string; middleName?: string | null; lastName: string } })[]>;
   createMessage(message: InsertMessage): Promise<Message>;
   deleteMessage(id: number): Promise<boolean>;
+  updateMessageCharacter(messageId: number, characterId: number): Promise<void>;
   
   // Archive operations
   archiveMessages(roomId: number, beforeDate?: Date): Promise<number>;
@@ -344,6 +345,13 @@ export class DatabaseStorage implements IStorage {
     } catch {
       return false;
     }
+  }
+
+  async updateMessageCharacter(messageId: number, characterId: number): Promise<void> {
+    await db
+      .update(messages)
+      .set({ characterId })
+      .where(eq(messages.id, messageId));
   }
 
   // Archive operations (keeping existing)

@@ -574,6 +574,52 @@ export default function ChatRoom() {
                       minute: '2-digit'
                     })}
                   </span>
+                  {/* Character change button - show for own messages within 5 minutes */}
+                  {(() => {
+                    const messageTime = new Date(message.createdAt);
+                    const now = new Date();
+                    const timeDiffMinutes = (now.getTime() - messageTime.getTime()) / (1000 * 60);
+                    const isOwnMessage = userCharacters.some((char: any) => char.id === message.characterId);
+                    const canChangeCharacter = isOwnMessage && timeDiffMinutes <= 5;
+                    
+                    return canChangeCharacter && userCharacters.length > 1 && (
+                      <div className="ml-2">
+                        <select 
+                          className="text-xs bg-muted/50 border border-border rounded px-2 py-1"
+                          value={message.characterId}
+                          onChange={(e) => {
+                            const newCharacterId = parseInt(e.target.value);
+                            if (newCharacterId !== message.characterId) {
+                              apiRequest("PATCH", `/api/chat/messages/${message.id}/character`, {
+                                characterId: newCharacterId
+                              })
+                                .then(() => {
+                                  queryClient.invalidateQueries({ queryKey: ["/api/chat/rooms", currentRoomId, "messages"] });
+                                  const newCharacter = userCharacters.find((char: any) => char.id === newCharacterId);
+                                  toast({
+                                    title: "Postava změněna",
+                                    description: `Zpráva nyní patří postavě ${newCharacter?.firstName} ${newCharacter?.lastName}`,
+                                  });
+                                })
+                                .catch(() => {
+                                  toast({
+                                    title: "Chyba",
+                                    description: "Nepodařilo se změnit postavu zprávy",
+                                    variant: "destructive",
+                                  });
+                                });
+                            }
+                          }}
+                        >
+                          {userCharacters.map((character: any) => (
+                            <option key={character.id} value={character.id}>
+                              {character.firstName} {character.lastName}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    );
+                  })()}
                 </div>
                 <p className="text-sm text-foreground break-words">{message.content}</p>
               </div>
@@ -584,6 +630,56 @@ export default function ChatRoom() {
 
         {/* Message Input */}
         <div className="flex-none border-t bg-card p-4">
+          {/* Character Switcher */}
+          {userCharacters.length > 1 && (
+            <div className="mb-4 p-3 bg-muted/30 rounded-lg border">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium text-foreground">Psát jako postava:</span>
+                <span className="text-xs text-muted-foreground">
+                  {userCharacters.length} postav k dispozici
+                </span>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {userCharacters.map((character: any) => (
+                  <Button
+                    key={character.id}
+                    variant={currentCharacter?.id === character.id ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => {
+                      if (currentCharacter?.id !== character.id) {
+                        apiRequest("POST", `/api/characters/${character.id}/set-main`)
+                          .then(() => {
+                            queryClient.invalidateQueries({ queryKey: ["/api/characters/main"] });
+                            toast({
+                              title: "Postava změněna",
+                              description: `Nyní píšete jako ${character.firstName} ${character.lastName}`,
+                            });
+                          })
+                          .catch(() => {
+                            toast({
+                              title: "Chyba",
+                              description: "Nepodařilo se změnit postavu",
+                              variant: "destructive",
+                            });
+                          });
+                      }
+                    }}
+                    className="text-xs"
+                  >
+                    <div className="flex items-center space-x-1">
+                      <div className="w-4 h-4 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center">
+                        <span className="text-primary-foreground text-xs">
+                          {character.firstName[0]}{character.lastName[0]}
+                        </span>
+                      </div>
+                      <span>{character.firstName} {character.lastName}</span>
+                    </div>
+                  </Button>
+                ))}
+              </div>
+            </div>
+          )}
+          
           <div className="flex items-end gap-3">
             <Avatar className="h-10 w-10 flex-shrink-0">
               <AvatarFallback className="bg-primary/10">
