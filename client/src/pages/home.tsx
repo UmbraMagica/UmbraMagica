@@ -340,6 +340,286 @@ export default function Home() {
 
           {/* Center Column - Main Content */}
           <div className="lg:col-span-2 space-y-6">
+            {/* Game Date */}
+            <GameDate />
+
+            {/* Current Character Profile */}
+            {currentDisplayedCharacter && (
+              <Card className="bg-gradient-to-r from-accent/10 to-secondary/10 border-accent/30">
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-semibold text-foreground mb-4 flex items-center">
+                    <User className="text-accent mr-3 h-6 w-6" />
+                    Aktivní postava
+                  </h3>
+                  <div className="flex items-center space-x-4">
+                    <CharacterAvatar character={currentDisplayedCharacter} size="lg" />
+                    <div className="flex-1">
+                      <h4 className="text-lg font-medium text-foreground">
+                        {currentDisplayedCharacter.firstName}
+                        {currentDisplayedCharacter.middleName && ` ${currentDisplayedCharacter.middleName}`}
+                        {` ${currentDisplayedCharacter.lastName}`}
+                      </h4>
+                      <p className="text-muted-foreground">{characterAge} let</p>
+                      <div className="flex items-center space-x-2 mt-2">
+                        <Badge className="bg-green-500/20 text-green-400">
+                          <Circle className="h-3 w-3 mr-1 fill-current" />
+                          Online
+                        </Badge>
+                        {mainCharacter?.id === currentDisplayedCharacter.id && (
+                          <Badge className="bg-accent/20 text-accent">
+                            👑 Primární
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setLocation(`/characters/${currentDisplayedCharacter.id}`)}
+                      >
+                        <User className="h-4 w-4 mr-2" />
+                        Profil
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setLocation(`/character/edit?characterId=${currentDisplayedCharacter.id}`)}
+                      >
+                        <Settings className="h-4 w-4 mr-2" />
+                        Upravit
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* News & Updates */}
+            <Card className="bg-card border-border">
+              <CardContent className="p-6">
+                <h3 className="text-xl font-semibold text-foreground mb-4 flex items-center">
+                  <Newspaper className="text-accent mr-3 h-6 w-6" />
+                  Novinky a aktualizace
+                </h3>
+                <div className="space-y-4">
+                  <div className="border-l-4 border-accent pl-4">
+                    <h4 className="font-medium text-foreground">Nový kouzlo systém</h4>
+                    <p className="text-sm text-muted-foreground">Byl přidán pokročilý systém sesílání kouzel s efekty úspěchu a neúspěchu.</p>
+                    <p className="text-xs text-muted-foreground mt-1">Před 2 dny</p>
+                  </div>
+                  <div className="border-l-4 border-blue-500 pl-4">
+                    <h4 className="font-medium text-foreground">Vylepšení Ollivandera</h4>
+                    <p className="text-sm text-muted-foreground">Obchod s hůlkami nyní obsahuje detailní popisy všech komponent.</p>
+                    <p className="text-xs text-muted-foreground mt-1">Před týdnem</p>
+                  </div>
+                  <div className="border-l-4 border-green-500 pl-4">
+                    <h4 className="font-medium text-foreground">Nové chatovací místnosti</h4>
+                    <p className="text-sm text-muted-foreground">Přidány nové lokace pro hraní rolí ve světě čarodějů.</p>
+                    <p className="text-xs text-muted-foreground mt-1">Před 2 týdny</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Quick Actions */}
+            <Card className="bg-card border-border">
+              <CardContent className="p-6">
+                <h3 className="text-xl font-semibold text-foreground mb-4 flex items-center">
+                  <Zap className="text-accent mr-3 h-6 w-6" />
+                  Rychlé akce
+                </h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <Button 
+                    variant="default"
+                    className="bg-gradient-to-r from-primary to-secondary hover:from-secondary hover:to-primary text-primary-foreground p-4 h-auto rounded-lg transition-all duration-200 transform hover:scale-105"
+                    onClick={() => setLocation('/chat')}
+                  >
+                    <div className="text-center">
+                      <MessageCircle className="h-8 w-8 mb-2 mx-auto" />
+                      <div className="font-medium">Vstoupit do chatu</div>
+                      <div className="text-sm opacity-80">Pokračovat v příběhu</div>
+                    </div>
+                  </Button>
+                  <Button 
+                    variant="outline"
+                    className="border-amber-300 hover:bg-amber-50 dark:hover:bg-amber-950 text-amber-700 dark:text-amber-300 p-4 h-auto rounded-lg transition-all duration-200 transform hover:scale-105"
+                    onClick={() => setLocation('/ollivanders')}
+                  >
+                    <div className="text-center">
+                      <Wand2 className="h-8 w-8 mb-2 mx-auto" />
+                      <div className="font-medium">U Ollivandera</div>
+                      <div className="text-sm opacity-80">Získat hůlku</div>
+                    </div>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Recent Activity - Only for admins */}
+            {user?.role === 'admin' && (
+              <Card className="bg-card border-border">
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-semibold text-foreground mb-4 flex items-center">
+                    <History className="text-accent mr-3 h-6 w-6" />
+                    Nedávná aktivita
+                  </h3>
+                  <div className="space-y-3">
+                    {recentActivity.map((activity, index) => (
+                      <div key={index} className="flex items-center space-x-3 p-3 bg-muted/30 rounded-lg">
+                        <div className={`w-2 h-2 rounded-full ${
+                          activity.type === "success" ? "bg-green-500" : "bg-accent"
+                        }`}></div>
+                        <div className="flex-1">
+                          <p className="text-sm text-foreground">{activity.text}</p>
+                          <p className="text-xs text-muted-foreground">{activity.time}</p>
+                        </div>
+                      </div>
+                    ))}
+                    <div className="text-center pt-2">
+                      <Button variant="link" className="text-accent hover:text-secondary text-sm">
+                        Zobrazit vše
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+
+          {/* Right Column - Non-RPG Section */}
+          <div className="lg:col-span-1 space-y-6">
+            <Card className="bg-gradient-to-br from-green-500/10 to-teal-500/10 border-green-300/30">
+              <CardContent className="p-6">
+                <h3 className="text-xl font-bold text-green-300 mb-4 flex items-center">
+                  <BookOpen className="mr-3 h-6 w-6" />
+                  Odkazy a zdroje
+                </h3>
+                <div className="space-y-3">
+                  <Button 
+                    variant="ghost"
+                    className="w-full justify-start text-left h-auto p-3 hover:bg-green-500/20"
+                    onClick={() => window.open('/pravidla', '_blank')}
+                  >
+                    <div className="flex items-center space-x-3">
+                      <ScrollText className="h-5 w-5 text-green-400" />
+                      <div>
+                        <div className="font-medium">Pravidla</div>
+                        <div className="text-xs text-muted-foreground">Herní pravidla</div>
+                      </div>
+                    </div>
+                  </Button>
+                  
+                  <Button 
+                    variant="ghost"
+                    className="w-full justify-start text-left h-auto p-3 hover:bg-green-500/20"
+                    onClick={() => window.open('/wiki', '_blank')}
+                  >
+                    <div className="flex items-center space-x-3">
+                      <Globe className="h-5 w-5 text-blue-400" />
+                      <div>
+                        <div className="font-medium">Wikipedie</div>
+                        <div className="text-xs text-muted-foreground">Encyklopedie světa</div>
+                      </div>
+                    </div>
+                  </Button>
+
+                  <Button 
+                    variant="ghost"
+                    className="w-full justify-start text-left h-auto p-3 hover:bg-green-500/20"
+                    onClick={() => window.open('/forum', '_blank')}
+                  >
+                    <div className="flex items-center space-x-3">
+                      <MessageSquare className="h-5 w-5 text-purple-400" />
+                      <div>
+                        <div className="font-medium">Fórum</div>
+                        <div className="text-xs text-muted-foreground">Diskuze hráčů</div>
+                      </div>
+                    </div>
+                  </Button>
+
+                  <Button 
+                    variant="ghost"
+                    className="w-full justify-start text-left h-auto p-3 hover:bg-green-500/20"
+                    onClick={() => setLocation('/settings')}
+                  >
+                    <div className="flex items-center space-x-3">
+                      <Settings className="h-5 w-5 text-gray-400" />
+                      <div>
+                        <div className="font-medium">Nastavení</div>
+                        <div className="text-xs text-muted-foreground">Správa účtu</div>
+                      </div>
+                    </div>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Online Characters */}
+            <Card className="bg-card border-border">
+              <CardContent className="p-6">
+                <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center">
+                  <Users className="text-accent mr-3 h-5 w-5" />
+                  Postavy online
+                  <Badge variant="secondary" className="ml-auto bg-primary/20 text-primary">
+                    {onlineCharacters.length}
+                  </Badge>
+                </h3>
+                <div className="space-y-3">
+                  {onlineCharacters.map((character) => (
+                    <div key={character.id} className="flex items-center space-x-3">
+                      <CharacterAvatar character={character} size="sm" />
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-foreground">{character.fullName}</p>
+                        <p className="text-xs text-muted-foreground">v {character.location}</p>
+                      </div>
+                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    </div>
+                  ))}
+                  {onlineCharacters.length === 0 && (
+                    <p className="text-sm text-muted-foreground text-center py-4">
+                      Žádné postavy nejsou online
+                    </p>
+                  )}
+                </div>
+                <div className="mt-4 pt-4 border-t border-border">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full"
+                    onClick={() => setLocation('/characters')}
+                  >
+                    <Users className="h-4 w-4 mr-2" />
+                    Všechny postavy
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Server Statistics */}
+            <Card className="bg-card border-border">
+              <CardContent className="p-6">
+                <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center">
+                  <BarChart3 className="text-accent mr-3 h-5 w-5" />
+                  Statistiky serveru
+                </h3>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-muted-foreground">Aktivní postavy</span>
+                    <span className="font-medium text-foreground">{userCharacters.length}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-muted-foreground">Online nyní</span>
+                    <span className="font-medium text-green-400">{onlineCharacters.length}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-muted-foreground">Herní datum</span>
+                    <span className="font-medium text-foreground text-xs">1926</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
             {/* Quick Actions */}
             <Card className="bg-card border-border">
               <CardContent className="p-6">
@@ -572,11 +852,49 @@ export default function Home() {
                       <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                     </div>
                   ))}
+                  {onlineCharacters.length === 0 && (
+                    <p className="text-sm text-muted-foreground text-center py-4">
+                      Žádné postavy nejsou online
+                    </p>
+                  )}
+                </div>
+                <div className="mt-4 pt-4 border-t border-border">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full"
+                    onClick={() => setLocation('/characters')}
+                  >
+                    <Users className="h-4 w-4 mr-2" />
+                    Všechny postavy
+                  </Button>
                 </div>
               </CardContent>
             </Card>
 
-
+            {/* Server Statistics */}
+            <Card className="bg-card border-border">
+              <CardContent className="p-6">
+                <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center">
+                  <BarChart3 className="text-accent mr-3 h-5 w-5" />
+                  Statistiky serveru
+                </h3>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-muted-foreground">Aktivní postavy</span>
+                    <span className="font-medium text-foreground">{userCharacters.length}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-muted-foreground">Online nyní</span>
+                    <span className="font-medium text-green-400">{onlineCharacters.length}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-muted-foreground">Herní datum</span>
+                    <span className="font-medium text-foreground text-xs">1926</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
         
