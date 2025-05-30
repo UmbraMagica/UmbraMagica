@@ -243,14 +243,19 @@ export default function ChatRoom() {
     try {
       // If spell is selected, cast it with the message (even if message is empty)
       if (selectedSpell) {
-        await apiRequest("POST", "/api/game/cast-spell", {
-          roomId: currentRoomId,
-          characterId: currentCharacter?.id,
-          spellId: selectedSpell.id,
-          message: messageInput.trim()
-        });
-        setSelectedSpell(null);
-        setMessageInput("");
+        try {
+          await apiRequest("POST", "/api/game/cast-spell", {
+            roomId: currentRoomId,
+            characterId: currentCharacter?.id,
+            spellId: selectedSpell.id,
+            message: messageInput.trim()
+          });
+          setSelectedSpell(null);
+          setMessageInput("");
+        } catch (spellError: any) {
+          // Handle spell casting error specifically
+          throw new Error("Vaše postava potřebuje hůlku pro sesílání kouzel.");
+        }
       } else if (messageInput.trim()) {
         // Send regular message only if there's content
         const messageData = {
