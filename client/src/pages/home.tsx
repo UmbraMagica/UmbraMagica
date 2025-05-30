@@ -321,7 +321,7 @@ export default function Home() {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => setLocation(`/character-edit?characterId=${currentDisplayedCharacter.id}`)}
+                          onClick={() => setLocation(`/character/edit?characterId=${currentDisplayedCharacter.id}`)}
                           className="text-xs"
                         >
                           <Settings className="h-3 w-3 mr-1" />
