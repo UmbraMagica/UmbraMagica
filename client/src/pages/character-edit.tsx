@@ -238,25 +238,36 @@ export default function CharacterEdit() {
 
   // Get current values for preview
   const getCurrentValues = () => {
+    if (!primaryCharacter) {
+      return {
+        firstName: "",
+        middleName: "",
+        lastName: "",
+        birthDate: "",
+        school: "",
+        description: "",
+      };
+    }
+
     if (isAdmin) {
       const values = adminForm.watch();
       return {
-        firstName: values.firstName || primaryCharacter?.firstName || "",
-        middleName: values.middleName || primaryCharacter?.middleName || "",
-        lastName: values.lastName || primaryCharacter?.lastName || "",
-        birthDate: values.birthDate || primaryCharacter?.birthDate || "",
-        school: values.school || "",
-        description: values.description || "",
+        firstName: values.firstName || primaryCharacter.firstName || "",
+        middleName: values.middleName || primaryCharacter.middleName || "",
+        lastName: values.lastName || primaryCharacter.lastName || "",
+        birthDate: values.birthDate || primaryCharacter.birthDate || "",
+        school: values.school || primaryCharacter.school || "",
+        description: values.description || primaryCharacter.description || "",
       };
     } else {
       const values = userForm.watch();
       return {
-        firstName: primaryCharacter?.firstName || "",
-        middleName: primaryCharacter?.middleName || "",
-        lastName: primaryCharacter?.lastName || "",
-        birthDate: primaryCharacter?.birthDate || "",
-        school: values.school || "",
-        description: values.description || "",
+        firstName: primaryCharacter.firstName || "",
+        middleName: primaryCharacter.middleName || "",
+        lastName: primaryCharacter.lastName || "",
+        birthDate: primaryCharacter.birthDate || "",
+        school: values.school || primaryCharacter.school || "",
+        description: values.description || primaryCharacter.description || "",
       };
     }
   };
