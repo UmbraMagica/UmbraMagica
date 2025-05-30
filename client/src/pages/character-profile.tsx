@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, Calendar, User, Mail, Clock, Edit3, GraduationCap, FileText, Package, BookOpen } from "lucide-react";
+import { ArrowLeft, Calendar, User, Mail, Clock, Edit3, GraduationCap, FileText, Package, BookOpen, Wand2 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { format } from "date-fns";
 import { cs } from "date-fns/locale";
@@ -252,6 +252,15 @@ export default function CharacterProfile() {
                 >
                   <BookOpen className="h-4 w-4 mr-2" />
                   Deník postavy
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full justify-start"
+                  onClick={() => setLocation('/my-spells')}
+                >
+                  <Wand2 className="h-4 w-4 mr-2" />
+                  Moje kouzla
                 </Button>
                 <Button
                   variant="outline"
