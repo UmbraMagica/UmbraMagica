@@ -323,71 +323,71 @@ export default function ChatRoom() {
       <div className="flex-1 flex flex-col">
         {/* Header */}
         <div className="flex-none border-b bg-card p-4 z-10 h-[84px] flex items-center justify-between w-full">
-            <div className="flex items-center gap-3">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setLocation('/chat')}
-                className="flex items-center gap-2"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                Opustit chat
-              </Button>
-              <div className="flex items-center gap-2">
-                {isEditingName ? (
-                  <div className="flex items-center gap-2">
-                    <Input
-                      value={editedName}
-                      onChange={(e) => setEditedName(e.target.value)}
-                      className="text-xl font-bold"
-                      placeholder="Název místnosti"
-                    />
-                    <Button
-                      onClick={handleSaveName}
-                      variant="default"
-                      size="sm"
-                      className="flex items-center gap-1"
-                    >
-                      <Save className="h-3 w-3" />
-                    </Button>
-                    <Button
-                      onClick={handleCancelEdit}
-                      variant="outline"
-                      size="sm"
-                      className="flex items-center gap-1"
-                    >
-                      <X className="h-3 w-3" />
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-2">
-                    <div>
-                      <h1 className="text-2xl font-bold text-foreground">{currentRoom.name}</h1>
-                      {currentRoom.description && (
-                        <p className="text-sm text-muted-foreground mt-1">{currentRoom.description}</p>
-                      )}
-                    </div>
-                    {user?.role === 'admin' && (
-                      <Button
-                        onClick={handleEditName}
-                        variant="ghost"
-                        size="sm"
-                        className="flex items-center gap-1 opacity-70 hover:opacity-100"
-                        title="Upravit název místnosti"
-                      >
-                        <Edit3 className="h-3 w-3" />
-                      </Button>
+          <div className="flex items-center gap-3">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setLocation('/chat')}
+              className="flex items-center gap-2"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Opustit chat
+            </Button>
+            <div className="flex items-center gap-2">
+              {isEditingName ? (
+                <div className="flex items-center gap-2">
+                  <Input
+                    value={editedName}
+                    onChange={(e) => setEditedName(e.target.value)}
+                    className="text-xl font-bold"
+                    placeholder="Název místnosti"
+                  />
+                  <Button
+                    onClick={handleSaveName}
+                    variant="default"
+                    size="sm"
+                    className="flex items-center gap-1"
+                  >
+                    <Save className="h-3 w-3" />
+                  </Button>
+                  <Button
+                    onClick={handleCancelEdit}
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center gap-1"
+                  >
+                    <X className="h-3 w-3" />
+                  </Button>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <div>
+                    <h1 className="text-2xl font-bold text-foreground">{currentRoom.name}</h1>
+                    {currentRoom.description && (
+                      <p className="text-sm text-muted-foreground mt-1">{currentRoom.description}</p>
                     )}
                   </div>
-                )}
-              </div>
+                  {user?.role === 'admin' && (
+                    <Button
+                      onClick={handleEditName}
+                      variant="ghost"
+                      size="sm"
+                      className="flex items-center gap-1 opacity-70 hover:opacity-100"
+                      title="Upravit název místnosti"
+                    >
+                      <Edit3 className="h-3 w-3" />
+                    </Button>
+                  )}
+                </div>
+              )}
             </div>
-            <div className="flex items-center gap-2">
-              <div className={`h-2 w-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`} />
-              <span className="text-sm text-muted-foreground">
-                {isConnected ? 'Připojeno' : 'Odpojeno'}
-              </span>
-            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className={`h-2 w-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`} />
+            <span className="text-sm text-muted-foreground">
+              {isConnected ? 'Připojeno' : 'Odpojeno'}
+            </span>
+          </div>
         </div>
 
         {/* Messages */}
