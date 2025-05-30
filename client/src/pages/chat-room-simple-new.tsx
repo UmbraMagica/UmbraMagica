@@ -244,17 +244,32 @@ export default function ChatRoom() {
       // If spell is selected, cast it with the message (even if message is empty)
       if (selectedSpell) {
         try {
-          await apiRequest("POST", "/api/game/cast-spell", {
-            roomId: currentRoomId,
-            characterId: currentCharacter?.id,
-            spellId: selectedSpell.id,
-            message: messageInput.trim()
+          const response = await fetch("/api/game/cast-spell", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              roomId: currentRoomId,
+              characterId: currentCharacter?.id,
+              spellId: selectedSpell.id,
+              message: messageInput.trim()
+            }),
+            credentials: "include",
           });
+          
+          if (!response.ok) {
+            // Try to get the error message from the response
+            try {
+              const errorData = await response.json();
+              throw new Error(errorData.message || "Vaše postava potřebuje hůlku pro sesílání kouzel.");
+            } catch {
+              throw new Error("Vaše postava potřebuje hůlku pro sesílání kouzel.");
+            }
+          }
+          
           setSelectedSpell(null);
           setMessageInput("");
         } catch (spellError: any) {
-          // Handle spell casting error specifically - assume it's a wand error since this is the most common case
-          console.log('Spell casting failed:', spellError);
+          // Always use Czech message for spell errors
           throw new Error("Vaše postava potřebuje hůlku pro sesílání kouzel.");
         }
       } else if (messageInput.trim()) {
@@ -286,6 +301,11 @@ export default function ChatRoom() {
         }
       } else if (error.message) {
         errorMessage = error.message;
+      }
+      
+      // For spell casting, always use the Czech wand message
+      if (selectedSpell) {
+        errorMessage = "Vaše postava potřebuje hůlku pro sesílání kouzel.";
       }
       
       console.log('Final error message:', errorMessage); // Debug log
