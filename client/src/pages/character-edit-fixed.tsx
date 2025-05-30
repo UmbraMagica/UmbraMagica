@@ -101,6 +101,9 @@ export default function CharacterEditFixed() {
   if (Array.isArray(primaryCharacter) && primaryCharacter.length > 0) {
     primaryCharacter = primaryCharacter[0];
   }
+  
+  // Debug: log what character we end up with
+  console.log('Final primaryCharacter:', primaryCharacter, 'From URL ID:', characterIdFromUrl, 'specificCharacter:', specificCharacter, 'mainCharacter:', mainCharacter);
 
   const updateCharacterMutation = useMutation({
     mutationFn: async (data: UserEditForm | AdminEditForm) => {
