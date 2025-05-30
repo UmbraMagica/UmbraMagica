@@ -122,10 +122,10 @@ export default function AdminWandComponents() {
     setEditingCore(null);
   };
 
-  const updateWood = (index: number, newWoodName: string) => {
-    if (!wandComponents || !newWoodName.trim()) return;
+  const updateWood = (index: number, updatedWood: any) => {
+    if (!wandComponents) return;
     const updatedWoods = [...wandComponents.woods];
-    updatedWoods[index] = newWoodName.trim();
+    updatedWoods[index] = updatedWood;
     const updatedComponents = { ...wandComponents, woods: updatedWoods };
     saveComponentsMutation.mutate(updatedComponents);
     setEditingWood(null);
@@ -223,65 +223,82 @@ export default function AdminWandComponents() {
             </CardHeader>
             <CardContent className="space-y-4">
               {/* Add new wood */}
-              <div className="flex gap-2">
+              <div className="grid gap-3">
                 <Input
-                  placeholder="Název nového dřeva..."
-                  value={newWood}
-                  onChange={(e) => setNewWood(e.target.value)}
+                  placeholder="Název dřeva..."
+                  value={newWood.name}
+                  onChange={(e) => setNewWood(prev => ({ ...prev, name: e.target.value }))}
                 />
-                <Button onClick={addWood} disabled={!newWood.trim()}>
+                <Textarea
+                  placeholder="Popis vlastností a účinků dřeva..."
+                  value={newWood.description}
+                  onChange={(e) => setNewWood(prev => ({ ...prev, description: e.target.value }))}
+                  rows={3}
+                />
+                <Button 
+                  onClick={addWood} 
+                  disabled={!newWood.name.trim() || !newWood.description.trim()}
+                >
                   <Plus className="h-4 w-4 mr-2" />
-                  Přidat
+                  Přidat dřevo
                 </Button>
               </div>
 
               {/* Woods list */}
-              <div className="grid gap-2">
-                {wandComponents?.woods?.map((wood: string, index: number) => (
-                  <div key={index} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
-                    {editingWood === wood ? (
-                      <div className="flex gap-2 flex-1">
-                        <Input
-                          defaultValue={wood}
-                          onBlur={(e) => updateWood(index, e.target.value)}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter') {
-                              updateWood(index, e.currentTarget.value);
-                            } else if (e.key === 'Escape') {
-                              setEditingWood(null);
-                            }
-                          }}
-                          autoFocus
-                        />
+              <div className="grid gap-4">
+                {wandComponents?.woods?.map((wood: any, index: number) => (
+                  <div key={index} className="p-4 bg-muted/30 rounded-lg">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <h3 className="font-semibold">{wood.name}</h3>
+                        <p className="text-sm text-muted-foreground mt-1">{wood.description}</p>
+                      </div>
+                      <div className="flex gap-2">
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button variant="outline" size="sm">
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent>
+                            <DialogHeader>
+                              <DialogTitle>Upravit dřevo</DialogTitle>
+                            </DialogHeader>
+                            <div className="grid gap-3">
+                              <div>
+                                <Label>Název</Label>
+                                <Input
+                                  defaultValue={wood.name}
+                                  onChange={(e) => setEditingWood({ ...wood, name: e.target.value })}
+                                />
+                              </div>
+                              <div>
+                                <Label>Popis</Label>
+                                <Textarea
+                                  defaultValue={wood.description}
+                                  onChange={(e) => setEditingWood({ ...wood, description: e.target.value })}
+                                  rows={4}
+                                />
+                              </div>
+                              <Button 
+                                onClick={() => updateWood(index, editingWood || wood)}
+                                disabled={saveComponentsMutation.isPending}
+                              >
+                                <Save className="h-4 w-4 mr-2" />
+                                Uložit změny
+                              </Button>
+                            </div>
+                          </DialogContent>
+                        </Dialog>
                         <Button
-                          variant="outline"
+                          variant="destructive"
                           size="sm"
-                          onClick={() => setEditingWood(null)}
+                          onClick={() => removeWood(wood)}
                         >
-                          Zrušit
+                          <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
-                    ) : (
-                      <>
-                        <span>{wood}</span>
-                        <div className="flex gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setEditingWood(wood)}
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => removeWood(wood)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </>
-                    )}
+                    </div>
                   </div>
                 ))}
               </div>
