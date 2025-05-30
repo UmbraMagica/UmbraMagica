@@ -347,7 +347,7 @@ export default function AdminWandComponents() {
                       <div className="flex-1">
                         <h3 className="font-semibold">{core.name}</h3>
                         <p className="text-sm text-muted-foreground mb-2">{core.category}</p>
-                        <p className="text-sm">{core.description}</p>
+                        <p className="text-sm whitespace-pre-line">{core.description}</p>
                       </div>
                       <div className="flex gap-2">
                         <Dialog>

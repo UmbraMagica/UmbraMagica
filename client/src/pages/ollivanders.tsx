@@ -337,9 +337,11 @@ export default function Ollivanders() {
                               <SelectItem key={core.name} value={core.name}>
                                 <div className="flex flex-col">
                                   <span>{core.name}</span>
-                                  <span className="text-xs text-muted-foreground">
-                                    {core.category} - {core.description}
-                                  </span>
+                                  <div className="text-xs text-muted-foreground whitespace-pre-line">
+                                    <span className="font-medium">{core.category}</span>
+                                    <br />
+                                    {core.description}
+                                  </div>
                                 </div>
                               </SelectItem>
                             ))}
