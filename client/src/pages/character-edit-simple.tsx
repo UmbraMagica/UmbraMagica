@@ -47,14 +47,45 @@ export default function CharacterEditSimple() {
   const [, setLocation] = useLocation();
   const queryClient = useQueryClient();
 
-  // Fetch the main character from API instead of using user.characters[0]
+  // Get character ID from URL search params if available
+  const urlParams = new URLSearchParams(window.location.search);
+  const characterIdFromUrl = urlParams.get('characterId');
+
+  // Fetch the main character from API
   const { data: mainCharacter } = useQuery<any>({
     queryKey: ["/api/characters/main"],
-    enabled: !!user,
+    enabled: !!user && !characterIdFromUrl,
   });
 
-  const primaryCharacter = mainCharacter;
+  // Fetch specific character if ID provided in URL
+  const { data: specificCharacter } = useQuery<any>({
+    queryKey: ["/api/characters", characterIdFromUrl],
+    enabled: !!characterIdFromUrl,
+  });
+
+  // Use specific character if available, otherwise main character
+  const primaryCharacter = specificCharacter || mainCharacter;
   const isAdmin = user?.role === 'admin';
+
+  // Security check: ensure user can only edit their own characters
+  if (primaryCharacter && primaryCharacter.userId !== user?.id && !isAdmin) {
+    return (
+      <div className="container mx-auto p-6">
+        <div className="text-center">
+          <h3 className="text-lg font-medium mb-2">Přístup zamítnut</h3>
+          <p className="text-muted-foreground">
+            Nemáte oprávnění upravovat tuto postavu.
+          </p>
+          <Button 
+            className="mt-4" 
+            onClick={() => setLocation('/')}
+          >
+            Zpět na domovskou stránku
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   // Form for regular users
   const userForm = useForm<UserEditForm>({

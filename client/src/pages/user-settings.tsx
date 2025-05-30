@@ -260,7 +260,7 @@ export default function UserSettings() {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => window.location.href = `/character/edit`}
+                          onClick={() => window.location.href = `/character/edit?characterId=${character.id}`}
                         >
                           Upravit
                         </Button>
