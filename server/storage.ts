@@ -135,6 +135,20 @@ export interface IStorage {
   getCharacterSpells(characterId: number): Promise<(CharacterSpell & { spell: Spell })[]>;
   addSpellToCharacter(characterId: number, spellId: number): Promise<CharacterSpell>;
   removeSpellFromCharacter(characterId: number, spellId: number): Promise<boolean>;
+  
+  // Character inventory operations
+  getCharacterInventory(characterId: number): Promise<InventoryItem[]>;
+  getInventoryItem(id: number): Promise<InventoryItem | undefined>;
+  addInventoryItem(item: InsertInventoryItem): Promise<InventoryItem>;
+  updateInventoryItem(id: number, updates: Partial<InsertInventoryItem>): Promise<InventoryItem | undefined>;
+  deleteInventoryItem(id: number): Promise<boolean>;
+  
+  // Character journal operations
+  getCharacterJournal(characterId: number): Promise<JournalEntry[]>;
+  getJournalEntry(id: number): Promise<JournalEntry | undefined>;
+  addJournalEntry(entry: InsertJournalEntry): Promise<JournalEntry>;
+  updateJournalEntry(id: number, updates: Partial<InsertJournalEntry>): Promise<JournalEntry | undefined>;
+  deleteJournalEntry(id: number): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -955,6 +969,88 @@ export class DatabaseStorage implements IStorage {
         }
       }
     }
+  }
+
+  // Character inventory operations
+  async getCharacterInventory(characterId: number): Promise<InventoryItem[]> {
+    return db
+      .select()
+      .from(characterInventory)
+      .where(eq(characterInventory.characterId, characterId))
+      .orderBy(characterInventory.category, characterInventory.itemName);
+  }
+
+  async getInventoryItem(id: number): Promise<InventoryItem | undefined> {
+    const [item] = await db
+      .select()
+      .from(characterInventory)
+      .where(eq(characterInventory.id, id));
+    return item;
+  }
+
+  async addInventoryItem(item: InsertInventoryItem): Promise<InventoryItem> {
+    const [inventoryItem] = await db
+      .insert(characterInventory)
+      .values(item)
+      .returning();
+    return inventoryItem;
+  }
+
+  async updateInventoryItem(id: number, updates: Partial<InsertInventoryItem>): Promise<InventoryItem | undefined> {
+    const [item] = await db
+      .update(characterInventory)
+      .set(updates)
+      .where(eq(characterInventory.id, id))
+      .returning();
+    return item;
+  }
+
+  async deleteInventoryItem(id: number): Promise<boolean> {
+    const result = await db
+      .delete(characterInventory)
+      .where(eq(characterInventory.id, id));
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  // Character journal operations
+  async getCharacterJournal(characterId: number): Promise<JournalEntry[]> {
+    return db
+      .select()
+      .from(characterJournal)
+      .where(eq(characterJournal.characterId, characterId))
+      .orderBy(desc(characterJournal.entryDate), desc(characterJournal.createdAt));
+  }
+
+  async getJournalEntry(id: number): Promise<JournalEntry | undefined> {
+    const [entry] = await db
+      .select()
+      .from(characterJournal)
+      .where(eq(characterJournal.id, id));
+    return entry;
+  }
+
+  async addJournalEntry(entry: InsertJournalEntry): Promise<JournalEntry> {
+    const [journalEntry] = await db
+      .insert(characterJournal)
+      .values(entry)
+      .returning();
+    return journalEntry;
+  }
+
+  async updateJournalEntry(id: number, updates: Partial<InsertJournalEntry>): Promise<JournalEntry | undefined> {
+    const [entry] = await db
+      .update(characterJournal)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(characterJournal.id, id))
+      .returning();
+    return entry;
+  }
+
+  async deleteJournalEntry(id: number): Promise<boolean> {
+    const result = await db
+      .delete(characterJournal)
+      .where(eq(characterJournal.id, id));
+    return (result.rowCount ?? 0) > 0;
   }
 }
 
