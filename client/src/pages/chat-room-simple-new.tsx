@@ -661,7 +661,7 @@ export default function ChatRoom() {
                     );
                   })()}
                 </div>
-                <p className="text-sm text-foreground break-words">{message.content}</p>
+                <p className="text-sm text-foreground break-words whitespace-pre-wrap">{message.content}</p>
               </div>
             </div>
           ))}
