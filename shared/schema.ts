@@ -157,6 +157,7 @@ export const charactersRelations = relations(characters, ({ one, many }) => ({
     references: [users.id],
   }),
   messages: many(messages),
+  characterSpells: many(characterSpells),
 }));
 
 export const chatCategoriesRelations = relations(chatCategories, ({ one, many }) => ({
@@ -216,6 +217,45 @@ export const adminActivityLogRelations = relations(adminActivityLog, ({ one }) =
     references: [characterRequests.id],
   }),
 }));
+
+// Spells table
+export const spells = pgTable("spells", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 100 }).notNull().unique(),
+  description: text("description").notNull(),
+  effect: text("effect").notNull(),
+  category: varchar("category", { length: 50 }).notNull(), // "Kouzelné formule", "Bojová kouzla", atd.
+  type: varchar("type", { length: 50 }).notNull(), // "Základní", "Pokročilé", "Mistrské"
+  targetType: varchar("target_type", { length: 20 }).default("self").notNull(), // "self", "other", "object"
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Character spells (many-to-many relationship)
+export const characterSpells = pgTable("character_spells", {
+  id: serial("id").primaryKey(),
+  characterId: serial("character_id").references(() => characters.id).notNull(),
+  spellId: serial("spell_id").references(() => spells.id).notNull(),
+  learnedAt: timestamp("learned_at").defaultNow().notNull(),
+});
+
+// Spell relations
+export const spellsRelations = relations(spells, ({ many }) => ({
+  characterSpells: many(characterSpells),
+}));
+
+export const characterSpellsRelations = relations(characterSpells, ({ one }) => ({
+  character: one(characters, {
+    fields: [characterSpells.characterId],
+    references: [characters.id],
+  }),
+  spell: one(spells, {
+    fields: [characterSpells.spellId],
+    references: [spells.id],
+  }),
+}));
+
+
 
 // Schemas for validation
 export const insertUserSchema = createInsertSchema(users).pick({
@@ -326,6 +366,29 @@ export const characterRequestSchema = z.object({
   reason: z.string().min(10, "Please provide a reason for creating this character").max(500),
 });
 
+export const insertSpellSchema = createInsertSchema(spells).pick({
+  name: true,
+  description: true,
+  effect: true,
+  category: true,
+  type: true,
+  targetType: true,
+});
+
+export const insertCharacterSpellSchema = createInsertSchema(characterSpells).pick({
+  characterId: true,
+  spellId: true,
+});
+
+export const spellSchema = z.object({
+  name: z.string().min(1, "Název kouzla je povinný").max(100),
+  description: z.string().min(1, "Popis kouzla je povinný"),
+  effect: z.string().min(1, "Popis efektu je povinný"),
+  category: z.string().min(1, "Kategorie je povinná").max(50),
+  type: z.string().min(1, "Typ je povinný").max(50),
+  targetType: z.enum(["self", "other", "object"]).default("self"),
+});
+
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 export type Character = typeof characters.$inferSelect;
@@ -343,3 +406,7 @@ export type CharacterRequest = typeof characterRequests.$inferSelect;
 export type InsertCharacterRequest = typeof characterRequests.$inferInsert;
 export type AdminActivityLog = typeof adminActivityLog.$inferSelect;
 export type InsertAdminActivityLog = typeof adminActivityLog.$inferInsert;
+export type Spell = typeof spells.$inferSelect;
+export type InsertSpell = typeof spells.$inferInsert;
+export type CharacterSpell = typeof characterSpells.$inferSelect;
+export type InsertCharacterSpell = typeof characterSpells.$inferInsert;
