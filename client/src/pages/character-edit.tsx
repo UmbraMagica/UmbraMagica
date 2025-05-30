@@ -22,8 +22,8 @@ import { characterEditSchema, characterAdminEditSchema } from "@shared/schema";
 import { z } from "zod";
 import { useLocation } from "wouter";
 
-type CharacterEditForm = z.infer<typeof characterEditSchema>;
-type CharacterAdminEditForm = z.infer<typeof characterAdminEditSchema>;
+type UserEditForm = z.infer<typeof characterEditSchema>;
+type AdminEditForm = z.infer<typeof characterAdminEditSchema>;
 
 export default function CharacterEdit() {
   const { user } = useAuth();
@@ -34,25 +34,32 @@ export default function CharacterEdit() {
   const primaryCharacter = user?.characters?.[0];
   const isAdmin = user?.role === 'admin';
 
-  // Use different schemas based on user role
-  const currentSchema = isAdmin ? characterAdminEditSchema : characterEditSchema;
-  
-  const form = useForm<CharacterEditForm | CharacterAdminEditForm>({
-    resolver: zodResolver(currentSchema),
+  // Regular user form (only school and description)
+  const userForm = useForm<UserEditForm>({
+    resolver: zodResolver(characterEditSchema),
     defaultValues: {
-      ...(isAdmin && {
-        firstName: primaryCharacter?.firstName || "",
-        middleName: primaryCharacter?.middleName || "",
-        lastName: primaryCharacter?.lastName || "",
-        birthDate: primaryCharacter?.birthDate || "",
-      }),
       school: (primaryCharacter as any)?.school || "",
       description: (primaryCharacter as any)?.description || "",
     },
   });
 
+  // Admin form (all fields)
+  const adminForm = useForm<AdminEditForm>({
+    resolver: zodResolver(characterAdminEditSchema),
+    defaultValues: {
+      firstName: primaryCharacter?.firstName || "",
+      middleName: primaryCharacter?.middleName || "",
+      lastName: primaryCharacter?.lastName || "",
+      birthDate: primaryCharacter?.birthDate || "",
+      school: (primaryCharacter as any)?.school || "",
+      description: (primaryCharacter as any)?.description || "",
+    },
+  });
+
+  const currentForm = isAdmin ? adminForm : userForm;
+
   const updateCharacterMutation = useMutation({
-    mutationFn: async (data: CharacterEditForm) => {
+    mutationFn: async (data: UserEditForm | AdminEditForm) => {
       if (!primaryCharacter?.id) {
         throw new Error("Žádná postava k úpravě");
       }
@@ -75,7 +82,7 @@ export default function CharacterEdit() {
     },
   });
 
-  const onSubmit = (data: CharacterEditForm) => {
+  const onSubmit = (data: UserEditForm | AdminEditForm) => {
     updateCharacterMutation.mutate(data);
   };
 
