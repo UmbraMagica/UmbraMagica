@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { GameDate } from "@/components/GameDate";
 import { calculateGameAge } from "@/lib/gameDate";
+import { CharacterAvatar } from "@/components/CharacterAvatar";
 
 interface OnlineCharacter {
   id: number;
@@ -213,11 +214,14 @@ export default function Home() {
                     onClick={() => currentDisplayedCharacter && (window.location.href = `/characters/${currentDisplayedCharacter.id}`)}
                   >
                     <div className="flex items-center">
-                      <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-lg mr-4">
-                        {currentDisplayedCharacter ? 
-                          `${currentDisplayedCharacter.firstName[0]}${currentDisplayedCharacter.lastName[0]}` : 
-                          'FB'
-                        }
+                      <div className="mr-4">
+                        {currentDisplayedCharacter ? (
+                          <CharacterAvatar character={currentDisplayedCharacter} size="md" />
+                        ) : (
+                          <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-lg">
+                            FB
+                          </div>
+                        )}
                       </div>
                       <div className="flex-1">
                         <div className="font-medium">
@@ -289,8 +293,8 @@ export default function Home() {
                 </h3>
                 {currentDisplayedCharacter && (
                   <div className="text-center">
-                    <div className="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-full mx-auto mb-3 flex items-center justify-center">
-                      <User className="text-primary-foreground h-8 w-8" />
+                    <div className="mx-auto mb-3 flex justify-center">
+                      <CharacterAvatar character={currentDisplayedCharacter} size="lg" />
                     </div>
                     <h4 className="font-medium text-foreground">
                       {currentDisplayedCharacter.firstName}
@@ -331,11 +335,7 @@ export default function Home() {
                         }}
                       >
                         <div className="flex items-center space-x-3">
-                          <div className="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center">
-                            <span className="text-primary-foreground text-sm font-medium">
-                              {character.firstName[0]}{character.lastName[0]}
-                            </span>
-                          </div>
+                          <CharacterAvatar character={character} size="sm" />
                           <div>
                             <p className="font-medium text-foreground text-sm">
                               {character.firstName} {character.lastName}
@@ -384,9 +384,7 @@ export default function Home() {
                 <div className="space-y-3">
                   {onlineCharacters.map((character) => (
                     <div key={character.id} className="flex items-center space-x-3">
-                      <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-green-600 rounded-full flex items-center justify-center">
-                        <User className="text-white h-4 w-4" />
-                      </div>
+                      <CharacterAvatar character={{ firstName: character.firstName, lastName: character.lastName, avatar: null }} size="sm" />
                       <div className="flex-1">
                         <p className="text-sm font-medium text-foreground">{character.fullName}</p>
                         <p className="text-xs text-muted-foreground">v {character.location}</p>
