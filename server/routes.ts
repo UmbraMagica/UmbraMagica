@@ -13,6 +13,7 @@ import sharp from "sharp";
 declare module "express-session" {
   interface SessionData {
     userId?: number;
+    userRole?: string;
   }
 }
 
@@ -164,6 +165,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       req.session.userId = user.id;
+      req.session.userRole = user.role;
       
       const characters = await storage.getCharactersByUserId(user.id);
       
@@ -239,6 +241,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Log user in
       req.session.userId = user.id;
+      req.session.userRole = user.role;
 
       res.json({
         id: user.id,
