@@ -148,7 +148,6 @@ export default function AdminSpells() {
   const resetForm = () => {
     setFormData({
       name: "",
-      description: "",
       effect: "",
       category: "",
       type: "",
@@ -158,20 +157,18 @@ export default function AdminSpells() {
 
   const handleEdit = (spell: Spell) => {
     setEditingSpell(spell);
-    setIsQuickAdd(false); // Při editaci vždy používáme podrobnou formu
     setFormData({
       name: spell.name,
-      description: spell.description,
       effect: spell.effect,
       category: spell.category,
       type: spell.type,
-      targetType: spell.targetType as "self" | "other" | "object"
+      targetType: spell.targetType as "self" | "other" | "object" | "both"
     });
     setIsCreating(true);
   };
 
   const handleSubmit = () => {
-    if (!formData.name || !formData.description || !formData.effect || !formData.category || !formData.type) {
+    if (!formData.name || !formData.effect || !formData.category || !formData.type) {
       toast({ title: "Chyba", description: "Vyplňte všechna povinná pole", variant: "destructive" });
       return;
     }
@@ -186,7 +183,6 @@ export default function AdminSpells() {
   const handleCancel = () => {
     setIsCreating(false);
     setEditingSpell(null);
-    setIsQuickAdd(false);
     resetForm();
   };
 
@@ -222,11 +218,9 @@ export default function AdminSpells() {
           </Button>
           <Button 
             onClick={() => {
-              setIsQuickAdd(true);
               setIsCreating(true);
               setFormData({
                 name: "",
-                description: "",
                 effect: "",
                 category: "Kouzelné formule",
                 type: "Základní",
@@ -234,21 +228,9 @@ export default function AdminSpells() {
               });
             }} 
             disabled={isCreating}
-            size="sm"
           >
             <Plus className="h-4 w-4 mr-2" />
-            Rychlé přidání
-          </Button>
-          <Button 
-            onClick={() => {
-              setIsQuickAdd(false);
-              setIsCreating(true);
-            }} 
-            disabled={isCreating}
-            variant="outline"
-            size="sm"
-          >
-            Podrobné přidání
+            Přidat kouzlo
           </Button>
         </div>
       </div>
@@ -307,6 +289,7 @@ export default function AdminSpells() {
                 <SelectItem value="self">Sebe</SelectItem>
                 <SelectItem value="other">Jinou postavu</SelectItem>
                 <SelectItem value="object">Předmět</SelectItem>
+                <SelectItem value="both">Sebe i jinou postavu</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -334,182 +317,86 @@ export default function AdminSpells() {
         <Card className="mb-6">
           <CardHeader>
             <CardTitle>
-              {editingSpell ? "Upravit kouzlo" : isQuickAdd ? "Rychlé přidání kouzla" : "Nové kouzlo"}
+              {editingSpell ? "Upravit kouzlo" : "Nové kouzlo"}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {isQuickAdd ? (
-              // Rychlá forma - pouze základní pole
-              <>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Název kouzla *</label>
-                    <Input
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      placeholder="Lumos"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Kategorie *</label>
-                    <Select
-                      value={formData.category}
-                      onValueChange={(value) => setFormData({ ...formData, category: value })}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {categories.map((category) => (
-                          <SelectItem key={category} value={category}>
-                            {category}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Typ *</label>
-                    <Select
-                      value={formData.type}
-                      onValueChange={(value) => setFormData({ ...formData, type: value })}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {types.map((type) => (
-                          <SelectItem key={type} value={type}>
-                            {type}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Cíl kouzla</label>
-                    <Select
-                      value={formData.targetType}
-                      onValueChange={(value: "self" | "other" | "object") => 
-                        setFormData({ ...formData, targetType: value })
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="self">Sebe</SelectItem>
-                        <SelectItem value="other">Jinou postavu</SelectItem>
-                        <SelectItem value="object">Předmět</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">Popis a efekt kouzla *</label>
-                  <Textarea
-                    value={formData.description}
-                    onChange={(e) => setFormData({ 
-                      ...formData, 
-                      description: e.target.value,
-                      effect: e.target.value // Pro rychlé přidání použijeme stejný text
-                    })}
-                    placeholder="Popis kouzla a jeho efektu..."
-                    rows={3}
-                  />
-                </div>
-              </>
-            ) : (
-              // Podrobná forma - všechna pole
-              <>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium mb-1">Název kouzla *</label>
-                    <Input
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      placeholder="Lumos"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Cíl kouzla</label>
-                    <Select
-                      value={formData.targetType}
-                      onValueChange={(value: "self" | "other" | "object") => 
-                        setFormData({ ...formData, targetType: value })
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="self">Sebe</SelectItem>
-                        <SelectItem value="other">Jinou postavu</SelectItem>
-                        <SelectItem value="object">Předmět</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Kategorie *</label>
-                    <Select
-                      value={formData.category}
-                      onValueChange={(value) => setFormData({ ...formData, category: value })}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Vyberte kategorii" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {categories.map((category) => (
-                          <SelectItem key={category} value={category}>
-                            {category}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Typ *</label>
-                    <Select
-                      value={formData.type}
-                      onValueChange={(value) => setFormData({ ...formData, type: value })}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Vyberte typ" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {types.map((type) => (
-                          <SelectItem key={type} value={type}>
-                            {type}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">Popis kouzla *</label>
-                  <Textarea
-                    value={formData.description}
-                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    placeholder="Krátký popis kouzla..."
-                    rows={2}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">Efekt kouzla *</label>
-                  <Textarea
-                    value={formData.effect}
-                    onChange={(e) => setFormData({ ...formData, effect: e.target.value })}
-                    placeholder="Detailní popis efektu kouzla..."
-                    rows={3}
-                  />
-                </div>
-              </>
-            )}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Název kouzla *</label>
+                <Input
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  placeholder="Lumos"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Cíl kouzla</label>
+                <Select
+                  value={formData.targetType}
+                  onValueChange={(value: "self" | "other" | "object" | "both") => 
+                    setFormData({ ...formData, targetType: value })
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="self">Sebe</SelectItem>
+                    <SelectItem value="other">Jinou postavu</SelectItem>
+                    <SelectItem value="object">Předmět</SelectItem>
+                    <SelectItem value="both">Sebe i jinou postavu</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Kategorie *</label>
+                <Select
+                  value={formData.category}
+                  onValueChange={(value) => setFormData({ ...formData, category: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Vyberte kategorii" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories.map((category) => (
+                      <SelectItem key={category} value={category}>
+                        {category}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Typ *</label>
+                <Select
+                  value={formData.type}
+                  onValueChange={(value) => setFormData({ ...formData, type: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Vyberte typ" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {types.map((type) => (
+                      <SelectItem key={type} value={type}>
+                        {type}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Efekt kouzla *</label>
+              <Textarea
+                value={formData.effect}
+                onChange={(e) => setFormData({ ...formData, effect: e.target.value })}
+                placeholder="Popis efektu kouzla..."
+                rows={3}
+              />
+            </div>
             <div className="flex gap-2">
               <Button
                 onClick={handleSubmit}
@@ -553,8 +440,7 @@ export default function AdminSpells() {
                     <TableHead className="w-[200px]">Název</TableHead>
                     <TableHead className="w-[150px]">Kategorie</TableHead>
                     <TableHead className="w-[120px]">Typ</TableHead>
-                    <TableHead className="w-[100px]">Cíl</TableHead>
-                    <TableHead>Popis</TableHead>
+                    <TableHead className="w-[140px]">Cíl</TableHead>
                     <TableHead>Efekt</TableHead>
                     <TableHead className="w-[120px]">Akce</TableHead>
                   </TableRow>
@@ -575,14 +461,10 @@ export default function AdminSpells() {
                       </TableCell>
                       <TableCell className="text-sm">
                         {spell.targetType === "self" ? "Sebe" : 
-                         spell.targetType === "other" ? "Jinou postavu" : "Předmět"}
+                         spell.targetType === "other" ? "Jinou postavu" : 
+                         spell.targetType === "both" ? "Sebe i jinou postavu" : "Předmět"}
                       </TableCell>
-                      <TableCell className="max-w-[200px]">
-                        <div className="truncate text-sm text-muted-foreground" title={spell.description}>
-                          {spell.description}
-                        </div>
-                      </TableCell>
-                      <TableCell className="max-w-[200px]">
+                      <TableCell className="max-w-[300px]">
                         <div className="truncate text-sm" title={spell.effect}>
                           {spell.effect}
                         </div>
