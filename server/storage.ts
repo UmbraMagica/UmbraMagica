@@ -166,6 +166,7 @@ export interface IStorage {
     lengths: string[];
     flexibilities: string[];
   }>;
+  migrateExistingWandsToInventory(): Promise<number>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -1252,6 +1253,50 @@ export class DatabaseStorage implements IStorage {
     ];
 
     return { woods, cores, lengths, flexibilities };
+  }
+
+  async migrateExistingWandsToInventory(): Promise<number> {
+    try {
+      // Get all existing wands
+      const existingWands = await db.select().from(wands);
+      
+      let migratedCount = 0;
+      
+      for (const wand of existingWands) {
+        // Check if this wand already exists in inventory
+        const existingInventoryItem = await db
+          .select()
+          .from(characterInventory)
+          .where(
+            and(
+              eq(characterInventory.characterId, wand.characterId),
+              eq(characterInventory.category, "Wand")
+            )
+          );
+        
+        // If not already in inventory, add it
+        if (existingInventoryItem.length === 0) {
+          await db.insert(characterInventory).values({
+            characterId: wand.characterId,
+            itemName: `Hůlka (${wand.wood})`,
+            itemDescription: wand.description || `${wand.wood}, ${wand.length}, ${wand.flexibility}, ${wand.core}`,
+            quantity: 1,
+            category: "Wand",
+            rarity: "Epic",
+            value: 700, // 7 galleons for a wand
+            isEquipped: true,
+            notes: "Migrace existující hůlky do inventáře"
+          });
+          
+          migratedCount++;
+        }
+      }
+      
+      return migratedCount;
+    } catch (error) {
+      console.error("Error migrating wands to inventory:", error);
+      throw error;
+    }
   }
 }
 

@@ -828,6 +828,15 @@ export default function Admin() {
                           Upravit
                         </Button>
                         <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setLocation(`/characters/${character.id}/spells`)}
+                          className="flex items-center gap-2"
+                        >
+                          <Book className="h-4 w-4" />
+                          Kouzla
+                        </Button>
+                        <Button
                           variant="destructive"
                           size="sm"
                           onClick={() => setKillCharacterData({

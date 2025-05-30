@@ -1208,6 +1208,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Migrate existing wands to inventory (admin only)
+  app.post("/api/admin/migrate-wands-to-inventory", requireAuth, async (req, res) => {
+    try {
+      if (req.session.userRole !== 'admin') {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const migratedCount = await storage.migrateExistingWandsToInventory();
+      res.json({ 
+        message: `Successfully migrated ${migratedCount} wands to inventory`,
+        migratedCount 
+      });
+    } catch (error) {
+      console.error("Error migrating wands to inventory:", error);
+      res.status(500).json({ message: "Failed to migrate wands to inventory" });
+    }
+  });
+
   // Visit Ollivanders to get a wand (random)
   app.post("/api/characters/:id/visit-ollivanders", requireAuth, async (req, res) => {
     try {
