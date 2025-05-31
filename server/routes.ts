@@ -1829,7 +1829,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Valid grindelwald and dumbledore points are required" });
       }
 
-      const updatedBar = await storage.updateInfluenceBar(grindelwald, dumbledore, req.session.userId!);
+      // Get current values to calculate changes
+      const currentBar = await storage.getInfluenceBar();
+      const currentGrindelwald = currentBar?.grindelwaldPoints || 0;
+      const currentDumbledore = currentBar?.dumbledorePoints || 0;
+      
+      // Calculate changes needed
+      const grindelwaldChange = grindelwald - currentGrindelwald;
+      const dumbledoreChange = dumbledore - currentDumbledore;
+      
+      let updatedBar = currentBar;
+      
+      // Apply changes with history tracking
+      if (grindelwaldChange !== 0) {
+        updatedBar = await storage.updateInfluenceWithHistory(
+          'grindelwald',
+          grindelwaldChange,
+          `Admin reset na ${grindelwald}:${dumbledore} - Grindelwald`,
+          req.session.userId!
+        );
+      }
+      
+      if (dumbledoreChange !== 0) {
+        updatedBar = await storage.updateInfluenceWithHistory(
+          'dumbledore',
+          dumbledoreChange,
+          `Admin reset na ${grindelwald}:${dumbledore} - Brumbál`,
+          req.session.userId!
+        );
+      }
       
       // Log admin activity
       await storage.logAdminActivity({
