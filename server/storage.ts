@@ -1750,7 +1750,7 @@ export class DatabaseStorage implements IStorage {
         longDescription: longDescription,
         categoryId: targetCategory.id,
         password: request.housingPassword,
-        isPublic: false,
+        isPublic: true, // Housing rooms are public, password is just for reference
         sortOrder: 0
       });
     }
