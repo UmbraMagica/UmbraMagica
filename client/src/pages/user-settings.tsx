@@ -12,7 +12,7 @@ import { useState } from "react";
 import { useLocation } from "wouter";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { characterRequestSchema } from "@shared/schema";
+import { characterRequestSchema, insertHousingRequestSchema } from "@shared/schema";
 import { z } from "zod";
 import { 
   User, 
@@ -32,6 +32,7 @@ import {
 import { CharacterAvatar } from "@/components/CharacterAvatar";
 
 type CharacterRequestForm = z.infer<typeof characterRequestSchema>;
+type HousingRequestForm = z.infer<typeof insertHousingRequestSchema>;
 
 interface CharacterRequest {
   id: number;
@@ -74,6 +75,9 @@ export default function UserSettings() {
     confirmPassword: ''
   });
 
+  // Housing form state
+  const [showHousingForm, setShowHousingForm] = useState(false);
+
   const form = useForm<CharacterRequestForm>({
     resolver: zodResolver(characterRequestSchema),
     defaultValues: {
@@ -87,9 +91,28 @@ export default function UserSettings() {
     },
   });
 
+  const housingForm = useForm<HousingRequestForm>({
+    resolver: zodResolver(insertHousingRequestSchema),
+    defaultValues: {
+      characterId: 0,
+      requestType: "",
+      size: "",
+      location: "",
+      customLocation: "",
+      selectedArea: "",
+      description: "",
+    },
+  });
+
   // Fetch user's character requests
   const { data: characterRequests = [] } = useQuery<CharacterRequest[]>({
     queryKey: ["/api/character-requests/my"],
+    enabled: !!user,
+  });
+
+  // Fetch user's housing requests
+  const { data: housingRequests = [] } = useQuery<any[]>({
+    queryKey: ["/api/housing-requests/my"],
     enabled: !!user,
   });
 
@@ -149,6 +172,34 @@ export default function UserSettings() {
       toast({
         title: "Chyba",
         description: error.message || "Nepodařilo se stáhnout žádost",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Create housing request mutation
+  const createHousingRequestMutation = useMutation({
+    mutationFn: async (data: HousingRequestForm) => {
+      const response = await apiRequest("POST", "/api/housing-requests", data);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Nepodařilo se odeslat žádost o bydlení");
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/housing-requests/my"] });
+      toast({
+        title: "Žádost odeslána",
+        description: "Vaše žádost o bydlení byla úspěšně odeslána a čeká na vyřízení.",
+      });
+      housingForm.reset();
+      setShowHousingForm(false);
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Chyba při odesílání žádosti",
+        description: error.message || "Nepodařilo se odeslat žádost o bydlení",
         variant: "destructive",
       });
     },
@@ -234,6 +285,10 @@ export default function UserSettings() {
 
   const onSubmit = (data: CharacterRequestForm) => {
     createRequestMutation.mutate(data);
+  };
+
+  const onHousingSubmit = (data: HousingRequestForm) => {
+    createHousingRequestMutation.mutate(data);
   };
 
   // Validation functions

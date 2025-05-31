@@ -15,6 +15,7 @@ import {
   configuration,
   influenceBar,
   influenceHistory,
+  housingRequests,
   type User,
   type InsertUser,
   type Character,
@@ -44,6 +45,8 @@ import {
   type InsertWand,
   type InfluenceBar,
   type InsertInfluenceBar,
+  type HousingRequest,
+  type InsertHousingRequest,
   wands,
 } from "@shared/schema";
 import { db } from "./db";
