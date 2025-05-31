@@ -778,14 +778,6 @@ export default function Admin() {
                     >
                       Reset na 0:0
                     </Button>
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => handleInfluenceReset('50:50')}
-                      className="text-yellow-400 border-yellow-400 hover:bg-yellow-400/10"
-                    >
-                      Reset na 50:50
-                    </Button>
                   </div>
                 </div>
               )}
