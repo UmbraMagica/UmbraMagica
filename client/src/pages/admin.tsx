@@ -28,6 +28,7 @@ import {
   ArrowUp,
   Book,
   BookOpen,
+  Eye,
   UserPlus,
   Archive,
   Home,
@@ -93,6 +94,7 @@ export default function Admin() {
     open: false,
     type: '0:0'
   });
+  const [showInviteCodes, setShowInviteCodes] = useState(false);
 
   // Chat management state
   const [newCategoryName, setNewCategoryName] = useState("");
@@ -905,33 +907,45 @@ export default function Admin() {
                 {/* Invite Codes Section */}
                 <div className="mb-6">
                   <h3 className="text-lg font-medium mb-4">Zvací kódy</h3>
-                  <form onSubmit={handleCreateInviteCode} className="flex space-x-2 mb-4">
-                    <Input
-                      type="text"
-                      placeholder="Nový zvací kód"
-                      value={newInviteCode}
-                      onChange={(e) => setNewInviteCode(e.target.value)}
-                      className="w-40"
-                    />
+                  <div className="flex space-x-2 mb-4">
+                    <form onSubmit={handleCreateInviteCode} className="flex space-x-2">
+                      <Input
+                        type="text"
+                        placeholder="Nový zvací kód"
+                        value={newInviteCode}
+                        onChange={(e) => setNewInviteCode(e.target.value)}
+                        className="w-40"
+                      />
+                      <Button 
+                        type="button"
+                        size="sm" 
+                        variant="outline"
+                        onClick={generateRandomInviteCode}
+                      >
+                        Generovat
+                      </Button>
+                      <Button 
+                        type="submit" 
+                        size="sm" 
+                        disabled={createInviteCodeMutation.isPending}
+                      >
+                        <Plus className="mr-2 h-4 w-4" />
+                        Vytvořit
+                      </Button>
+                    </form>
                     <Button 
                       type="button"
                       size="sm" 
                       variant="outline"
-                      onClick={generateRandomInviteCode}
+                      onClick={() => setShowInviteCodes(!showInviteCodes)}
+                      className="ml-auto"
                     >
-                      Generovat
+                      <Settings className="mr-2 h-4 w-4" />
+                      {showInviteCodes ? 'Skrýt' : 'Zobrazit'} existující ({Array.isArray(inviteCodes) ? inviteCodes.length : 0})
                     </Button>
-                    <Button 
-                      type="submit" 
-                      size="sm" 
-                      disabled={createInviteCodeMutation.isPending}
-                    >
-                      <Plus className="mr-2 h-4 w-4" />
-                      Vytvořit
-                    </Button>
-                  </form>
+                  </div>
                   
-                  {Array.isArray(inviteCodes) && inviteCodes.length > 0 && (
+                  {showInviteCodes && Array.isArray(inviteCodes) && inviteCodes.length > 0 && (
                     <div className="space-y-2 max-h-40 overflow-y-auto">
                       {inviteCodes.map((code: any) => (
                         <div key={code.id} className="flex items-center justify-between p-2 bg-muted/20 rounded text-sm">
