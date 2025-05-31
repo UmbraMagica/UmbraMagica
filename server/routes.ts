@@ -1106,6 +1106,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get characters with dormitory housing for room description
+  app.get("/api/characters/dormitory-residents", requireAuth, async (req, res) => {
+    try {
+      const users = await storage.getAllUsers();
+      const dormitoryCharacters = [];
+
+      for (const user of users) {
+        const characters = await storage.getCharactersByUserId(user.id);
+        for (const character of characters) {
+          // Check if character has dormitory housing
+          if (character.residence && character.residence.includes("Ubytovna U starého Šeptáka")) {
+            dormitoryCharacters.push({
+              id: character.id,
+              firstName: character.firstName,
+              middleName: character.middleName,
+              lastName: character.lastName,
+              residence: character.residence
+            });
+          }
+        }
+      }
+
+      res.json(dormitoryCharacters);
+    } catch (error) {
+      console.error("Error fetching dormitory residents:", error);
+      res.status(500).json({ message: "Failed to fetch dormitory residents" });
+    }
+  });
+
 
 
   // Get specific character with user info

@@ -10,16 +10,34 @@ interface ChatRoom {
   createdAt: string;
 }
 
-interface RoomDescriptionProps {
-  description: string;
+interface Character {
+  id: number;
+  firstName: string;
+  middleName?: string | null;
+  lastName: string;
+  residence?: string | null;
 }
 
-export function RoomDescription({ description }: RoomDescriptionProps) {
+interface RoomDescriptionProps {
+  description: string;
+  roomName?: string;
+}
+
+export function RoomDescription({ description, roomName }: RoomDescriptionProps) {
   const [, setLocation] = useLocation();
   
   const { data: rooms = [] } = useQuery<ChatRoom[]>({
     queryKey: ["/api/chat/rooms"],
     staleTime: 60000, // Cache for 1 minute
+  });
+
+  // Fetch characters for dormitory housing if this is the dormitory room
+  const isDormitory = roomName && roomName.includes("Ubytovna U starého Šeptáka");
+  
+  const { data: dormitoryCharacters = [] } = useQuery<Character[]>({
+    queryKey: ["/api/characters/dormitory-residents"],
+    enabled: !!isDormitory,
+    staleTime: 60000,
   });
 
   const createLinkedDescription = (text: string) => {
@@ -80,6 +98,29 @@ export function RoomDescription({ description }: RoomDescriptionProps) {
   const processDescription = (text: string) => {
     const linkedContent = createLinkedDescription(text);
     
+    // Add dormitory residents section if this is the dormitory
+    let displayContent = linkedContent;
+    if (isDormitory && dormitoryCharacters.length > 0) {
+      // Sort characters alphabetically by full name
+      const sortedCharacters = [...dormitoryCharacters].sort((a, b) => {
+        const fullNameA = `${a.firstName} ${a.middleName || ''} ${a.lastName}`.trim();
+        const fullNameB = `${b.firstName} ${b.middleName || ''} ${b.lastName}`.trim();
+        return fullNameA.localeCompare(fullNameB, 'cs');
+      });
+
+      // Add separator and residents section
+      const residentsText = sortedCharacters.map((character, index) => {
+        const fullName = `${character.firstName} ${character.middleName ? character.middleName + ' ' : ''}${character.lastName}`;
+        return `${index + 1}. ${fullName}`;
+      }).join('\n');
+      
+      displayContent = [
+        ...linkedContent,
+        '\n\n---\n\n**Ubytované osoby:**\n',
+        residentsText
+      ];
+    }
+    
     return (
       <div 
         className="prose prose-sm dark:prose-invert max-w-none text-muted-foreground leading-relaxed"
@@ -88,7 +129,7 @@ export function RoomDescription({ description }: RoomDescriptionProps) {
           wordBreak: 'break-word'
         }}
       >
-        {linkedContent.map((part, index) => {
+        {displayContent.map((part, index) => {
           if (typeof part === 'string') {
             // Process markdown formatting for string parts
             const formattedText = processMarkdown(part);
