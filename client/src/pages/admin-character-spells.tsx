@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, BookOpen, User, Calendar } from "lucide-react";
-import { useLocation } from "wouter";
+import { useLocation, useParams } from "wouter";
 
 interface CharacterSpell {
   id: number;
@@ -28,9 +28,10 @@ interface Character {
 export default function AdminCharacterSpells() {
   const { user } = useAuth();
   const [, setLocation] = useLocation();
+  const params = useParams();
   
-  // Get character ID from URL
-  const characterId = parseInt(window.location.pathname.split('/').pop() || '0');
+  // Get character ID from URL params
+  const characterId = parseInt(params.characterId || '0');
   
   const { data: character } = useQuery<Character>({
     queryKey: ['/api/characters', characterId],
