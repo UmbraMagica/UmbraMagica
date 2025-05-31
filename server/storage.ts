@@ -1778,6 +1778,21 @@ export class DatabaseStorage implements IStorage {
       .offset(offset);
   }
 
+  async getOwlPostMessage(messageId: number): Promise<OwlPostMessage | undefined> {
+    const [message] = await db
+      .select()
+      .from(owlPostMessages)
+      .where(eq(owlPostMessages.id, messageId));
+    return message;
+  }
+
+  async deleteOwlPostMessage(messageId: number): Promise<boolean> {
+    const result = await db
+      .delete(owlPostMessages)
+      .where(eq(owlPostMessages.id, messageId));
+    return (result.rowCount || 0) > 0;
+  }
+
   async markOwlPostAsRead(messageId: number): Promise<OwlPostMessage | undefined> {
     const [updatedMessage] = await db
       .update(owlPostMessages)

@@ -238,7 +238,7 @@ export default function Home() {
                   <Button 
                     variant="ghost"
                     className="w-full justify-start text-left h-auto p-3 hover:bg-purple-500/20"
-                    onClick={() => setLocation('/owl-post')}
+                    onClick={() => setLocation(`/owl-post?character=${currentDisplayedCharacter?.id || ''}`)}
                   >
                     <div className="flex items-center space-x-3">
                       <Bird className="h-5 w-5 text-amber-400" />

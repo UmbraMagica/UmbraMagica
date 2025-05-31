@@ -3105,6 +3105,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.delete("/api/owl-post/message/:messageId", requireAuth, async (req, res) => {
+    try {
+      const messageId = parseInt(req.params.messageId);
+      
+      // Get the message to verify ownership
+      const message = await storage.getOwlPostMessage(messageId);
+      if (!message) {
+        return res.status(404).json({ message: "Message not found" });
+      }
+      
+      // Get sender and recipient characters to verify user ownership
+      const senderCharacter = await storage.getCharacter(message.senderCharacterId);
+      const recipientCharacter = await storage.getCharacter(message.recipientCharacterId);
+      
+      // User can delete message if they own either sender or recipient character
+      const canDelete = (senderCharacter && senderCharacter.userId === req.session.userId) ||
+                       (recipientCharacter && recipientCharacter.userId === req.session.userId);
+      
+      if (!canDelete) {
+        return res.status(403).json({ message: "Unauthorized to delete this message" });
+      }
+      
+      const deleted = await storage.deleteOwlPostMessage(messageId);
+      if (!deleted) {
+        return res.status(500).json({ message: "Failed to delete message" });
+      }
+      
+      res.json({ message: "Message deleted successfully" });
+    } catch (error) {
+      console.error('Error deleting owl post message:', error);
+      res.status(500).json({ message: 'Failed to delete message' });
+    }
+  });
+
   app.get("/api/owl-post/characters", requireAuth, async (req, res) => {
     try {
       const characters = await storage.getAllCharactersForOwlPost();

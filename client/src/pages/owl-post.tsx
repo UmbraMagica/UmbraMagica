@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Mail, MailOpen, Send, Reply, Search, Bird, Home } from "lucide-react";
+import { Mail, MailOpen, Send, Reply, Search, Bird, Home, Trash2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -67,17 +67,25 @@ export default function OwlPost() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCharacter, setSelectedCharacter] = useState<any>(null);
 
+  // Get character ID from URL parameter
+  const urlParams = new URLSearchParams(window.location.search);
+  const characterIdFromUrl = urlParams.get('character');
+
   // Get user's characters
   const { data: userCharacters = [] } = useQuery<any[]>({
     queryKey: ["/api/characters"],
     enabled: !!user,
   });
 
-  // Get first alive character as default (consistent with home page)
+  // Get first alive character as default
   const firstAliveCharacter = userCharacters.find((char: any) => !char.deathDate);
   
-  // Use selected character or first alive character
-  const activeCharacter = selectedCharacter || firstAliveCharacter;
+  // Get character from URL parameter if provided
+  const characterFromUrl = characterIdFromUrl ? 
+    userCharacters.find((char: any) => char.id === parseInt(characterIdFromUrl)) : null;
+  
+  // Use selected character, character from URL, or first alive character
+  const activeCharacter = selectedCharacter || characterFromUrl || firstAliveCharacter;
 
   // Get all characters for recipient selection
   const { data: allCharacters = [] } = useQuery<Character[]>({
@@ -133,6 +141,29 @@ export default function OwlPost() {
     },
     onError: () => {
       toast({ title: "Chyba při odesílání dopisu", variant: "destructive" });
+    },
+  });
+
+  // Delete message mutation
+  const deleteMessageMutation = useMutation({
+    mutationFn: async (messageId: number) => {
+      const response = await fetch(`/api/owl-post/message/${messageId}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) {
+        throw new Error("Failed to delete message");
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({ title: "Zpráva byla úspěšně smazána!" });
+      // Invalidate queries to refresh the data
+      queryClient.invalidateQueries({ queryKey: [`/api/owl-post/sent/${activeCharacter?.id}`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/owl-post/inbox/${activeCharacter?.id}`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/owl-post/unread-count/${activeCharacter?.id}`] });
+    },
+    onError: () => {
+      toast({ title: "Chyba při mazání zprávy", variant: "destructive" });
     },
   });
 
@@ -432,16 +463,31 @@ export default function OwlPost() {
                         </p>
                       </div>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleReply(message);
-                      }}
-                    >
-                      <Reply className="h-4 w-4" />
-                    </Button>
+                    <div className="flex gap-1">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleReply(message);
+                        }}
+                      >
+                        <Reply className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (confirm('Opravdu chcete smazat tuto zprávu?')) {
+                            deleteMessageMutation.mutate(message.id);
+                          }
+                        }}
+                        disabled={deleteMessageMutation.isPending}
+                      >
+                        <Trash2 className="h-4 w-4 text-red-500" />
+                      </Button>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
