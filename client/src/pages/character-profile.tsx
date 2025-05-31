@@ -48,11 +48,11 @@ export default function CharacterProfile() {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => setLocation('/characters')}
+            onClick={() => setLocation('/')}
             className="flex items-center gap-2"
           >
             <ArrowLeft className="h-4 w-4" />
-            Zpět na seznam postav
+            Zpět na hlavní stránku
           </Button>
         </div>
         <div className="text-center">Načítání profilu postavy...</div>
@@ -67,11 +67,11 @@ export default function CharacterProfile() {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => setLocation('/characters')}
+            onClick={() => setLocation('/')}
             className="flex items-center gap-2"
           >
             <ArrowLeft className="h-4 w-4" />
-            Zpět na seznam postav
+            Zpět na hlavní stránku
           </Button>
         </div>
         <div className="text-center">
@@ -105,11 +105,11 @@ export default function CharacterProfile() {
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => setLocation('/characters')}
+          onClick={() => setLocation('/')}
           className="flex items-center gap-2"
         >
           <ArrowLeft className="h-4 w-4" />
-          Zpět na seznam postav
+          Zpět na hlavní stránku
         </Button>
       </div>
 
