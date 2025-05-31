@@ -231,7 +231,7 @@ export default function CharacterProfile() {
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Rychlé akce</CardTitle>
+              <CardTitle className="text-lg">Osobní archiv</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
@@ -261,24 +261,6 @@ export default function CharacterProfile() {
                 >
                   <Wand2 className="h-4 w-4 mr-2" />
                   Moje kouzla
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-full justify-start"
-                  onClick={() => setLocation('/chat')}
-                >
-                  <Clock className="h-4 w-4 mr-2" />
-                  Přejít do chatu
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-full justify-start"
-                  onClick={() => setLocation('/characters')}
-                >
-                  <User className="h-4 w-4 mr-2" />
-                  Seznam všech postav
                 </Button>
               </div>
             </CardContent>
