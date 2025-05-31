@@ -72,8 +72,9 @@ export default function OwlPost() {
     enabled: !!user,
   });
 
-  // Get first alive character as default
-  const firstAliveCharacter = userCharacters.find((char: any) => !char.deathDate);
+  // Get main character or first alive character as default
+  const firstAliveCharacter = userCharacters.find((char: any) => !char.deathDate && char.id === 9) || 
+                             userCharacters.find((char: any) => !char.deathDate);
 
   // Get all characters for recipient selection
   const { data: allCharacters = [] } = useQuery<Character[]>({
