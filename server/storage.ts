@@ -1622,7 +1622,7 @@ export class DatabaseStorage implements IStorage {
     const result = await db
       .delete(housingRequests)
       .where(eq(housingRequests.id, requestId));
-    return result.rowCount > 0;
+    return (result.rowCount ?? 0) > 0;
   }
 
   async getPendingHousingRequests(): Promise<(HousingRequest & { 
