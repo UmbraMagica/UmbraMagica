@@ -26,6 +26,7 @@ import {
   Edit,
   ArrowUp,
   Book,
+  BookOpen,
   UserPlus,
   Archive,
   Home,
@@ -649,14 +650,35 @@ export default function Admin() {
                 <Gauge className="text-purple-400 mr-3 h-5 w-5" />
                 Správa magického vlivu
               </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowInfluenceSettings(!showInfluenceSettings)}
-                className="text-muted-foreground hover:text-accent"
-              >
-                <Cog className="h-4 w-4" />
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setIsAdminActivityCollapsed(false);
+                    // Scroll to admin activity section
+                    setTimeout(() => {
+                      const element = document.querySelector('[data-section="admin-activity"]');
+                      if (element) {
+                        element.scrollIntoView({ behavior: 'smooth' });
+                      }
+                    }, 100);
+                  }}
+                  className="text-muted-foreground hover:text-accent"
+                  title="Historie změn magického vlivu"
+                >
+                  <Book className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowInfluenceSettings(!showInfluenceSettings)}
+                  className="text-muted-foreground hover:text-accent"
+                  title="Nastavení magického vlivu"
+                >
+                  <Cog className="h-4 w-4" />
+                </Button>
+              </div>
             </CardTitle>
           </CardHeader>
           <CardContent>
