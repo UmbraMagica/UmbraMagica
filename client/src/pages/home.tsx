@@ -329,7 +329,7 @@ export default function Home() {
                       </div>
                       <div>
                         <div className="font-medium">Soví pošta</div>
-                        <div className="text-xs text-muted-foreground">Zprávy mezi postavami</div>
+                        <div className="text-xs text-muted-foreground">Kouzelnická pošta</div>
                       </div>
                     </div>
                   </Button>
