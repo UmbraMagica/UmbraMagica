@@ -1020,8 +1020,8 @@ export default function AdminClean() {
                         description: newRoomDescription.trim() || null,
                         longDescription: newRoomLongDescription.trim() || null,
                         categoryId: newRoomCategoryId,
-                        password: newRoomPassword.trim() || null,
-                        isPublic: true,
+                        password: newRoomIsPublic ? null : newRoomPassword.trim() || null,
+                        isPublic: newRoomIsPublic,
                         sortOrder: 0,
                       });
                     }}

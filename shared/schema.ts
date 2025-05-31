@@ -325,6 +325,18 @@ export const influenceBar = pgTable("influence_bar", {
   updatedBy: integer("updated_by").references(() => users.id),
 });
 
+// Influence change history table
+export const influenceHistory = pgTable("influence_history", {
+  id: serial("id").primaryKey(),
+  changeType: varchar("change_type", { length: 20 }).notNull(), // "grindelwald" or "dumbledore"
+  pointsChanged: integer("points_changed").notNull(), // Can be positive or negative
+  previousTotal: integer("previous_total").notNull(),
+  newTotal: integer("new_total").notNull(),
+  reason: text("reason").notNull(), // Admin's explanation for the change
+  adminId: integer("admin_id").references(() => users.id).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 // Inventory relations
 export const characterInventoryRelations = relations(characterInventory, ({ one }) => ({
   character: one(characters, {
@@ -338,6 +350,14 @@ export const characterJournalRelations = relations(characterJournal, ({ one }) =
   character: one(characters, {
     fields: [characterJournal.characterId],
     references: [characters.id],
+  }),
+}));
+
+// Influence history relations
+export const influenceHistoryRelations = relations(influenceHistory, ({ one }) => ({
+  admin: one(users, {
+    fields: [influenceHistory.adminId],
+    references: [users.id],
   }),
 }));
 
@@ -397,6 +417,15 @@ export const insertAdminActivityLogSchema = createInsertSchema(adminActivityLog)
   targetCharacterId: true,
   targetRequestId: true,
   details: true,
+});
+
+export const insertInfluenceHistorySchema = createInsertSchema(influenceHistory).pick({
+  changeType: true,
+  pointsChanged: true,
+  previousTotal: true,
+  newTotal: true,
+  reason: true,
+  adminId: true,
 });
 
 export const registrationSchema = z.object({

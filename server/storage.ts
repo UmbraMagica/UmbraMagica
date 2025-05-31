@@ -14,6 +14,7 @@ import {
   characterJournal,
   configuration,
   influenceBar,
+  influenceHistory,
   type User,
   type InsertUser,
   type Character,
@@ -1540,6 +1541,69 @@ export class DatabaseStorage implements IStorage {
     newDumbledorePoints = Math.max(0, newDumbledorePoints);
 
     return this.updateInfluenceBar(newGrindelwaldPoints, newDumbledorePoints, updatedBy);
+  }
+
+  // Influence operations with history tracking
+  async updateInfluenceWithHistory(
+    changeType: 'grindelwald' | 'dumbledore',
+    pointsChanged: number,
+    reason: string,
+    adminId: number
+  ): Promise<InfluenceBar> {
+    // Get current influence state
+    const [currentInfluence] = await db.select().from(influenceBar).orderBy(desc(influenceBar.id)).limit(1);
+    
+    if (!currentInfluence) {
+      throw new Error('No influence bar found');
+    }
+
+    const previousTotal = changeType === 'grindelwald' ? currentInfluence.grindelwaldPoints : currentInfluence.dumbledorePoints;
+    const newTotal = previousTotal + pointsChanged;
+
+    // Update influence bar
+    const updateData = changeType === 'grindelwald' 
+      ? { grindelwaldPoints: newTotal, lastUpdated: new Date(), updatedBy: adminId }
+      : { dumbledorePoints: newTotal, lastUpdated: new Date(), updatedBy: adminId };
+
+    const [updatedInfluence] = await db
+      .update(influenceBar)
+      .set(updateData)
+      .where(eq(influenceBar.id, currentInfluence.id))
+      .returning();
+
+    // Record the change in history
+    await db.insert(influenceHistory).values({
+      changeType,
+      pointsChanged,
+      previousTotal,
+      newTotal,
+      reason,
+      adminId,
+    });
+
+    return updatedInfluence;
+  }
+
+  async getInfluenceHistory(limit: number = 50, offset: number = 0): Promise<(typeof influenceHistory.$inferSelect & { admin: { username: string } })[]> {
+    return db
+      .select({
+        id: influenceHistory.id,
+        changeType: influenceHistory.changeType,
+        pointsChanged: influenceHistory.pointsChanged,
+        previousTotal: influenceHistory.previousTotal,
+        newTotal: influenceHistory.newTotal,
+        reason: influenceHistory.reason,
+        adminId: influenceHistory.adminId,
+        createdAt: influenceHistory.createdAt,
+        admin: {
+          username: users.username,
+        },
+      })
+      .from(influenceHistory)
+      .innerJoin(users, eq(influenceHistory.adminId, users.id))
+      .orderBy(desc(influenceHistory.createdAt))
+      .limit(limit)
+      .offset(offset);
   }
 }
 
