@@ -1339,7 +1339,7 @@ export default function Admin() {
           </Card>
 
           {/* Logy administrátorské činnosti */}
-          <Card>
+          <Card data-section="admin-activity">
             <CardHeader className="cursor-pointer" onClick={() => setIsAdminActivityCollapsed(!isAdminActivityCollapsed)}>
               <CardTitle className="text-xl font-semibold text-foreground flex items-center">
                 <Activity className="text-indigo-400 mr-3 h-5 w-5" />
