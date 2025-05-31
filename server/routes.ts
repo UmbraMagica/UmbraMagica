@@ -194,6 +194,95 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
+  // Change password endpoint
+  app.post("/api/auth/change-password", requireAuth, async (req: any, res) => {
+    try {
+      const { currentPassword, newPassword } = req.body;
+
+      if (!currentPassword || !newPassword) {
+        return res.status(400).json({ message: "Současné heslo a nové heslo jsou povinné" });
+      }
+
+      // Validate new password strength
+      if (newPassword.length < 8) {
+        return res.status(400).json({ message: "Nové heslo musí mít alespoň 8 znaků" });
+      }
+      if (!/(?=.*[a-z])/.test(newPassword)) {
+        return res.status(400).json({ message: "Nové heslo musí obsahovat alespoň jedno malé písmeno" });
+      }
+      if (!/(?=.*[A-Z])/.test(newPassword)) {
+        return res.status(400).json({ message: "Nové heslo musí obsahovat alespoň jedno velké písmeno" });
+      }
+      if (!/(?=.*\d)/.test(newPassword)) {
+        return res.status(400).json({ message: "Nové heslo musí obsahovat alespoň jednu číslici" });
+      }
+
+      // Get current user
+      const user = await storage.getUser(req.session.userId);
+      if (!user) {
+        return res.status(404).json({ message: "Uživatel nebyl nalezen" });
+      }
+
+      // Validate current password
+      const isCurrentPasswordValid = await storage.validateUser(user.username, currentPassword);
+      if (!isCurrentPasswordValid) {
+        return res.status(401).json({ message: "Současné heslo je nesprávné" });
+      }
+
+      // Hash new password and update
+      const hashedNewPassword = await storage.hashPassword(newPassword);
+      await storage.updateUserPassword(user.id, hashedNewPassword);
+
+      res.json({ message: "Heslo bylo úspěšně změněno" });
+    } catch (error) {
+      console.error("Error changing password:", error);
+      res.status(500).json({ message: "Nepodařilo se změnit heslo" });
+    }
+  });
+
+  // Change email endpoint
+  app.post("/api/auth/change-email", requireAuth, async (req: any, res) => {
+    try {
+      const { newEmail, confirmPassword } = req.body;
+
+      if (!newEmail || !confirmPassword) {
+        return res.status(400).json({ message: "Nový email a potvrzení hesla jsou povinné" });
+      }
+
+      // Validate email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(newEmail)) {
+        return res.status(400).json({ message: "Neplatný formát emailu" });
+      }
+
+      // Get current user
+      const user = await storage.getUser(req.session.userId);
+      if (!user) {
+        return res.status(404).json({ message: "Uživatel nebyl nalezen" });
+      }
+
+      // Validate password
+      const isPasswordValid = await storage.validateUser(user.username, confirmPassword);
+      if (!isPasswordValid) {
+        return res.status(401).json({ message: "Heslo je nesprávné" });
+      }
+
+      // Check if email is already taken
+      const existingUser = await storage.getUserByEmail(newEmail);
+      if (existingUser && existingUser.id !== user.id) {
+        return res.status(409).json({ message: "Tento email je již používán" });
+      }
+
+      // Update email
+      await storage.updateUserEmail(user.id, newEmail);
+
+      res.json({ message: "Email byl úspěšně změněn" });
+    } catch (error) {
+      console.error("Error changing email:", error);
+      res.status(500).json({ message: "Nepodařilo se změnit email" });
+    }
+  });
+
   app.post("/api/auth/register", async (req, res) => {
     try {
       const data = registrationSchema.parse(req.body);

@@ -59,6 +59,8 @@ export interface IStorage {
   getAllUsers(): Promise<User[]>;
   banUser(id: number, banReason: string): Promise<void>;
   resetUserPassword(id: number, hashedPassword: string): Promise<void>;
+  updateUserPassword(id: number, hashedPassword: string): Promise<void>;
+  updateUserEmail(id: number, email: string): Promise<void>;
   
   // Character operations
   getCharacter(id: number): Promise<Character | undefined>;
@@ -238,6 +240,18 @@ export class DatabaseStorage implements IStorage {
   async resetUserPassword(id: number, hashedPassword: string): Promise<void> {
     await db.update(users)
       .set({ password: hashedPassword })
+      .where(eq(users.id, id));
+  }
+
+  async updateUserPassword(id: number, hashedPassword: string): Promise<void> {
+    await db.update(users)
+      .set({ password: hashedPassword, updatedAt: new Date() })
+      .where(eq(users.id, id));
+  }
+
+  async updateUserEmail(id: number, email: string): Promise<void> {
+    await db.update(users)
+      .set({ email: email, updatedAt: new Date() })
       .where(eq(users.id, id));
   }
 
