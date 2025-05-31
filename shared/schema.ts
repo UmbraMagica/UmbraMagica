@@ -315,6 +315,15 @@ export const configuration = pgTable("configuration", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+// Influence bar for tracking Grindelwald vs Dumbledore influence
+export const influenceBar = pgTable("influence_bar", {
+  id: serial("id").primaryKey(),
+  grindelwaldPoints: integer("grindelwald_points").default(0).notNull(),
+  dumbledorePoints: integer("dumbledore_points").default(0).notNull(),
+  lastUpdated: timestamp("last_updated").defaultNow().notNull(),
+  updatedBy: integer("updated_by").references(() => users.id),
+});
+
 // Inventory relations
 export const characterInventoryRelations = relations(characterInventory, ({ one }) => ({
   character: one(characters, {
@@ -524,6 +533,12 @@ export const journalEntrySchema = z.object({
   tags: z.array(z.string()).default([]),
 });
 
+export const insertInfluenceBarSchema = createInsertSchema(influenceBar).pick({
+  grindelwaldPoints: true,
+  dumbledorePoints: true,
+  updatedBy: true,
+});
+
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 export type Character = typeof characters.$inferSelect;
@@ -551,3 +566,5 @@ export type JournalEntry = typeof characterJournal.$inferSelect;
 export type InsertJournalEntry = typeof characterJournal.$inferInsert;
 export type Wand = typeof wands.$inferSelect;
 export type InsertWand = typeof wands.$inferInsert;
+export type InfluenceBar = typeof influenceBar.$inferSelect;
+export type InsertInfluenceBar = typeof influenceBar.$inferInsert;

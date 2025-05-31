@@ -1586,6 +1586,94 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Influence bar API endpoints
+  app.get("/api/influence-bar", requireAuth, async (req, res) => {
+    try {
+      const influenceBar = await storage.getInfluenceBar();
+      
+      // If no influence bar exists, create default one
+      if (!influenceBar) {
+        const defaultBar = await storage.updateInfluenceBar(50, 50, req.session.userId!);
+        return res.json(defaultBar);
+      }
+      
+      res.json(influenceBar);
+    } catch (error) {
+      console.error("Error getting influence bar:", error);
+      res.status(500).json({ message: "Failed to get influence bar" });
+    }
+  });
+
+  app.post("/api/admin/influence-bar/adjust", requireAuth, async (req, res) => {
+    try {
+      const user = await storage.getUser(req.session.userId!);
+      if (!user || user.role !== 'admin') {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const { side, points } = req.body;
+      
+      if (!side || !points || !['grindelwald', 'dumbledore'].includes(side)) {
+        return res.status(400).json({ message: "Valid side (grindelwald/dumbledore) and points are required" });
+      }
+
+      const parsedPoints = parseInt(points);
+      if (isNaN(parsedPoints)) {
+        return res.status(400).json({ message: "Points must be a valid number" });
+      }
+
+      const updatedBar = await storage.adjustInfluence(side, parsedPoints, req.session.userId!);
+      
+      // Log admin activity
+      await storage.logAdminActivity({
+        adminId: req.session.userId!,
+        action: "influence_adjustment",
+        details: `Adjusted ${side} influence by ${parsedPoints} points`
+      });
+      
+      res.json(updatedBar);
+    } catch (error) {
+      console.error("Error adjusting influence:", error);
+      res.status(500).json({ message: "Failed to adjust influence" });
+    }
+  });
+
+  app.post("/api/admin/influence-bar/set", requireAuth, async (req, res) => {
+    try {
+      const user = await storage.getUser(req.session.userId!);
+      if (!user || user.role !== 'admin') {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const { grindelwaldPoints, dumbledorePoints } = req.body;
+      
+      if (grindelwaldPoints === undefined || dumbledorePoints === undefined) {
+        return res.status(400).json({ message: "Both grindelwaldPoints and dumbledorePoints are required" });
+      }
+
+      const parsedGrindelwald = parseInt(grindelwaldPoints);
+      const parsedDumbledore = parseInt(dumbledorePoints);
+      
+      if (isNaN(parsedGrindelwald) || isNaN(parsedDumbledore)) {
+        return res.status(400).json({ message: "Points must be valid numbers" });
+      }
+
+      const updatedBar = await storage.updateInfluenceBar(parsedGrindelwald, parsedDumbledore, req.session.userId!);
+      
+      // Log admin activity
+      await storage.logAdminActivity({
+        adminId: req.session.userId!,
+        action: "influence_reset",
+        details: `Set influence to Grindelwald: ${parsedGrindelwald}, Dumbledore: ${parsedDumbledore}`
+      });
+      
+      res.json(updatedBar);
+    } catch (error) {
+      console.error("Error setting influence:", error);
+      res.status(500).json({ message: "Failed to set influence" });
+    }
+  });
+
   const httpServer = createServer(app);
   
   // WebSocket server for real-time chat

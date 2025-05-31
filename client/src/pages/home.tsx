@@ -239,6 +239,71 @@ export default function Home() {
             {/* Game Date */}
             <GameDate />
 
+            {/* Influence Bar */}
+            <Card className="bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 border-slate-200 dark:border-slate-700">
+              <CardContent className="p-6">
+                <h3 className="text-xl font-semibold text-foreground mb-4 flex items-center">
+                  <div className="text-2xl mr-3">⚔️</div>
+                  Magický vliv v roce 1926
+                </h3>
+                {(() => {
+                  const { data: influenceData } = useQuery({
+                    queryKey: ['/api/influence-bar'],
+                    staleTime: 30000, // Refresh every 30 seconds
+                  });
+
+                  if (!influenceData) {
+                    return (
+                      <div className="bg-slate-100 dark:bg-slate-800 rounded-lg p-4">
+                        <div className="text-center text-muted-foreground">Načítání...</div>
+                      </div>
+                    );
+                  }
+
+                  const totalPoints = influenceData.grindelwaldPoints + influenceData.dumbledorePoints;
+                  const grindelwaldPercentage = totalPoints > 0 ? (influenceData.grindelwaldPoints / totalPoints) * 100 : 50;
+                  const dumbledorePercentage = totalPoints > 0 ? (influenceData.dumbledorePoints / totalPoints) * 100 : 50;
+
+                  return (
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-center text-sm">
+                        <div className="flex items-center">
+                          <div className="w-3 h-3 bg-red-600 rounded-full mr-2"></div>
+                          <span className="font-medium text-red-700 dark:text-red-400">Grindelwald</span>
+                          <span className="ml-2 text-muted-foreground">({influenceData.grindelwaldPoints})</span>
+                        </div>
+                        <div className="flex items-center">
+                          <span className="mr-2 text-muted-foreground">({influenceData.dumbledorePoints})</span>
+                          <span className="font-medium text-blue-700 dark:text-blue-400">Brumbál</span>
+                          <div className="w-3 h-3 bg-blue-600 rounded-full ml-2"></div>
+                        </div>
+                      </div>
+                      
+                      <div className="relative w-full h-6 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                        <div 
+                          className="absolute left-0 top-0 h-full bg-gradient-to-r from-red-600 to-red-500 transition-all duration-1000 ease-in-out"
+                          style={{ width: `${grindelwaldPercentage}%` }}
+                        ></div>
+                        <div 
+                          className="absolute right-0 top-0 h-full bg-gradient-to-l from-blue-600 to-blue-500 transition-all duration-1000 ease-in-out"
+                          style={{ width: `${dumbledorePercentage}%` }}
+                        ></div>
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <span className="text-white text-xs font-semibold drop-shadow-lg">
+                            {Math.round(grindelwaldPercentage)}% : {Math.round(dumbledorePercentage)}%
+                          </span>
+                        </div>
+                      </div>
+                      
+                      <div className="text-xs text-center text-muted-foreground">
+                        Vliv je ovlivňován akcemi a událostmi ve hře
+                      </div>
+                    </div>
+                  );
+                })()}
+              </CardContent>
+            </Card>
+
             {/* Magická věštba */}
             <Card className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border-amber-300/30">
               <CardContent className="p-6">
