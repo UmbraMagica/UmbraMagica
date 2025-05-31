@@ -412,11 +412,11 @@ export default function CharacterEditFixedNav() {
                     <Button 
                       type="button" 
                       variant="outline" 
-                      onClick={() => setLocation(`/character/${characterId}`)}
+                      onClick={() => setLocation(isAdmin ? "/admin" : `/character/${characterId}`)}
                       className="border-border text-muted-foreground hover:text-foreground"
                     >
                       <ArrowLeft className="h-4 w-4 mr-2" />
-                      Zrušit
+                      {isAdmin ? "Zpět do administrace" : "Zrušit"}
                     </Button>
                     <Button 
                       type="submit" 
