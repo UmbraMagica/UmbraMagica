@@ -505,11 +505,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Special handling for height - can only be set once
       if (validatedData.height !== undefined) {
-        if (character.heightSetAt) {
+        if (character.heightSetAt && requestingUser.role !== "admin") {
           return res.status(400).json({ message: "Výška může být nastavena pouze jednou" });
         }
-        // Add heightSetAt to the update data
-        (validatedData as any).heightSetAt = new Date();
+        // Add heightSetAt to the update data if not already set
+        if (!character.heightSetAt) {
+          (validatedData as any).heightSetAt = new Date();
+        }
+      }
+
+      // Special handling for school - can only be set once (unless admin)
+      if (validatedData.school !== undefined) {
+        if (character.schoolSetAt && requestingUser.role !== "admin") {
+          return res.status(400).json({ message: "Škola může být nastavena pouze jednou" });
+        }
+        // Add schoolSetAt to the update data if not already set
+        if (!character.schoolSetAt) {
+          (validatedData as any).schoolSetAt = new Date();
+        }
       }
       
       const updatedCharacter = await storage.updateCharacter(characterId, validatedData);

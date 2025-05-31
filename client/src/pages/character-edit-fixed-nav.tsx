@@ -275,10 +275,16 @@ export default function CharacterEditFixedNav() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="school" className="text-foreground">Škola</Label>
+                    <Label htmlFor="school" className="text-foreground flex items-center gap-2">
+                      Škola
+                      {primaryCharacter?.schoolSetAt && (
+                        <Lock className="h-4 w-4 text-amber-500" />
+                      )}
+                    </Label>
                     <Select
                       value={userForm.watch("school") || "none"}
                       onValueChange={(value) => userForm.setValue("school", value === "none" ? "" : value)}
+                      disabled={!!primaryCharacter?.schoolSetAt}
                     >
                       <SelectTrigger className="bg-muted border-border text-foreground">
                         <SelectValue placeholder="Vyberte školu (volitelné)" />
@@ -292,6 +298,12 @@ export default function CharacterEditFixedNav() {
                         ))}
                       </SelectContent>
                     </Select>
+                    {primaryCharacter?.schoolSetAt && (
+                      <p className="text-sm text-amber-600 flex items-center gap-1">
+                        <Lock className="h-3 w-3" />
+                        Škola již byla nastavena a nemůže být změněna
+                      </p>
+                    )}
                   </div>
 
                   {/* Fyzické vlastnosti */}

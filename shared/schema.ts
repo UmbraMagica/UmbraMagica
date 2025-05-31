@@ -59,6 +59,7 @@ export const characters = pgTable("characters", {
   height: integer("height"), // výška v cm
   weight: integer("weight"), // váha v kg
   heightSetAt: timestamp("height_set_at"), // kdy byla výška nastavena (pro jednoráz editaci)
+  schoolSetAt: timestamp("school_set_at"), // kdy byla škola nastavena (pro jednoráz editaci)
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
