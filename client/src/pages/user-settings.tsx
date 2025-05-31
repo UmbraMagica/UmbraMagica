@@ -23,7 +23,11 @@ import {
   Home,
   ArrowLeft,
   UserPlus,
-  Settings
+  Settings,
+  Lock,
+  Mail,
+  Eye,
+  EyeOff
 } from "lucide-react";
 import { CharacterAvatar } from "@/components/CharacterAvatar";
 
@@ -49,6 +53,26 @@ export default function UserSettings() {
   const [, setLocation] = useLocation();
   const queryClient = useQueryClient();
   const [showNewRequestForm, setShowNewRequestForm] = useState(false);
+  
+  // Password and email change states
+  const [showPasswordForm, setShowPasswordForm] = useState(false);
+  const [showEmailForm, setShowEmailForm] = useState(false);
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  
+  // Password form state
+  const [passwordForm, setPasswordForm] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
+  
+  // Email form state
+  const [emailForm, setEmailForm] = useState({
+    newEmail: '',
+    confirmPassword: ''
+  });
 
   const form = useForm<CharacterRequestForm>({
     resolver: zodResolver(characterRequestSchema),
@@ -153,8 +177,142 @@ export default function UserSettings() {
     },
   });
 
+  // Change password mutation
+  const changePasswordMutation = useMutation({
+    mutationFn: async (data: { currentPassword: string; newPassword: string }) => {
+      const response = await apiRequest("POST", "/api/auth/change-password", data);
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Heslo změněno",
+        description: "Vaše heslo bylo úspěšně změněno.",
+      });
+      setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
+      setShowPasswordForm(false);
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Chyba",
+        description: error.message || "Nepodařilo se změnit heslo",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Change email mutation
+  const changeEmailMutation = useMutation({
+    mutationFn: async (data: { newEmail: string; confirmPassword: string }) => {
+      const response = await apiRequest("POST", "/api/auth/change-email", data);
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Email změněn",
+        description: "Váš email byl úspěšně změněn.",
+      });
+      setEmailForm({ newEmail: '', confirmPassword: '' });
+      setShowEmailForm(false);
+      queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Chyba",
+        description: error.message || "Nepodařilo se změnit email",
+        variant: "destructive",
+      });
+    },
+  });
+
   const onSubmit = (data: CharacterRequestForm) => {
     createRequestMutation.mutate(data);
+  };
+
+  // Validation functions
+  const validatePassword = (password: string): string | null => {
+    if (password.length < 8) {
+      return "Heslo musí mít alespoň 8 znaků";
+    }
+    if (!/(?=.*[a-z])/.test(password)) {
+      return "Heslo musí obsahovat alespoň jedno malé písmeno";
+    }
+    if (!/(?=.*[A-Z])/.test(password)) {
+      return "Heslo musí obsahovat alespoň jedno velké písmeno";
+    }
+    if (!/(?=.*\d)/.test(password)) {
+      return "Heslo musí obsahovat alespoň jednu číslici";
+    }
+    return null;
+  };
+
+  const validateEmail = (email: string): string | null => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return "Neplatný formát emailu";
+    }
+    return null;
+  };
+
+  // Handler functions
+  const handlePasswordChange = () => {
+    const passwordError = validatePassword(passwordForm.newPassword);
+    if (passwordError) {
+      toast({
+        title: "Neplatné heslo",
+        description: passwordError,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      toast({
+        title: "Hesla se neshodují",
+        description: "Nové heslo a potvrzení hesla se musí shodovat",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!passwordForm.currentPassword) {
+      toast({
+        title: "Chybí současné heslo",
+        description: "Pro změnu hesla musíte zadat současné heslo",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    changePasswordMutation.mutate({
+      currentPassword: passwordForm.currentPassword,
+      newPassword: passwordForm.newPassword,
+    });
+  };
+
+  const handleEmailChange = () => {
+    const emailError = validateEmail(emailForm.newEmail);
+    if (emailError) {
+      toast({
+        title: "Neplatný email",
+        description: emailError,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!emailForm.confirmPassword) {
+      toast({
+        title: "Chybí heslo",
+        description: "Pro změnu emailu musíte zadat současné heslo",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    changeEmailMutation.mutate({
+      newEmail: emailForm.newEmail,
+      confirmPassword: emailForm.confirmPassword,
+    });
   };
 
   const getStatusBadge = (status: string) => {
@@ -213,6 +371,178 @@ export default function UserSettings() {
         </div>
 
         <div className="grid grid-cols-1 gap-6">
+          {/* Account Security Section */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Lock className="h-5 w-5" />
+                Bezpečnost účtu
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Current Account Info */}
+              <div className="p-4 bg-muted/30 rounded-lg">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="font-medium text-foreground">Aktuální údaje</h4>
+                    <p className="text-sm text-muted-foreground">
+                      <Mail className="h-4 w-4 inline mr-2" />
+                      Email: {user.email}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Change Password */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-medium text-foreground">Změna hesla</h4>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowPasswordForm(!showPasswordForm)}
+                    >
+                      {showPasswordForm ? "Zrušit" : "Změnit heslo"}
+                    </Button>
+                  </div>
+                  
+                  {showPasswordForm && (
+                    <div className="space-y-3 p-4 border rounded-lg">
+                      <div>
+                        <Label htmlFor="currentPassword">Současné heslo</Label>
+                        <div className="relative">
+                          <Input
+                            id="currentPassword"
+                            type={showCurrentPassword ? "text" : "password"}
+                            value={passwordForm.currentPassword}
+                            onChange={(e) => setPasswordForm({...passwordForm, currentPassword: e.target.value})}
+                            placeholder="Zadejte současné heslo"
+                          />
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                            onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                          >
+                            {showCurrentPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                          </Button>
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <Label htmlFor="newPassword">Nové heslo</Label>
+                        <div className="relative">
+                          <Input
+                            id="newPassword"
+                            type={showNewPassword ? "text" : "password"}
+                            value={passwordForm.newPassword}
+                            onChange={(e) => setPasswordForm({...passwordForm, newPassword: e.target.value})}
+                            placeholder="Zadejte nové heslo"
+                          />
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                            onClick={() => setShowNewPassword(!showNewPassword)}
+                          >
+                            {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                          </Button>
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Minimálně 8 znaků, obsahuje velké a malé písmeno a číslici
+                        </p>
+                      </div>
+                      
+                      <div>
+                        <Label htmlFor="confirmPassword">Potvrzení nového hesla</Label>
+                        <div className="relative">
+                          <Input
+                            id="confirmPassword"
+                            type={showConfirmPassword ? "text" : "password"}
+                            value={passwordForm.confirmPassword}
+                            onChange={(e) => setPasswordForm({...passwordForm, confirmPassword: e.target.value})}
+                            placeholder="Potvrďte nové heslo"
+                          />
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                          >
+                            {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                          </Button>
+                        </div>
+                      </div>
+                      
+                      <Button
+                        onClick={handlePasswordChange}
+                        disabled={changePasswordMutation.isPending}
+                        className="w-full"
+                      >
+                        {changePasswordMutation.isPending ? "Měním heslo..." : "Změnit heslo"}
+                      </Button>
+                    </div>
+                  )}
+                </div>
+
+                {/* Change Email */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-medium text-foreground">Změna emailu</h4>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowEmailForm(!showEmailForm)}
+                    >
+                      {showEmailForm ? "Zrušit" : "Změnit email"}
+                    </Button>
+                  </div>
+                  
+                  {showEmailForm && (
+                    <div className="space-y-3 p-4 border rounded-lg">
+                      <div>
+                        <Label htmlFor="newEmail">Nový email</Label>
+                        <Input
+                          id="newEmail"
+                          type="email"
+                          value={emailForm.newEmail}
+                          onChange={(e) => setEmailForm({...emailForm, newEmail: e.target.value})}
+                          placeholder="Zadejte nový email"
+                        />
+                      </div>
+                      
+                      <div>
+                        <Label htmlFor="confirmPasswordEmail">Potvrďte heslem</Label>
+                        <Input
+                          id="confirmPasswordEmail"
+                          type="password"
+                          value={emailForm.confirmPassword}
+                          onChange={(e) => setEmailForm({...emailForm, confirmPassword: e.target.value})}
+                          placeholder="Zadejte současné heslo"
+                        />
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Pro změnu emailu musíte zadat současné heslo
+                        </p>
+                      </div>
+                      
+                      <Button
+                        onClick={handleEmailChange}
+                        disabled={changeEmailMutation.isPending}
+                        className="w-full"
+                      >
+                        {changeEmailMutation.isPending ? "Měním email..." : "Změnit email"}
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Primary Character Management */}
           <Card>
             <CardHeader>
