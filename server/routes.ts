@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
-import { registrationSchema, loginSchema, insertCharacterSchema, insertMessageSchema, characterEditSchema, characterAdminEditSchema, characterRequestSchema, chatRooms, spellSchema, insertSpellSchema, insertCharacterSpellSchema } from "@shared/schema";
+import { registrationSchema, loginSchema, insertCharacterSchema, insertMessageSchema, characterEditSchema, characterAdminEditSchema, characterRequestSchema, chatRooms, spellSchema, insertSpellSchema, insertCharacterSpellSchema, insertChatCategorySchema, insertChatRoomSchema } from "@shared/schema";
 import { db } from "./db";
 import { z } from "zod";
 import session from "express-session";
@@ -2568,6 +2568,143 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error resetting password:", error);
       res.status(500).json({ message: "Failed to reset password" });
+    }
+  });
+
+  // Admin chat management endpoints
+  app.get('/api/admin/chat-categories', requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const categories = await storage.getChatCategoriesWithChildren();
+      res.json(categories);
+    } catch (error) {
+      console.error('Error fetching chat categories:', error);
+      res.status(500).json({ message: 'Failed to fetch chat categories' });
+    }
+  });
+
+  app.post('/api/admin/chat-categories', requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const categoryData = insertChatCategorySchema.parse(req.body);
+      const category = await storage.createChatCategory(categoryData);
+      await storage.logAdminActivity({
+        adminId: req.session.userId!,
+        action: 'chat_category_create',
+        details: `Vytvořena kategorie "${category.name}"`,
+      });
+      res.json(category);
+    } catch (error) {
+      console.error('Error creating chat category:', error);
+      res.status(500).json({ message: 'Failed to create chat category' });
+    }
+  });
+
+  app.put('/api/admin/chat-categories/:id', requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const updates = insertChatCategorySchema.partial().parse(req.body);
+      const category = await storage.updateChatCategory(id, updates);
+      if (!category) {
+        return res.status(404).json({ message: 'Chat category not found' });
+      }
+      await storage.logAdminActivity({
+        adminId: req.session.userId!,
+        action: 'chat_category_update',
+        details: `Upravena kategorie "${category.name}"`,
+      });
+      res.json(category);
+    } catch (error) {
+      console.error('Error updating chat category:', error);
+      res.status(500).json({ message: 'Failed to update chat category' });
+    }
+  });
+
+  app.delete('/api/admin/chat-categories/:id', requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const category = await storage.getChatCategory(id);
+      if (!category) {
+        return res.status(404).json({ message: 'Chat category not found' });
+      }
+      
+      const success = await storage.deleteChatCategory(id);
+      if (!success) {
+        return res.status(400).json({ message: 'Cannot delete category with child categories or rooms' });
+      }
+      
+      await storage.logAdminActivity({
+        adminId: req.session.userId!,
+        action: 'chat_category_delete',
+        details: `Smazána kategorie "${category.name}"`,
+      });
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Error deleting chat category:', error);
+      res.status(500).json({ message: 'Failed to delete chat category' });
+    }
+  });
+
+  app.post('/api/admin/chat-rooms', requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const roomData = insertChatRoomSchema.parse(req.body);
+      // Hash password if provided
+      if (roomData.password) {
+        roomData.password = await storage.hashPassword(roomData.password);
+      }
+      const room = await storage.createChatRoom(roomData);
+      await storage.logAdminActivity({
+        adminId: req.session.userId!,
+        action: 'chat_room_create',
+        details: `Vytvořena místnost "${room.name}"`,
+      });
+      res.json(room);
+    } catch (error) {
+      console.error('Error creating chat room:', error);
+      res.status(500).json({ message: 'Failed to create chat room' });
+    }
+  });
+
+  app.put('/api/admin/chat-rooms/:id', requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const updates = insertChatRoomSchema.partial().parse(req.body);
+      const room = await storage.updateChatRoom(id, updates);
+      if (!room) {
+        return res.status(404).json({ message: 'Chat room not found' });
+      }
+      await storage.logAdminActivity({
+        adminId: req.session.userId!,
+        action: 'chat_room_update',
+        details: `Upravena místnost "${room.name}"`,
+      });
+      res.json(room);
+    } catch (error) {
+      console.error('Error updating chat room:', error);
+      res.status(500).json({ message: 'Failed to update chat room' });
+    }
+  });
+
+  app.delete('/api/admin/chat-rooms/:id', requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const room = await storage.getChatRoom(id);
+      if (!room) {
+        return res.status(404).json({ message: 'Chat room not found' });
+      }
+      
+      const success = await storage.deleteChatRoom(id);
+      if (!success) {
+        return res.status(500).json({ message: 'Failed to delete chat room' });
+      }
+      
+      await storage.logAdminActivity({
+        adminId: req.session.userId!,
+        action: 'chat_room_delete',
+        details: `Smazána místnost "${room.name}"`,
+      });
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Error deleting chat room:', error);
+      res.status(500).json({ message: 'Failed to delete chat room' });
     }
   });
 

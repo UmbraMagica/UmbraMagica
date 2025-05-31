@@ -36,6 +36,7 @@ export default function AdminClean() {
   // State for various dialogs and forms
   const [newInviteCode, setNewInviteCode] = useState("");
   const [isUserManagementCollapsed, setIsUserManagementCollapsed] = useState(false);
+  const [isChatManagementCollapsed, setIsChatManagementCollapsed] = useState(false);
   const [isLiveCharactersCollapsed, setIsLiveCharactersCollapsed] = useState(false);
   const [isDeadCharactersCollapsed, setIsDeadCharactersCollapsed] = useState(true);
   const [isCharacterRequestsCollapsed, setIsCharacterRequestsCollapsed] = useState(false);
@@ -52,6 +53,19 @@ export default function AdminClean() {
   const [banReason, setBanReason] = useState("");
   const [showConfirmBan, setShowConfirmBan] = useState(false);
 
+  // Chat management state
+  const [newCategoryName, setNewCategoryName] = useState("");
+  const [newCategoryDescription, setNewCategoryDescription] = useState("");
+  const [newCategoryParentId, setNewCategoryParentId] = useState<number | null>(null);
+  const [newRoomName, setNewRoomName] = useState("");
+  const [newRoomDescription, setNewRoomDescription] = useState("");
+  const [newRoomLongDescription, setNewRoomLongDescription] = useState("");
+  const [newRoomCategoryId, setNewRoomCategoryId] = useState<number | null>(null);
+  const [newRoomPassword, setNewRoomPassword] = useState("");
+  const [editingCategory, setEditingCategory] = useState<any>(null);
+  const [editingRoom, setEditingRoom] = useState<any>(null);
+  const [deleteConfirmation, setDeleteConfirmation] = useState<{type: 'category' | 'room', id: number, name: string} | null>(null);
+
   // Data queries
   const { data: user } = useQuery({ queryKey: ['/api/auth/user'] });
   const { data: users = [] } = useQuery({ queryKey: ['/api/users'] });
@@ -59,6 +73,7 @@ export default function AdminClean() {
   const { data: characterRequests = [] } = useQuery({ queryKey: ['/api/admin/character-requests'] });
   const { data: adminActivityLog = [] } = useQuery({ queryKey: ['/api/admin/activity-log'] });
   const { data: inviteCodes = [] } = useQuery({ queryKey: ['/api/admin/invite-codes'] });
+  const { data: chatCategories = [] } = useQuery({ queryKey: ['/api/admin/chat-categories'] });
 
   // Generate random invite code function
   const generateRandomInviteCode = () => {

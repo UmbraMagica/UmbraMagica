@@ -377,6 +377,7 @@ export const insertChatRoomSchema = createInsertSchema(chatRooms).pick({
   longDescription: true,
   categoryId: true,
   isPublic: true,
+  password: true,
   sortOrder: true,
 });
 
