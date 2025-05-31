@@ -1100,7 +1100,7 @@ export default function AdminClean() {
                               );
                             })}
                           {chatCategories.filter((category: any) => category.parentId !== null).length === 0 && (
-                            <SelectItem value="" disabled>
+                            <SelectItem value="no-areas" disabled>
                               Nejsou k dispozici žádné oblasti. Nejprve vytvořte oblast (kategorie 2. úrovně).
                             </SelectItem>
                           )}
