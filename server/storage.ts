@@ -1727,8 +1727,12 @@ export class DatabaseStorage implements IStorage {
         }
       }
 
-      // Create the chat room
-      const roomDescription = `${character.firstName} ${character.middleName ? character.middleName + ' ' : ''}${character.lastName}`;
+      // Create proper description based on housing type and size
+      let roomDescription = `${this.getHousingTypeDescription(request.requestType)}`;
+      if (request.size) {
+        roomDescription += ` ${request.size}`;
+      }
+      roomDescription += ` - ${character.firstName}${character.middleName ? ` ${character.middleName}` : ''} ${character.lastName}`;
       
       let longDescription = `**INFORMACE O BYDLENÍ**\n\n`;
       longDescription += `📍 **Adresa:** ${assignedAddress}\n`;
