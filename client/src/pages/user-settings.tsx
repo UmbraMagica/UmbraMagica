@@ -77,6 +77,8 @@ export default function UserSettings() {
 
   // Housing form state
   const [showHousingForm, setShowHousingForm] = useState(false);
+  const [housingType, setHousingType] = useState<'dormitory' | 'custom' | null>(null);
+  const [locationType, setLocationType] = useState<'area' | 'custom' | null>(null);
 
   const form = useForm<CharacterRequestForm>({
     resolver: zodResolver(characterRequestSchema),
@@ -911,18 +913,17 @@ export default function UserSettings() {
                   <CardHeader>
                     <CardTitle className="text-lg">Nová žádost o bydlení</CardTitle>
                     <p className="text-sm text-muted-foreground">
-                      Požádejte o přidělení bytu, domu nebo koleje pro svou postavu. 
-                      Po schválení bude adresa přidána do profilu postavy a bude vytvořena soukromá místnost pro roleplay.
+                      Požádejte o přidělení bytu, domu, sídla nebo pokoje na ubytovně pro svou postavu. Po schválení bude adresa přidána do profilu postavy a bude vytvořena soukromá místnost pro roleplay, v případě ubytovny se jedná o veřejný chat.
                     </p>
                   </CardHeader>
                   <CardContent>
                     <form onSubmit={housingForm.handleSubmit(onHousingSubmit)} className="space-y-4">
                       <div>
-                        <Label htmlFor="characterId">Postava *</Label>
+                        <Label htmlFor="characterId" className="text-foreground">Postava *</Label>
                         <select
                           id="characterId"
                           {...housingForm.register("characterId", { valueAsNumber: true })}
-                          className="w-full p-2 border rounded-md"
+                          className="w-full p-2 border rounded-md bg-background text-foreground"
                         >
                           <option value="">Vyberte postavu</option>
                           {userCharacters?.map((character: any) => (
@@ -936,147 +937,244 @@ export default function UserSettings() {
                         )}
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <Label htmlFor="requestType">Typ bydlení *</Label>
-                          <select
-                            id="requestType"
-                            {...housingForm.register("requestType")}
-                            className="w-full p-2 border rounded-md"
-                          >
-                            <option value="">Vyberte typ</option>
-                            <option value="dormitory">Ubytovna</option>
-                            <option value="apartment">Byt</option>
-                            <option value="house">Dům</option>
-                            <option value="mansion">Sídlo</option>
-                          </select>
-                          {housingForm.formState.errors.requestType && (
-                            <p className="text-sm text-destructive">{housingForm.formState.errors.requestType.message}</p>
+                      {/* Typ bydlení - checkboxy */}
+                      <div className="space-y-3">
+                        <Label className="text-foreground">Typ žádosti *</Label>
+                        <div className="space-y-2">
+                          <div className="flex items-center space-x-2">
+                            <input
+                              type="checkbox"
+                              id="custom-housing"
+                              checked={housingType === 'custom'}
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  setHousingType('custom');
+                                  housingForm.setValue('requestType', 'apartment');
+                                } else {
+                                  setHousingType(null);
+                                  housingForm.setValue('requestType', '');
+                                }
+                              }}
+                              className="w-4 h-4"
+                            />
+                            <label htmlFor="custom-housing" className="text-foreground">Vlastní bydlení</label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <input
+                              type="checkbox"
+                              id="dormitory-housing"
+                              checked={housingType === 'dormitory'}
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  setHousingType('dormitory');
+                                  housingForm.setValue('requestType', 'dormitory');
+                                } else {
+                                  setHousingType(null);
+                                  housingForm.setValue('requestType', '');
+                                }
+                              }}
+                              className="w-4 h-4"
+                            />
+                            <label htmlFor="dormitory-housing" className="text-foreground">Pokoj na ubytovně</label>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Pokud je vybrána ubytovna */}
+                      {housingType === 'dormitory' && (
+                        <div className="bg-accent/10 p-4 rounded-md">
+                          <h3 className="text-lg font-semibold text-foreground mb-2">Vítejte v ubytovně U starého Šeptáka</h3>
+                          <p className="text-muted-foreground">
+                            Vaše žádost o pokoj na ubytovně bude automaticky schválena. Ubytovna poskytuje základní ubytování pro začínající čaroděje.
+                          </p>
+                        </div>
+                      )}
+
+                      {/* Pokud je vybráno vlastní bydlení */}
+                      {housingType === 'custom' && (
+                        <div className="space-y-4">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                              <Label htmlFor="requestType" className="text-foreground">Typ bydlení *</Label>
+                              <select
+                                id="requestType"
+                                {...housingForm.register("requestType")}
+                                className="w-full p-2 border rounded-md bg-background text-foreground"
+                              >
+                                <option value="">Vyberte typ</option>
+                                <option value="apartment">Byt</option>
+                                <option value="house">Dům</option>
+                                <option value="mansion">Sídlo</option>
+                              </select>
+                              {housingForm.formState.errors.requestType && (
+                                <p className="text-sm text-destructive">{housingForm.formState.errors.requestType.message}</p>
+                              )}
+                            </div>
+
+                            <div>
+                              <Label htmlFor="size" className="text-foreground">Velikost</Label>
+                              <Input
+                                id="size"
+                                {...housingForm.register("size")}
+                                placeholder="např. 2+1, malý dům, prostorné sídlo"
+                                className="bg-background text-foreground"
+                              />
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                              <Label htmlFor="housingName" className="text-foreground">Název bydlení</Label>
+                              <Input
+                                id="housingName"
+                                {...housingForm.register("housingName")}
+                                placeholder="např. Villa Rosewood, Apartmán u Zlaté Konvice"
+                                className="bg-background text-foreground"
+                              />
+                            </div>
+                            <div>
+                              <Label htmlFor="housingPassword" className="text-foreground">Heslo pro vstup</Label>
+                              <Input
+                                id="housingPassword"
+                                {...housingForm.register("housingPassword")}
+                                placeholder="heslo pro přístup do soukromé místnosti"
+                                className="bg-background text-foreground"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Umístění pouze pro vlastní bydlení */}
+                      {housingType === 'custom' && (
+                        <div className="space-y-4">
+                          <div>
+                            <Label className="text-foreground">Umístění *</Label>
+                            <div className="space-y-2">
+                              <div className="flex items-center space-x-2">
+                                <input
+                                  type="checkbox"
+                                  id="area-location"
+                                  checked={locationType === 'area'}
+                                  onChange={(e) => {
+                                    if (e.target.checked) {
+                                      setLocationType('area');
+                                      housingForm.setValue('location', 'area');
+                                      housingForm.setValue('customLocation', '');
+                                    } else {
+                                      setLocationType(null);
+                                      housingForm.setValue('location', '');
+                                    }
+                                  }}
+                                  className="w-4 h-4"
+                                />
+                                <label htmlFor="area-location" className="text-foreground">Oblast z nabídky</label>
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                <input
+                                  type="checkbox"
+                                  id="custom-location"
+                                  checked={locationType === 'custom'}
+                                  onChange={(e) => {
+                                    if (e.target.checked) {
+                                      setLocationType('custom');
+                                      housingForm.setValue('location', 'custom');
+                                      housingForm.setValue('selectedArea', '');
+                                    } else {
+                                      setLocationType(null);
+                                      housingForm.setValue('location', '');
+                                    }
+                                  }}
+                                  className="w-4 h-4"
+                                />
+                                <label htmlFor="custom-location" className="text-foreground">Vlastní adresa</label>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Oblast z nabídky */}
+                          {locationType === 'area' && (
+                            <div>
+                              <Label htmlFor="selectedArea" className="text-foreground">Vyberte oblast</Label>
+                              <select
+                                id="selectedArea"
+                                {...housingForm.register("selectedArea")}
+                                className="w-full p-2 border rounded-md bg-background text-foreground"
+                              >
+                                <option value="">Vyberte oblast</option>
+                                <option value="Bradavice a okolí">Bradavice a okolí</option>
+                                <option value="Londýn - centrum">Londýn - centrum</option>
+                                <option value="Londýn - předměstí">Londýn - předměstí</option>
+                                <option value="Diagon Alley">Diagon Alley</option>
+                                <option value="Knockturn Alley">Knockturn Alley</option>
+                                <option value="Hogsmeade">Hogsmeade</option>
+                                <option value="Godric's Hollow">Godric's Hollow</option>
+                                <option value="Little Whinging">Little Whinging</option>
+                                <option value="Grimmauld Place a okolí">Grimmauld Place a okolí</option>
+                                <option value="Venkov - Anglie">Venkov - Anglie</option>
+                                <option value="Skotsko">Skotsko</option>
+                                <option value="Wales">Wales</option>
+                                <option value="Irsko">Irsko</option>
+                              </select>
+                            </div>
+                          )}
+
+                          {/* Vlastní adresa */}
+                          {locationType === 'custom' && (
+                            <div>
+                              <Label htmlFor="customLocation" className="text-foreground">Vlastní adresa</Label>
+                              <Input
+                                id="customLocation"
+                                {...housingForm.register("customLocation")}
+                                placeholder="Zadejte konkrétní adresu"
+                                className="bg-background text-foreground"
+                              />
+                            </div>
                           )}
                         </div>
+                      )}
 
+                      {/* Popis pouze pokud není ubytovna */}
+                      {housingType && housingType !== 'dormitory' && (
                         <div>
-                          <Label htmlFor="size">Velikost</Label>
-                          <Input
-                            id="size"
-                            {...housingForm.register("size")}
-                            placeholder="např. 2+1, malý dům, jednolůžkový pokoj"
+                          <Label htmlFor="description" className="text-foreground">Popis žádosti *</Label>
+                          <Textarea
+                            id="description"
+                            {...housingForm.register("description")}
+                            placeholder="Popište důvod žádosti, specifické požadavky a jakékoliv další informace pro administrátory..."
+                            rows={4}
+                            className="bg-background text-foreground"
                           />
+                          {housingForm.formState.errors.description && (
+                            <p className="text-sm text-destructive">{housingForm.formState.errors.description.message}</p>
+                          )}
                         </div>
-                      </div>
+                      )}
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <Label htmlFor="housingName">Název bydlení</Label>
-                          <Input
-                            id="housingName"
-                            {...housingForm.register("housingName")}
-                            placeholder="např. Villa Rosewood, Apartmán u Zlaté Konvice"
-                          />
-                        </div>
-                        <div>
-                          <Label htmlFor="housingPassword">Heslo pro vstup</Label>
-                          <Input
-                            id="housingPassword"
-                            {...housingForm.register("housingPassword")}
-                            placeholder="heslo pro přístup do soukromé místnosti"
-                          />
-                        </div>
-                      </div>
-
-                      <div>
-                        <Label htmlFor="location">Umístění *</Label>
-                        <select
-                          id="location"
-                          {...housingForm.register("location")}
-                          className="w-full p-2 border rounded-md"
-                          onChange={(e) => {
-                            housingForm.setValue("location", e.target.value);
-                            if (e.target.value === "custom") {
-                              housingForm.setValue("selectedArea", "");
-                            } else {
-                              housingForm.setValue("customLocation", "");
-                            }
-                          }}
-                        >
-                          <option value="">Vyberte umístění</option>
-                          <option value="area">Oblast z nabídky</option>
-                          <option value="custom">Vlastní adresa</option>
-                        </select>
-                        {housingForm.formState.errors.location && (
-                          <p className="text-sm text-destructive">{housingForm.formState.errors.location.message}</p>
-                        )}
-                      </div>
-
-                      {housingForm.watch("location") === "area" && (
-                        <div>
-                          <Label htmlFor="selectedArea">Vyberte oblast *</Label>
-                          <select
-                            id="selectedArea"
-                            {...housingForm.register("selectedArea")}
-                            className="w-full p-2 border rounded-md"
+                      {/* Tlačítko odesílání - vždy zobrazeno */}
+                      {housingType && (
+                        <div className="flex gap-2">
+                          <Button
+                            type="submit"
+                            disabled={createHousingRequestMutation.isPending}
+                            className="bg-accent hover:bg-accent/90"
                           >
-                            <option value="">Vyberte oblast</option>
-                            <option value="Bradavice a okolí">Bradavice a okolí</option>
-                            <option value="Londýn - centrum">Londýn - centrum</option>
-                            <option value="Londýn - předměstí">Londýn - předměstí</option>
-                            <option value="Diagon Alley">Diagon Alley</option>
-                            <option value="Knockturn Alley">Knockturn Alley</option>
-                            <option value="Hogsmeade">Hogsmeade</option>
-                            <option value="Godric's Hollow">Godric's Hollow</option>
-                            <option value="Little Whinging">Little Whinging</option>
-                            <option value="Grimmauld Place a okolí">Grimmauld Place a okolí</option>
-                            <option value="Venkov - Anglie">Venkov - Anglie</option>
-                            <option value="Skotsko">Skotsko</option>
-                            <option value="Wales">Wales</option>
-                            <option value="Irsko">Irsko</option>
-                          </select>
+                            {createHousingRequestMutation.isPending ? "Odesílám..." : "Odeslat žádost"}
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => {
+                              setShowHousingForm(false);
+                              setHousingType(null);
+                              setLocationType(null);
+                              housingForm.reset();
+                            }}
+                          >
+                            Zrušit
+                          </Button>
                         </div>
                       )}
-
-                      {housingForm.watch("location") === "custom" && (
-                        <div>
-                          <Label htmlFor="customLocation">Vlastní adresa *</Label>
-                          <Input
-                            id="customLocation"
-                            {...housingForm.register("customLocation")}
-                            placeholder="Zadejte konkrétní adresu"
-                          />
-                        </div>
-                      )}
-
-                      <div>
-                        <Label htmlFor="description">Popis žádosti *</Label>
-                        <Textarea
-                          id="description"
-                          {...housingForm.register("description")}
-                          placeholder="Popište důvod žádosti, specifické požadavky a jakékoliv další informace pro administrátory..."
-                          rows={4}
-                        />
-                        {housingForm.formState.errors.description && (
-                          <p className="text-sm text-destructive">{housingForm.formState.errors.description.message}</p>
-                        )}
-                      </div>
-
-                      <div className="flex gap-2">
-                        <Button
-                          type="submit"
-                          disabled={createHousingRequestMutation.isPending}
-                          className="bg-accent hover:bg-accent/90"
-                        >
-                          {createHousingRequestMutation.isPending ? "Odesílám..." : "Odeslat žádost"}
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={() => {
-                            setShowHousingForm(false);
-                            housingForm.reset();
-                          }}
-                        >
-                          Zrušit
-                        </Button>
-                      </div>
                     </form>
                   </CardContent>
                 </Card>
