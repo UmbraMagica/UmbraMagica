@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
@@ -8,7 +9,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { useState } from "react";
 import { useLocation } from "wouter";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -1437,53 +1437,52 @@ export default function UserSettings() {
                 
                 {userCharacters && userCharacters.length > 0 ? (
                   <div className="space-y-2">
-                    {userCharacters.map((character: any, index: number) => (
-                      <div key={character.id} className="flex items-center justify-between p-3 border rounded-lg">
-                        <div className="flex items-center gap-3">
-                          <CharacterAvatar character={character} size="sm" />
-                          <div>
-                            <div className="font-medium">
-                              {character.firstName} {character.middleName} {character.lastName}
-                            </div>
-                            <div className="text-sm text-muted-foreground">
-                              {character.deathDate ? 'Zemřel(a)' : 'Aktivní'}
+                    {characterOrder.map((characterId: number, index: number) => {
+                      const character = userCharacters.find((char: any) => char.id === characterId);
+                      if (!character) return null;
+                      
+                      return (
+                        <div key={character.id} className="flex items-center justify-between p-3 border rounded-lg">
+                          <div className="flex items-center gap-3">
+                            <CharacterAvatar character={character} size="sm" />
+                            <div>
+                              <div className="font-medium">
+                                {character.firstName} {character.middleName} {character.lastName}
+                              </div>
+                              <div className="text-sm text-muted-foreground">
+                                {character.deathDate ? 'Zemřel(a)' : 'Aktivní'}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            disabled={index === 0}
-                            onClick={() => {
-                              const newOrder = [...characterOrder];
-                              const currentIndex = newOrder.indexOf(character.id) || index;
-                              if (currentIndex > 0) {
-                                [newOrder[currentIndex], newOrder[currentIndex - 1]] = [newOrder[currentIndex - 1], newOrder[currentIndex]];
+                          <div className="flex items-center gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              disabled={index === 0}
+                              onClick={() => {
+                                const newOrder = [...characterOrder];
+                                [newOrder[index], newOrder[index - 1]] = [newOrder[index - 1], newOrder[index]];
                                 setCharacterOrder(newOrder);
-                              }
-                            }}
-                          >
-                            ↑
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            disabled={index === userCharacters.length - 1}
-                            onClick={() => {
-                              const newOrder = [...characterOrder];
-                              const currentIndex = newOrder.indexOf(character.id) || index;
-                              if (currentIndex < userCharacters.length - 1) {
-                                [newOrder[currentIndex], newOrder[currentIndex + 1]] = [newOrder[currentIndex + 1], newOrder[currentIndex]];
+                              }}
+                            >
+                              ↑
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              disabled={index === characterOrder.length - 1}
+                              onClick={() => {
+                                const newOrder = [...characterOrder];
+                                [newOrder[index], newOrder[index + 1]] = [newOrder[index + 1], newOrder[index]];
                                 setCharacterOrder(newOrder);
-                              }
-                            }}
-                          >
-                            ↓
-                          </Button>
+                              }}
+                            >
+                              ↓
+                            </Button>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                     <Button 
                       onClick={() => updateCharacterOrderMutation.mutate(characterOrder)}
                       disabled={updateCharacterOrderMutation.isPending}
