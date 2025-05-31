@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { useLocation } from "wouter";
@@ -651,24 +652,64 @@ export default function Admin() {
                 Správa magického vlivu
               </div>
               <div className="flex gap-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    setIsAdminActivityCollapsed(false);
-                    // Scroll to admin activity section
-                    setTimeout(() => {
-                      const element = document.querySelector('[data-section="admin-activity"]');
-                      if (element) {
-                        element.scrollIntoView({ behavior: 'smooth' });
-                      }
-                    }, 100);
-                  }}
-                  className="text-muted-foreground hover:text-accent"
-                  title="Historie změn magického vlivu"
-                >
-                  <Book className="h-4 w-4" />
-                </Button>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-muted-foreground hover:text-accent"
+                      title="Historie změn magického vlivu"
+                    >
+                      <Book className="h-4 w-4" />
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-2xl max-h-96">
+                    <DialogHeader>
+                      <DialogTitle>Historie změn magického vlivu</DialogTitle>
+                    </DialogHeader>
+                    <div className="max-h-80 overflow-y-auto">
+                      {!influenceHistory ? (
+                        <div className="text-center text-muted-foreground py-8">Načítání historie...</div>
+                      ) : influenceHistory.length === 0 ? (
+                        <div className="text-center text-muted-foreground py-8">Zatím žádné změny</div>
+                      ) : (
+                        <div className="space-y-3">
+                          {influenceHistory.map((entry: any) => (
+                            <div
+                              key={entry.id}
+                              className="flex items-center justify-between p-3 border rounded-lg bg-card/30"
+                            >
+                              <div className="flex items-center gap-3">
+                                <div className={`w-3 h-3 rounded-full ${
+                                  entry.changeType === 'grindelwald' ? 'bg-red-600' : 'bg-blue-600'
+                                }`}></div>
+                                <div>
+                                  <div className="font-medium text-sm">
+                                    {entry.changeType === 'grindelwald' ? 'Grindelwald' : 'Brumbál'}: 
+                                    <span className={`ml-1 ${entry.pointsChanged > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                      {entry.pointsChanged > 0 ? '+' : ''}{entry.pointsChanged}
+                                    </span>
+                                    <span className="text-muted-foreground ml-1">
+                                      ({entry.previousTotal} → {entry.newTotal})
+                                    </span>
+                                  </div>
+                                  {entry.reason && (
+                                    <div className="text-xs text-muted-foreground mt-1">
+                                      {entry.reason}
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                              <div className="text-xs text-muted-foreground">
+                                {new Date(entry.createdAt).toLocaleString('cs-CZ')}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </DialogContent>
+                </Dialog>
                 <Button
                   variant="ghost"
                   size="sm"
