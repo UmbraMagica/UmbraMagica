@@ -502,6 +502,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Regular users can only update school and description, or admin doing limited edit
         validatedData = characterEditSchema.parse(req.body);
       }
+
+      // Special handling for height - can only be set once
+      if (validatedData.height !== undefined) {
+        if (character.heightSetAt) {
+          return res.status(400).json({ message: "Výška může být nastavena pouze jednou" });
+        }
+        validatedData.heightSetAt = new Date();
+      }
       
       const updatedCharacter = await storage.updateCharacter(characterId, validatedData);
       

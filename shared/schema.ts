@@ -56,6 +56,9 @@ export const characters = pgTable("characters", {
   deathDate: date("death_date"), // datum smrti postavy
   deathReason: text("death_reason"), // důvod smrti
   avatar: text("avatar"), // base64 encoded avatar image
+  height: integer("height"), // výška v cm
+  weight: integer("weight"), // váha v kg
+  heightSetAt: timestamp("height_set_at"), // kdy byla výška nastavena (pro jednoráz editaci)
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
@@ -453,6 +456,8 @@ export const loginSchema = z.object({
 export const characterEditSchema = z.object({
   school: z.string().optional(),
   description: z.string().optional(),
+  height: z.number().min(120, "Výška musí být alespoň 120 cm").max(250, "Výška nesmí překročit 250 cm").optional(),
+  weight: z.number().min(30, "Váha musí být alespoň 30 kg").max(300, "Váha nesmí překročit 300 kg").optional(),
 });
 
 export const characterAdminEditSchema = z.object({
@@ -462,6 +467,8 @@ export const characterAdminEditSchema = z.object({
   birthDate: z.string().min(1, "Birth date is required"),
   school: z.string().optional(),
   description: z.string().optional(),
+  height: z.number().min(120, "Výška musí být alespoň 120 cm").max(250, "Výška nesmí překročit 250 cm").optional(),
+  weight: z.number().min(30, "Váha musí být alespoň 30 kg").max(300, "Váha nesmí překročit 300 kg").optional(),
 });
 
 export const characterRequestSchema = z.object({

@@ -52,6 +52,8 @@ export default function CharacterEditFixedNav() {
     defaultValues: {
       school: primaryCharacter?.school || "",
       description: primaryCharacter?.description || "",
+      height: primaryCharacter?.height || undefined,
+      weight: primaryCharacter?.weight || undefined,
     },
   });
 
