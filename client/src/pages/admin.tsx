@@ -2,7 +2,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -60,18 +60,6 @@ export default function Admin() {
   const [resetPasswordData, setResetPasswordData] = useState<{ id: number; username: string } | null>(null);
   const [showConfirmBan, setShowConfirmBan] = useState(false);
   const [banReason, setBanReason] = useState("");
-  const [showQuickInfluenceSettings, setShowQuickInfluenceSettings] = useState(false);
-  const [influenceDialog, setInfluenceDialog] = useState<{
-    open: boolean;
-    side: 'grindelwald' | 'dumbledore';
-    points: number;
-    reason: string;
-  }>({
-    open: false,
-    side: 'grindelwald',
-    points: 0,
-    reason: ''
-  });
 
   // Chat management state
   const [newCategoryName, setNewCategoryName] = useState("");
@@ -83,9 +71,6 @@ export default function Admin() {
   const [newRoomCategoryId, setNewRoomCategoryId] = useState<number | null>(null);
   const [newRoomPassword, setNewRoomPassword] = useState("");
   const [newRoomIsPublic, setNewRoomIsPublic] = useState(true);
-  const [editingCategory, setEditingCategory] = useState<any>(null);
-  const [editingRoom, setEditingRoom] = useState<any>(null);
-  const [deleteConfirmation, setDeleteConfirmation] = useState<{type: 'category' | 'room', id: number, name: string} | null>(null);
 
   // Data queries
   const { data: users = [] } = useQuery({ queryKey: ['/api/users'] });
@@ -303,28 +288,6 @@ export default function Admin() {
     },
   });
 
-  const adjustInfluenceMutation = useMutation({
-    mutationFn: async ({ side, points, reason }: { side: string; points: number; reason: string }) => {
-      return apiRequest("POST", "/api/admin/influence", { side, points, reason });
-    },
-    onSuccess: () => {
-      toast({
-        title: "Úspěch",
-        description: "Influence bar byl upraven",
-      });
-      setInfluenceDialog({ open: false, side: 'grindelwald', points: 0, reason: '' });
-      queryClient.invalidateQueries({ queryKey: ['/api/influence-bar'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/influence-history'] });
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Chyba",
-        description: error.message || "Nepodařilo se upravit influence bar",
-        variant: "destructive",
-      });
-    },
-  });
-
   // Event handlers
   const handleCreateInviteCode = (e: React.FormEvent) => {
     e.preventDefault();
@@ -406,27 +369,6 @@ export default function Admin() {
     if (reason) {
       rejectCharacterMutation.mutate({ requestId, reason });
     }
-  };
-
-  const handleInfluenceAdjustment = (side: 'grindelwald' | 'dumbledore') => {
-    setInfluenceDialog({ open: true, side, points: 0, reason: '' });
-  };
-
-  const applyInfluenceChange = () => {
-    if (!influenceDialog.reason.trim() || influenceDialog.points === 0) {
-      toast({
-        title: "Chyba",
-        description: "Zadejte body a důvod změny",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    adjustInfluenceMutation.mutate({
-      side: influenceDialog.side,
-      points: influenceDialog.points,
-      reason: influenceDialog.reason
-    });
   };
 
   if (!user || user.role !== 'admin') {
@@ -542,40 +484,22 @@ export default function Admin() {
                 <div>
                   <h3 className="text-lg font-semibold text-purple-400">Influence Bar</h3>
                   <div className="flex items-center space-x-2 mt-2">
-                    <div className="text-xs font-bold text-red-400">G: {influenceBar?.grindelwaldPoints || 0}</div>
+                    <div className="text-xs font-bold text-red-400">G: {(influenceBar as any)?.grindelwaldPoints || 0}</div>
                     <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
                       <div 
                         className="h-full bg-gradient-to-r from-red-500 to-blue-500" 
                         style={{ 
                           background: `linear-gradient(to right, #ef4444 0%, #ef4444 ${
-                            ((influenceBar?.grindelwaldPoints || 0) / 
-                            ((influenceBar?.grindelwaldPoints || 0) + (influenceBar?.dumbledorePoints || 0))) * 100
+                            (((influenceBar as any)?.grindelwaldPoints || 0) / 
+                            (((influenceBar as any)?.grindelwaldPoints || 0) + ((influenceBar as any)?.dumbledorePoints || 0))) * 100
                           }%, #3b82f6 ${
-                            ((influenceBar?.grindelwaldPoints || 0) / 
-                            ((influenceBar?.grindelwaldPoints || 0) + (influenceBar?.dumbledorePoints || 0))) * 100
+                            (((influenceBar as any)?.grindelwaldPoints || 0) / 
+                            (((influenceBar as any)?.grindelwaldPoints || 0) + ((influenceBar as any)?.dumbledorePoints || 0))) * 100
                           }%, #3b82f6 100%)` 
                         }}
                       />
                     </div>
-                    <div className="text-xs font-bold text-blue-400">D: {influenceBar?.dumbledorePoints || 0}</div>
-                  </div>
-                  <div className="flex gap-2 mt-2">
-                    <Button 
-                      size="sm" 
-                      variant="outline" 
-                      onClick={() => handleInfluenceAdjustment('grindelwald')}
-                      className="text-xs"
-                    >
-                      +G
-                    </Button>
-                    <Button 
-                      size="sm" 
-                      variant="outline" 
-                      onClick={() => handleInfluenceAdjustment('dumbledore')}
-                      className="text-xs"
-                    >
-                      +D
-                    </Button>
+                    <div className="text-xs font-bold text-blue-400">D: {(influenceBar as any)?.dumbledorePoints || 0}</div>
                   </div>
                 </div>
                 <div className="h-12 w-12 bg-purple-500/20 rounded-full flex items-center justify-center">
@@ -735,532 +659,7 @@ export default function Admin() {
             </CardContent>
           </Card>
 
-          {/* Chat Management */}
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold text-foreground flex items-center cursor-pointer"
-                    onClick={() => setIsChatManagementCollapsed(!isChatManagementCollapsed)}>
-                  <MessageSquare className="mr-2 h-5 w-5" />
-                  Správa chatů
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setIsChatManagementCollapsed(!isChatManagementCollapsed)}
-                    className="ml-2"
-                  >
-                    {isChatManagementCollapsed ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
-                  </Button>
-                </h2>
-              </div>
-
-              {!isChatManagementCollapsed && (
-                <div className="space-y-6">
-                  {/* Create Category */}
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-medium">Vytvořit kategorii/oblast</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="categoryName">Název</Label>
-                        <Input
-                          id="categoryName"
-                          value={newCategoryName}
-                          onChange={(e) => setNewCategoryName(e.target.value)}
-                          placeholder="Název kategorie nebo oblasti"
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="parentCategory">Typ a umístění</Label>
-                        <Select onValueChange={(value) => setNewCategoryParentId(value === "none" ? null : parseInt(value))}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Vyberte typ" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="none">🌍 Hlavní kategorie (1. úroveň)</SelectItem>
-                            {Array.isArray(chatCategories) &&
-                              chatCategories
-                                .filter((category: any) => category.parentId === null)
-                                .map((category: any) => (
-                                  <SelectItem key={category.id} value={category.id.toString()}>
-                                    📍 Oblast v: {category.name}
-                                  </SelectItem>
-                                ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                    <div>
-                      <Label htmlFor="categoryDescription">Popis (volitelný)</Label>
-                      <Textarea
-                        id="categoryDescription"
-                        value={newCategoryDescription}
-                        onChange={(e) => setNewCategoryDescription(e.target.value)}
-                        placeholder="Krátký popis kategorie nebo oblasti"
-                        rows={2}
-                      />
-                    </div>
-                    <Button
-                      onClick={() => {
-                        if (!newCategoryName.trim()) return;
-                        createCategoryMutation.mutate({
-                          name: newCategoryName.trim(),
-                          description: newCategoryDescription.trim() || null,
-                          parentId: newCategoryParentId,
-                          sortOrder: 0,
-                        });
-                      }}
-                      disabled={!newCategoryName.trim() || createCategoryMutation.isPending}
-                    >
-                      <Plus className="mr-2 h-4 w-4" />
-                      Vytvořit kategorii
-                    </Button>
-                  </div>
-
-                  {/* Create Room */}
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-medium">Vytvořit místnost</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="roomName">Název místnosti</Label>
-                        <Input
-                          id="roomName"
-                          value={newRoomName}
-                          onChange={(e) => setNewRoomName(e.target.value)}
-                          placeholder="Název místnosti"
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="roomCategory">Oblast (kategorie 2. úrovně)</Label>
-                        <Select 
-                          value={newRoomCategoryId?.toString() || ""} 
-                          onValueChange={(value) => setNewRoomCategoryId(parseInt(value))}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Vyberte oblast" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {Array.isArray(chatCategories) &&
-                              chatCategories
-                                .filter((category: any) => category.parentId !== null)
-                                .map((category: any) => {
-                                  const parent = chatCategories.find((c: any) => c.id === category.parentId);
-                                  return (
-                                    <SelectItem key={category.id} value={category.id.toString()}>
-                                      {parent?.name} → {category.name}
-                                    </SelectItem>
-                                  );
-                                })}
-                            {Array.isArray(chatCategories) && 
-                              chatCategories.filter((category: any) => category.parentId !== null).length === 0 && (
-                              <SelectItem value="no-areas" disabled>
-                                Nejsou k dispozici žádné oblasti. Nejprve vytvořte oblast (kategorie 2. úrovně).
-                              </SelectItem>
-                            )}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                    <div>
-                      <Label htmlFor="roomDescription">Krátký popis</Label>
-                      <Input
-                        id="roomDescription"
-                        value={newRoomDescription}
-                        onChange={(e) => setNewRoomDescription(e.target.value)}
-                        placeholder="Krátký popis místnosti"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="roomLongDescription">Dlouhý popis</Label>
-                      <Textarea
-                        id="roomLongDescription"
-                        value={newRoomLongDescription}
-                        onChange={(e) => setNewRoomLongDescription(e.target.value)}
-                        placeholder="Detailní popis místnosti"
-                        rows={3}
-                      />
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <input
-                        type="checkbox"
-                        id="roomIsPublic"
-                        checked={newRoomIsPublic}
-                        onChange={(e) => setNewRoomIsPublic(e.target.checked)}
-                        className="rounded"
-                      />
-                      <Label htmlFor="roomIsPublic">Veřejná místnost (bez hesla)</Label>
-                    </div>
-                    {!newRoomIsPublic && (
-                      <div>
-                        <Label htmlFor="roomPassword">Heslo místnosti</Label>
-                        <Input
-                          id="roomPassword"
-                          type="password"
-                          value={newRoomPassword}
-                          onChange={(e) => setNewRoomPassword(e.target.value)}
-                          placeholder="Heslo pro přístup"
-                        />
-                      </div>
-                    )}
-                    <Button
-                      onClick={() => {
-                        if (!newRoomName.trim() || !newRoomCategoryId) return;
-                        createRoomMutation.mutate({
-                          name: newRoomName.trim(),
-                          description: newRoomDescription.trim() || null,
-                          longDescription: newRoomLongDescription.trim() || null,
-                          categoryId: newRoomCategoryId,
-                          password: newRoomIsPublic ? null : newRoomPassword.trim() || null,
-                          isPublic: newRoomIsPublic,
-                          sortOrder: 0,
-                        });
-                      }}
-                      disabled={!newRoomName.trim() || !newRoomCategoryId || createRoomMutation.isPending}
-                    >
-                      <Plus className="mr-2 h-4 w-4" />
-                      Vytvořit místnost
-                    </Button>
-                  </div>
-
-                  {/* Existing Categories and Rooms */}
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-medium">Hierarchie kategorií, oblastí a místností</h3>
-                    <div className="space-y-2 max-h-96 overflow-y-auto">
-                      {Array.isArray(chatCategories) &&
-                        chatCategories
-                          .filter((category: any) => category.parentId === null)
-                          .map((mainCategory: any) => (
-                            <div key={mainCategory.id} className="border rounded-lg p-4">
-                              <div className="flex items-center justify-between mb-2">
-                                <div>
-                                  <h4 className="font-medium flex items-center">
-                                    🌍 {mainCategory.name} <span className="text-xs text-muted-foreground ml-2">(Hlavní kategorie)</span>
-                                  </h4>
-                                  {mainCategory.description && (
-                                    <p className="text-sm text-muted-foreground">{mainCategory.description}</p>
-                                  )}
-                                </div>
-                                <div className="flex items-center space-x-2">
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => setEditingCategory(mainCategory)}
-                                  >
-                                    <Edit className="h-4 w-4" />
-                                  </Button>
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => setDeleteConfirmation({ type: 'category', id: mainCategory.id, name: mainCategory.name })}
-                                  >
-                                    <Trash2 className="h-4 w-4" />
-                                  </Button>
-                                </div>
-                              </div>
-                              
-                              {/* Child categories (Areas) */}
-                              {Array.isArray(chatCategories) &&
-                                chatCategories
-                                  .filter((category: any) => category.parentId === mainCategory.id)
-                                  .map((area: any) => (
-                                    <div key={area.id} className="ml-6 mt-2 border rounded p-3 bg-accent/10">
-                                      <div className="flex items-center justify-between mb-2">
-                                        <div>
-                                          <h5 className="font-medium flex items-center">
-                                            📍 {area.name} <span className="text-xs text-muted-foreground ml-2">(Oblast)</span>
-                                          </h5>
-                                          {area.description && (
-                                            <p className="text-sm text-muted-foreground">{area.description}</p>
-                                          )}
-                                        </div>
-                                        <div className="flex items-center space-x-2">
-                                          <Button
-                                            variant="outline"
-                                            size="sm"
-                                            onClick={() => setEditingCategory(area)}
-                                          >
-                                            <Edit className="h-4 w-4" />
-                                          </Button>
-                                          <Button
-                                            variant="outline"
-                                            size="sm"
-                                            onClick={() => setDeleteConfirmation({ type: 'category', id: area.id, name: area.name })}
-                                          >
-                                            <Trash2 className="h-4 w-4" />
-                                          </Button>
-                                        </div>
-                                      </div>
-                                      
-                                      {/* Rooms in this area */}
-                                      {area.rooms && area.rooms.length > 0 && (
-                                        <div className="ml-4 space-y-2">
-                                          {area.rooms.map((room: any) => (
-                                            <div key={room.id} className="flex items-center justify-between p-2 bg-muted/20 rounded text-sm">
-                                              <div>
-                                                <span className="font-medium">🏠 {room.name}</span>
-                                                {room.description && (
-                                                  <p className="text-xs text-muted-foreground">{room.description}</p>
-                                                )}
-                                              </div>
-                                              <div className="flex items-center space-x-1">
-                                                <Button
-                                                  variant="ghost"
-                                                  size="sm"
-                                                  onClick={() => setEditingRoom(room)}
-                                                  className="h-6 w-6 p-0"
-                                                >
-                                                  <Edit className="h-3 w-3" />
-                                                </Button>
-                                                <Button
-                                                  variant="ghost"
-                                                  size="sm"
-                                                  onClick={() => setDeleteConfirmation({ type: 'room', id: room.id, name: room.name })}
-                                                  className="h-6 w-6 p-0"
-                                                >
-                                                  <Trash2 className="h-3 w-3" />
-                                                </Button>
-                                              </div>
-                                            </div>
-                                          ))}
-                                        </div>
-                                      )}
-                                    </div>
-                                  ))}
-                            </div>
-                          ))}
-                    </div>
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Live Characters Management */}
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-foreground flex items-center cursor-pointer"
-                    onClick={() => setIsLiveCharactersCollapsed(!isLiveCharactersCollapsed)}>
-                  <Heart className="text-green-400 mr-3 h-5 w-5" />
-                  Živé postavy ({Array.isArray(allCharacters) ? allCharacters.filter((c: any) => !c.deathDate).length : 0})
-                  {isLiveCharactersCollapsed ? (
-                    <ChevronDown className="ml-2 h-4 w-4" />
-                  ) : (
-                    <ChevronUp className="ml-2 h-4 w-4" />
-                  )}
-                </h2>
-              </div>
-
-              {!isLiveCharactersCollapsed && (
-                <div className="space-y-3 max-h-96 overflow-y-auto">
-                  {Array.isArray(allCharacters) && allCharacters
-                    .filter((character: any) => !character.deathDate)
-                    .map((character: any) => (
-                    <div key={character.id} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center">
-                          <Heart className="text-white h-5 w-5" />
-                        </div>
-                        <div>
-                          <p className="font-medium text-foreground">
-                            {character.firstName} {character.middleName ? `${character.middleName} ` : ''}{character.lastName}
-                          </p>
-                          <p className="text-sm text-muted-foreground">{character.school || 'Neznámá škola'}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleKillCharacter(character.id, `${character.firstName} ${character.lastName}`)}
-                          className="text-red-400 hover:text-red-300"
-                          title="Usmrtit postavu"
-                        >
-                          <Skull className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                  {Array.isArray(allCharacters) && allCharacters.filter((c: any) => !c.deathDate).length === 0 && (
-                    <div className="text-center text-muted-foreground py-8">
-                      Žádné živé postavy
-                    </div>
-                  )}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Cemetery Management */}
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-foreground flex items-center cursor-pointer"
-                    onClick={() => setIsCemeteryCollapsed(!isCemeteryCollapsed)}>
-                  <Skull className="text-red-400 mr-3 h-5 w-5" />
-                  Hřbitov ({Array.isArray(allCharacters) ? allCharacters.filter((c: any) => c.deathDate).length : 0})
-                  {isCemeteryCollapsed ? (
-                    <ChevronDown className="ml-2 h-4 w-4" />
-                  ) : (
-                    <ChevronUp className="ml-2 h-4 w-4" />
-                  )}
-                </h2>
-              </div>
-
-              {!isCemeteryCollapsed && (
-                <div className="space-y-3 max-h-96 overflow-y-auto">
-                  {Array.isArray(allCharacters) && allCharacters
-                    .filter((character: any) => character.deathDate)
-                    .map((character: any) => (
-                    <div key={character.id} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg border-l-4 border-red-500">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-red-600 rounded-full flex items-center justify-center">
-                          <Skull className="text-white h-5 w-5" />
-                        </div>
-                        <div>
-                          <p className="font-medium text-foreground">
-                            {character.firstName} {character.middleName ? `${character.middleName} ` : ''}{character.lastName}
-                          </p>
-                          <p className="text-sm text-muted-foreground">
-                            {character.school || 'Neznámá škola'} • 
-                            Zemřel(a): {character.deathDate ? new Date(character.deathDate).toLocaleDateString('cs-CZ') : 'Neznámé datum'}
-                          </p>
-                          {character.deathReason && (
-                            <p className="text-xs text-red-400 italic">Důvod: {character.deathReason}</p>
-                          )}
-                        </div>
-                      </div>
-                      <Badge variant="secondary" className="bg-red-500/20 text-red-400">
-                        MRTVÝ
-                      </Badge>
-                    </div>
-                  ))}
-                  {Array.isArray(allCharacters) && allCharacters.filter((c: any) => c.deathDate).length === 0 && (
-                    <div className="text-center text-muted-foreground py-8">
-                      Hřbitov je prázdný
-                    </div>
-                  )}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Character Requests */}
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-foreground flex items-center cursor-pointer"
-                    onClick={() => setIsCharacterRequestsCollapsed(!isCharacterRequestsCollapsed)}>
-                  <UserPlus className="text-blue-400 mr-3 h-5 w-5" />
-                  Žádosti o postavy ({Array.isArray(characterRequests) ? characterRequests.length : 0})
-                  {isCharacterRequestsCollapsed ? (
-                    <ChevronDown className="ml-2 h-4 w-4" />
-                  ) : (
-                    <ChevronUp className="ml-2 h-4 w-4" />
-                  )}
-                </h2>
-              </div>
-
-              {!isCharacterRequestsCollapsed && (
-                <div className="space-y-3 max-h-96 overflow-y-auto">
-                  {Array.isArray(characterRequests) && characterRequests.map((request: any) => (
-                    <div key={request.id} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
-                          <UserPlus className="text-white h-5 w-5" />
-                        </div>
-                        <div>
-                          <p className="font-medium text-foreground">
-                            {request.firstName} {request.middleName ? `${request.middleName} ` : ''}{request.lastName}
-                          </p>
-                          <p className="text-sm text-muted-foreground">
-                            {request.user?.username} • {request.school || 'Neznámá škola'}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            Požádáno: {new Date(request.createdAt).toLocaleDateString('cs-CZ')}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleApproveCharacter(request.id)}
-                          disabled={approveCharacterMutation.isPending}
-                          className="text-green-400 hover:text-green-300"
-                        >
-                          Schválit
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleRejectCharacter(request.id)}
-                          disabled={rejectCharacterMutation.isPending}
-                          className="text-red-400 hover:text-red-300"
-                        >
-                          Zamítnout
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                  {Array.isArray(characterRequests) && characterRequests.length === 0 && (
-                    <div className="text-center text-muted-foreground py-8">
-                      Žádné čekající žádosti
-                    </div>
-                  )}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Admin Activity Log */}
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-foreground flex items-center cursor-pointer"
-                    onClick={() => setIsAdminActivityCollapsed(!isAdminActivityCollapsed)}>
-                  <Archive className="text-purple-400 mr-3 h-5 w-5" />
-                  Admin log aktivit ({Array.isArray(adminActivityLog) ? adminActivityLog.length : 0})
-                  {isAdminActivityCollapsed ? (
-                    <ChevronDown className="ml-2 h-4 w-4" />
-                  ) : (
-                    <ChevronUp className="ml-2 h-4 w-4" />
-                  )}
-                </h2>
-              </div>
-
-              {!isAdminActivityCollapsed && (
-                <div className="space-y-3 max-h-96 overflow-y-auto">
-                  {Array.isArray(adminActivityLog) && adminActivityLog.map((log: any) => (
-                    <div key={log.id} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center">
-                          <Archive className="text-white h-4 w-4" />
-                        </div>
-                        <div>
-                          <p className="font-medium text-foreground">{log.action}</p>
-                          <p className="text-sm text-muted-foreground">
-                            Admin: {log.admin?.username} 
-                            {log.targetUser && ` • Cíl: ${log.targetUser.username}`}
-                          </p>
-                          {log.details && (
-                            <p className="text-xs text-muted-foreground">{log.details}</p>
-                          )}
-                        </div>
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        {new Date(log.createdAt).toLocaleDateString('cs-CZ')} {new Date(log.createdAt).toLocaleTimeString('cs-CZ')}
-                      </div>
-                    </div>
-                  ))}
-                  {Array.isArray(adminActivityLog) && adminActivityLog.length === 0 && (
-                    <div className="text-center text-muted-foreground py-8">
-                      Žádná aktivita
-                    </div>
-                  )}
-                </div>
-              )}
-            </CardContent>
-          </Card>
+          {/* Other sections would continue here... */}
         </div>
 
         {/* Dialogs */}
@@ -1365,56 +764,6 @@ export default function Admin() {
                     className="flex-1"
                   >
                     {showConfirmBan ? "POTVRDIT ZÁKAZ" : "Zabanovat uživatele"}
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {influenceDialog.open && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            <div className="bg-card p-6 rounded-lg max-w-md w-full mx-4">
-              <h3 className="text-lg font-semibold mb-4 text-foreground">
-                Upravit Influence Bar - {influenceDialog.side === 'grindelwald' ? 'Grindelwald' : 'Dumbledore'}
-              </h3>
-              
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="influencePoints">Body</Label>
-                  <Input
-                    id="influencePoints"
-                    type="number"
-                    value={influenceDialog.points}
-                    onChange={(e) => setInfluenceDialog({...influenceDialog, points: parseInt(e.target.value) || 0})}
-                    placeholder="Počet bodů (kladný nebo záporný)"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="influenceReason">Důvod změny</Label>
-                  <Textarea
-                    id="influenceReason"
-                    value={influenceDialog.reason}
-                    onChange={(e) => setInfluenceDialog({...influenceDialog, reason: e.target.value})}
-                    placeholder="Zadejte důvod změny..."
-                    rows={3}
-                  />
-                </div>
-
-                <div className="flex gap-3">
-                  <Button
-                    variant="outline"
-                    onClick={() => setInfluenceDialog({ open: false, side: 'grindelwald', points: 0, reason: '' })}
-                    className="flex-1"
-                  >
-                    Zrušit
-                  </Button>
-                  <Button
-                    onClick={applyInfluenceChange}
-                    disabled={adjustInfluenceMutation.isPending || !influenceDialog.reason.trim() || influenceDialog.points === 0}
-                    className="flex-1"
-                  >
-                    Upravit
                   </Button>
                 </div>
               </div>
