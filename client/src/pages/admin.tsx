@@ -879,30 +879,32 @@ export default function AdminClean() {
               <div className="space-y-6">
                 {/* Create Category */}
                 <div className="space-y-4">
-                  <h3 className="text-lg font-medium">Vytvořit kategorii</h3>
+                  <h3 className="text-lg font-medium">Vytvořit kategorii/oblast</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="categoryName">Název kategorie</Label>
+                      <Label htmlFor="categoryName">Název</Label>
                       <Input
                         id="categoryName"
                         value={newCategoryName}
                         onChange={(e) => setNewCategoryName(e.target.value)}
-                        placeholder="Název kategorie"
+                        placeholder="Název kategorie nebo oblasti"
                       />
                     </div>
                     <div>
-                      <Label htmlFor="parentCategory">Nadřazená kategorie</Label>
+                      <Label htmlFor="parentCategory">Typ a umístění</Label>
                       <Select onValueChange={(value) => setNewCategoryParentId(value === "none" ? null : parseInt(value))}>
                         <SelectTrigger>
-                          <SelectValue placeholder="Vyberte nadřazenou kategorii" />
+                          <SelectValue placeholder="Vyberte typ" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="none">Žádná (hlavní kategorie)</SelectItem>
-                          {chatCategories.map((category: any) => (
-                            <SelectItem key={category.id} value={category.id.toString()}>
-                              {category.name}
-                            </SelectItem>
-                          ))}
+                          <SelectItem value="none">🌍 Hlavní kategorie (1. úroveň)</SelectItem>
+                          {chatCategories
+                            .filter((category: any) => category.parentId === null)
+                            .map((category: any) => (
+                              <SelectItem key={category.id} value={category.id.toString()}>
+                                📍 Oblast v "{category.name}" (2. úroveň)
+                              </SelectItem>
+                            ))}
                         </SelectContent>
                       </Select>
                     </div>
@@ -1019,71 +1021,82 @@ export default function AdminClean() {
 
                 {/* Existing Categories and Rooms */}
                 <div className="space-y-4">
-                  <h3 className="text-lg font-medium">Existující kategorie a místnosti</h3>
+                  <h3 className="text-lg font-medium">Hierarchie kategorií, oblastí a místností</h3>
                   <div className="space-y-2 max-h-96 overflow-y-auto">
-                    {chatCategories.map((category: any) => (
-                      <div key={category.id} className="border rounded-lg p-4">
-                        <div className="flex items-center justify-between mb-2">
-                          <div>
-                            <h4 className="font-medium">{category.name}</h4>
-                            {category.description && (
-                              <p className="text-sm text-muted-foreground">{category.description}</p>
-                            )}
-                          </div>
-                          <div className="flex items-center space-x-2">
+                    {chatCategories
+                      .filter((category: any) => category.parentId === null)
+                      .map((mainCategory: any) => (
+                        <div key={mainCategory.id} className="border rounded-lg p-4">
+                          <div className="flex items-center justify-between mb-2">
+                            <div>
+                              <h4 className="font-medium flex items-center">
+                                🌍 {mainCategory.name} <span className="text-xs text-muted-foreground ml-2">(Hlavní kategorie)</span>
+                              </h4>
+                              {mainCategory.description && (
+                                <p className="text-sm text-muted-foreground">{mainCategory.description}</p>
+                              )}
+                            </div>
                             <Button
                               variant="outline"
                               size="sm"
-                              onClick={() => setDeleteConfirmation({ type: 'category', id: category.id, name: category.name })}
+                              onClick={() => setDeleteConfirmation({ type: 'category', id: mainCategory.id, name: mainCategory.name })}
                             >
                               <Trash2 className="h-4 w-4" />
                             </Button>
                           </div>
-                        </div>
-                        
-                        {/* Rooms in this category */}
-                        {category.rooms && category.rooms.length > 0 && (
-                          <div className="ml-4 space-y-2">
-                            {category.rooms.map((room: any) => (
-                              <div key={room.id} className="flex items-center justify-between p-2 bg-muted/20 rounded">
-                                <div>
-                                  <span className="font-medium">{room.name}</span>
-                                  {room.password && <Badge variant="secondary" className="ml-2">Chráněno heslem</Badge>}
-                                  {room.description && (
-                                    <p className="text-sm text-muted-foreground">{room.description}</p>
-                                  )}
+                          
+                          {/* Child categories (Areas) */}
+                          {chatCategories
+                            .filter((category: any) => category.parentId === mainCategory.id)
+                            .map((area: any) => (
+                              <div key={area.id} className="ml-6 mt-2 border rounded p-3 bg-accent/10">
+                                <div className="flex items-center justify-between mb-2">
+                                  <div>
+                                    <h5 className="font-medium flex items-center">
+                                      📍 {area.name} <span className="text-xs text-muted-foreground ml-2">(Oblast)</span>
+                                    </h5>
+                                    {area.description && (
+                                      <p className="text-sm text-muted-foreground">{area.description}</p>
+                                    )}
+                                  </div>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => setDeleteConfirmation({ type: 'category', id: area.id, name: area.name })}
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
                                 </div>
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => setDeleteConfirmation({ type: 'room', id: room.id, name: room.name })}
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
+                                
+                                {/* Rooms in this area */}
+                                {area.rooms && area.rooms.length > 0 && (
+                                  <div className="ml-4 space-y-2">
+                                    {area.rooms.map((room: any) => (
+                                      <div key={room.id} className="flex items-center justify-between p-2 bg-white/50 dark:bg-black/20 rounded">
+                                        <div>
+                                          <span className="font-medium flex items-center">
+                                            💬 {room.name} <span className="text-xs text-muted-foreground ml-2">(Místnost)</span>
+                                          </span>
+                                          {room.password && <Badge variant="secondary" className="ml-2">Chráněno heslem</Badge>}
+                                          {room.description && (
+                                            <p className="text-sm text-muted-foreground">{room.description}</p>
+                                          )}
+                                        </div>
+                                        <Button
+                                          variant="outline"
+                                          size="sm"
+                                          onClick={() => setDeleteConfirmation({ type: 'room', id: room.id, name: room.name })}
+                                        >
+                                          <Trash2 className="h-4 w-4" />
+                                        </Button>
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
                               </div>
                             ))}
-                          </div>
-                        )}
-                        
-                        {/* Child categories */}
-                        {category.children && category.children.length > 0 && (
-                          <div className="ml-4 mt-2 space-y-1">
-                            {category.children.map((child: any) => (
-                              <div key={child.id} className="flex items-center justify-between p-2 bg-accent/20 rounded">
-                                <span className="text-sm font-medium">📁 {child.name}</span>
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => setDeleteConfirmation({ type: 'category', id: child.id, name: child.name })}
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    ))}
+                        </div>
+                      ))}
                   </div>
                 </div>
               </div>
