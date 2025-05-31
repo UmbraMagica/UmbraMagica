@@ -241,172 +241,73 @@ export default function CharacterEditFixedNav() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                {isAdmin ? (
-                  <form onSubmit={adminForm.handleSubmit(onAdminSubmit)} className="space-y-6">
-                    <div className="space-y-2">
-                      <Label htmlFor="firstName" className="text-foreground">Křestní jméno</Label>
-                      <Input
-                        id="firstName"
-                        {...adminForm.register("firstName")}
-                        placeholder="Zadejte křestní jméno"
-                        className="bg-muted border-border text-foreground"
-                      />
-                      {adminForm.formState.errors.firstName && (
-                        <p className="text-sm text-destructive">{adminForm.formState.errors.firstName.message}</p>
-                      )}
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="middleName" className="text-foreground">Prostřední jméno (volitelné)</Label>
-                      <Input
-                        id="middleName"
-                        {...adminForm.register("middleName")}
-                        placeholder="Zadejte prostřední jméno (volitelné)"
-                        className="bg-muted border-border text-foreground"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="lastName" className="text-foreground">Příjmení</Label>
-                      <Input
-                        id="lastName"
-                        {...adminForm.register("lastName")}
-                        placeholder="Zadejte příjmení"
-                        className="bg-muted border-border text-foreground"
-                      />
-                      {adminForm.formState.errors.lastName && (
-                        <p className="text-sm text-destructive">{adminForm.formState.errors.lastName.message}</p>
-                      )}
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="birthDate" className="text-foreground">Datum narození</Label>
-                      <p className="text-xs text-muted-foreground">
-                        Věk postavy v roce 1926 bude: {previewAge} let
-                      </p>
-                      <Input
-                        id="birthDate"
-                        type="date"
-                        {...adminForm.register("birthDate")}
-                        className="bg-muted border-border text-foreground"
-                        min="1860-01-01"
-                        max="1910-12-31"
-                      />
-                      {adminForm.formState.errors.birthDate && (
-                        <p className="text-sm text-destructive">{adminForm.formState.errors.birthDate.message}</p>
-                      )}
-                    </div>
-
-                    <hr className="border-border" />
-
-                    <div className="space-y-2">
-                      <Label htmlFor="school" className="text-foreground">Škola</Label>
-                      <Input
-                        id="school"
-                        {...adminForm.register("school")}
-                        placeholder="Zadejte název školy (volitelné)"
-                        className="bg-muted border-border text-foreground"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="description" className="text-foreground">Popis postavy</Label>
-                      <p className="text-xs text-muted-foreground">
-                        Podporuje HTML formátování: <code>&lt;b&gt;tučné&lt;/b&gt;</code>, <code>&lt;i&gt;kurzíva&lt;/i&gt;</code>, <code>&lt;u&gt;podtržené&lt;/u&gt;</code>, odkazy, obrázky
-                      </p>
-                      <Textarea
-                        id="description"
-                        {...adminForm.register("description")}
-                        placeholder="Napište krátký popis vaší postavy (volitelné)"
-                        className="bg-muted border-border text-foreground min-h-[100px]"
-                        rows={4}
-                      />
-                    </div>
-
-                    <div className="flex items-center justify-between pt-6 border-t border-border">
-                      <Button 
-                        type="button" 
-                        variant="outline" 
-                        onClick={() => setLocation(`/character/${characterId}`)}
-                        className="border-border text-muted-foreground hover:text-foreground"
-                      >
-                        <ArrowLeft className="h-4 w-4 mr-2" />
-                        Zrušit
-                      </Button>
-                      <Button 
-                        type="submit" 
-                        disabled={updateCharacterMutation.isPending}
-                        className="bg-gradient-to-r from-primary to-secondary hover:from-secondary hover:to-primary text-primary-foreground"
-                      >
-                        <Save className="h-4 w-4 mr-2" />
-                        {updateCharacterMutation.isPending ? "Ukládám..." : "Uložit změny"}
-                      </Button>
-                    </div>
-                  </form>
-                ) : (
-                  <form onSubmit={userForm.handleSubmit(onUserSubmit)} className="space-y-6">
-                    {/* Read-only fields for regular users */}
-                    <div className="space-y-4 p-4 bg-muted rounded-lg">
-                      <h4 className="font-medium text-foreground">Základní informace (pouze pro čtení)</h4>
-                      <div className="grid grid-cols-2 gap-4 text-sm">
-                        <div>
-                          <span className="text-muted-foreground">Jméno:</span>
-                          <p className="font-medium text-foreground">
-                            {primaryCharacter.firstName} {primaryCharacter.middleName && `${primaryCharacter.middleName} `}{primaryCharacter.lastName}
-                          </p>
-                        </div>
-                        <div>
-                          <span className="text-muted-foreground">Věk:</span>
-                          <p className="font-medium text-foreground">{currentAge} let</p>
-                        </div>
+                <form onSubmit={userForm.handleSubmit(onUserSubmit)} className="space-y-6">
+                  {/* Read-only fields for all users */}
+                  <div className="space-y-4 p-4 bg-muted rounded-lg">
+                    <h4 className="font-medium text-foreground">Základní informace (pouze pro čtení)</h4>
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <span className="text-muted-foreground">Jméno:</span>
+                        <p className="font-medium text-foreground">
+                          {primaryCharacter.firstName} {primaryCharacter.middleName && `${primaryCharacter.middleName} `}{primaryCharacter.lastName}
+                        </p>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground">Věk:</span>
+                        <p className="font-medium text-foreground">{currentAge} let</p>
                       </div>
                     </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="school" className="text-foreground">Škola</Label>
-                      <Input
-                        id="school"
-                        {...userForm.register("school")}
-                        placeholder="Zadejte název školy (volitelné)"
-                        className="bg-muted border-border text-foreground"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="description" className="text-foreground">Popis postavy</Label>
-                      <p className="text-xs text-muted-foreground">
-                        Podporuje HTML formátování: <code>&lt;b&gt;tučné&lt;/b&gt;</code>, <code>&lt;i&gt;kurzíva&lt;/i&gt;</code>, <code>&lt;u&gt;podtržené&lt;/u&gt;</code>, odkazy, obrázky
+                    {isAdmin && (
+                      <p className="text-xs text-amber-400 italic">
+                        Pro úpravu základních údajů použijte administrátorské rozhraní → Správa postav
                       </p>
-                      <Textarea
-                        id="description"
-                        {...userForm.register("description")}
-                        placeholder="Napište krátký popis vaší postavy (volitelné)"
-                        className="bg-muted border-border text-foreground min-h-[100px]"
-                        rows={4}
-                      />
-                    </div>
+                    )}
+                  </div>
 
-                    <div className="flex items-center justify-between pt-6 border-t border-border">
-                      <Button 
-                        type="button" 
-                        variant="outline" 
-                        onClick={() => setLocation(`/character/${characterId}`)}
-                        className="border-border text-muted-foreground hover:text-foreground"
-                      >
-                        <ArrowLeft className="h-4 w-4 mr-2" />
-                        Zrušit
-                      </Button>
-                      <Button 
-                        type="submit" 
-                        disabled={updateCharacterMutation.isPending}
-                        className="bg-gradient-to-r from-primary to-secondary hover:from-secondary hover:to-primary text-primary-foreground"
-                      >
-                        <Save className="h-4 w-4 mr-2" />
-                        {updateCharacterMutation.isPending ? "Ukládám..." : "Uložit změny"}
-                      </Button>
-                    </div>
-                  </form>
-                )}
+                  <div className="space-y-2">
+                    <Label htmlFor="school" className="text-foreground">Škola</Label>
+                    <Input
+                      id="school"
+                      {...userForm.register("school")}
+                      placeholder="Zadejte název školy (volitelné)"
+                      className="bg-muted border-border text-foreground"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="description" className="text-foreground">Popis postavy</Label>
+                    <p className="text-xs text-muted-foreground">
+                      Podporuje HTML formátování: <code>&lt;b&gt;tučné&lt;/b&gt;</code>, <code>&lt;i&gt;kurzíva&lt;/i&gt;</code>, <code>&lt;u&gt;podtržené&lt;/u&gt;</code>, odkazy, obrázky
+                    </p>
+                    <Textarea
+                      id="description"
+                      {...userForm.register("description")}
+                      placeholder="Napište krátký popis vaší postavy (volitelné)"
+                      className="bg-muted border-border text-foreground min-h-[100px]"
+                      rows={4}
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between pt-6 border-t border-border">
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      onClick={() => setLocation(`/character/${characterId}`)}
+                      className="border-border text-muted-foreground hover:text-foreground"
+                    >
+                      <ArrowLeft className="h-4 w-4 mr-2" />
+                      Zrušit
+                    </Button>
+                    <Button 
+                      type="submit" 
+                      disabled={updateCharacterMutation.isPending}
+                      className="bg-gradient-to-r from-primary to-secondary hover:from-secondary hover:to-primary text-primary-foreground"
+                    >
+                      <Save className="h-4 w-4 mr-2" />
+                      {updateCharacterMutation.isPending ? "Ukládám..." : "Uložit změny"}
+                    </Button>
+                  </div>
+                </form>
               </CardContent>
             </Card>
           </div>
