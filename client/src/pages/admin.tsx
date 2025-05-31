@@ -1084,7 +1084,7 @@ export default function AdminClean() {
                     </div>
                     <div>
                       <Label htmlFor="roomCategory">Oblast (kategorie 2. úrovně)</Label>
-                      <Select onValueChange={(value) => setNewRoomCategoryId(parseInt(value))}>
+                      <Select value={newRoomCategoryId?.toString() || ""} onValueChange={(value) => setNewRoomCategoryId(parseInt(value))}>
                         <SelectTrigger>
                           <SelectValue placeholder="Vyberte oblast" />
                         </SelectTrigger>
@@ -1099,6 +1099,11 @@ export default function AdminClean() {
                                 </SelectItem>
                               );
                             })}
+                          {chatCategories.filter((category: any) => category.parentId !== null).length === 0 && (
+                            <SelectItem value="" disabled>
+                              Nejsou k dispozici žádné oblasti. Nejprve vytvořte oblast (kategorie 2. úrovně).
+                            </SelectItem>
+                          )}
                         </SelectContent>
                       </Select>
                     </div>

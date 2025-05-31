@@ -104,17 +104,6 @@ export default function CharactersList() {
                     @{character.user.username}
                   </div>
                 </div>
-                {isAdmin && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setLocation('/character/edit')}
-                    className="flex items-center gap-1"
-                  >
-                    <Edit3 className="h-3 w-3" />
-                    Upravit
-                  </Button>
-                )}
               </div>
             </CardHeader>
             <CardContent className="pt-0">
