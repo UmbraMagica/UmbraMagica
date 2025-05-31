@@ -57,6 +57,12 @@ export default function Home() {
     enabled: !!user,
   });
 
+  // Get all characters for birthday display
+  const { data: allCharacters = [] } = useQuery({
+    queryKey: ["/api/characters/all"],
+    enabled: !!user,
+  });
+
   // Get main character's wand
   const { data: characterWand } = useQuery({
     queryKey: [`/api/characters/${mainCharacter?.id}/wand`],
@@ -596,6 +602,50 @@ export default function Home() {
                   {onlineCharacters.length === 0 && (
                     <p className="text-sm text-muted-foreground text-center py-4">
                       Žádné postavy nejsou online
+                    </p>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-card border-border">
+              <CardContent className="p-6">
+                <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center">
+                  <div className="text-accent mr-3">🎂</div>
+                  Narozeniny dnes
+                </h3>
+                <div className="space-y-3">
+                  {allCharacters
+                    ?.filter((character: any) => {
+                      if (!character.birthDate) return false;
+                      const today = new Date();
+                      const birthDate = new Date(character.birthDate);
+                      return birthDate.getDate() === today.getDate() && 
+                             birthDate.getMonth() === today.getMonth();
+                    })
+                    .map((character: any) => (
+                      <div key={character.id} className="flex items-center space-x-3 p-2 bg-yellow-500/10 rounded-lg border border-yellow-500/20">
+                        <CharacterAvatar character={character} size="sm" />
+                        <div className="flex-1">
+                          <p className="text-sm font-medium text-foreground">
+                            {character.firstName} {character.lastName}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {calculateGameAge(character.birthDate)} let
+                          </p>
+                        </div>
+                        <div className="text-yellow-500">🎉</div>
+                      </div>
+                    )) || []}
+                  {(!allCharacters || allCharacters.filter((character: any) => {
+                    if (!character.birthDate) return false;
+                    const today = new Date();
+                    const birthDate = new Date(character.birthDate);
+                    return birthDate.getDate() === today.getDate() && 
+                           birthDate.getMonth() === today.getMonth();
+                  }).length === 0) && (
+                    <p className="text-sm text-muted-foreground text-center py-4">
+                      Dnes nikdo neslaví narozeniny
                     </p>
                   )}
                 </div>
