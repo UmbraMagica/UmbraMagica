@@ -661,16 +661,16 @@ export default function AdminClean() {
                       <div className="space-y-2">
                         <h4 className="font-medium text-blue-700 dark:text-blue-400">Brumbál</h4>
                         <div className="flex gap-1">
-                          <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'dumbledore', points: 1 })}>+1</Button>
-                          <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'dumbledore', points: 2 })}>+2</Button>
-                          <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'dumbledore', points: 5 })}>+5</Button>
-                          <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'dumbledore', points: 10 })}>+10</Button>
+                          <Button size="sm" variant="outline" onClick={() => handleInfluenceChange('dumbledore', 1)}>+1</Button>
+                          <Button size="sm" variant="outline" onClick={() => handleInfluenceChange('dumbledore', 2)}>+2</Button>
+                          <Button size="sm" variant="outline" onClick={() => handleInfluenceChange('dumbledore', 5)}>+5</Button>
+                          <Button size="sm" variant="outline" onClick={() => handleInfluenceChange('dumbledore', 10)}>+10</Button>
                         </div>
                         <div className="flex gap-1">
-                          <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'dumbledore', points: -1 })}>-1</Button>
-                          <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'dumbledore', points: -2 })}>-2</Button>
-                          <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'dumbledore', points: -5 })}>-5</Button>
-                          <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'dumbledore', points: -10 })}>-10</Button>
+                          <Button size="sm" variant="outline" onClick={() => handleInfluenceChange('dumbledore', -1)}>-1</Button>
+                          <Button size="sm" variant="outline" onClick={() => handleInfluenceChange('dumbledore', -2)}>-2</Button>
+                          <Button size="sm" variant="outline" onClick={() => handleInfluenceChange('dumbledore', -5)}>-5</Button>
+                          <Button size="sm" variant="outline" onClick={() => handleInfluenceChange('dumbledore', -10)}>-10</Button>
                         </div>
                       </div>
                     </div>
@@ -721,6 +721,57 @@ export default function AdminClean() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Dialog pro zadání poznámky při změně vlivu */}
+        <Dialog open={influenceDialog.open} onOpenChange={(open) => setInfluenceDialog({...influenceDialog, open})}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>
+                {influenceDialog.side === 'grindelwald' ? 'Grindelwald' : 'Brumbál'}: 
+                {influenceDialog.points > 0 ? ' +' : ' '}{influenceDialog.points} bodů
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="reason">Důvod změny (povinné)</Label>
+                <Input
+                  id="reason"
+                  value={influenceDialog.reason}
+                  onChange={(e) => setInfluenceDialog({...influenceDialog, reason: e.target.value})}
+                  placeholder="Krátký popis důvodu změny vlivu"
+                />
+              </div>
+              <div className="flex gap-2 justify-end">
+                <Button 
+                  variant="outline" 
+                  onClick={() => setInfluenceDialog({open: false, side: 'grindelwald', points: 0, reason: ''})}
+                >
+                  Zrušit
+                </Button>
+                <Button 
+                  onClick={() => {
+                    if (!influenceDialog.reason.trim()) {
+                      toast({
+                        title: "Chyba",
+                        description: "Vyplňte důvod změny",
+                        variant: "destructive",
+                      });
+                      return;
+                    }
+                    adjustInfluenceWithHistory.mutate({
+                      changeType: influenceDialog.side,
+                      points: influenceDialog.points,
+                      reason: influenceDialog.reason.trim()
+                    });
+                  }}
+                  disabled={adjustInfluenceWithHistory.isPending}
+                >
+                  {adjustInfluenceWithHistory.isPending ? "Ukládání..." : "Potvrdit změnu"}
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
 
         {/* Quick Actions */}
         <div className="mb-8">

@@ -318,6 +318,11 @@ export default function Home() {
                     queryKey: ['/api/influence-bar'],
                     staleTime: 30000, // Refresh every 30 seconds
                   });
+                  
+                  const { data: influenceHistory } = useQuery({
+                    queryKey: ['/api/influence-history'],
+                    staleTime: 30000,
+                  });
 
                   if (!influenceData) {
                     return (
@@ -369,53 +374,42 @@ export default function Home() {
                             <DialogTitle>Historie změn magického vlivu</DialogTitle>
                           </DialogHeader>
                           <div className="max-h-80 overflow-y-auto">
-                            {(() => {
-                              const { data: influenceHistory } = useQuery({
-                                queryKey: ['/api/influence-history'],
-                                staleTime: 30000,
-                              });
-
-                              if (!influenceHistory) {
-                                return <div className="text-center text-muted-foreground py-8">Načítání historie...</div>;
-                              }
-
-                              if (influenceHistory.length === 0) {
-                                return <div className="text-center text-muted-foreground py-8">Zatím žádné změny</div>;
-                              }
-
-                              return (
-                                <div className="space-y-3">
-                                  {influenceHistory.map((entry: any) => (
-                                    <div
-                                      key={entry.id}
-                                      className="flex items-center justify-between p-3 border rounded-lg bg-card/30"
-                                    >
-                                      <div className="flex items-center gap-3">
-                                        <div className={`w-3 h-3 rounded-full ${
-                                          entry.changeType === 'grindelwald' ? 'bg-red-600' : 'bg-blue-600'
-                                        }`}></div>
-                                        <div>
-                                          <div className="font-medium text-sm">
-                                            {entry.changeType === 'grindelwald' ? 'Grindelwald' : 'Brumbál'}: 
-                                            <span className={`ml-1 ${entry.pointsChanged > 0 ? 'text-green-600' : 'text-red-600'}`}>
-                                              {entry.pointsChanged > 0 ? '+' : ''}{entry.pointsChanged}
-                                            </span>
-                                            <span className="text-muted-foreground ml-1">
-                                              ({entry.previousTotal} → {entry.newTotal})
-                                            </span>
-                                          </div>
-                                          <div className="text-xs text-muted-foreground">{entry.reason}</div>
+                            {!influenceHistory ? (
+                              <div className="text-center text-muted-foreground py-8">Načítání historie...</div>
+                            ) : influenceHistory.length === 0 ? (
+                              <div className="text-center text-muted-foreground py-8">Zatím žádné změny</div>
+                            ) : (
+                              <div className="space-y-3">
+                                {influenceHistory.map((entry: any) => (
+                                  <div
+                                    key={entry.id}
+                                    className="flex items-center justify-between p-3 border rounded-lg bg-card/30"
+                                  >
+                                    <div className="flex items-center gap-3">
+                                      <div className={`w-3 h-3 rounded-full ${
+                                        entry.changeType === 'grindelwald' ? 'bg-red-600' : 'bg-blue-600'
+                                      }`}></div>
+                                      <div>
+                                        <div className="font-medium text-sm">
+                                          {entry.changeType === 'grindelwald' ? 'Grindelwald' : 'Brumbál'}: 
+                                          <span className={`ml-1 ${entry.pointsChanged > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                            {entry.pointsChanged > 0 ? '+' : ''}{entry.pointsChanged}
+                                          </span>
+                                          <span className="text-muted-foreground ml-1">
+                                            ({entry.previousTotal} → {entry.newTotal})
+                                          </span>
                                         </div>
-                                      </div>
-                                      <div className="text-xs text-muted-foreground">
-                                        <div>{entry.admin.username}</div>
-                                        <div>{new Date(entry.createdAt).toLocaleString('cs-CZ')}</div>
+                                        <div className="text-xs text-muted-foreground">{entry.reason}</div>
                                       </div>
                                     </div>
-                                  ))}
-                                </div>
-                              );
-                            })()}
+                                    <div className="text-xs text-muted-foreground">
+                                      <div>{entry.admin.username}</div>
+                                      <div>{new Date(entry.createdAt).toLocaleString('cs-CZ')}</div>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
                           </div>
                         </DialogContent>
                       </Dialog>
