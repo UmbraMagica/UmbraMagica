@@ -334,7 +334,11 @@ export default function Admin() {
 
   const adjustInfluenceMutation = useMutation({
     mutationFn: async ({ side, points, reason }: { side: string; points: number; reason: string }) => {
-      return apiRequest("POST", "/api/admin/influence", { side, points, reason });
+      return apiRequest("POST", "/api/admin/influence-bar/adjust-with-history", { 
+        changeType: side, 
+        points, 
+        reason 
+      });
     },
     onSuccess: () => {
       toast({
@@ -488,8 +492,8 @@ export default function Admin() {
     
     if (grindelwaldChange !== 0) {
       promises.push(
-        apiRequest("POST", "/api/admin/influence", {
-          side: "grindelwald",
+        apiRequest("POST", "/api/admin/influence-bar/adjust-with-history", {
+          changeType: "grindelwald",
           points: grindelwaldChange,
           reason: `Admin reset na ${resetConfirmation.type} - Grindelwald`
         })
@@ -498,8 +502,8 @@ export default function Admin() {
     
     if (dumbledoreChange !== 0) {
       promises.push(
-        apiRequest("POST", "/api/admin/influence", {
-          side: "dumbledore", 
+        apiRequest("POST", "/api/admin/influence-bar/adjust-with-history", {
+          changeType: "dumbledore", 
           points: dumbledoreChange,
           reason: `Admin reset na ${resetConfirmation.type} - Brumbál`
         })
