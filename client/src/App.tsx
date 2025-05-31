@@ -73,6 +73,7 @@ function Router() {
           <Route path="/home" component={Home} />
           <Route path="/character/edit" component={CharacterEdit} />
           <Route path="/settings" component={UserSettings} />
+          <Route path="/user-settings" component={UserSettings} />
           <Route path="/chat" component={ChatCategories} />
           <Route path="/chat-categories" component={ChatCategories} />
           <Route path="/chat/list" component={ChatList} />
