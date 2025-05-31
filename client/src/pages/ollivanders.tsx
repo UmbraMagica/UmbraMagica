@@ -435,9 +435,27 @@ export default function Ollivanders() {
           <CardHeader>
             <CardTitle>O hůlkách</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-6">
             <div>
-              <h4 className="font-medium mb-2">Jádra hůlek:</h4>
+              <h4 className="font-medium mb-3">Hůlková dřeva:</h4>
+              <div className="space-y-2 text-sm">
+                <p><strong>🌳 Akácie:</strong> Symbolizuje čistotu a obrození. Citlivé hůlky pro zkušené čaroděje</p>
+                <p><strong>🍂 Anglický dub:</strong> Síla a vytrvalost. Oblíbené u Aurorů a ochránců</p>
+                <p><strong>🌲 Borovice:</strong> Nezávislost a originalita. Pro kreativní a nekonvenční čaroděje</p>
+                <p><strong>🌿 Buk:</strong> Moudrost a porozumění. Ideální pro studenty a učence</p>
+                <p><strong>🌾 Cedr:</strong> Věrnost a ochrana. Známé svou stabilitou a spolehlivostí</p>
+                <p><strong>🎄 Cesmína:</strong> Ochrana a přemáhání zla. Symbolizuje štěstí a obranu</p>
+                <p><strong>🌲 Cypřiš:</strong> Smrt a znovuzrození. Spojení s věčností a cykly života</p>
+                <p><strong>🫐 Černý bez:</strong> Tajemství a mystika. Pro čaroděje s hlubokým porozuměním magie</p>
+                <p><strong>🌸 Třešeň:</strong> Krása a obnova. Hůlky pro umělecky nadané čaroděje</p>
+                <p><strong>🍃 Lípa:</strong> Mír a harmonie. Vhodné pro healery a mírové čaroděje</p>
+                <p><strong>🌰 Jilm:</strong> Důstojnost a síla. Tradiční volba pro váženné čaroděje</p>
+                <p><strong>🍁 Javor:</strong> Vyrovnanost a stabilita. Pro čaroděje hledající harmonii</p>
+              </div>
+            </div>
+
+            <div>
+              <h4 className="font-medium mb-3">Jádra hůlek:</h4>
               <div className="space-y-2 text-sm">
                 <p><strong>🐉 Blána z dračího srdce:</strong> Nejsilnější jádro, ideální pro bojová kouzla</p>
                 <p><strong>🦄 Vlas z hřívy jednorožce:</strong> Nejvěrnější jádro, vhodné pro léčivá kouzla</p>
@@ -446,7 +464,7 @@ export default function Ollivanders() {
             </div>
             
             <div>
-              <h4 className="font-medium mb-2">Délky hůlek:</h4>
+              <h4 className="font-medium mb-3">Délky hůlek:</h4>
               <div className="grid grid-cols-2 gap-2 text-sm">
                 <p><strong>7"-9":</strong> Krátké, precizní hůlky</p>
                 <p><strong>10"-12":</strong> Běžné, vyvážené hůlky</p>
@@ -456,10 +474,19 @@ export default function Ollivanders() {
             </div>
 
             <div>
-              <h4 className="font-medium mb-2">Ohebnost:</h4>
-              <p className="text-sm text-muted-foreground">
-                Od nezlomných až po vrbovité - každá ohebnost odpovídá charakteru čaroděje.
-              </p>
+              <h4 className="font-medium mb-3">Ohebnost hůlek:</h4>
+              <div className="space-y-2 text-sm">
+                <p><strong>Nezlomná:</strong> Pro tvrdohlavé a odhodlané čaroděje</p>
+                <p><strong>Nepříjemně tuhá:</strong> Vyžaduje respekt a disciplínu</p>
+                <p><strong>Poměrně tuhá:</strong> Pro čaroděje s pevnými zásadami</p>
+                <p><strong>Tuhá:</strong> Spolehlivá a vytrvalá, ale ne nepružná</p>
+                <p><strong>Poněkud pružná:</strong> Vyvážená mezi stabilitou a adaptabilitou</p>
+                <p><strong>Docela pružná:</strong> Pro přizpůsobivé a otevřené čaroděje</p>
+                <p><strong>Pružná:</strong> Snadno se přizpůsobuje novým technikám</p>
+                <p><strong>Překvapivě ohebná:</strong> Pro kreativní a inovativní čaroděje</p>
+                <p><strong>Velmi ohebná:</strong> Ideální pro experimentátory</p>
+                <p><strong>Vrbovitá:</strong> Nejohebněji, pro ty s nejjemnějšími schopnostmi</p>
+              </div>
             </div>
           </CardContent>
         </Card>
