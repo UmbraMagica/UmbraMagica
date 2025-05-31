@@ -60,6 +60,7 @@ function Router() {
       {!user ? (
         <>
           <Route path="/" component={Landing} />
+          <Route path="/login" component={Landing} />
           <Route path="/registration" component={Registration} />
         </>
       ) : (
