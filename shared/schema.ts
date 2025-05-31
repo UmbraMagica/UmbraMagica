@@ -52,7 +52,7 @@ export const characters = pgTable("characters", {
   school: varchar("school", { length: 100 }),
   description: text("description"),
   isActive: boolean("is_active").default(true).notNull(),
-  isMainCharacter: boolean("is_main_character").default(false).notNull(), // označuje hlavní postavu uživatele
+
   deathDate: date("death_date"), // datum smrti postavy
   deathReason: text("death_reason"), // důvod smrti
   avatar: text("avatar"), // base64 encoded avatar image

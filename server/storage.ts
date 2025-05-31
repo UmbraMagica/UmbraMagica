@@ -134,8 +134,6 @@ export interface IStorage {
   getAdminActivityLog(limit?: number, offset?: number): Promise<(AdminActivityLog & { admin: { username: string }; targetUser?: { username: string } })[]>;
   
   // Multi-character operations
-  setMainCharacter(userId: number, characterId: number): Promise<void>;
-  getMainCharacter(userId: number): Promise<Character | undefined>;
   
   // Cemetery operations
   killCharacter(characterId: number, deathReason: string, adminId: number): Promise<Character | undefined>;
@@ -734,7 +732,7 @@ export class DatabaseStorage implements IStorage {
       .from(characters)
       .where(and(eq(characters.userId, request.userId), eq(characters.isActive, true)));
 
-    const hasMainCharacter = existingCharacters.some(char => char.isMainCharacter);
+
 
     // Update request status
     await db
@@ -747,19 +745,17 @@ export class DatabaseStorage implements IStorage {
       })
       .where(eq(characterRequests.id, requestId));
 
-    // Create the character - only set as main if it's the user's first character OR if they don't have a main character yet
+    // Create the character
     const [character] = await db
       .insert(characters)
       .values({
-        userId: request.userId,
         firstName: request.firstName,
         middleName: request.middleName,
         lastName: request.lastName,
         birthDate: request.birthDate,
         school: request.school,
         description: request.description,
-        isActive: true,
-        isMainCharacter: existingCharacters.length === 0 || !hasMainCharacter, // Only if first character OR no main character exists
+        isActive: true
       })
       .returning();
 
@@ -832,27 +828,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Multi-character operations
-  async setMainCharacter(userId: number, characterId: number): Promise<void> {
-    // First, unset all main characters for this user
-    await db
-      .update(characters)
-      .set({ isMainCharacter: false })
-      .where(eq(characters.userId, userId));
 
-    // Set the new main character
-    await db
-      .update(characters)
-      .set({ isMainCharacter: true })
-      .where(and(eq(characters.id, characterId), eq(characters.userId, userId)));
-  }
-
-  async getMainCharacter(userId: number): Promise<Character | undefined> {
-    const [character] = await db
-      .select()
-      .from(characters)
-      .where(and(eq(characters.userId, userId), eq(characters.isMainCharacter, true)));
-    return character;
-  }
 
   // Cemetery operations
   async killCharacter(characterId: number, deathReason: string, adminId: number): Promise<Character | undefined> {
@@ -879,37 +855,7 @@ export class DatabaseStorage implements IStorage {
       .where(eq(characters.id, characterId))
       .returning();
 
-    // Handle main character reassignment
-    if (character.isMainCharacter) {
-      const remainingActiveCharacters = userCharacters.filter(
-        c => c.id !== characterId && c.isActive
-      );
 
-      if (remainingActiveCharacters.length > 0) {
-        // If there are remaining active characters, make the oldest one main
-        const oldestCharacter = remainingActiveCharacters.sort(
-          (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-        )[0];
-
-        await db
-          .update(characters)
-          .set({ 
-            isMainCharacter: true,
-            updatedAt: new Date(),
-          })
-          .where(eq(characters.id, oldestCharacter.id));
-
-        // Remove main character flag from the killed character
-        await db
-          .update(characters)
-          .set({ 
-            isMainCharacter: false,
-            updatedAt: new Date(),
-          })
-          .where(eq(characters.id, characterId));
-      }
-      // If no remaining characters, keep the dead character as main
-    }
 
     // Log admin activity
     await this.logAdminActivity({
