@@ -347,7 +347,7 @@ export const housingRequests = pgTable("housing_requests", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").references(() => users.id).notNull(),
   characterId: integer("character_id").references(() => characters.id).notNull(),
-  requestType: varchar("request_type", { length: 20 }).notNull(), // "apartment", "house", "dormitory", "mansion"
+  requestType: varchar("request_type", { length: 20 }).notNull(), // "apartment", "house", "dormitory", "mansion", "shared"
   size: varchar("size", { length: 50 }), // velikost bytu/domu
   location: varchar("location", { length: 100 }).notNull(), // "area", "custom", nebo "dormitory"
   customLocation: text("custom_location"), // vlastní adresa při volbě "custom"

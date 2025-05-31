@@ -77,7 +77,7 @@ export default function UserSettings() {
 
   // Housing form state
   const [showHousingForm, setShowHousingForm] = useState(false);
-  const [housingType, setHousingType] = useState<'dormitory' | 'custom' | null>(null);
+  const [housingType, setHousingType] = useState<'dormitory' | 'custom' | 'shared' | null>(null);
   const [locationType, setLocationType] = useState<'area' | 'custom' | null>(null);
 
   const form = useForm<CharacterRequestForm>({
@@ -276,6 +276,15 @@ export default function UserSettings() {
         size: 'jednolůžkový pokoj',
         location: 'Ubytovna U starého Šeptáka',
         description: 'Žádost o pokoj na ubytovně',
+      });
+    } else if (housingType === 'shared') {
+      // Pro sdílené bydlení nastavíme speciální hodnoty
+      createHousingRequestMutation.mutate({
+        ...data,
+        userId: user.id,
+        requestType: 'shared',
+        location: 'shared',
+        size: null, // Není relevantní pro sdílené bydlení
       });
     } else {
       createHousingRequestMutation.mutate({
@@ -950,6 +959,24 @@ export default function UserSettings() {
                             />
                             <label htmlFor="dormitory-housing" className="text-foreground">Pokoj na ubytovně</label>
                           </div>
+                          <div className="flex items-center space-x-2">
+                            <input
+                              type="checkbox"
+                              id="shared-housing"
+                              checked={housingType === 'shared'}
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  setHousingType('shared');
+                                  housingForm.setValue('requestType', 'shared');
+                                } else {
+                                  setHousingType(null);
+                                  housingForm.setValue('requestType', '');
+                                }
+                              }}
+                              className="w-4 h-4"
+                            />
+                            <label htmlFor="shared-housing" className="text-foreground">Přiřazení k existující adrese</label>
+                          </div>
                         </div>
                       </div>
 
@@ -960,6 +987,32 @@ export default function UserSettings() {
                           <p className="text-muted-foreground">
                             Vaše žádost o pokoj na ubytovně bude automaticky schválena. Ubytovna poskytuje základní ubytování pro začínající čaroděje.
                           </p>
+                        </div>
+                      )}
+
+                      {/* Pokud je vybráno sdílené bydlení */}
+                      {housingType === 'shared' && (
+                        <div className="space-y-4">
+                          <div className="bg-blue-500/10 p-4 rounded-md">
+                            <h3 className="text-lg font-semibold text-foreground mb-2">Přiřazení k existující adrese</h3>
+                            <p className="text-muted-foreground">
+                              Tato možnost vám umožní požádat o přiřazení k již existující adrese, kde už někdo bydlí. 
+                              Ideální pro postavy, které chtějí bydlet spolu (manželé, sourozenci, přátelé, atd.).
+                            </p>
+                          </div>
+                          
+                          <div>
+                            <Label htmlFor="existingAddress" className="text-foreground">Existující adresa *</Label>
+                            <Input
+                              id="existingAddress"
+                              {...housingForm.register("customLocation")}
+                              placeholder="Zadejte přesnou adresu, ke které chcete být přiřazeni"
+                              className="bg-background text-foreground"
+                            />
+                            <p className="text-sm text-muted-foreground mt-1">
+                              Ujistěte se, že adresa existuje a má správný formát (např. "Londýn - Vila Rosewood, Kensington").
+                            </p>
+                          </div>
                         </div>
                       )}
 
@@ -1114,7 +1167,11 @@ export default function UserSettings() {
                           <Textarea
                             id="description"
                             {...housingForm.register("description")}
-                            placeholder="Popište důvod žádosti, specifické požadavky a jakékoliv další informace pro administrátory..."
+                            placeholder={
+                              housingType === 'shared' 
+                                ? "Popište důvod pro sdílení bydlení, vztah k ostatním obyvatelům a jakékoliv další informace pro administrátory..."
+                                : "Popište důvod žádosti, specifické požadavky a jakékoliv další informace pro administrátory..."
+                            }
                             rows={4}
                             className="bg-background text-foreground"
                           />
