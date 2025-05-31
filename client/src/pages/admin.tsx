@@ -18,6 +18,7 @@ import {
   UsersRound, 
   Circle, 
   MessageCircle,
+  UserPlus,
   Gauge,
   Settings,
   User,
@@ -29,7 +30,6 @@ import {
   Book,
   BookOpen,
   Eye,
-  UserPlus,
   Archive,
   Home,
   Skull,
@@ -119,6 +119,7 @@ export default function Admin() {
   const { data: chatCategories = [] } = useQuery({ queryKey: ['/api/admin/chat-categories'] });
   const { data: influenceBar = {} } = useQuery({ queryKey: ['/api/influence-bar'] });
   const { data: influenceHistory = [] } = useQuery({ queryKey: ['/api/influence-history'] });
+  const { data: onlineUsersData = {} } = useQuery({ queryKey: ['/api/admin/online-users'] });
 
   // Stats calculations
   const stats = {
@@ -126,8 +127,8 @@ export default function Admin() {
     adminUsers: Array.isArray(users) ? users.filter((u: any) => u.role === 'admin').length : 0,
     activeCharacters: Array.isArray(allCharacters) ? allCharacters.filter((c: any) => !c.deathDate).length : 0,
     deadCharacters: Array.isArray(allCharacters) ? allCharacters.filter((c: any) => c.deathDate).length : 0,
-    onlineNow: Math.floor((Array.isArray(users) ? users.length : 0) * 0.3), // Mock online count
-    activeChats: 5,
+    onlineNow: (onlineUsersData as any)?.count || 0,
+    pendingRequests: Array.isArray(characterRequests) ? characterRequests.length : 0,
   };
 
   // Generate random invite code
@@ -634,12 +635,12 @@ export default function Admin() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-lg font-semibold text-purple-400">Aktivní chaty</h3>
-                  <p className="text-2xl font-bold text-foreground">{stats.activeChats}</p>
-                  <p className="text-sm text-muted-foreground">místností</p>
+                  <h3 className="text-lg font-semibold text-purple-400">Nevyřízené žádosti</h3>
+                  <p className="text-2xl font-bold text-foreground">{stats.pendingRequests}</p>
+                  <p className="text-sm text-muted-foreground">nových postav</p>
                 </div>
                 <div className="h-12 w-12 bg-purple-500/20 rounded-full flex items-center justify-center">
-                  <MessageCircle className="h-6 w-6 text-purple-400" />
+                  <UserPlus className="h-6 w-6 text-purple-400" />
                 </div>
               </div>
             </CardContent>

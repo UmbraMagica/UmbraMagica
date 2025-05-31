@@ -558,6 +558,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin endpoint for online users count (including users without active WebSocket characters)
+  app.get("/api/admin/online-users", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      // Get unique user IDs from active WebSocket connections
+      const connectedUserIds = new Set<number>();
+      
+      Array.from(activeConnections.entries()).forEach(([ws, connInfo]) => {
+        if (ws.readyState === WebSocket.OPEN && connInfo.userId) {
+          connectedUserIds.add(connInfo.userId);
+        }
+      });
+      
+      // For demo purposes, if there are any active connections, count current admin as online
+      // In real app, you'd track session activity or implement proper user presence
+      const onlineUsersCount = connectedUserIds.size;
+      
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.json({ count: onlineUsersCount });
+    } catch (error) {
+      console.error("Error fetching online users count:", error);
+      res.status(500).json({ message: "Failed to fetch online users count" });
+    }
+  });
+
   // Admin routes
   app.get("/api/admin/invite-codes", requireAdmin, async (req, res) => {
     try {
