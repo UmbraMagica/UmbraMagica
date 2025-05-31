@@ -227,16 +227,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Update user highlight words
   app.post("/api/user/highlight-words", requireAuth, async (req: any, res) => {
     try {
-      const { words, color } = req.body;
+      const { highlightWords } = req.body;
       
-      if (!Array.isArray(words) || typeof color !== 'string') {
+      if (typeof highlightWords !== 'string') {
         return res.status(400).json({ message: "Invalid highlight words format" });
       }
-
-      const highlightWords = { words, color };
       
       await storage.updateUserSettings(req.session.userId, {
-        highlightWords: JSON.stringify(highlightWords)
+        highlightWords: highlightWords
       });
 
       res.json({ message: "Highlight words updated successfully" });
