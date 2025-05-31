@@ -115,10 +115,15 @@ export default function CharacterEditFixedNav() {
   const updateCharacterMutation = useMutation({
     mutationFn: async (data: Partial<UserEditForm> | Partial<AdminEditForm>) => {
       if (!characterId) throw new Error("No character ID");
-      return apiRequest(`/api/characters/${characterId}`, {
+      const response = await fetch(`/api/characters/${characterId}`, {
         method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(data),
       });
+      if (!response.ok) throw new Error("Failed to update character");
+      return response.json();
     },
     onSuccess: () => {
       toast({
