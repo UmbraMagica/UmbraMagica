@@ -54,13 +54,9 @@ export default function Home() {
     staleTime: 30000,
   });
 
+  // Get user's characters
   const { data: userCharacters = [] } = useQuery({
     queryKey: ["/api/characters"],
-    enabled: !!user,
-  });
-
-  const { data: mainCharacter } = useQuery({
-    queryKey: ["/api/characters/main"],
     enabled: !!user,
   });
 
@@ -70,15 +66,15 @@ export default function Home() {
     enabled: !!user,
   });
 
-  // Get main character's wand
+  // Use the first alive character as default, or displayedCharacter if set
+  const firstAliveCharacter = userCharacters.find((char: any) => !char.deathDate);
+  const currentDisplayedCharacter = displayedCharacter || firstAliveCharacter;
+
+  // Get current character's wand
   const { data: characterWand } = useQuery({
-    queryKey: [`/api/characters/${mainCharacter?.id}/wand`],
-    enabled: !!mainCharacter?.id,
+    queryKey: [`/api/characters/${currentDisplayedCharacter?.id}/wand`],
+    enabled: !!currentDisplayedCharacter?.id,
   });
-
-
-
-  const currentDisplayedCharacter = displayedCharacter || mainCharacter;
   const characterAge = currentDisplayedCharacter ? calculateGameAge(currentDisplayedCharacter.birthDate) : 0;
 
   const handleLogout = async () => {
@@ -159,7 +155,7 @@ export default function Home() {
                     </div>
                     <div>
                       <h3 className="text-xl font-bold text-amber-300 mb-1">
-                        {mainCharacter.firstName} potřebuje hůlku!
+                        {currentDisplayedCharacter?.firstName} potřebuje hůlku!
                       </h3>
                       <p className="text-amber-200/80">
                         Bez hůlky nemůžete sesílat kouzla. Navštivte Ollivandera a získejte svou první hůlku.

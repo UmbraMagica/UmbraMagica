@@ -600,7 +600,7 @@ export default function UserSettings() {
             </CardContent>
           </Card>
 
-          {/* Primary Character Management */}
+          {/* Character Management */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -611,11 +611,6 @@ export default function UserSettings() {
             <CardContent className="space-y-4">
               {userCharacters.length > 0 ? (
                 <div className="space-y-3">
-                  {userCharacters.length > 1 && (
-                    <div className="text-sm text-muted-foreground mb-3">
-                      Vyberte svou primární postavu, která se zobrazí po přihlášení:
-                    </div>
-                  )}
                   {userCharacters.map((character: any) => (
                     <div key={character.id} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
                       <div className="flex items-center space-x-3">
@@ -627,12 +622,7 @@ export default function UserSettings() {
                             <h4 className="font-medium text-foreground">
                               {character.firstName} {character.middleName} {character.lastName}
                             </h4>
-                            {userCharacters.length > 1 && mainCharacter?.id === (character as any)?.id && (
-                              <div className="flex items-center space-x-1">
-                                <span className="text-yellow-500">👑</span>
-                                <Badge className="bg-accent/20 text-accent">Primární</Badge>
-                              </div>
-                            )}
+
                           </div>
                         </div>
                       </div>
@@ -651,16 +641,7 @@ export default function UserSettings() {
                         >
                           Upravit
                         </Button>
-                        {userCharacters.length > 1 && mainCharacter?.id !== (character as any)?.id && (
-                          <Button
-                            size="sm"
-                            onClick={() => setMainCharacterMutation.mutate(character.id)}
-                            disabled={setMainCharacterMutation.isPending}
-                            className="bg-accent hover:bg-accent/90"
-                          >
-                            Nastavit jako primární
-                          </Button>
-                        )}
+
                       </div>
                     </div>
                   ))}
