@@ -1130,58 +1130,7 @@ export default function Admin() {
             )}
           </Card>
 
-          {/* Hřbitov */}
-          <Card>
-            <CardHeader className="cursor-pointer" onClick={() => setIsCemeteryCollapsed(!isCemeteryCollapsed)}>
-              <CardTitle className="text-xl font-semibold text-foreground flex items-center">
-                <Skull className="text-red-400 mr-3 h-5 w-5" />
-                Hřbitov ({stats.deadCharacters} mrtvých)
-                {isCemeteryCollapsed ? (
-                  <ChevronDown className="ml-auto h-4 w-4" />
-                ) : (
-                  <ChevronUp className="ml-auto h-4 w-4" />
-                )}
-              </CardTitle>
-            </CardHeader>
 
-            {!isCemeteryCollapsed && (
-              <CardContent>
-                <div className="space-y-3 max-h-96 overflow-y-auto">
-                  {Array.isArray(allCharacters) && allCharacters
-                    .filter((character: any) => character.deathDate)
-                    .map((character: any) => (
-                    <div key={character.id} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg border-l-4 border-red-500">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-red-600 rounded-full flex items-center justify-center">
-                          <Skull className="text-white h-5 w-5" />
-                        </div>
-                        <div>
-                          <p className="font-medium text-foreground">
-                            {character.firstName} {character.middleName ? `${character.middleName} ` : ''}{character.lastName}
-                          </p>
-                          <p className="text-sm text-muted-foreground">
-                            {character.school || 'Neznámá škola'} • 
-                            Zemřel(a): {character.deathDate ? new Date(character.deathDate).toLocaleDateString('cs-CZ') : 'Neznámé datum'}
-                          </p>
-                          {character.deathReason && (
-                            <p className="text-xs text-red-400 italic">Důvod: {character.deathReason}</p>
-                          )}
-                        </div>
-                      </div>
-                      <Badge variant="secondary" className="bg-red-500/20 text-red-400">
-                        MRTVÝ
-                      </Badge>
-                    </div>
-                  ))}
-                  {Array.isArray(allCharacters) && allCharacters.filter((c: any) => c.deathDate).length === 0 && (
-                    <div className="text-center text-muted-foreground py-8">
-                      Hřbitov je prázdný
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            )}
-          </Card>
 
           {/* Žádosti o postavy */}
           <Card>
@@ -1518,6 +1467,59 @@ export default function Admin() {
                       </div>
                     </div>
                   </div>
+                </div>
+              </CardContent>
+            )}
+          </Card>
+
+          {/* Hřbitov */}
+          <Card>
+            <CardHeader className="cursor-pointer" onClick={() => setIsCemeteryCollapsed(!isCemeteryCollapsed)}>
+              <CardTitle className="text-xl font-semibold text-foreground flex items-center">
+                <Skull className="text-red-400 mr-3 h-5 w-5" />
+                Hřbitov ({stats.deadCharacters} mrtvých)
+                {isCemeteryCollapsed ? (
+                  <ChevronDown className="ml-auto h-4 w-4" />
+                ) : (
+                  <ChevronUp className="ml-auto h-4 w-4" />
+                )}
+              </CardTitle>
+            </CardHeader>
+
+            {!isCemeteryCollapsed && (
+              <CardContent>
+                <div className="space-y-3 max-h-96 overflow-y-auto">
+                  {Array.isArray(allCharacters) && allCharacters
+                    .filter((character: any) => character.deathDate)
+                    .map((character: any) => (
+                    <div key={character.id} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg border-l-4 border-red-500">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-red-600 rounded-full flex items-center justify-center">
+                          <Skull className="text-white h-5 w-5" />
+                        </div>
+                        <div>
+                          <p className="font-medium text-foreground">
+                            {character.firstName} {character.middleName ? `${character.middleName} ` : ''}{character.lastName}
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            {character.school || 'Neznámá škola'} • 
+                            Zemřel(a): {character.deathDate ? new Date(character.deathDate).toLocaleDateString('cs-CZ') : 'Neznámé datum'}
+                          </p>
+                          {character.deathReason && (
+                            <p className="text-xs text-red-400 italic">Důvod: {character.deathReason}</p>
+                          )}
+                        </div>
+                      </div>
+                      <Badge variant="secondary" className="bg-red-500/20 text-red-400">
+                        MRTVÝ
+                      </Badge>
+                    </div>
+                  ))}
+                  {Array.isArray(allCharacters) && allCharacters.filter((c: any) => c.deathDate).length === 0 && (
+                    <div className="text-center text-muted-foreground py-8">
+                      Hřbitov je prázdný
+                    </div>
+                  )}
                 </div>
               </CardContent>
             )}
