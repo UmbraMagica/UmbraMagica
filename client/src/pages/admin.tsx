@@ -120,6 +120,7 @@ export default function Admin() {
   const { data: influenceBar = {} } = useQuery({ queryKey: ['/api/influence-bar'] });
   const { data: influenceHistory = [] } = useQuery({ queryKey: ['/api/influence-history'] });
   const { data: onlineUsersData = {} } = useQuery({ queryKey: ['/api/admin/online-users'] });
+  const { data: chatRooms = [] } = useQuery({ queryKey: ['/api/chat/rooms'] });
 
   // Stats calculations
   const stats = {
@@ -1429,6 +1430,93 @@ export default function Admin() {
                       <Plus className="mr-2 h-4 w-4" />
                       Vytvořit místnost
                     </Button>
+                  </div>
+
+                  {/* Existing Rooms Management */}
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-lg font-medium">Správa existujících místností</h3>
+                      <Button
+                        onClick={() => setLocation('/admin/archive')}
+                        variant="outline"
+                        size="sm"
+                        className="flex items-center gap-2"
+                      >
+                        <Archive className="h-4 w-4" />
+                        Archiv zpráv
+                      </Button>
+                    </div>
+                    <div className="border rounded-lg">
+                      <div className="p-4 space-y-3 max-h-96 overflow-y-auto">
+                        {Array.isArray(chatRooms) && chatRooms.length > 0 ? (
+                          chatRooms.map((room: any) => (
+                            <div key={room.id} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2">
+                                  <h4 className="font-medium text-foreground">{room.name}</h4>
+                                  <Badge variant={room.isPublic ? "default" : "secondary"} className="text-xs">
+                                    {room.isPublic ? "Veřejná" : "Privátní"}
+                                  </Badge>
+                                </div>
+                                {room.description && (
+                                  <p className="text-sm text-muted-foreground mt-1">{room.description}</p>
+                                )}
+                                <p className="text-xs text-muted-foreground">
+                                  ID: {room.id} • Vytvořeno: {new Date(room.createdAt).toLocaleDateString('cs-CZ')}
+                                </p>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => setLocation(`/chat/${room.id}`)}
+                                  className="text-blue-400 hover:text-blue-300"
+                                  title="Otevřít chat"
+                                >
+                                  <Eye className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => {
+                                    // TODO: Add edit functionality
+                                    toast({
+                                      title: "Funkce v přípravě",
+                                      description: "Editace místností bude dostupná v příští verzi",
+                                    });
+                                  }}
+                                  className="text-yellow-400 hover:text-yellow-300"
+                                  title="Upravit místnost"
+                                >
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => {
+                                    if (confirm(`Opravdu chcete smazat místnost "${room.name}"? Tato akce je nevratná a smaže všechny zprávy v místnosti.`)) {
+                                      // TODO: Add delete functionality
+                                      toast({
+                                        title: "Funkce v přípravě",
+                                        description: "Mazání místností bude dostupné v příští verzi",
+                                      });
+                                    }
+                                  }}
+                                  className="text-red-400 hover:text-red-300"
+                                  title="Smazat místnost"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </div>
+                          ))
+                        ) : (
+                          <div className="text-center text-muted-foreground py-8">
+                            Žádné místnosti
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </CardContent>
