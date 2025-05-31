@@ -2688,7 +2688,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Admin chat management endpoints
   app.get('/api/admin/chat-categories', requireAuth, requireAdmin, async (req, res) => {
     try {
-      const categories = await storage.getChatCategoriesWithChildren();
+      // Return flat list of all categories for admin management
+      const categories = await storage.getAllChatCategories();
       res.json(categories);
     } catch (error) {
       console.error('Error fetching chat categories:', error);
