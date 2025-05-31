@@ -13,6 +13,7 @@ import {
   Users, 
   UsersRound, 
   MessageCircle, 
+  MessageSquare,
   Circle,
   Settings,
   Shield,
@@ -25,7 +26,8 @@ import {
   ChevronDown,
   ChevronUp,
   AlertTriangle,
-  Cog
+  Cog,
+  Trash2
 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 
@@ -103,6 +105,61 @@ export default function AdminClean() {
     },
     onError: () => {
       toast({ title: "Chyba", description: "Nepodařilo se vytvořit zvací kód", variant: "destructive" });
+    },
+  });
+
+  // Chat management mutations
+  const createCategoryMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const response = await fetch("/api/admin/chat-categories", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) throw new Error("Failed to create category");
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/chat-categories"] });
+      setNewCategoryName("");
+      setNewCategoryDescription("");
+      setNewCategoryParentId(null);
+      toast({ title: "Kategorie byla úspěšně vytvořena" });
+    },
+  });
+
+  const createRoomMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const response = await fetch("/api/admin/chat-rooms", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) throw new Error("Failed to create room");
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/chat-categories"] });
+      setNewRoomName("");
+      setNewRoomDescription("");
+      setNewRoomLongDescription("");
+      setNewRoomCategoryId(null);
+      setNewRoomPassword("");
+      toast({ title: "Místnost byla úspěšně vytvořena" });
+    },
+  });
+
+  const deleteItemMutation = useMutation({
+    mutationFn: async ({ type, id }: { type: 'category' | 'room', id: number }) => {
+      const endpoint = type === 'category' ? `/api/admin/chat-categories/${id}` : `/api/admin/chat-rooms/${id}`;
+      const response = await fetch(endpoint, { method: "DELETE" });
+      if (!response.ok) throw new Error(`Failed to delete ${type}`);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/chat-categories"] });
+      setDeleteConfirmation(null);
+      toast({ title: "Položka byla úspěšně smazána" });
     },
   });
 
@@ -787,6 +844,232 @@ export default function AdminClean() {
                 </div>
               )}
             </CardContent>
+          </Card>
+
+          {/* Chat Management */}
+          <Card className="p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold text-foreground flex items-center">
+                <MessageSquare className="mr-2 h-5 w-5" />
+                Správa chatů
+              </h2>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsChatManagementCollapsed(!isChatManagementCollapsed)}
+              >
+                {isChatManagementCollapsed ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
+              </Button>
+            </div>
+
+            {!isChatManagementCollapsed && (
+              <div className="space-y-6">
+                {/* Create Category */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-medium">Vytvořit kategorii</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="categoryName">Název kategorie</Label>
+                      <Input
+                        id="categoryName"
+                        value={newCategoryName}
+                        onChange={(e) => setNewCategoryName(e.target.value)}
+                        placeholder="Název kategorie"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="parentCategory">Nadřazená kategorie</Label>
+                      <Select onValueChange={(value) => setNewCategoryParentId(value === "none" ? null : parseInt(value))}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Vyberte nadřazenou kategorii" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="none">Žádná (hlavní kategorie)</SelectItem>
+                          {chatCategories.map((category: any) => (
+                            <SelectItem key={category.id} value={category.id.toString()}>
+                              {category.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <div>
+                    <Label htmlFor="categoryDescription">Popis kategorie</Label>
+                    <Textarea
+                      id="categoryDescription"
+                      value={newCategoryDescription}
+                      onChange={(e) => setNewCategoryDescription(e.target.value)}
+                      placeholder="Volitelný popis kategorie"
+                      rows={2}
+                    />
+                  </div>
+                  <Button
+                    onClick={() => {
+                      if (!newCategoryName.trim()) return;
+                      createCategoryMutation.mutate({
+                        name: newCategoryName.trim(),
+                        description: newCategoryDescription.trim() || null,
+                        parentId: newCategoryParentId,
+                        sortOrder: 0,
+                      });
+                    }}
+                    disabled={!newCategoryName.trim() || createCategoryMutation.isPending}
+                  >
+                    <Plus className="mr-2 h-4 w-4" />
+                    Vytvořit kategorii
+                  </Button>
+                </div>
+
+                {/* Create Room */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-medium">Vytvořit místnost</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="roomName">Název místnosti</Label>
+                      <Input
+                        id="roomName"
+                        value={newRoomName}
+                        onChange={(e) => setNewRoomName(e.target.value)}
+                        placeholder="Název místnosti"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="roomCategory">Kategorie</Label>
+                      <Select onValueChange={(value) => setNewRoomCategoryId(parseInt(value))}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Vyberte kategorii" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {chatCategories.map((category: any) => (
+                            <SelectItem key={category.id} value={category.id.toString()}>
+                              {category.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <div>
+                    <Label htmlFor="roomDescription">Krátký popis</Label>
+                    <Input
+                      id="roomDescription"
+                      value={newRoomDescription}
+                      onChange={(e) => setNewRoomDescription(e.target.value)}
+                      placeholder="Krátký popis místnosti"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="roomLongDescription">Dlouhý popis</Label>
+                    <Textarea
+                      id="roomLongDescription"
+                      value={newRoomLongDescription}
+                      onChange={(e) => setNewRoomLongDescription(e.target.value)}
+                      placeholder="Detailní popis místnosti"
+                      rows={3}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="roomPassword">Heslo místnosti (volitelné)</Label>
+                    <Input
+                      id="roomPassword"
+                      type="password"
+                      value={newRoomPassword}
+                      onChange={(e) => setNewRoomPassword(e.target.value)}
+                      placeholder="Nechte prázdné pro veřejnou místnost"
+                    />
+                  </div>
+                  <Button
+                    onClick={() => {
+                      if (!newRoomName.trim() || !newRoomCategoryId) return;
+                      createRoomMutation.mutate({
+                        name: newRoomName.trim(),
+                        description: newRoomDescription.trim() || null,
+                        longDescription: newRoomLongDescription.trim() || null,
+                        categoryId: newRoomCategoryId,
+                        password: newRoomPassword.trim() || null,
+                        isPublic: true,
+                        sortOrder: 0,
+                      });
+                    }}
+                    disabled={!newRoomName.trim() || !newRoomCategoryId || createRoomMutation.isPending}
+                  >
+                    <Plus className="mr-2 h-4 w-4" />
+                    Vytvořit místnost
+                  </Button>
+                </div>
+
+                {/* Existing Categories and Rooms */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-medium">Existující kategorie a místnosti</h3>
+                  <div className="space-y-2 max-h-96 overflow-y-auto">
+                    {chatCategories.map((category: any) => (
+                      <div key={category.id} className="border rounded-lg p-4">
+                        <div className="flex items-center justify-between mb-2">
+                          <div>
+                            <h4 className="font-medium">{category.name}</h4>
+                            {category.description && (
+                              <p className="text-sm text-muted-foreground">{category.description}</p>
+                            )}
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setDeleteConfirmation({ type: 'category', id: category.id, name: category.name })}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                        
+                        {/* Rooms in this category */}
+                        {category.rooms && category.rooms.length > 0 && (
+                          <div className="ml-4 space-y-2">
+                            {category.rooms.map((room: any) => (
+                              <div key={room.id} className="flex items-center justify-between p-2 bg-muted/20 rounded">
+                                <div>
+                                  <span className="font-medium">{room.name}</span>
+                                  {room.password && <Badge variant="secondary" className="ml-2">Chráněno heslem</Badge>}
+                                  {room.description && (
+                                    <p className="text-sm text-muted-foreground">{room.description}</p>
+                                  )}
+                                </div>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => setDeleteConfirmation({ type: 'room', id: room.id, name: room.name })}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                        
+                        {/* Child categories */}
+                        {category.children && category.children.length > 0 && (
+                          <div className="ml-4 mt-2 space-y-1">
+                            {category.children.map((child: any) => (
+                              <div key={child.id} className="flex items-center justify-between p-2 bg-accent/20 rounded">
+                                <span className="text-sm font-medium">📁 {child.name}</span>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => setDeleteConfirmation({ type: 'category', id: child.id, name: child.name })}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
           </Card>
 
           {/* Live Characters Management */}
