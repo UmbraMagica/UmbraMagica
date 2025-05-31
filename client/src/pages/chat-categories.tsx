@@ -57,10 +57,18 @@ function SubCategoryCollapsible({ subCategory }: { subCategory: ChatCategory }) 
         password: password
       });
 
-      if (response && (response as any).success) {
+      console.log("Password verification response:", response);
+
+      // Check if response has success property
+      if (response && response.success === true) {
+        const roomId = passwordDialog.roomId;
         setPasswordDialog({ isOpen: false, roomId: null });
         setPassword("");
-        setLocation(`/chat/room/${passwordDialog.roomId}`);
+        setLocation(`/chat/room/${roomId}`);
+        toast({
+          title: "Úspěch",
+          description: "Heslo je správné, vstupujete do místnosti",
+        });
       } else {
         toast({
           title: "Nesprávné heslo",
@@ -69,6 +77,7 @@ function SubCategoryCollapsible({ subCategory }: { subCategory: ChatCategory }) 
         });
       }
     } catch (error) {
+      console.error("Password verification error:", error);
       toast({
         title: "Chyba",
         description: "Nepodařilo se ověřit heslo",
