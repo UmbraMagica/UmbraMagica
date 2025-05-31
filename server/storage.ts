@@ -1608,6 +1608,166 @@ export class DatabaseStorage implements IStorage {
       .limit(limit)
       .offset(offset);
   }
+
+  // Housing request operations
+  async createHousingRequest(request: InsertHousingRequest): Promise<HousingRequest> {
+    const [newRequest] = await db
+      .insert(housingRequests)
+      .values({
+        ...request,
+        status: 'pending',
+        createdAt: new Date()
+      })
+      .returning();
+    return newRequest;
+  }
+
+  async getHousingRequestsByUserId(userId: number): Promise<HousingRequest[]> {
+    return db
+      .select({
+        id: housingRequests.id,
+        userId: housingRequests.userId,
+        characterId: housingRequests.characterId,
+        requestType: housingRequests.requestType,
+        size: housingRequests.size,
+        location: housingRequests.location,
+        customLocation: housingRequests.customLocation,
+        selectedArea: housingRequests.selectedArea,
+        description: housingRequests.description,
+        status: housingRequests.status,
+        assignedAddress: housingRequests.assignedAddress,
+        reviewNote: housingRequests.reviewNote,
+        createdAt: housingRequests.createdAt,
+        reviewedAt: housingRequests.reviewedAt,
+        reviewedBy: housingRequests.reviewedBy,
+        character: {
+          firstName: characters.firstName,
+          lastName: characters.lastName,
+        },
+      })
+      .from(housingRequests)
+      .innerJoin(characters, eq(housingRequests.characterId, characters.id))
+      .where(eq(housingRequests.userId, userId))
+      .orderBy(desc(housingRequests.createdAt));
+  }
+
+  async getPendingHousingRequests(): Promise<(HousingRequest & { 
+    user: { username: string; email: string }; 
+    character: { firstName: string; middleName?: string | null; lastName: string } 
+  })[]> {
+    return db
+      .select({
+        id: housingRequests.id,
+        userId: housingRequests.userId,
+        characterId: housingRequests.characterId,
+        requestType: housingRequests.requestType,
+        size: housingRequests.size,
+        location: housingRequests.location,
+        customLocation: housingRequests.customLocation,
+        selectedArea: housingRequests.selectedArea,
+        description: housingRequests.description,
+        status: housingRequests.status,
+        assignedAddress: housingRequests.assignedAddress,
+        reviewNote: housingRequests.reviewNote,
+        createdAt: housingRequests.createdAt,
+        reviewedAt: housingRequests.reviewedAt,
+        reviewedBy: housingRequests.reviewedBy,
+        user: {
+          username: users.username,
+          email: users.email,
+        },
+        character: {
+          firstName: characters.firstName,
+          middleName: characters.middleName,
+          lastName: characters.lastName,
+        },
+      })
+      .from(housingRequests)
+      .innerJoin(users, eq(housingRequests.userId, users.id))
+      .innerJoin(characters, eq(housingRequests.characterId, characters.id))
+      .where(eq(housingRequests.status, 'pending'))
+      .orderBy(desc(housingRequests.createdAt));
+  }
+
+  async approveHousingRequest(requestId: number, adminId: number, assignedAddress: string, reviewNote?: string): Promise<HousingRequest> {
+    // First, get the housing request to access character information
+    const [request] = await db
+      .select()
+      .from(housingRequests)
+      .where(eq(housingRequests.id, requestId));
+
+    if (!request) {
+      throw new Error('Housing request not found');
+    }
+
+    // Update the housing request to approved status
+    const [updatedRequest] = await db
+      .update(housingRequests)
+      .set({
+        status: 'approved',
+        assignedAddress,
+        reviewNote,
+        reviewedAt: new Date(),
+        reviewedBy: adminId,
+      })
+      .where(eq(housingRequests.id, requestId))
+      .returning();
+
+    // Update the character's residence field
+    await db
+      .update(characters)
+      .set({
+        residence: assignedAddress,
+        updatedAt: new Date(),
+      })
+      .where(eq(characters.id, request.characterId));
+
+    // Log admin activity
+    await this.logAdminActivity({
+      adminId,
+      action: "approve_housing_request",
+      targetUserId: request.userId,
+      targetCharacterId: request.characterId,
+      details: `Approved housing request for ${request.requestType} at ${assignedAddress}. ${reviewNote ? `Note: ${reviewNote}` : ''}`,
+    });
+
+    return updatedRequest;
+  }
+
+  async rejectHousingRequest(requestId: number, adminId: number, reviewNote: string): Promise<HousingRequest> {
+    // First, get the housing request to access user information
+    const [request] = await db
+      .select()
+      .from(housingRequests)
+      .where(eq(housingRequests.id, requestId));
+
+    if (!request) {
+      throw new Error('Housing request not found');
+    }
+
+    // Update the housing request to rejected status
+    const [updatedRequest] = await db
+      .update(housingRequests)
+      .set({
+        status: 'rejected',
+        reviewNote,
+        reviewedAt: new Date(),
+        reviewedBy: adminId,
+      })
+      .where(eq(housingRequests.id, requestId))
+      .returning();
+
+    // Log admin activity
+    await this.logAdminActivity({
+      adminId,
+      action: "reject_housing_request",
+      targetUserId: request.userId,
+      targetCharacterId: request.characterId,
+      details: `Rejected housing request for ${request.requestType}. Reason: ${reviewNote}`,
+    });
+
+    return updatedRequest;
+  }
 }
 
 export const storage = new DatabaseStorage();
