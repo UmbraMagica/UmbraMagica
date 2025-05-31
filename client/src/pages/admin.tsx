@@ -854,40 +854,7 @@ export default function Admin() {
           </CardContent>
         </Card>
 
-        {/* Správa magických předmětů a kouzel */}
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle className="text-xl font-semibold text-foreground flex items-center">
-              <div className="flex items-center">
-                <div className="text-2xl mr-3">🪄</div>
-                Správa magických předmětů a kouzel
-              </div>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Button
-                onClick={() => setLocation('/admin/spells')}
-                variant="outline"
-                className="p-6 h-auto flex flex-col items-center justify-center text-center hover:bg-purple-50 dark:hover:bg-purple-950 border-purple-200 dark:border-purple-800"
-              >
-                <div className="text-3xl mb-2">📚</div>
-                <div className="font-medium text-lg mb-1">Databáze kouzel</div>
-                <div className="text-sm text-muted-foreground">Správa kouzel, jejich vlastností a kategorií</div>
-              </Button>
-              
-              <Button
-                onClick={() => setLocation('/admin/wand-components')}
-                variant="outline"
-                className="p-6 h-auto flex flex-col items-center justify-center text-center hover:bg-amber-50 dark:hover:bg-amber-950 border-amber-200 dark:border-amber-800"
-              >
-                <div className="text-3xl mb-2">🌳</div>
-                <div className="font-medium text-lg mb-1">Hůlkové komponenty</div>
-                <div className="text-sm text-muted-foreground">Editace dřev, jader, délek a ohebností hůlek</div>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+
 
         {/* Admin Sections */}
         <div className="grid grid-cols-1 gap-8">
@@ -1484,6 +1451,41 @@ export default function Admin() {
                 </div>
               </CardContent>
             )}
+          </Card>
+
+          {/* Správa magických předmětů a kouzel */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-xl font-semibold text-foreground flex items-center">
+                <div className="flex items-center">
+                  <div className="text-2xl mr-3">🪄</div>
+                  Správa magických předmětů a kouzel
+                </div>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Button
+                  onClick={() => setLocation('/admin/spells')}
+                  variant="outline"
+                  className="p-6 h-auto flex flex-col items-center justify-center text-center hover:bg-purple-50 dark:hover:bg-purple-950 border-purple-200 dark:border-purple-800"
+                >
+                  <div className="text-3xl mb-2">📚</div>
+                  <div className="font-medium text-lg mb-1">Databáze kouzel</div>
+                  <div className="text-sm text-muted-foreground">Správa kouzel, jejich vlastností a kategorií</div>
+                </Button>
+                
+                <Button
+                  onClick={() => setLocation('/admin/wand-components')}
+                  variant="outline"
+                  className="p-6 h-auto flex flex-col items-center justify-center text-center hover:bg-amber-50 dark:hover:bg-amber-950 border-amber-200 dark:border-amber-800"
+                >
+                  <div className="text-3xl mb-2">🌳</div>
+                  <div className="font-medium text-lg mb-1">Hůlkové komponenty</div>
+                  <div className="text-sm text-muted-foreground">Editace dřev, jader, délek a ohebností hůlek</div>
+                </Button>
+              </div>
+            </CardContent>
           </Card>
 
           {/* Hřbitov */}
