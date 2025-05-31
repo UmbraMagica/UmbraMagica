@@ -2189,10 +2189,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Admin: Get all character requests
+  // Admin: Get pending character requests
   app.get("/api/admin/character-requests", requireAuth, requireAdmin, async (req, res) => {
     try {
-      const requests = await storage.getAllCharacterRequests();
+      const requests = await storage.getPendingCharacterRequests();
       res.json(requests);
     } catch (error) {
       console.error("Error fetching character requests:", error);

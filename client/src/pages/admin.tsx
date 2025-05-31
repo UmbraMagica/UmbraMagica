@@ -24,7 +24,8 @@ import {
   Skull,
   ChevronDown,
   ChevronUp,
-  AlertTriangle
+  AlertTriangle,
+  Cog
 } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 
@@ -39,6 +40,7 @@ export default function AdminClean() {
   const [isDeadCharactersCollapsed, setIsDeadCharactersCollapsed] = useState(true);
   const [isCharacterRequestsCollapsed, setIsCharacterRequestsCollapsed] = useState(false);
   const [isAdminActivityCollapsed, setIsAdminActivityCollapsed] = useState(true);
+  const [showQuickInfluenceSettings, setShowQuickInfluenceSettings] = useState(false);
   
   // Kill character state
   const [killCharacterData, setKillCharacterData] = useState<{id: number, name: string} | null>(null);
@@ -486,15 +488,43 @@ export default function AdminClean() {
 
                     {/* Reset Controls */}
                     <div className="border-t pt-4">
-                      <h4 className="font-medium mb-2">Rychlé nastavení</h4>
-                      <div className="flex gap-2">
-                        <Button size="sm" variant="secondary" onClick={() => setInfluence.mutate({ grindelwaldPoints: 50, dumbledorePoints: 50 })}>
-                          Vyrovnané (50:50)
-                        </Button>
-                        <Button size="sm" variant="secondary" onClick={() => setInfluence.mutate({ grindelwaldPoints: 0, dumbledorePoints: 0 })}>
-                          Reset (0:0)
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="font-medium">Rychlé nastavení</h4>
+                        <Button 
+                          size="sm" 
+                          variant="ghost" 
+                          onClick={() => setShowQuickInfluenceSettings(!showQuickInfluenceSettings)}
+                          className="p-1"
+                        >
+                          <Cog className="h-4 w-4" />
                         </Button>
                       </div>
+                      {showQuickInfluenceSettings && (
+                        <div className="flex gap-2">
+                          <Button 
+                            size="sm" 
+                            variant="secondary" 
+                            onClick={() => {
+                              if (confirm("Opravdu chcete nastavit vyrovnaný stav (50:50)?")) {
+                                setInfluence.mutate({ grindelwaldPoints: 50, dumbledorePoints: 50 });
+                              }
+                            }}
+                          >
+                            Vyrovnané (50:50)
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            variant="secondary" 
+                            onClick={() => {
+                              if (confirm("Opravdu chcete resetovat všechny body na nulu (0:0)?")) {
+                                setInfluence.mutate({ grindelwaldPoints: 0, dumbledorePoints: 0 });
+                              }
+                            }}
+                          >
+                            Reset (0:0)
+                          </Button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 );
@@ -694,7 +724,7 @@ export default function AdminClean() {
                         </div>
                         <div>
                           <h4 className="font-medium text-foreground">
-                            {character.firstName} {character.middleName} {character.lastName}
+                            {character.firstName} {character.middleName ? character.middleName + ' ' : ''}{character.lastName}
                           </h4>
                           <p className="text-sm text-muted-foreground">
                             {character.school || 'Bez školy'}
@@ -735,14 +765,14 @@ export default function AdminClean() {
             </CardContent>
           </Card>
 
-          {/* Dead Characters Management */}
+          {/* Cemetery Management */}
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-semibold text-foreground flex items-center cursor-pointer" 
                     onClick={() => setIsDeadCharactersCollapsed(!isDeadCharactersCollapsed)}>
                   <Skull className="text-red-500 mr-3 h-5 w-5" />
-                  Mrtvé postavy ({allCharacters.filter((char: any) => char.deathDate).length})
+                  Správa hřbitova ({allCharacters.filter((char: any) => char.deathDate).length})
                   {isDeadCharactersCollapsed ? (
                     <ChevronDown className="ml-2 h-4 w-4" />
                   ) : (
@@ -762,7 +792,7 @@ export default function AdminClean() {
                         </div>
                         <div>
                           <h4 className="font-medium text-foreground line-through">
-                            {character.firstName} {character.middleName} {character.lastName}
+                            {character.firstName} {character.middleName ? character.middleName + ' ' : ''}{character.lastName}
                           </h4>
                           <p className="text-sm text-muted-foreground">
                             † {new Date(character.deathDate).toLocaleDateString('cs-CZ')} - {character.deathReason}
@@ -816,7 +846,7 @@ export default function AdminClean() {
                       <div className="flex items-center justify-between mb-3">
                         <div>
                           <h4 className="font-medium text-foreground">
-                            {request.firstName} {request.middleName} {request.lastName}
+                            {request.firstName} {request.middleName ? request.middleName + ' ' : ''}{request.lastName}
                           </h4>
                           <p className="text-sm text-muted-foreground">
                             Od: {request.user?.username} | {new Date(request.createdAt).toLocaleDateString('cs-CZ')}
