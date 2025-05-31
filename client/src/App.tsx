@@ -11,6 +11,7 @@ import Admin from "@/pages/admin";
 import AdminArchive from "@/pages/admin-archive";
 import AdminSpells from "@/pages/admin-spells";
 import AdminWandComponents from "@/pages/admin-wand-components";
+import AdminCharacterSpells from "@/pages/admin-character-spells";
 import Registration from "@/pages/registration";
 import ChatList from "@/pages/chat-list";
 import ChatCategories from "@/pages/chat-categories";
@@ -69,9 +70,11 @@ function Router() {
           <Route path="/admin" component={Admin} />
           <Route path="/admin/archive" component={AdminArchive} />
           <Route path="/admin/spells" component={AdminSpells} />
+          <Route path="/admin/spells/character/:characterId" component={AdminCharacterSpells} />
           <Route path="/admin/wand-components" component={AdminWandComponents} />
           <Route path="/home" component={Home} />
           <Route path="/character/edit" component={CharacterEdit} />
+          <Route path="/character-edit/:characterId" component={CharacterEdit} />
           <Route path="/settings" component={UserSettings} />
           <Route path="/user-settings" component={UserSettings} />
           <Route path="/chat" component={ChatCategories} />

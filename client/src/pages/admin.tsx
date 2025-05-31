@@ -1066,17 +1066,46 @@ export default function Admin() {
                     .map((character: any) => (
                     <div key={character.id} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
                       <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center">
-                          <Heart className="text-white h-5 w-5" />
-                        </div>
+                        {character.avatar ? (
+                          <img 
+                            src={character.avatar} 
+                            alt={`Avatar ${character.firstName}`}
+                            className="w-10 h-10 rounded-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-10 h-10 bg-gradient-to-br from-accent to-orange-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                            {character.firstName.charAt(0)}{character.lastName.charAt(0)}
+                          </div>
+                        )}
                         <div>
                           <p className="font-medium text-foreground">
                             {character.firstName} {character.middleName ? `${character.middleName} ` : ''}{character.lastName}
                           </p>
-                          <p className="text-sm text-muted-foreground">{character.school || 'Neznámá škola'}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {character.school || 'Neznámá škola'} • 
+                            {character.birthDate ? new Date(character.birthDate).toLocaleDateString('cs-CZ') : 'Neznámé datum narození'}
+                          </p>
                         </div>
                       </div>
                       <div className="flex items-center space-x-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setLocation(`/admin/spells/character/${character.id}`)}
+                          className="text-blue-400 hover:text-blue-300"
+                          title="Zobrazit kouzel postavy"
+                        >
+                          <BookOpen className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setLocation(`/character-edit/${character.id}`)}
+                          className="text-green-400 hover:text-green-300"
+                          title="Editovat postavu"
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
                         <Button
                           variant="ghost"
                           size="sm"

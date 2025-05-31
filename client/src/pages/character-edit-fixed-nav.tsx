@@ -32,9 +32,9 @@ export default function CharacterEditFixedNav() {
   const [, setLocation] = useLocation();
   const queryClient = useQueryClient();
 
-  // Get character ID from URL search params if available
-  const urlParams = new URLSearchParams(window.location.search);
-  const characterIdFromUrl = urlParams.get('id');
+  // Get character ID from URL path parameters
+  const pathParts = window.location.pathname.split('/');
+  const characterIdFromUrl = pathParts[pathParts.length - 1] !== 'edit' ? pathParts[pathParts.length - 1] : null;
 
   // Fetch main character if no ID provided
   const { data: primaryCharacter } = useQuery({
