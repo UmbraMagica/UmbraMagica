@@ -1676,6 +1676,12 @@ export class DatabaseStorage implements IStorage {
       throw new Error('Housing request not found');
     }
 
+    // Get character information for the chat room
+    const character = await this.getCharacter(request.characterId);
+    if (!character) {
+      throw new Error('Character not found');
+    }
+
     // Update the housing request to approved status
     const [updatedRequest] = await db
       .update(housingRequests)
@@ -1698,16 +1704,65 @@ export class DatabaseStorage implements IStorage {
       })
       .where(eq(characters.id, request.characterId));
 
+    // Create chat room for the housing if it has a name and password
+    if (request.housingName && request.housingPassword) {
+      // Find the appropriate category for housing (assuming there's a "Bydlení" category)
+      let housingCategory = await this.getChatCategoryByName("Bydlení");
+      
+      // If no housing category exists, create one
+      if (!housingCategory) {
+        housingCategory = await this.createChatCategory({
+          name: "Bydlení",
+          description: "Soukromá bydlení a sídla",
+          sortOrder: 100
+        });
+      }
+
+      // Create the chat room
+      const roomDescription = `${character.firstName} ${character.middleName ? character.middleName + ' ' : ''}${character.lastName}`;
+      
+      let longDescription = `**INFORMACE O BYDLENÍ**\n\n`;
+      longDescription += `📍 **Adresa:** ${assignedAddress}\n`;
+      longDescription += `🏠 **Typ:** ${this.getHousingTypeDescription(request.requestType)}\n`;
+      if (request.size) {
+        longDescription += `📏 **Velikost:** ${request.size}\n`;
+      }
+      longDescription += `👥 **Vlastník:** ${character.firstName} ${character.middleName ? character.middleName + ' ' : ''}${character.lastName}\n`;
+      longDescription += `📅 **Přiděleno:** ${new Date().toLocaleDateString('cs-CZ')}\n\n`;
+      longDescription += `**POPIS:**\n${request.description}`;
+
+      await this.createChatRoom({
+        name: request.housingName,
+        description: roomDescription,
+        longDescription: longDescription,
+        categoryId: housingCategory.id,
+        password: request.housingPassword,
+        isPublic: false,
+        sortOrder: 0
+      });
+    }
+
     // Log admin activity
     await this.logAdminActivity({
       adminId,
       action: "approve_housing_request",
       targetUserId: request.userId,
       targetCharacterId: request.characterId,
-      details: `Approved housing request for ${request.requestType} at ${assignedAddress}. ${reviewNote ? `Note: ${reviewNote}` : ''}`,
+      details: `Approved housing request for ${request.requestType} at ${assignedAddress}. ${reviewNote ? `Note: ${reviewNote}` : ''}${request.housingName ? ` Created chat room: ${request.housingName}` : ''}`,
     });
 
     return updatedRequest;
+  }
+
+  private getHousingTypeDescription(requestType: string): string {
+    switch (requestType) {
+      case 'apartment': return 'Byt';
+      case 'house': return 'Dům';
+      case 'mansion': return 'Sídlo/Vila';
+      case 'dormitory': return 'Pokoj na ubytovně';
+      case 'shared': return 'Sdílené bydlení';
+      default: return requestType;
+    }
   }
 
   async rejectHousingRequest(requestId: number, adminId: number, reviewNote: string): Promise<HousingRequest> {

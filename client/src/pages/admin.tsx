@@ -1368,11 +1368,23 @@ export default function Admin() {
                             <Badge variant="outline" className="text-xs border-green-500 text-green-600">Bydlení</Badge>
                           </div>
                           <p className="text-sm text-muted-foreground">
-                            {request.user?.username} • {request.requestType === 'dormitory' ? 'Ubytovna' : request.requestType === 'shared' ? 'Sdílené bydlení' : 'Vlastní bydlení'}
+                            {request.user?.username} • {request.requestType === 'dormitory' ? 'Ubytovna' : request.requestType === 'shared' ? 'Sdílené bydlení' : request.requestType === 'apartment' ? 'Byt' : request.requestType === 'house' ? 'Dům' : request.requestType === 'mansion' ? 'Sídlo/Vila' : 'Vlastní bydlení'}
                           </p>
                           <p className="text-xs text-muted-foreground">
                             Místo: {request.location} • Požádáno: {new Date(request.createdAt).toLocaleDateString('cs-CZ')}
                           </p>
+                          {(request.housingName || request.size) && (
+                            <p className="text-xs text-muted-foreground">
+                              {request.housingName && `Název: ${request.housingName}`}
+                              {request.housingName && request.size && ' • '}
+                              {request.size && `Velikost: ${request.size}`}
+                            </p>
+                          )}
+                          {request.description && (
+                            <p className="text-xs text-muted-foreground line-clamp-2">
+                              Popis: {request.description}
+                            </p>
+                          )}
                         </div>
                       </div>
                       <div className="flex items-center space-x-2">
