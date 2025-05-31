@@ -77,6 +77,7 @@ export default function AdminClean() {
   const [newRoomLongDescription, setNewRoomLongDescription] = useState("");
   const [newRoomCategoryId, setNewRoomCategoryId] = useState<number | null>(null);
   const [newRoomPassword, setNewRoomPassword] = useState("");
+  const [newRoomIsPublic, setNewRoomIsPublic] = useState(true);
   const [editingCategory, setEditingCategory] = useState<any>(null);
   const [editingRoom, setEditingRoom] = useState<any>(null);
   const [deleteConfirmation, setDeleteConfirmation] = useState<{type: 'category' | 'room', id: number, name: string} | null>(null);
@@ -989,16 +990,28 @@ export default function AdminClean() {
                       rows={3}
                     />
                   </div>
-                  <div>
-                    <Label htmlFor="roomPassword">Heslo místnosti (volitelné)</Label>
-                    <Input
-                      id="roomPassword"
-                      type="password"
-                      value={newRoomPassword}
-                      onChange={(e) => setNewRoomPassword(e.target.value)}
-                      placeholder="Nechte prázdné pro veřejnou místnost"
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      id="roomIsPublic"
+                      checked={newRoomIsPublic}
+                      onChange={(e) => setNewRoomIsPublic(e.target.checked)}
+                      className="rounded"
                     />
+                    <Label htmlFor="roomIsPublic">Veřejná místnost (bez hesla)</Label>
                   </div>
+                  {!newRoomIsPublic && (
+                    <div>
+                      <Label htmlFor="roomPassword">Heslo místnosti</Label>
+                      <Input
+                        id="roomPassword"
+                        type="password"
+                        value={newRoomPassword}
+                        onChange={(e) => setNewRoomPassword(e.target.value)}
+                        placeholder="Heslo pro přístup"
+                      />
+                    </div>
+                  )}
                   <Button
                     onClick={() => {
                       if (!newRoomName.trim() || !newRoomCategoryId) return;
@@ -1036,13 +1049,22 @@ export default function AdminClean() {
                                 <p className="text-sm text-muted-foreground">{mainCategory.description}</p>
                               )}
                             </div>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => setDeleteConfirmation({ type: 'category', id: mainCategory.id, name: mainCategory.name })}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
+                            <div className="flex items-center space-x-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setEditingCategory(mainCategory)}
+                              >
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setDeleteConfirmation({ type: 'category', id: mainCategory.id, name: mainCategory.name })}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
                           </div>
                           
                           {/* Child categories (Areas) */}
@@ -1059,13 +1081,22 @@ export default function AdminClean() {
                                       <p className="text-sm text-muted-foreground">{area.description}</p>
                                     )}
                                   </div>
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => setDeleteConfirmation({ type: 'category', id: area.id, name: area.name })}
-                                  >
-                                    <Trash2 className="h-4 w-4" />
-                                  </Button>
+                                  <div className="flex items-center space-x-2">
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => setEditingCategory(area)}
+                                    >
+                                      <Edit className="h-4 w-4" />
+                                    </Button>
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => setDeleteConfirmation({ type: 'category', id: area.id, name: area.name })}
+                                    >
+                                      <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                  </div>
                                 </div>
                                 
                                 {/* Rooms in this area */}
@@ -1082,13 +1113,22 @@ export default function AdminClean() {
                                             <p className="text-sm text-muted-foreground">{room.description}</p>
                                           )}
                                         </div>
-                                        <Button
-                                          variant="outline"
-                                          size="sm"
-                                          onClick={() => setDeleteConfirmation({ type: 'room', id: room.id, name: room.name })}
-                                        >
-                                          <Trash2 className="h-4 w-4" />
-                                        </Button>
+                                        <div className="flex items-center space-x-2">
+                                          <Button
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() => setEditingRoom(room)}
+                                          >
+                                            <Edit className="h-4 w-4" />
+                                          </Button>
+                                          <Button
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() => setDeleteConfirmation({ type: 'room', id: room.id, name: room.name })}
+                                          >
+                                            <Trash2 className="h-4 w-4" />
+                                          </Button>
+                                        </div>
                                       </div>
                                     ))}
                                   </div>
@@ -1534,6 +1574,141 @@ export default function AdminClean() {
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
+
+        {/* Edit Category Dialog */}
+        {editingCategory && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <div className="bg-card border border-border rounded-lg p-6 w-full max-w-md mx-4">
+              <h3 className="text-lg font-semibold text-foreground mb-4">
+                Upravit {editingCategory.parentId ? 'oblast' : 'kategorii'}
+              </h3>
+              
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="editCategoryName">Název</Label>
+                  <Input
+                    id="editCategoryName"
+                    value={editingCategory.name}
+                    onChange={(e) => setEditingCategory({...editingCategory, name: e.target.value})}
+                    placeholder="Název kategorie/oblasti"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="editCategoryDescription">Popis</Label>
+                  <Textarea
+                    id="editCategoryDescription"
+                    value={editingCategory.description || ''}
+                    onChange={(e) => setEditingCategory({...editingCategory, description: e.target.value})}
+                    placeholder="Volitelný popis"
+                    rows={2}
+                  />
+                </div>
+              </div>
+
+              <div className="flex gap-3 mt-6">
+                <Button
+                  variant="outline"
+                  onClick={() => setEditingCategory(null)}
+                  className="flex-1"
+                >
+                  Zrušit
+                </Button>
+                <Button
+                  onClick={() => {
+                    // TODO: Add update category mutation
+                    setEditingCategory(null);
+                  }}
+                  className="flex-1"
+                >
+                  Uložit
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Edit Room Dialog */}
+        {editingRoom && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <div className="bg-card border border-border rounded-lg p-6 w-full max-w-lg mx-4">
+              <h3 className="text-lg font-semibold text-foreground mb-4">
+                Upravit místnost
+              </h3>
+              
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="editRoomName">Název místnosti</Label>
+                  <Input
+                    id="editRoomName"
+                    value={editingRoom.name}
+                    onChange={(e) => setEditingRoom({...editingRoom, name: e.target.value})}
+                    placeholder="Název místnosti"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="editRoomDescription">Krátký popis</Label>
+                  <Input
+                    id="editRoomDescription"
+                    value={editingRoom.description || ''}
+                    onChange={(e) => setEditingRoom({...editingRoom, description: e.target.value})}
+                    placeholder="Krátký popis místnosti"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="editRoomLongDescription">Dlouhý popis</Label>
+                  <Textarea
+                    id="editRoomLongDescription"
+                    value={editingRoom.longDescription || ''}
+                    onChange={(e) => setEditingRoom({...editingRoom, longDescription: e.target.value})}
+                    placeholder="Detailní popis místnosti"
+                    rows={3}
+                  />
+                </div>
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="editRoomIsPublic"
+                    checked={editingRoom.isPublic !== false}
+                    onChange={(e) => setEditingRoom({...editingRoom, isPublic: e.target.checked})}
+                    className="rounded"
+                  />
+                  <Label htmlFor="editRoomIsPublic">Veřejná místnost (bez hesla)</Label>
+                </div>
+                {editingRoom.isPublic === false && (
+                  <div>
+                    <Label htmlFor="editRoomPassword">Heslo místnosti</Label>
+                    <Input
+                      id="editRoomPassword"
+                      type="password"
+                      value={editingRoom.password || ''}
+                      onChange={(e) => setEditingRoom({...editingRoom, password: e.target.value})}
+                      placeholder="Heslo pro přístup"
+                    />
+                  </div>
+                )}
+              </div>
+
+              <div className="flex gap-3 mt-6">
+                <Button
+                  variant="outline"
+                  onClick={() => setEditingRoom(null)}
+                  className="flex-1"
+                >
+                  Zrušit
+                </Button>
+                <Button
+                  onClick={() => {
+                    // TODO: Add update room mutation
+                    setEditingRoom(null);
+                  }}
+                  className="flex-1"
+                >
+                  Uložit
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
