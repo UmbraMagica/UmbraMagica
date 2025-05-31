@@ -33,8 +33,9 @@ export const users = pgTable("users", {
   username: varchar("username", { length: 50 }).notNull().unique(),
   email: varchar("email", { length: 255 }).notNull().unique(),
   password: text("password").notNull(),
-  role: varchar("role", { length: 20 }).notNull().default("user"), // user, admin
+  role: varchar("role", { length: 20 }).notNull().default("user"), // user, admin, system
   isBanned: boolean("is_banned").default(false).notNull(),
+  isSystem: boolean("is_system").default(false).notNull(), // systémový uživatel
   banReason: text("ban_reason"),
   bannedAt: timestamp("banned_at"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -52,6 +53,7 @@ export const characters = pgTable("characters", {
   school: varchar("school", { length: 100 }),
   description: text("description"),
   isActive: boolean("is_active").default(true).notNull(),
+  isSystem: boolean("is_system").default(false).notNull(), // systémová postava
 
   deathDate: date("death_date"), // datum smrti postavy
   deathReason: text("death_reason"), // důvod smrti
