@@ -317,13 +317,19 @@ export default function CharacterEditFixedNav() {
                   <div className="space-y-2">
                     <Label htmlFor="school" className="text-foreground flex items-center gap-2">
                       Škola
-                      {primaryCharacter?.schoolSetAt && (
+                      {primaryCharacter?.schoolSetAt && !isAdmin && (
                         <Lock className="h-4 w-4 text-amber-500" />
                       )}
                     </Label>
                     <Select
-                      value={userForm.watch("school") || "none"}
-                      onValueChange={(value) => userForm.setValue("school", value === "none" ? "" : value)}
+                      value={isAdmin ? (adminForm.watch("school") || "none") : (userForm.watch("school") || "none")}
+                      onValueChange={(value) => {
+                        if (isAdmin) {
+                          adminForm.setValue("school", value === "none" ? "" : value);
+                        } else {
+                          userForm.setValue("school", value === "none" ? "" : value);
+                        }
+                      }}
                       disabled={!!primaryCharacter?.schoolSetAt && !isAdmin}
                     >
                       <SelectTrigger className="bg-muted border-border text-foreground">
@@ -362,7 +368,7 @@ export default function CharacterEditFixedNav() {
                           type="number"
                           min="120"
                           max="250"
-                          {...userForm.register("height", { valueAsNumber: true })}
+                          {...(isAdmin ? adminForm.register("height", { valueAsNumber: true }) : userForm.register("height", { valueAsNumber: true }))}
                           placeholder="např. 175"
                           disabled={!!primaryCharacter?.heightSetAt && !isAdmin}
                           className="bg-muted border-border text-foreground disabled:opacity-50"
@@ -380,7 +386,7 @@ export default function CharacterEditFixedNav() {
                           type="number"
                           min="30"
                           max="300"
-                          {...userForm.register("weight", { valueAsNumber: true })}
+                          {...(isAdmin ? adminForm.register("weight", { valueAsNumber: true }) : userForm.register("weight", { valueAsNumber: true }))}
                           placeholder="např. 70"
                           className="bg-muted border-border text-foreground"
                         />
@@ -392,7 +398,7 @@ export default function CharacterEditFixedNav() {
                     <Label htmlFor="description" className="text-foreground">Popis postavy</Label>
                     <Textarea
                       id="description"
-                      {...userForm.register("description")}
+                      {...(isAdmin ? adminForm.register("description") : userForm.register("description"))}
                       placeholder="Napište krátký popis vaší postavy (volitelné)"
                       className="bg-muted border-border text-foreground min-h-[100px]"
                       rows={4}

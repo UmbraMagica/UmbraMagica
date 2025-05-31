@@ -83,6 +83,7 @@ function Router() {
           <Route path="/chat/room/:roomId" component={ChatRoom} />
           <Route path="/characters" component={CharactersList} />
           <Route path="/characters/:id" component={CharacterProfile} />
+          <Route path="/characters/:id/edit" component={CharacterEdit} />
           <Route path="/character/:id" component={CharacterProfile} />
           <Route path="/characters/:characterId/inventory" component={CharacterInventory} />
           <Route path="/characters/:characterId/journal" component={CharacterJournal} />
