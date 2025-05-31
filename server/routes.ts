@@ -570,8 +570,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       });
       
-      // For demo purposes, if there are any active connections, count current admin as online
-      // In real app, you'd track session activity or implement proper user presence
+      // Add current admin user as online (since they're making this request)
+      const currentUserId = (req.session as any).userId;
+      if (currentUserId) {
+        connectedUserIds.add(currentUserId);
+      }
+      
       const onlineUsersCount = connectedUserIds.size;
       
       res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
