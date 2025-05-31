@@ -26,6 +26,7 @@ import MySpells from "@/pages/my-spells";
 import UserSettings from "@/pages/user-settings";
 import Cemetery from "@/pages/cemetery";
 import Ollivanders from "@/pages/ollivanders";
+import OwlPost from "@/pages/owl-post";
 import NotFound from "@/pages/not-found";
 import { useEffect } from "react";
 import { apiRequest } from "./lib/queryClient";
