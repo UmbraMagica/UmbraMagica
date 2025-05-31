@@ -2938,6 +2938,67 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Owl Post API endpoints
+  
+  // Legacy endpoints without character ID - get first alive character
+  app.get("/api/owl-post/inbox", requireAuth, async (req, res) => {
+    try {
+      const userCharacters = await storage.getCharactersByUserId(req.session.userId!);
+      const firstAliveCharacter = userCharacters.find(char => !char.deathDate);
+      
+      if (!firstAliveCharacter) {
+        return res.status(404).json({ message: "No alive character found" });
+      }
+      
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = 50;
+      const offset = (page - 1) * limit;
+      
+      const messages = await storage.getOwlPostInbox(firstAliveCharacter.id, limit, offset);
+      res.json(messages);
+    } catch (error) {
+      console.error('Error fetching inbox messages:', error);
+      res.status(500).json({ message: 'Failed to fetch messages' });
+    }
+  });
+
+  app.get("/api/owl-post/sent", requireAuth, async (req, res) => {
+    try {
+      const userCharacters = await storage.getCharactersByUserId(req.session.userId!);
+      const firstAliveCharacter = userCharacters.find(char => !char.deathDate);
+      
+      if (!firstAliveCharacter) {
+        return res.status(404).json({ message: "No alive character found" });
+      }
+      
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = 50;
+      const offset = (page - 1) * limit;
+      
+      const messages = await storage.getOwlPostSent(firstAliveCharacter.id, limit, offset);
+      res.json(messages);
+    } catch (error) {
+      console.error('Error fetching sent messages:', error);
+      res.status(500).json({ message: 'Failed to fetch messages' });
+    }
+  });
+
+  app.get("/api/owl-post/unread-count", requireAuth, async (req, res) => {
+    try {
+      const userCharacters = await storage.getCharactersByUserId(req.session.userId!);
+      const firstAliveCharacter = userCharacters.find(char => !char.deathDate);
+      
+      if (!firstAliveCharacter) {
+        return res.status(404).json({ message: "No alive character found" });
+      }
+      
+      const count = await storage.getUnreadOwlPostCount(firstAliveCharacter.id);
+      res.json({ count });
+    } catch (error) {
+      console.error('Error fetching unread count:', error);
+      res.status(500).json({ message: 'Failed to fetch unread count' });
+    }
+  });
+
   app.post("/api/owl-post/send", requireAuth, async (req, res) => {
     try {
       const messageData = insertOwlPostMessageSchema.parse(req.body);
