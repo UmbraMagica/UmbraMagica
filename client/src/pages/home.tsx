@@ -57,6 +57,12 @@ export default function Home() {
     enabled: !!user,
   });
 
+  // Get main character's wand
+  const { data: characterWand } = useQuery({
+    queryKey: [`/api/characters/${mainCharacter?.id}/wand`],
+    enabled: !!mainCharacter?.id,
+  });
+
   const currentDisplayedCharacter = displayedCharacter || mainCharacter;
   const characterAge = currentDisplayedCharacter ? calculateGameAge(currentDisplayedCharacter.birthDate) : 0;
 
@@ -118,6 +124,37 @@ export default function Home() {
       </nav>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Urgent Wand Warning for characters without wands */}
+        {mainCharacter && !characterWand && (
+          <div className="mb-6">
+            <Card className="bg-gradient-to-r from-amber-500/20 to-orange-500/20 border-amber-400/50 border-2 shadow-lg">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    <div className="bg-amber-500/20 p-3 rounded-full">
+                      <Wand2 className="h-8 w-8 text-amber-400 animate-pulse" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-amber-300 mb-1">
+                        {mainCharacter.firstName} potřebuje hůlku!
+                      </h3>
+                      <p className="text-amber-200/80">
+                        Bez hůlky nemůžete sesílat kouzla. Navštivte Ollivandera a získejte svou první hůlku.
+                      </p>
+                    </div>
+                  </div>
+                  <Button
+                    onClick={() => setLocation('/ollivanders')}
+                    className="bg-amber-500 hover:bg-amber-600 text-white font-bold px-6 py-3 text-lg shadow-lg"
+                  >
+                    Navštívit Ollivandera
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
         <div className="mb-8 text-center">
           <h1 className="text-4xl fantasy-font font-bold text-accent mb-4">
             Vítejte zpět, {user?.username}!
@@ -150,15 +187,30 @@ export default function Home() {
                   </Button>
                   
                   <Button 
-                    variant="ghost"
-                    className="w-full justify-start text-left h-auto p-3 hover:bg-purple-500/20"
+                    variant={mainCharacter && !characterWand ? "default" : "ghost"}
+                    className={`w-full justify-start text-left h-auto p-3 ${
+                      mainCharacter && !characterWand 
+                        ? "bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/50 animate-pulse" 
+                        : "hover:bg-purple-500/20"
+                    }`}
                     onClick={() => setLocation('/ollivanders')}
                   >
                     <div className="flex items-center space-x-3">
-                      <Wand2 className="h-5 w-5 text-amber-400" />
+                      <Wand2 className={`h-5 w-5 ${
+                        mainCharacter && !characterWand ? "text-amber-300" : "text-amber-400"
+                      }`} />
                       <div>
-                        <div className="font-medium">U Ollivandera</div>
-                        <div className="text-xs text-muted-foreground">Získat hůlku</div>
+                        <div className={`font-medium ${
+                          mainCharacter && !characterWand ? "text-amber-200" : ""
+                        }`}>
+                          U Ollivandera
+                          {mainCharacter && !characterWand && " ⚠️"}
+                        </div>
+                        <div className={`text-xs ${
+                          mainCharacter && !characterWand ? "text-amber-300/80" : "text-muted-foreground"
+                        }`}>
+                          {mainCharacter && !characterWand ? "POTŘEBUJETE HŮLKU!" : "Získat hůlku"}
+                        </div>
                       </div>
                     </div>
                   </Button>
