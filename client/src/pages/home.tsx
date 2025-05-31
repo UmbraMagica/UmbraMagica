@@ -364,6 +364,70 @@ export default function Home() {
               </CardContent>
             </Card>
 
+            {/* História změn vlivu */}
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="text-xl font-semibold text-foreground mb-4 flex items-center">
+                  <div className="text-2xl mr-3">📊</div>
+                  Nedávné změny vlivu
+                </h3>
+                
+                {(() => {
+                  const { data: influenceHistory } = useQuery({
+                    queryKey: ['/api/influence-history'],
+                    staleTime: 30000,
+                  });
+
+                  if (!influenceHistory) {
+                    return <div className="text-center text-muted-foreground py-4">Načítání historie...</div>;
+                  }
+
+                  if (influenceHistory.length === 0) {
+                    return <div className="text-center text-muted-foreground py-4">Zatím žádné změny</div>;
+                  }
+
+                  const recentChanges = influenceHistory.slice(0, 5); // Show only last 5 changes
+
+                  return (
+                    <div className="space-y-3">
+                      {recentChanges.map((entry: any) => (
+                        <div
+                          key={entry.id}
+                          className="flex items-center justify-between p-3 border rounded-lg bg-card/30"
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className={`w-2 h-2 rounded-full ${
+                              entry.changeType === 'grindelwald' ? 'bg-red-600' : 'bg-blue-600'
+                            }`}></div>
+                            <div>
+                              <div className="font-medium text-sm">
+                                {entry.changeType === 'grindelwald' ? 'Grindelwald' : 'Brumbál'}: 
+                                <span className={`ml-1 ${entry.pointsChanged > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                  {entry.pointsChanged > 0 ? '+' : ''}{entry.pointsChanged}
+                                </span>
+                              </div>
+                              <div className="text-xs text-muted-foreground">{entry.reason}</div>
+                            </div>
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            {new Date(entry.createdAt).toLocaleDateString('cs-CZ')}
+                          </div>
+                        </div>
+                      ))}
+                      
+                      {influenceHistory.length > 5 && (
+                        <div className="text-center pt-2">
+                          <span className="text-xs text-muted-foreground">
+                            A dalších {influenceHistory.length - 5} změn...
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
+              </CardContent>
+            </Card>
+
             {/* Magická věštba */}
             <Card className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border-amber-300/30">
               <CardContent className="p-6">

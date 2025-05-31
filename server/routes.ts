@@ -1773,6 +1773,64 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Influence history endpoints with admin tracking
+  app.post("/api/admin/influence-bar/adjust-with-history", requireAuth, async (req, res) => {
+    try {
+      const user = await storage.getUser(req.session.userId!);
+      if (!user || user.role !== 'admin') {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const { changeType, points, reason } = req.body;
+      
+      if (!changeType || points === undefined || !reason) {
+        return res.status(400).json({ message: "changeType, points, and reason are required" });
+      }
+
+      if (!['grindelwald', 'dumbledore'].includes(changeType)) {
+        return res.status(400).json({ message: "changeType must be 'grindelwald' or 'dumbledore'" });
+      }
+
+      const parsedPoints = parseInt(points);
+      if (isNaN(parsedPoints)) {
+        return res.status(400).json({ message: "Points must be a valid number" });
+      }
+
+      const updatedBar = await storage.updateInfluenceWithHistory(
+        changeType,
+        parsedPoints,
+        reason,
+        req.session.userId!
+      );
+      
+      // Log admin activity
+      await storage.logAdminActivity({
+        adminId: req.session.userId!,
+        action: "influence_change_with_history",
+        details: `${changeType === 'grindelwald' ? 'Grindelwald' : 'Dumbledore'}: ${parsedPoints > 0 ? '+' : ''}${parsedPoints} bodů. Důvod: ${reason}`
+      });
+      
+      res.json(updatedBar);
+    } catch (error) {
+      console.error("Error adjusting influence with history:", error);
+      res.status(500).json({ message: "Failed to adjust influence" });
+    }
+  });
+
+  app.get("/api/influence-history", async (req, res) => {
+    try {
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 50;
+      const offset = (page - 1) * limit;
+
+      const history = await storage.getInfluenceHistory(limit, offset);
+      res.json(history);
+    } catch (error) {
+      console.error("Error fetching influence history:", error);
+      res.status(500).json({ message: "Failed to fetch influence history" });
+    }
+  });
+
   const httpServer = createServer(app);
   
   // WebSocket server for real-time chat
