@@ -325,12 +325,17 @@ export default function Admin() {
     },
   });
 
+  // Housing request state
+  const [expandedHousingRequest, setExpandedHousingRequest] = useState<number | null>(null);
+  const [housingFormData, setHousingFormData] = useState({
+    assignedAddress: '',
+    reviewNote: '',
+    action: '' as 'approve' | 'return' | 'reject' | ''
+  });
+
   // Housing request mutations
   const approveHousingMutation = useMutation({
-    mutationFn: async (requestId: number) => {
-      const assignedAddress = prompt("Přidělená adresa (povinné):");
-      if (!assignedAddress) throw new Error("Adresa je povinná");
-      const reviewNote = prompt("Poznámka (volitelné):") || "";
+    mutationFn: async ({ requestId, assignedAddress, reviewNote }: { requestId: number, assignedAddress: string, reviewNote: string }) => {
       return apiRequest("POST", `/api/admin/housing-requests/${requestId}/approve`, { 
         assignedAddress, 
         reviewNote 
@@ -342,6 +347,8 @@ export default function Admin() {
         description: "Žádost o bydlení byla schválena",
       });
       queryClient.invalidateQueries({ queryKey: ['/api/admin/housing-requests'] });
+      setExpandedHousingRequest(null);
+      setHousingFormData({ assignedAddress: '', reviewNote: '', action: '' });
     },
     onError: (error: any) => {
       toast({
@@ -353,9 +360,7 @@ export default function Admin() {
   });
 
   const rejectHousingMutation = useMutation({
-    mutationFn: async (requestId: number) => {
-      const reviewNote = prompt("Důvod vrácení k přepracování (povinné):");
-      if (!reviewNote) throw new Error("Důvod je povinný");
+    mutationFn: async ({ requestId, reviewNote }: { requestId: number, reviewNote: string }) => {
       return apiRequest("POST", `/api/admin/housing-requests/${requestId}/return`, { 
         reviewNote 
       });
@@ -366,6 +371,8 @@ export default function Admin() {
         description: "Žádost byla vrácena k přepracování",
       });
       queryClient.invalidateQueries({ queryKey: ['/api/admin/housing-requests'] });
+      setExpandedHousingRequest(null);
+      setHousingFormData({ assignedAddress: '', reviewNote: '', action: '' });
     },
     onError: (error: any) => {
       toast({
@@ -377,9 +384,7 @@ export default function Admin() {
   });
 
   const denyHousingMutation = useMutation({
-    mutationFn: async (requestId: number) => {
-      const reviewNote = prompt("Důvod zamítnutí (povinné):");
-      if (!reviewNote) throw new Error("Důvod je povinný");
+    mutationFn: async ({ requestId, reviewNote }: { requestId: number, reviewNote: string }) => {
       return apiRequest("POST", `/api/admin/housing-requests/${requestId}/reject`, { 
         reviewNote 
       });
@@ -390,6 +395,8 @@ export default function Admin() {
         description: "Žádost o bydlení byla zamítnuta",
       });
       queryClient.invalidateQueries({ queryKey: ['/api/admin/housing-requests'] });
+      setExpandedHousingRequest(null);
+      setHousingFormData({ assignedAddress: '', reviewNote: '', action: '' });
     },
     onError: (error: any) => {
       toast({
@@ -399,6 +406,44 @@ export default function Admin() {
       });
     },
   });
+
+  const handleHousingAction = (requestId: number, action: 'approve' | 'return' | 'reject') => {
+    if (action === 'approve') {
+      if (!housingFormData.assignedAddress.trim()) {
+        toast({
+          title: "Chyba",
+          description: "Přidělená adresa je povinná",
+          variant: "destructive",
+        });
+        return;
+      }
+      approveHousingMutation.mutate({
+        requestId,
+        assignedAddress: housingFormData.assignedAddress,
+        reviewNote: housingFormData.reviewNote
+      });
+    } else if (action === 'return') {
+      if (!housingFormData.reviewNote.trim()) {
+        toast({
+          title: "Chyba",
+          description: "Důvod vrácení je povinný",
+          variant: "destructive",
+        });
+        return;
+      }
+      rejectHousingMutation.mutate({ requestId, reviewNote: housingFormData.reviewNote });
+    } else if (action === 'reject') {
+      if (!housingFormData.reviewNote.trim()) {
+        toast({
+          title: "Chyba",
+          description: "Důvod zamítnutí je povinný",
+          variant: "destructive",
+        });
+        return;
+      }
+      denyHousingMutation.mutate({ requestId, reviewNote: housingFormData.reviewNote });
+    }
+  };
 
   const createCategoryMutation = useMutation({
     mutationFn: async (category: any) => {

@@ -1983,13 +1983,11 @@ export class DatabaseStorage implements IStorage {
     return (result.rowCount || 0) > 0;
   }
 
-  async markOwlPostAsRead(messageId: number): Promise<OwlPostMessage | undefined> {
-    const [updatedMessage] = await db
+  async markOwlPostAsRead(messageId: number): Promise<void> {
+    await db
       .update(owlPostMessages)
       .set({ isRead: true, readAt: new Date() })
-      .where(eq(owlPostMessages.id, messageId))
-      .returning();
-    return updatedMessage;
+      .where(eq(owlPostMessages.id, messageId));
   }
 
   async getUnreadOwlPostCount(characterId: number): Promise<number> {
