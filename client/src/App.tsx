@@ -92,6 +92,7 @@ function Router() {
           <Route path="/my-spells" component={MySpells} />
           <Route path="/cemetery" component={Cemetery} />
           <Route path="/ollivanders" component={Ollivanders} />
+          <Route path="/owl-post" component={OwlPost} />
         </>
       )}
       <Route component={NotFound} />

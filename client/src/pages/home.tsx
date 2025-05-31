@@ -28,6 +28,7 @@ import {
   BookOpen,
   ScrollText,
   Globe,
+  Bird,
   Newspaper
 } from "lucide-react";
 import { GameDate } from "@/components/GameDate";
@@ -230,6 +231,20 @@ export default function Home() {
                         }`}>
                           {currentDisplayedCharacter && (characterWand === null || characterWand === undefined) ? "POTŘEBUJETE HŮLKU!" : "Získat hůlku"}
                         </div>
+                      </div>
+                    </div>
+                  </Button>
+
+                  <Button 
+                    variant="ghost"
+                    className="w-full justify-start text-left h-auto p-3 hover:bg-purple-500/20"
+                    onClick={() => setLocation('/owl-post')}
+                  >
+                    <div className="flex items-center space-x-3">
+                      <Bird className="h-5 w-5 text-amber-400" />
+                      <div>
+                        <div className="font-medium">Soví pošta</div>
+                        <div className="text-xs text-muted-foreground">Zprávy mezi postavami</div>
                       </div>
                     </div>
                   </Button>
