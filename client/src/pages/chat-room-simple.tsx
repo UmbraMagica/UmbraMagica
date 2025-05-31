@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { ArrowLeft, Edit3, Save, X, BookOpen } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
+import { RoomDescription } from "@/components/RoomDescription";
 
 interface ChatRoom {
   id: number;
@@ -476,9 +477,13 @@ export default function ChatRoom() {
                 rows={12}
               />
             ) : (
-              <div className="text-sm text-muted-foreground whitespace-pre-line">
-                {currentRoom.longDescription || (user?.role === 'admin' ? "Žádný popis místnosti. Klikněte na upravit pro přidání popisu." : "")}
-              </div>
+              currentRoom.longDescription ? (
+                <RoomDescription description={currentRoom.longDescription} roomName={currentRoom.name} />
+              ) : (
+                <div className="text-sm text-muted-foreground">
+                  {user?.role === 'admin' ? "Žádný popis místnosti. Klikněte na upravit pro přidání popisu." : ""}
+                </div>
+              )
             )}
           </div>
         </div>

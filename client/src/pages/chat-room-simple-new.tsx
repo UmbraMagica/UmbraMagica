@@ -940,7 +940,7 @@ export default function ChatRoom() {
                 <div>
                   <div className="text-sm font-medium text-foreground mb-2">Popis místnosti</div>
                   {currentRoom.longDescription ? (
-                    <RoomDescription description={currentRoom.longDescription} />
+                    <RoomDescription description={currentRoom.longDescription} roomName={currentRoom.name} />
                   ) : (
                     <div className="text-sm text-muted-foreground">
                       {user?.role === 'admin' ? "Žádný popis místnosti. Klikněte na upravit pro přidání popisu." : ""}
