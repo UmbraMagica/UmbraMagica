@@ -600,7 +600,7 @@ export default function Home() {
                             : 'bg-muted/30'
                         }`}
                         onClick={() => {
-                          setDisplayedCharacter(character);
+                          setLocation(`/character/${character.id}`);
                         }}
                       >
                         <div className="flex items-center space-x-3">
@@ -625,17 +625,7 @@ export default function Home() {
                       </div>
                     ))}
                   </div>
-                  <div className="mt-4 pt-4 border-t border-border">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="w-full"
-                      onClick={() => setLocation('/settings')}
-                    >
-                      <Settings className="h-4 w-4 mr-2" />
-                      Spravovat postavy
-                    </Button>
-                  </div>
+
                 </CardContent>
               </Card>
             )}
