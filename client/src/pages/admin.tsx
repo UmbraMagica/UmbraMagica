@@ -1463,6 +1463,70 @@ export default function Admin() {
                     </Button>
                   </div>
 
+                  {/* Existing Categories Management */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-medium">Správa existujících kategorií</h3>
+                    <div className="border rounded-lg">
+                      <div className="p-4 space-y-3 max-h-64 overflow-y-auto">
+                        {Array.isArray(chatCategories) && chatCategories.length > 0 ? (
+                          chatCategories.map((category: any) => (
+                            <div key={category.id} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2">
+                                  <h4 className="font-medium text-foreground">
+                                    {category.parentId ? "📍" : "🌍"} {category.name}
+                                  </h4>
+                                  <Badge variant={category.parentId ? "secondary" : "default"} className="text-xs">
+                                    {category.parentId ? "Oblast" : "Kategorie"}
+                                  </Badge>
+                                </div>
+                                {category.description && (
+                                  <p className="text-sm text-muted-foreground mt-1">{category.description}</p>
+                                )}
+                                <p className="text-xs text-muted-foreground">
+                                  ID: {category.id} • Pořadí: {category.sortOrder}
+                                </p>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => {
+                                    setEditingCategory(category);
+                                    setEditCategoryName(category.name);
+                                    setEditCategoryDescription(category.description || "");
+                                    setEditCategoryParentId(category.parentId);
+                                  }}
+                                  className="text-yellow-400 hover:text-yellow-300"
+                                  title="Upravit kategorii"
+                                >
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => {
+                                    if (confirm(`Opravdu chcete smazat kategorii "${category.name}"? Tato akce je nevratná.`)) {
+                                      deleteCategoryMutation.mutate(category.id);
+                                    }
+                                  }}
+                                  className="text-red-400 hover:text-red-300"
+                                  title="Smazat kategorii"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </div>
+                          ))
+                        ) : (
+                          <div className="text-center text-muted-foreground py-8">
+                            Žádné kategorie
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
                   {/* Existing Rooms Management */}
                   <div className="space-y-4">
                     <div className="flex items-center justify-between cursor-pointer" onClick={() => setIsExistingRoomsCollapsed(!isExistingRoomsCollapsed)}>
@@ -1522,11 +1586,13 @@ export default function Admin() {
                                     variant="ghost"
                                     size="sm"
                                     onClick={() => {
-                                      // TODO: Add edit functionality
-                                      toast({
-                                        title: "Funkce v přípravě",
-                                        description: "Editace místností bude dostupná v příští verzi",
-                                      });
+                                      setEditingRoom(room);
+                                      setEditRoomName(room.name);
+                                      setEditRoomDescription(room.description || "");
+                                      setEditRoomLongDescription(room.longDescription || "");
+                                      setEditRoomCategoryId(room.categoryId);
+                                      setEditRoomPassword("");
+                                      setEditRoomIsPublic(room.isPublic);
                                     }}
                                     className="text-yellow-400 hover:text-yellow-300"
                                     title="Upravit místnost"
@@ -1538,11 +1604,7 @@ export default function Admin() {
                                     size="sm"
                                     onClick={() => {
                                       if (confirm(`Opravdu chcete smazat místnost "${room.name}"? Tato akce je nevratná a smaže všechny zprávy v místnosti.`)) {
-                                        // TODO: Add delete functionality
-                                        toast({
-                                          title: "Funkce v přípravě",
-                                          description: "Mazání místností bude dostupné v příští verzi",
-                                        });
+                                        deleteRoomMutation.mutate(room.id);
                                       }
                                     }}
                                     className="text-red-400 hover:text-red-300"
@@ -1895,6 +1957,179 @@ export default function Admin() {
           </div>
         )}
       </div>
+
+      {/* Edit Room Dialog */}
+      <Dialog open={!!editingRoom} onOpenChange={() => setEditingRoom(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Upravit místnost</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="editRoomName">Název místnosti</Label>
+              <Input
+                id="editRoomName"
+                value={editRoomName}
+                onChange={(e) => setEditRoomName(e.target.value)}
+                placeholder="Název místnosti"
+              />
+            </div>
+            <div>
+              <Label htmlFor="editRoomDescription">Krátký popis</Label>
+              <Input
+                id="editRoomDescription"
+                value={editRoomDescription}
+                onChange={(e) => setEditRoomDescription(e.target.value)}
+                placeholder="Krátký popis místnosti"
+              />
+            </div>
+            <div>
+              <Label htmlFor="editRoomLongDescription">Detailní popis</Label>
+              <Textarea
+                id="editRoomLongDescription"
+                value={editRoomLongDescription}
+                onChange={(e) => setEditRoomLongDescription(e.target.value)}
+                placeholder="Detailní popis místnosti"
+                rows={3}
+              />
+            </div>
+            <div>
+              <Label htmlFor="editRoomCategory">Oblast (kategorie)</Label>
+              <Select 
+                value={editRoomCategoryId?.toString() || ""} 
+                onValueChange={(value) => setEditRoomCategoryId(parseInt(value))}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Vyberte oblast" />
+                </SelectTrigger>
+                <SelectContent>
+                  {chatCategories?.filter(cat => cat.parentId !== null).map((category: any) => (
+                    <SelectItem key={category.id} value={category.id.toString()}>
+                      {category.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                id="editRoomIsPublic"
+                checked={editRoomIsPublic}
+                onChange={(e) => setEditRoomIsPublic(e.target.checked)}
+                className="rounded"
+              />
+              <Label htmlFor="editRoomIsPublic">Veřejná místnost</Label>
+            </div>
+            {!editRoomIsPublic && (
+              <div>
+                <Label htmlFor="editRoomPassword">Heslo pro přístup</Label>
+                <Input
+                  id="editRoomPassword"
+                  type="password"
+                  value={editRoomPassword}
+                  onChange={(e) => setEditRoomPassword(e.target.value)}
+                  placeholder="Nové heslo (ponechte prázdné pro zachování)"
+                />
+              </div>
+            )}
+            <div className="flex justify-end space-x-2">
+              <Button variant="outline" onClick={() => setEditingRoom(null)}>
+                Zrušit
+              </Button>
+              <Button
+                onClick={() => {
+                  if (!editRoomName.trim() || !editRoomCategoryId) return;
+                  const updates: any = {
+                    name: editRoomName.trim(),
+                    description: editRoomDescription.trim() || null,
+                    longDescription: editRoomLongDescription.trim() || null,
+                    categoryId: editRoomCategoryId,
+                    isPublic: editRoomIsPublic,
+                  };
+                  if (!editRoomIsPublic && editRoomPassword.trim()) {
+                    updates.password = editRoomPassword.trim();
+                  }
+                  updateRoomMutation.mutate({ id: editingRoom!.id, updates });
+                }}
+                disabled={!editRoomName.trim() || !editRoomCategoryId || updateRoomMutation.isPending}
+              >
+                {updateRoomMutation.isPending ? "Ukládám..." : "Uložit"}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Category Dialog */}
+      <Dialog open={!!editingCategory} onOpenChange={() => setEditingCategory(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Upravit kategorii</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="editCategoryName">Název</Label>
+              <Input
+                id="editCategoryName"
+                value={editCategoryName}
+                onChange={(e) => setEditCategoryName(e.target.value)}
+                placeholder="Název kategorie"
+              />
+            </div>
+            <div>
+              <Label htmlFor="editCategoryDescription">Popis</Label>
+              <Textarea
+                id="editCategoryDescription"
+                value={editCategoryDescription}
+                onChange={(e) => setEditCategoryDescription(e.target.value)}
+                placeholder="Popis kategorie"
+                rows={3}
+              />
+            </div>
+            <div>
+              <Label htmlFor="editCategoryParent">Nadřazená kategorie</Label>
+              <Select 
+                value={editCategoryParentId?.toString() || "none"} 
+                onValueChange={(value) => setEditCategoryParentId(value === "none" ? null : parseInt(value))}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Vyberte typ" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">🌍 Hlavní kategorie</SelectItem>
+                  {chatCategories?.filter(cat => cat.parentId === null && cat.id !== editingCategory?.id).map((category: any) => (
+                    <SelectItem key={category.id} value={category.id.toString()}>
+                      📍 {category.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex justify-end space-x-2">
+              <Button variant="outline" onClick={() => setEditingCategory(null)}>
+                Zrušit
+              </Button>
+              <Button
+                onClick={() => {
+                  if (!editCategoryName.trim()) return;
+                  updateCategoryMutation.mutate({
+                    id: editingCategory!.id,
+                    updates: {
+                      name: editCategoryName.trim(),
+                      description: editCategoryDescription.trim() || null,
+                      parentId: editCategoryParentId,
+                    }
+                  });
+                }}
+                disabled={!editCategoryName.trim() || updateCategoryMutation.isPending}
+              >
+                {updateCategoryMutation.isPending ? "Ukládám..." : "Uložit"}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
