@@ -82,6 +82,8 @@ export interface IStorage {
   getChatCategory(id: number): Promise<ChatCategory | undefined>;
   getChatCategoryByName(name: string): Promise<ChatCategory | undefined>;
   createChatCategory(category: InsertChatCategory): Promise<ChatCategory>;
+  updateChatCategory(id: number, updates: Partial<InsertChatCategory>): Promise<ChatCategory | undefined>;
+  deleteChatCategory(id: number): Promise<boolean>;
   getAllChatCategories(): Promise<ChatCategory[]>;
   getChatCategoriesWithChildren(): Promise<(ChatCategory & { children: ChatCategory[], rooms: ChatRoom[] })[]>;
   
@@ -90,8 +92,10 @@ export interface IStorage {
   getChatRoomByName(name: string): Promise<ChatRoom | undefined>;
   createChatRoom(room: InsertChatRoom): Promise<ChatRoom>;
   updateChatRoom(id: number, updates: Partial<InsertChatRoom>): Promise<ChatRoom | undefined>;
+  deleteChatRoom(id: number): Promise<boolean>;
   getAllChatRooms(): Promise<ChatRoom[]>;
   getChatRoomsByCategory(categoryId: number): Promise<ChatRoom[]>;
+  validateRoomPassword(roomId: number, password: string): Promise<boolean>;
   
   // Message operations
   getMessage(id: number): Promise<Message | undefined>;
@@ -342,6 +346,11 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateChatRoom(id: number, updates: Partial<InsertChatRoom>): Promise<ChatRoom | undefined> {
+    // If password is being updated, hash it
+    if (updates.password) {
+      updates.password = await this.hashPassword(updates.password);
+    }
+    
     const [room] = await db
       .update(chatRooms)
       .set(updates)
@@ -350,12 +359,34 @@ export class DatabaseStorage implements IStorage {
     return room;
   }
 
+  async deleteChatRoom(id: number): Promise<boolean> {
+    try {
+      // First delete all messages in the room
+      await db.delete(messages).where(eq(messages.roomId, id));
+      
+      // Then delete the room
+      await db.delete(chatRooms).where(eq(chatRooms.id, id));
+      return true;
+    } catch (error) {
+      console.error('Error deleting chat room:', error);
+      return false;
+    }
+  }
+
   async getAllChatRooms(): Promise<ChatRoom[]> {
     return db.select().from(chatRooms).orderBy(chatRooms.sortOrder);
   }
 
   async getChatRoomsByCategory(categoryId: number): Promise<ChatRoom[]> {
     return db.select().from(chatRooms).where(eq(chatRooms.categoryId, categoryId)).orderBy(chatRooms.sortOrder);
+  }
+
+  async validateRoomPassword(roomId: number, password: string): Promise<boolean> {
+    const room = await this.getChatRoom(roomId);
+    if (!room) return false;
+    if (!room.password) return true; // No password required
+    
+    return bcrypt.compare(password, room.password);
   }
 
   async getChatCategory(id: number): Promise<ChatCategory | undefined> {
@@ -371,6 +402,36 @@ export class DatabaseStorage implements IStorage {
   async createChatCategory(insertChatCategory: InsertChatCategory): Promise<ChatCategory> {
     const [category] = await db.insert(chatCategories).values(insertChatCategory).returning();
     return category;
+  }
+
+  async updateChatCategory(id: number, updates: Partial<InsertChatCategory>): Promise<ChatCategory | undefined> {
+    const [category] = await db.update(chatCategories)
+      .set(updates)
+      .where(eq(chatCategories.id, id))
+      .returning();
+    return category;
+  }
+
+  async deleteChatCategory(id: number): Promise<boolean> {
+    try {
+      // First check if there are any child categories
+      const children = await db.select().from(chatCategories).where(eq(chatCategories.parentId, id));
+      if (children.length > 0) {
+        throw new Error("Cannot delete category with child categories");
+      }
+
+      // Check if there are any rooms in this category
+      const rooms = await db.select().from(chatRooms).where(eq(chatRooms.categoryId, id));
+      if (rooms.length > 0) {
+        throw new Error("Cannot delete category with chat rooms");
+      }
+
+      const result = await db.delete(chatCategories).where(eq(chatCategories.id, id));
+      return true;
+    } catch (error) {
+      console.error('Error deleting chat category:', error);
+      return false;
+    }
   }
 
   async getAllChatCategories(): Promise<ChatCategory[]> {

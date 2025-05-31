@@ -88,6 +88,7 @@ export const chatRooms = pgTable("chat_rooms", {
   longDescription: text("long_description"),
   categoryId: integer("category_id").references(() => chatCategories.id),
   isPublic: boolean("is_public").default(true).notNull(),
+  password: varchar("password", { length: 255 }), // Hashed password for protected rooms
   sortOrder: integer("sort_order").default(0),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
