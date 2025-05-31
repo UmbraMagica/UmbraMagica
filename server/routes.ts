@@ -1820,6 +1820,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Influence reset endpoint
+  app.post("/api/admin/influence/reset", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const { grindelwald, dumbledore } = req.body;
+      
+      if (typeof grindelwald !== 'number' || typeof dumbledore !== 'number') {
+        return res.status(400).json({ message: "Valid grindelwald and dumbledore points are required" });
+      }
+
+      const updatedBar = await storage.updateInfluenceBar(grindelwald, dumbledore, req.session.userId!);
+      
+      // Log admin activity
+      await storage.logAdminActivity({
+        adminId: req.session.userId!,
+        action: "influence_reset",
+        details: `Reset magického vlivu na Grindelwald: ${grindelwald}, Brumbál: ${dumbledore}`
+      });
+      
+      res.json(updatedBar);
+    } catch (error) {
+      console.error("Error resetting influence:", error);
+      res.status(500).json({ message: "Failed to reset influence" });
+    }
+  });
+
   app.get("/api/influence-history", async (req, res) => {
     try {
       const page = parseInt(req.query.page as string) || 1;
