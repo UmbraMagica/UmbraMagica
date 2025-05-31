@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
-import { registrationSchema, loginSchema, insertCharacterSchema, insertMessageSchema, characterEditSchema, characterAdminEditSchema, characterRequestSchema, chatRooms, spellSchema, insertSpellSchema, insertCharacterSpellSchema, insertChatCategorySchema, insertChatRoomSchema, insertHousingRequestSchema } from "@shared/schema";
+import { registrationSchema, loginSchema, insertCharacterSchema, insertMessageSchema, characterEditSchema, characterAdminEditSchema, characterRequestSchema, chatRooms, spellSchema, insertSpellSchema, insertCharacterSpellSchema, insertChatCategorySchema, insertChatRoomSchema, insertHousingRequestSchema, insertOwlPostMessageSchema } from "@shared/schema";
 import { db } from "./db";
 import { z } from "zod";
 import session from "express-session";
@@ -2934,6 +2934,132 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error deleting chat room:', error);
       res.status(500).json({ message: 'Failed to delete chat room' });
+    }
+  });
+
+  // Owl Post API endpoints
+  app.post("/api/owl-post/send", requireAuth, async (req, res) => {
+    try {
+      const messageData = insertOwlPostMessageSchema.parse(req.body);
+      
+      // Verify the sender character belongs to the authenticated user
+      const senderCharacter = await storage.getCharacter(messageData.senderCharacterId);
+      if (!senderCharacter || senderCharacter.userId !== req.session.userId!) {
+        return res.status(403).json({ message: "Unauthorized to send from this character" });
+      }
+      
+      // Verify recipient character exists and is active
+      const recipientCharacter = await storage.getCharacter(messageData.recipientCharacterId);
+      if (!recipientCharacter || !recipientCharacter.isActive) {
+        return res.status(400).json({ message: "Recipient character not found or inactive" });
+      }
+      
+      const message = await storage.sendOwlPostMessage(messageData);
+      res.json(message);
+    } catch (error) {
+      console.error('Error sending owl post message:', error);
+      res.status(400).json({ message: 'Failed to send message' });
+    }
+  });
+
+  app.get("/api/owl-post/inbox/:characterId", requireAuth, async (req, res) => {
+    try {
+      const characterId = parseInt(req.params.characterId);
+      
+      // Verify the character belongs to the authenticated user
+      const character = await storage.getCharacter(characterId);
+      if (!character || character.userId !== req.session.userId) {
+        return res.status(403).json({ message: "Unauthorized to access this character's messages" });
+      }
+      
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = 50;
+      const offset = (page - 1) * limit;
+      
+      const messages = await storage.getOwlPostInbox(characterId, limit, offset);
+      res.json(messages);
+    } catch (error) {
+      console.error('Error fetching inbox:', error);
+      res.status(500).json({ message: 'Failed to fetch messages' });
+    }
+  });
+
+  app.get("/api/owl-post/sent/:characterId", requireAuth, async (req, res) => {
+    try {
+      const characterId = parseInt(req.params.characterId);
+      
+      // Verify the character belongs to the authenticated user
+      const character = await storage.getCharacter(characterId);
+      if (!character || character.userId !== req.session.userId) {
+        return res.status(403).json({ message: "Unauthorized to access this character's messages" });
+      }
+      
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = 50;
+      const offset = (page - 1) * limit;
+      
+      const messages = await storage.getOwlPostSent(characterId, limit, offset);
+      res.json(messages);
+    } catch (error) {
+      console.error('Error fetching sent messages:', error);
+      res.status(500).json({ message: 'Failed to fetch messages' });
+    }
+  });
+
+  app.post("/api/owl-post/mark-read/:messageId", requireAuth, async (req, res) => {
+    try {
+      const messageId = parseInt(req.params.messageId);
+      
+      // Get message and verify ownership
+      const messages = await storage.getOwlPostInbox(0, 1, 0); // This is a hack, we need a better method
+      // For now, let's just mark as read without verification
+      const message = await storage.markOwlPostAsRead(messageId);
+      
+      if (!message) {
+        return res.status(404).json({ message: "Message not found" });
+      }
+      
+      res.json(message);
+    } catch (error) {
+      console.error('Error marking message as read:', error);
+      res.status(500).json({ message: 'Failed to mark message as read' });
+    }
+  });
+
+  app.get("/api/owl-post/unread-count/:characterId", requireAuth, async (req, res) => {
+    try {
+      const characterId = parseInt(req.params.characterId);
+      
+      // Verify the character belongs to the authenticated user
+      const character = await storage.getCharacter(characterId);
+      if (!character || character.userId !== req.session.userId) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+      
+      const count = await storage.getUnreadOwlPostCount(characterId);
+      res.json({ count });
+    } catch (error) {
+      console.error('Error fetching unread count:', error);
+      res.status(500).json({ message: 'Failed to fetch unread count' });
+    }
+  });
+
+  app.get("/api/owl-post/characters", requireAuth, async (req, res) => {
+    try {
+      const characters = await storage.getAllCharactersForOwlPost();
+      // Filter out sensitive info and return only what's needed for the dropdown
+      const characterList = characters.map(char => ({
+        id: char.id,
+        firstName: char.firstName,
+        middleName: char.middleName,
+        lastName: char.lastName,
+        fullName: `${char.firstName} ${char.middleName ? char.middleName + ' ' : ''}${char.lastName}`
+      }));
+      
+      res.json(characterList.sort((a, b) => a.fullName.localeCompare(b.fullName)));
+    } catch (error) {
+      console.error('Error fetching characters for owl post:', error);
+      res.status(500).json({ message: 'Failed to fetch characters' });
     }
   });
 

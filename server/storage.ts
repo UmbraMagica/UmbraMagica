@@ -1721,6 +1721,90 @@ export class DatabaseStorage implements IStorage {
 
     return updatedRequest;
   }
+
+  // Owl Post Messages operations
+  async sendOwlPostMessage(message: InsertOwlPostMessage): Promise<OwlPostMessage> {
+    const [newMessage] = await db.insert(owlPostMessages).values(message).returning();
+    return newMessage;
+  }
+
+  async getOwlPostInbox(characterId: number, limit: number = 50, offset: number = 0): Promise<(OwlPostMessage & { sender: { firstName: string; middleName?: string | null; lastName: string } })[]> {
+    return db
+      .select({
+        id: owlPostMessages.id,
+        senderCharacterId: owlPostMessages.senderCharacterId,
+        recipientCharacterId: owlPostMessages.recipientCharacterId,
+        subject: owlPostMessages.subject,
+        content: owlPostMessages.content,
+        isRead: owlPostMessages.isRead,
+        sentAt: owlPostMessages.sentAt,
+        readAt: owlPostMessages.readAt,
+        sender: {
+          firstName: characters.firstName,
+          middleName: characters.middleName,
+          lastName: characters.lastName,
+        },
+      })
+      .from(owlPostMessages)
+      .innerJoin(characters, eq(owlPostMessages.senderCharacterId, characters.id))
+      .where(eq(owlPostMessages.recipientCharacterId, characterId))
+      .orderBy(desc(owlPostMessages.sentAt))
+      .limit(limit)
+      .offset(offset);
+  }
+
+  async getOwlPostSent(characterId: number, limit: number = 50, offset: number = 0): Promise<(OwlPostMessage & { recipient: { firstName: string; middleName?: string | null; lastName: string } })[]> {
+    return db
+      .select({
+        id: owlPostMessages.id,
+        senderCharacterId: owlPostMessages.senderCharacterId,
+        recipientCharacterId: owlPostMessages.recipientCharacterId,
+        subject: owlPostMessages.subject,
+        content: owlPostMessages.content,
+        isRead: owlPostMessages.isRead,
+        sentAt: owlPostMessages.sentAt,
+        readAt: owlPostMessages.readAt,
+        recipient: {
+          firstName: characters.firstName,
+          middleName: characters.middleName,
+          lastName: characters.lastName,
+        },
+      })
+      .from(owlPostMessages)
+      .innerJoin(characters, eq(owlPostMessages.recipientCharacterId, characters.id))
+      .where(eq(owlPostMessages.senderCharacterId, characterId))
+      .orderBy(desc(owlPostMessages.sentAt))
+      .limit(limit)
+      .offset(offset);
+  }
+
+  async markOwlPostAsRead(messageId: number): Promise<OwlPostMessage | undefined> {
+    const [updatedMessage] = await db
+      .update(owlPostMessages)
+      .set({ isRead: true, readAt: new Date() })
+      .where(eq(owlPostMessages.id, messageId))
+      .returning();
+    return updatedMessage;
+  }
+
+  async getUnreadOwlPostCount(characterId: number): Promise<number> {
+    const [result] = await db
+      .select({ count: count() })
+      .from(owlPostMessages)
+      .where(and(
+        eq(owlPostMessages.recipientCharacterId, characterId),
+        eq(owlPostMessages.isRead, false)
+      ));
+    return result.count;
+  }
+
+  async getAllCharactersForOwlPost(): Promise<Character[]> {
+    return db
+      .select()
+      .from(characters)
+      .where(eq(characters.isActive, true))
+      .orderBy(characters.firstName, characters.lastName);
+  }
 }
 
 export const storage = new DatabaseStorage();
