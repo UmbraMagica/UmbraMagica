@@ -2033,7 +2033,7 @@ s potěšením Vám oznamujeme, že Vaše žádost o pokoj na ubytovně byla sch
 PODROBNOSTI UBYTOVÁNÍ:
 📍 Adresa: ${approvedRequest.assignedAddress}
 🏠 Typ: Pokoj na ubytovně
-📅 Datum přidělení: ${new Date().toLocaleDateString('cs-CZ')}
+📅 Datum přidělení: 15. prosince 1926
 
 Váš pokoj je nyní připraven k nastěhování. Klíče si můžete vyzvednout u správce ubytovny.
 
