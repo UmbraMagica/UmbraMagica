@@ -83,19 +83,19 @@ export default function OwlPost() {
 
   // Get inbox messages
   const { data: inboxMessages = [] } = useQuery<OwlPostMessage[]>({
-    queryKey: ["/api/owl-post/inbox", firstAliveCharacter?.id],
+    queryKey: [`/api/owl-post/inbox/${firstAliveCharacter?.id}`],
     enabled: !!firstAliveCharacter,
   });
 
   // Get sent messages
   const { data: sentMessages = [] } = useQuery<OwlPostMessage[]>({
-    queryKey: ["/api/owl-post/sent", firstAliveCharacter?.id],
+    queryKey: [`/api/owl-post/sent/${firstAliveCharacter?.id}`],
     enabled: !!firstAliveCharacter,
   });
 
   // Get unread count
   const { data: unreadData } = useQuery<{ count: number }>({
-    queryKey: ["/api/owl-post/unread-count", firstAliveCharacter?.id],
+    queryKey: [`/api/owl-post/unread-count/${firstAliveCharacter?.id}`],
     enabled: !!firstAliveCharacter,
   });
 
@@ -120,8 +120,12 @@ export default function OwlPost() {
       toast({ title: "Dopis byl úspěšně odeslán!" });
       setIsComposeOpen(false);
       setIsReplyOpen(false);
+      form.reset();
+      replyForm.reset();
       // Invalidate queries to refresh the data
-      queryClient.invalidateQueries({ queryKey: ["/api/owl-post/sent"] });
+      queryClient.invalidateQueries({ queryKey: [`/api/owl-post/sent/${firstAliveCharacter?.id}`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/owl-post/inbox`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/owl-post/unread-count`] });
     },
     onError: () => {
       toast({ title: "Chyba při odesílání dopisu", variant: "destructive" });
@@ -234,10 +238,10 @@ export default function OwlPost() {
     <div className="container mx-auto p-6 max-w-6xl">
       <div className="flex items-center gap-3 mb-6">
         <Button 
-          variant="ghost" 
-          size="sm" 
+          variant="outline" 
+          size="default" 
           onClick={() => window.location.href = '/'}
-          className="mr-2"
+          className="mr-4 border-border hover:bg-muted"
         >
           <Home className="h-4 w-4 mr-2" />
           Domů
