@@ -1434,30 +1434,6 @@ export default function Admin() {
             )}
           </Card>
 
-          {/* Správa kouzel */}
-          <Card>
-            <CardHeader className="cursor-pointer" onClick={() => setIsSpellManagementCollapsed(!isSpellManagementCollapsed)}>
-              <CardTitle className="text-xl font-semibold text-foreground flex items-center">
-                <Wand2 className="text-yellow-400 mr-3 h-5 w-5" />
-                Správa kouzel
-                {isSpellManagementCollapsed ? (
-                  <ChevronDown className="ml-auto h-4 w-4" />
-                ) : (
-                  <ChevronUp className="ml-auto h-4 w-4" />
-                )}
-              </CardTitle>
-            </CardHeader>
-
-            {!isSpellManagementCollapsed && (
-              <CardContent>
-                <div className="text-center py-8 text-muted-foreground">
-                  <Wand2 className="h-12 w-12 mx-auto mb-4 text-yellow-400" />
-                  <p>Správa kouzel bude dostupná v příští aktualizaci</p>
-                </div>
-              </CardContent>
-            )}
-          </Card>
-
           {/* Logy administrátorské činnosti */}
           <Card data-section="admin-activity">
             <CardHeader className="cursor-pointer" onClick={() => setIsAdminActivityCollapsed(!isAdminActivityCollapsed)}>
