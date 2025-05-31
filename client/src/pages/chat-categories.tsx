@@ -53,18 +53,21 @@ function SubCategoryCollapsible({ subCategory }: { subCategory: ChatCategory }) 
     if (!passwordDialog.roomId) return;
 
     try {
-      const response = await apiRequest("POST", `/api/chat/rooms/${passwordDialog.roomId}/verify-password`, {
-        password: password
+      const response = await fetch(`/api/chat/rooms/${passwordDialog.roomId}/verify-password`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ password: password }),
       });
 
-      console.log("Password verification response:", response);
+      const data = await response.json();
+      console.log("Password verification response:", data);
 
-      // Check if response has success property
-      if (response && response.success === true) {
+      if (data && data.success === true) {
         const roomId = passwordDialog.roomId;
         setPasswordDialog({ isOpen: false, roomId: null });
         setPassword("");
-        // Use window.location instead of useLocation
         window.location.href = `/chat/room/${roomId}`;
         toast({
           title: "Úspěch",

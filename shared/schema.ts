@@ -38,6 +38,8 @@ export const users = pgTable("users", {
   isSystem: boolean("is_system").default(false).notNull(), // systémový uživatel
   banReason: text("ban_reason"),
   bannedAt: timestamp("banned_at"),
+  characterOrder: text("character_order"), // JSON array of character IDs in preferred order
+  highlightWords: text("highlight_words"), // JSON object: {words: string[], color: string}
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

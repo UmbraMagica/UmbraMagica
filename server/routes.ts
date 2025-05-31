@@ -156,6 +156,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         email: user.email,
         role: user.role,
         characters,
+        characterOrder: user.characterOrder ? JSON.parse(user.characterOrder) : null,
+        highlightWords: user.highlightWords ? JSON.parse(user.highlightWords) : null
       });
     } catch (error) {
       console.error("Error fetching user:", error);
@@ -200,6 +202,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       res.json({ message: "Logged out successfully" });
     });
+  });
+
+  // Update user character order
+  app.post("/api/user/character-order", requireAuth, async (req: any, res) => {
+    try {
+      const { characterOrder } = req.body;
+      
+      if (!Array.isArray(characterOrder)) {
+        return res.status(400).json({ message: "Character order must be an array" });
+      }
+
+      await storage.updateUserSettings(req.session.userId, {
+        characterOrder: JSON.stringify(characterOrder)
+      });
+
+      res.json({ message: "Character order updated successfully" });
+    } catch (error) {
+      console.error("Error updating character order:", error);
+      res.status(500).json({ message: "Failed to update character order" });
+    }
+  });
+
+  // Update user highlight words
+  app.post("/api/user/highlight-words", requireAuth, async (req: any, res) => {
+    try {
+      const { words, color } = req.body;
+      
+      if (!Array.isArray(words) || typeof color !== 'string') {
+        return res.status(400).json({ message: "Invalid highlight words format" });
+      }
+
+      const highlightWords = { words, color };
+      
+      await storage.updateUserSettings(req.session.userId, {
+        highlightWords: JSON.stringify(highlightWords)
+      });
+
+      res.json({ message: "Highlight words updated successfully" });
+    } catch (error) {
+      console.error("Error updating highlight words:", error);
+      res.status(500).json({ message: "Failed to update highlight words" });
+    }
   });
 
   // Change password endpoint
