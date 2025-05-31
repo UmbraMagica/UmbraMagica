@@ -59,10 +59,10 @@ export default function CharacterEditFixed() {
 
   const isAdmin = user?.role === 'admin';
 
-  // Always call hooks in the same order
-  const { data: mainCharacter, isLoading: isLoadingMain } = useQuery<any>({
-    queryKey: ["/api/characters/main"],
-    enabled: !!user && !characterIdFromUrl, // Only fetch main character if no specific character requested
+  // Get user's characters to find default character
+  const { data: userCharacters = [], isLoading: isLoadingMain } = useQuery<any[]>({
+    queryKey: ["/api/characters"],
+    enabled: !!user && !characterIdFromUrl,
   });
 
   const { data: specificCharacter, isLoading: isLoadingSpecific } = useQuery<any>({
@@ -92,12 +92,14 @@ export default function CharacterEditFixed() {
     },
   });
 
-  // Determine which character to use - handle if it's an array
+  // Determine which character to use
   let primaryCharacter;
   if (characterIdFromUrl) {
     primaryCharacter = specificCharacter;
   } else {
-    primaryCharacter = mainCharacter;
+    // Use first alive character as default
+    const firstAliveCharacter = userCharacters.find((char: any) => !char.deathDate);
+    primaryCharacter = firstAliveCharacter;
   }
   
   // If primaryCharacter is an array, get the first item
@@ -120,7 +122,6 @@ export default function CharacterEditFixed() {
         description: "Postava byla úspěšně aktualizována",
       });
       queryClient.invalidateQueries({ queryKey: ["/api/characters"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/characters/main"] });
       setLocation(`/characters/${primaryCharacter?.id}`);
     },
     onError: (error: any) => {

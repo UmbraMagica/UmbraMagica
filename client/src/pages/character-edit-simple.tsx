@@ -51,20 +51,21 @@ export default function CharacterEditSimple() {
   const urlParams = new URLSearchParams(window.location.search);
   const characterIdFromUrl = urlParams.get('characterId');
 
-  // Fetch the main character from API
-  const { data: mainCharacter } = useQuery<any>({
-    queryKey: ["/api/characters/main"],
+  // Get user's characters to find default character
+  const { data: userCharacters = [] } = useQuery<any[]>({
+    queryKey: ["/api/characters"],
     enabled: !!user && !characterIdFromUrl,
   });
 
   // Fetch specific character if ID provided in URL
   const { data: specificCharacter } = useQuery<any>({
-    queryKey: ["/api/characters", characterIdFromUrl],
+    queryKey: [`/api/characters/${characterIdFromUrl}`],
     enabled: !!characterIdFromUrl && !!user,
   });
 
-  // Use specific character if available, otherwise main character
-  const primaryCharacter = specificCharacter || mainCharacter;
+  // Use specific character if available, otherwise first alive character
+  const firstAliveCharacter = userCharacters.find((char: any) => !char.deathDate);
+  const primaryCharacter = specificCharacter || firstAliveCharacter;
   const isAdmin = user?.role === 'admin';
 
   // Form for regular users
