@@ -1,375 +1,278 @@
-import { useState } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useAuth } from "@/hooks/useAuth";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
 import { useLocation } from "wouter";
 import { 
   Crown, 
-  Home, 
-  LogOut, 
   Users, 
   UsersRound, 
-  MessageCircle, 
-  MessageSquare,
-  Circle,
+  Circle, 
+  MessageCircle,
+  Gauge,
   Settings,
+  User,
+  LogOut,
   Shield,
   Plus,
   Edit,
   ArrowUp,
-  UserPlus,
   Book,
+  UserPlus,
+  Archive,
+  Home,
   Skull,
-  ChevronDown,
-  ChevronUp,
   AlertTriangle,
-  Cog,
-  Trash2
+  Heart,
+  ChevronDown,
+  ChevronUp
 } from "lucide-react";
-import { queryClient } from "@/lib/queryClient";
 
-export default function AdminClean() {
-  const [, setLocation] = useLocation();
+interface AdminUser {
+  id: number;
+  username: string;
+  email: string;
+  role: string;
+  createdAt: string;
+  characters: any[];
+}
+
+export default function Admin() {
+  const { user, logout } = useAuth();
   const { toast } = useToast();
-  
-  // State for various dialogs and forms
+  const queryClient = useQueryClient();
+  const [, setLocation] = useLocation();
   const [newInviteCode, setNewInviteCode] = useState("");
-  const [isUserManagementCollapsed, setIsUserManagementCollapsed] = useState(false);
-  const [isChatManagementCollapsed, setIsChatManagementCollapsed] = useState(false);
-  const [isLiveCharactersCollapsed, setIsLiveCharactersCollapsed] = useState(false);
-  const [isDeadCharactersCollapsed, setIsDeadCharactersCollapsed] = useState(true);
-  const [isCharacterRequestsCollapsed, setIsCharacterRequestsCollapsed] = useState(false);
-  const [isAdminActivityCollapsed, setIsAdminActivityCollapsed] = useState(true);
-  const [showQuickInfluenceSettings, setShowQuickInfluenceSettings] = useState(false);
-  const [influenceDialog, setInfluenceDialog] = useState<{
-    open: boolean;
-    side: 'grindelwald' | 'dumbledore';
-    points: number;
-    reason: string;
-  }>({
-    open: false,
-    side: 'grindelwald',
-    points: 0,
-    reason: ''
-  });
-  
-  // Kill character state
-  const [killCharacterData, setKillCharacterData] = useState<{id: number, name: string} | null>(null);
+  const [killCharacterData, setKillCharacterData] = useState<{ id: number; name: string } | null>(null);
   const [deathReason, setDeathReason] = useState("");
   const [showConfirmKill, setShowConfirmKill] = useState(false);
-  
-  // Ban user state
-  const [banUserData, setBanUserData] = useState<{id: number, username: string} | null>(null);
-  const [banReason, setBanReason] = useState("");
+  const [isCemeteryCollapsed, setIsCemeteryCollapsed] = useState(true);
+  const [isLiveCharactersCollapsed, setIsLiveCharactersCollapsed] = useState(true);
+  const [isAdminActivityCollapsed, setIsAdminActivityCollapsed] = useState(true);
+  const [isCharacterRequestsCollapsed, setIsCharacterRequestsCollapsed] = useState(true);
+  const [isUserManagementCollapsed, setIsUserManagementCollapsed] = useState(true);
+  const [banUserData, setBanUserData] = useState<{ id: number; username: string } | null>(null);
+  const [resetPasswordData, setResetPasswordData] = useState<{ id: number; username: string } | null>(null);
   const [showConfirmBan, setShowConfirmBan] = useState(false);
+  const [banReason, setBanReason] = useState("");
 
-  // Chat management state
-  const [newCategoryName, setNewCategoryName] = useState("");
-  const [newCategoryDescription, setNewCategoryDescription] = useState("");
-  const [newCategoryParentId, setNewCategoryParentId] = useState<number | null>(null);
-  const [newRoomName, setNewRoomName] = useState("");
-  const [newRoomDescription, setNewRoomDescription] = useState("");
-  const [newRoomLongDescription, setNewRoomLongDescription] = useState("");
-  const [newRoomCategoryId, setNewRoomCategoryId] = useState<number | null>(null);
-  const [newRoomPassword, setNewRoomPassword] = useState("");
-  const [newRoomIsPublic, setNewRoomIsPublic] = useState(true);
-  const [editingCategory, setEditingCategory] = useState<any>(null);
-  const [editingRoom, setEditingRoom] = useState<any>(null);
-  const [deleteConfirmation, setDeleteConfirmation] = useState<{type: 'category' | 'room', id: number, name: string} | null>(null);
+  const { data: users = [] } = useQuery<AdminUser[]>({
+    queryKey: ["/api/users"],
+    staleTime: 30000,
+  });
 
-  // Data queries
-  const { data: user } = useQuery({ queryKey: ['/api/auth/user'] });
-  const { data: users = [] } = useQuery({ queryKey: ['/api/users'] });
-  const { data: allCharacters = [] } = useQuery({ queryKey: ['/api/characters/all'] });
-  const { data: characterRequests = [] } = useQuery({ queryKey: ['/api/admin/character-requests'] });
-  const { data: adminActivityLog = [] } = useQuery({ queryKey: ['/api/admin/activity-log'] });
-  const { data: inviteCodes = [] } = useQuery({ queryKey: ['/api/admin/invite-codes'] });
-  const { data: chatCategories = [] } = useQuery({ queryKey: ['/api/admin/chat-categories'] });
+  const { data: characterRequests = [] } = useQuery<any[]>({
+    queryKey: ["/api/admin/character-requests"],
+    staleTime: 30000,
+  });
 
-  // Generate random invite code function
-  const generateRandomInviteCode = () => {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let result = '';
-    for (let i = 0; i < 8; i++) {
-      result += characters.charAt(Math.floor(Math.random() * characters.length));
-    }
-    setNewInviteCode(result);
-  };
+  const { data: adminActivityLog = [] } = useQuery<any[]>({
+    queryKey: ["/api/admin/activity-log"],
+    staleTime: 30000,
+  });
 
-  // Mutations
+  // Fetch all characters for cemetery management
+  const { data: allCharacters = [] } = useQuery<any[]>({
+    queryKey: ["/api/characters/all"],
+    staleTime: 30000,
+  });
+
   const createInviteCodeMutation = useMutation({
     mutationFn: async (code: string) => {
-      const response = await fetch('/api/admin/invite-codes', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code }),
-      });
-      if (!response.ok) throw new Error('Failed to create invite code');
+      const response = await apiRequest("POST", "/api/admin/invite-codes", { code });
       return response.json();
     },
     onSuccess: () => {
-      setNewInviteCode("");
-      toast({ title: "Úspěch", description: "Zvací kód byl vytvořen" });
-      queryClient.invalidateQueries({ queryKey: ['/api/admin/invite-codes'] });
-    },
-    onError: () => {
-      toast({ title: "Chyba", description: "Nepodařilo se vytvořit zvací kód", variant: "destructive" });
-    },
-  });
-
-  // Chat management mutations
-  const createCategoryMutation = useMutation({
-    mutationFn: async (data: any) => {
-      const response = await fetch("/api/admin/chat-categories", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-      if (!response.ok) throw new Error("Failed to create category");
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/chat-categories"] });
-      setNewCategoryName("");
-      setNewCategoryDescription("");
-      setNewCategoryParentId(null);
-      toast({ title: "Kategorie byla úspěšně vytvořena" });
-    },
-  });
-
-  const createRoomMutation = useMutation({
-    mutationFn: async (data: any) => {
-      const response = await fetch("/api/admin/chat-rooms", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-      if (!response.ok) throw new Error("Failed to create room");
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/chat-categories"] });
-      setNewRoomName("");
-      setNewRoomDescription("");
-      setNewRoomLongDescription("");
-      setNewRoomCategoryId(null);
-      setNewRoomPassword("");
-      toast({ title: "Místnost byla úspěšně vytvořena" });
-    },
-  });
-
-  const deleteItemMutation = useMutation({
-    mutationFn: async ({ type, id }: { type: 'category' | 'room', id: number }) => {
-      const endpoint = type === 'category' ? `/api/admin/chat-categories/${id}` : `/api/admin/chat-rooms/${id}`;
-      const response = await fetch(endpoint, { method: "DELETE" });
-      if (!response.ok) throw new Error(`Failed to delete ${type}`);
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/chat-categories"] });
-      setDeleteConfirmation(null);
-      toast({ title: "Položka byla úspěšně smazána" });
-    },
-  });
-
-  const updateRoleMutation = useMutation({
-    mutationFn: async ({ userId, newRole }: { userId: number, newRole: string }) => {
-      const response = await fetch(`/api/admin/users/${userId}/role`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ role: newRole }),
-      });
-      if (!response.ok) throw new Error('Failed to update role');
-      return response.json();
-    },
-    onSuccess: () => {
-      toast({ title: "Úspěch", description: "Role uživatele byla změněna" });
-      queryClient.invalidateQueries({ queryKey: ['/api/users'] });
-    },
-    onError: () => {
-      toast({ title: "Chyba", description: "Nepodařilo se změnit roli", variant: "destructive" });
-    },
-  });
-
-  const resetPasswordMutation = useMutation({
-    mutationFn: async (userId: number) => {
-      const response = await fetch(`/api/admin/users/${userId}/reset-password`, {
-        method: 'POST',
-      });
-      if (!response.ok) throw new Error('Failed to reset password');
-      return response.json();
-    },
-    onSuccess: (data) => {
-      toast({ 
-        title: "Úspěch", 
-        description: `Heslo bylo resetováno na: ${data.newPassword}` 
-      });
-    },
-    onError: () => {
-      toast({ title: "Chyba", description: "Nepodařilo se resetovat heslo", variant: "destructive" });
-    },
-  });
-
-  const killCharacterMutation = useMutation({
-    mutationFn: async ({ characterId, reason }: { characterId: number, reason: string }) => {
-      const response = await fetch(`/api/admin/characters/${characterId}/kill`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ deathReason: reason }),
-      });
-      if (!response.ok) throw new Error('Failed to kill character');
-      return response.json();
-    },
-    onSuccess: () => {
-      toast({ title: "Úspěch", description: "Postava byla označena jako zemřelá" });
-      queryClient.invalidateQueries({ queryKey: ['/api/characters/all'] });
-      setKillCharacterData(null);
-      setDeathReason("");
-      setShowConfirmKill(false);
-    },
-    onError: () => {
-      toast({ title: "Chyba", description: "Nepodařilo se označit postavu jako zemřelou", variant: "destructive" });
-    },
-  });
-
-  const banUserMutation = useMutation({
-    mutationFn: async ({ userId, reason }: { userId: number, reason: string }) => {
-      const response = await fetch(`/api/admin/users/${userId}/ban`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ banReason: reason }),
-      });
-      if (!response.ok) throw new Error('Failed to ban user');
-      return response.json();
-    },
-    onSuccess: () => {
-      toast({ title: "Úspěch", description: "Uživatel byl zabanován" });
-      queryClient.invalidateQueries({ queryKey: ['/api/users'] });
-      setBanUserData(null);
-      setBanReason("");
-      setShowConfirmBan(false);
-    },
-    onError: () => {
-      toast({ title: "Chyba", description: "Nepodařilo se zabanovat uživatele", variant: "destructive" });
-    },
-  });
-
-  const approveCharacterRequestMutation = useMutation({
-    mutationFn: async (requestId: number) => {
-      const response = await fetch(`/api/admin/character-requests/${requestId}/approve`, {
-        method: 'POST',
-      });
-      if (!response.ok) throw new Error('Failed to approve character request');
-      return response.json();
-    },
-    onSuccess: () => {
-      toast({ title: "Úspěch", description: "Žádost o postavu byla schválena" });
-      queryClient.invalidateQueries({ queryKey: ['/api/admin/character-requests'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/characters/all'] });
-    },
-    onError: () => {
-      toast({ title: "Chyba", description: "Nepodařilo se schválit žádost", variant: "destructive" });
-    },
-  });
-
-  const rejectCharacterRequestMutation = useMutation({
-    mutationFn: async ({ requestId, reason }: { requestId: number, reason: string }) => {
-      const response = await fetch(`/api/admin/character-requests/${requestId}/reject`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ reviewNote: reason }),
-      });
-      if (!response.ok) throw new Error('Failed to reject character request');
-      return response.json();
-    },
-    onSuccess: () => {
-      toast({ title: "Úspěch", description: "Žádost o postavu byla zamítnuta" });
-      queryClient.invalidateQueries({ queryKey: ['/api/admin/character-requests'] });
-    },
-    onError: () => {
-      toast({ title: "Chyba", description: "Nepodařilo se zamítnout žádost", variant: "destructive" });
-    },
-  });
-
-  const adjustInfluenceWithHistory = useMutation({
-    mutationFn: async ({ changeType, points, reason }: { changeType: 'grindelwald' | 'dumbledore', points: number, reason: string }) => {
-      const response = await fetch('/api/admin/influence-bar/adjust-with-history', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ changeType, points, reason }),
-      });
-      if (!response.ok) throw new Error('Failed to adjust influence with history');
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/influence-bar'] });
-      setInfluenceDialog({ open: false, side: 'grindelwald', points: 0, reason: '' });
       toast({
         title: "Úspěch",
-        description: "Vliv byl úspěšně upraven a zaznamenán do historie",
+        description: "Zvací kód byl vytvořen",
       });
+      setNewInviteCode("");
     },
-    onError: () => {
+    onError: (error: any) => {
       toast({
         title: "Chyba",
-        description: "Nepodařilo se upravit vliv",
+        description: error.message || "Nepodařilo se vytvořit zvací kód",
         variant: "destructive",
       });
     },
   });
 
-  // Helper functions
-  const handleCreateInviteCode = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (newInviteCode.trim()) {
-      createInviteCodeMutation.mutate(newInviteCode.trim());
-    }
-  };
-
-  const toggleUserRole = (userId: number, currentRole: string) => {
-    const newRole = currentRole === "admin" ? "user" : "admin";
-    updateRoleMutation.mutate({ userId, newRole });
-  };
-
-  const handleResetPassword = (userId: number, username: string) => {
-    if (confirm(`Opravdu chcete resetovat heslo pro uživatele ${username}?`)) {
-      resetPasswordMutation.mutate(userId);
-    }
-  };
-
-  const confirmKillCharacter = () => {
-    if (!showConfirmKill) {
-      setShowConfirmKill(true);
-      return;
-    }
-    if (killCharacterData && deathReason.trim()) {
-      killCharacterMutation.mutate({
-        characterId: killCharacterData.id,
-        reason: deathReason.trim()
+  const updateRoleMutation = useMutation({
+    mutationFn: async ({ userId, role }: { userId: number; role: string }) => {
+      const response = await apiRequest("PATCH", `/api/users/${userId}/role`, { role });
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Úspěch",
+        description: "Role byla aktualizována",
       });
+      queryClient.invalidateQueries({ queryKey: ["/api/users"] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Chyba",
+        description: error.message || "Nepodařilo se aktualizovat roli",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const approveCharacterRequestMutation = useMutation({
+    mutationFn: async ({ requestId, reviewNote }: { requestId: number; reviewNote?: string }) => {
+      const response = await apiRequest("POST", `/api/admin/character-requests/${requestId}/approve`, { reviewNote });
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Úspěch",
+        description: "Žádost o postavu byla schválena",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/character-requests"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/activity-log"] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Chyba",
+        description: error.message || "Nepodařilo se schválit žádost",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const rejectCharacterRequestMutation = useMutation({
+    mutationFn: async ({ requestId, reviewNote }: { requestId: number; reviewNote: string }) => {
+      const response = await apiRequest("POST", `/api/admin/character-requests/${requestId}/reject`, { reviewNote });
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Úspěch",
+        description: "Žádost o postavu byla zamítnuta",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/character-requests"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/activity-log"] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Chyba",
+        description: error.message || "Nepodařilo se zamítnout žádost",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const killCharacterMutation = useMutation({
+    mutationFn: async ({ characterId, deathReason }: { characterId: number; deathReason: string }) => {
+      const response = await apiRequest("POST", `/api/admin/characters/${characterId}/kill`, { deathReason });
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Úspěch",
+        description: "Postava byla označena jako zemřelá",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/characters/all"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/cemetery"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/activity-log"] });
+      setKillCharacterData(null);
+      setDeathReason("");
+      setShowConfirmKill(false);
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Chyba",
+        description: error.message || "Nepodařilo se označit postavu jako zemřelou",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const resurrectCharacterMutation = useMutation({
+    mutationFn: async (characterId: number) => {
+      const response = await apiRequest("POST", `/api/characters/${characterId}/revive`);
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Úspěch",
+        description: "Postava byla oživena",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/characters/all"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/cemetery"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/activity-log"] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Chyba",
+        description: error.message || "Nepodařilo se oživit postavu",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const banUserMutation = useMutation({
+    mutationFn: async ({ userId, banReason }: { userId: number; banReason: string }) => {
+      const response = await apiRequest("POST", `/api/admin/users/${userId}/ban`, { banReason });
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Úspěch",
+        description: "Uživatel byl zabanován",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/users"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/activity-log"] });
+      setBanUserData(null);
+      setBanReason("");
+      setShowConfirmBan(false);
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Chyba",
+        description: error.message || "Nepodařilo se zabanovat uživatele",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const resetPasswordMutation = useMutation({
+    mutationFn: async (userId: number) => {
+      const response = await apiRequest("POST", `/api/admin/users/${userId}/reset-password`);
+      return response.json();
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "Úspěch",
+        description: `Heslo bylo resetováno na: ${data.newPassword}`,
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/activity-log"] });
+      setResetPasswordData(null);
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Chyba",
+        description: error.message || "Nepodařilo se resetovat heslo",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleKillCharacter = (characterId: number, characterName: string) => {
+    setKillCharacterData({ id: characterId, name: characterName });
+    setDeathReason("");
+    setShowConfirmKill(false);
+  };
+
+  const handleResurrectCharacter = (characterId: number, characterName: string) => {
+    if (confirm(`Opravdu chcete oživit postavu ${characterName}? Tato akce odstraní datum smrti a postava se znovu stane aktivní.`)) {
+      resurrectCharacterMutation.mutate(characterId);
     }
   };
 
@@ -380,38 +283,94 @@ export default function AdminClean() {
   };
 
   const confirmBanUser = () => {
+    if (!banUserData || !banReason.trim()) {
+      toast({
+        title: "Chyba",
+        description: "Důvod zákazu je povinný",
+        variant: "destructive",
+      });
+      return;
+    }
+
     if (!showConfirmBan) {
       setShowConfirmBan(true);
       return;
     }
-    if (banUserData && banReason.trim()) {
-      banUserMutation.mutate({
-        userId: banUserData.id,
-        reason: banReason.trim()
-      });
+
+    banUserMutation.mutate({
+      userId: banUserData.id,
+      banReason: banReason.trim()
+    });
+  };
+
+  const handleResetPassword = (userId: number, username: string) => {
+    if (confirm(`Opravdu chcete resetovat heslo pro uživatele ${username}? Bude vygenerováno nové dočasné heslo.`)) {
+      resetPasswordMutation.mutate(userId);
     }
+  };
+
+  const confirmKillCharacter = () => {
+    if (!killCharacterData || !deathReason.trim()) {
+      toast({
+        title: "Chyba",
+        description: "Důvod smrti je povinný",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!showConfirmKill) {
+      setShowConfirmKill(true);
+      return;
+    }
+
+    killCharacterMutation.mutate({
+      characterId: killCharacterData.id,
+      deathReason: deathReason.trim(),
+    });
   };
 
   const handleLogout = async () => {
     try {
-      await fetch('/api/auth/logout', { method: 'POST' });
-      setLocation('/login');
+      await logout();
+      setLocation('/');
+      toast({
+        title: "Odhlášení",
+        description: "Byli jste úspěšně odhlášeni",
+      });
     } catch (error) {
-      console.error('Logout failed:', error);
+      toast({
+        title: "Chyba",
+        description: "Nepodařilo se odhlásit",
+        variant: "destructive",
+      });
     }
   };
 
-  // Calculate stats
-  const stats = {
-    totalUsers: users.length,
-    activeCharacters: users.reduce((sum: number, user: any) => sum + (user.characters?.length || 0), 0),
-    onlineNow: Math.floor(users.length * 0.3),
-    activeChats: 5,
+  const handleCreateInviteCode = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newInviteCode || newInviteCode.length < 6) {
+      toast({
+        title: "Chyba",
+        description: "Zvací kód musí mít alespoň 6 znaků",
+        variant: "destructive",
+      });
+      return;
+    }
+    createInviteCodeMutation.mutate(newInviteCode);
   };
 
-  if (!user || user.role !== 'admin') {
-    return <div>Access denied</div>;
-  }
+  const toggleUserRole = (userId: number, currentRole: string) => {
+    const newRole = currentRole === "admin" ? "user" : "admin";
+    updateRoleMutation.mutate({ userId, role: newRole });
+  };
+
+  const stats = {
+    totalUsers: users.length,
+    activeCharacters: users.reduce((sum, user) => sum + user.characters.length, 0),
+    onlineNow: Math.floor(users.length * 0.3), // Mock online count
+    activeChats: 5,
+  };
 
   return (
     <div className="min-h-screen bg-background dark">
@@ -426,6 +385,29 @@ export default function AdminClean() {
                 </div>
                 <span className="text-xl fantasy-font font-bold text-accent">RPG Realm Admin</span>
               </div>
+              <div className="hidden md:ml-10 md:flex md:space-x-8">
+                <Button variant="ghost" className="text-accent hover:text-orange-400" onClick={() => setLocation('/')}>
+                  <Home className="mr-2 h-4 w-4" />
+                  Dashboard
+                </Button>
+                <Button variant="ghost" className="text-foreground hover:text-accent">
+                  <Users className="mr-2 h-4 w-4" />
+                  Uživatelé
+                </Button>
+                <Button variant="ghost" className="text-foreground hover:text-accent">
+                  <UsersRound className="mr-2 h-4 w-4" />
+                  Postavy
+                </Button>
+
+                <Button 
+                  variant="ghost" 
+                  className="text-foreground hover:text-accent"
+                  onClick={() => setLocation('/chat-categories')}
+                >
+                  <MessageCircle className="mr-2 h-4 w-4" />
+                  Chaty
+                </Button>
+              </div>
             </div>
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
@@ -439,10 +421,10 @@ export default function AdminClean() {
                 variant="ghost" 
                 size="sm" 
                 onClick={() => setLocation('/')}
-                className="text-muted-foreground hover:text-accent flex items-center gap-2"
+                className="text-muted-foreground hover:text-accent"
+                title="Přepnout na uživatelské rozhraní"
               >
                 <Home className="h-4 w-4" />
-                <span className="hidden sm:inline">Hlavní stránka</span>
               </Button>
               <Button 
                 variant="ghost" 
@@ -468,7 +450,7 @@ export default function AdminClean() {
 
         {/* Stats Overview */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card>
+          <Card className="bg-card border-border">
             <CardContent className="p-6">
               <div className="flex items-center">
                 <div className="p-3 rounded-full bg-primary/20 text-primary">
@@ -481,7 +463,7 @@ export default function AdminClean() {
               </div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="bg-card border-border">
             <CardContent className="p-6">
               <div className="flex items-center">
                 <div className="p-3 rounded-full bg-green-500/20 text-green-400">
@@ -494,7 +476,7 @@ export default function AdminClean() {
               </div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="bg-card border-border">
             <CardContent className="p-6">
               <div className="flex items-center">
                 <div className="p-3 rounded-full bg-accent/20 text-accent">
@@ -507,7 +489,7 @@ export default function AdminClean() {
               </div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="bg-card border-border">
             <CardContent className="p-6">
               <div className="flex items-center">
                 <div className="p-3 rounded-full bg-emerald-500/20 text-emerald-400">
@@ -522,287 +504,42 @@ export default function AdminClean() {
           </Card>
         </div>
 
-        {/* Influence Bar Management */}
-        <div className="mb-8">
-          <Card>
+        {/* Quick Actions */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          <Card className="bg-card border-border hover:border-accent/50 transition-colors cursor-pointer"
+                onClick={() => setLocation('/admin/archive')}>
             <CardContent className="p-6">
-              <h2 className="text-xl font-semibold text-foreground flex items-center mb-6">
-                <div className="text-accent mr-3">⚔️</div>
-                Správa magického vlivu
-              </h2>
-              
-              {(() => {
-                const { data: influenceData, refetch: refetchInfluence } = useQuery({
-                  queryKey: ['/api/influence-bar'],
-                  staleTime: 5000,
-                });
+              <div className="flex items-center">
+                <div className="p-3 rounded-full bg-amber-500/20 text-amber-400">
+                  <Archive className="h-6 w-6" />
+                </div>
+                <div className="ml-4">
+                  <p className="text-lg font-semibold text-foreground">Archiv zpráv</p>
+                  <p className="text-sm text-muted-foreground">Prohlížet archivované chaty</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
-                const adjustInfluence = useMutation({
-                  mutationFn: async ({ side, points }: { side: 'grindelwald' | 'dumbledore', points: number }) => {
-                    const response = await fetch('/api/admin/influence-bar/adjust', {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({ side, points }),
-                    });
-                    if (!response.ok) throw new Error('Failed to adjust influence');
-                    return response.json();
-                  },
-                  onSuccess: () => {
-                    refetchInfluence();
-                    toast({
-                      title: "Úspěch",
-                      description: "Vliv byl úspěšně upraven",
-                    });
-                  },
-                  onError: () => {
-                    toast({
-                      title: "Chyba",
-                      description: "Nepodařilo se upravit vliv",
-                      variant: "destructive",
-                    });
-                  },
-                });
-
-                const adjustInfluenceWithHistory = useMutation({
-                  mutationFn: async ({ changeType, points, reason }: { changeType: 'grindelwald' | 'dumbledore', points: number, reason: string }) => {
-                    const response = await fetch('/api/admin/influence-bar/adjust-with-history', {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({ changeType, points, reason }),
-                    });
-                    if (!response.ok) throw new Error('Failed to adjust influence with history');
-                    return response.json();
-                  },
-                  onSuccess: () => {
-                    refetchInfluence();
-                    setInfluenceDialog({ open: false, side: 'grindelwald', points: 0, reason: '' });
-                    toast({
-                      title: "Úspěch",
-                      description: "Vliv byl úspěšně upraven a zaznamenán do historie",
-                    });
-                  },
-                  onError: () => {
-                    toast({
-                      title: "Chyba",
-                      description: "Nepodařilo se upravit vliv",
-                      variant: "destructive",
-                    });
-                  },
-                });
-
-                const setInfluence = useMutation({
-                  mutationFn: async ({ grindelwaldPoints, dumbledorePoints }: { grindelwaldPoints: number, dumbledorePoints: number }) => {
-                    const response = await fetch('/api/admin/influence-bar/set', {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({ grindelwaldPoints, dumbledorePoints }),
-                    });
-                    if (!response.ok) throw new Error('Failed to set influence');
-                    return response.json();
-                  },
-                  onSuccess: () => {
-                    refetchInfluence();
-                    toast({
-                      title: "Úspěch",
-                      description: "Vliv byl úspěšně nastaven",
-                    });
-                  },
-                  onError: () => {
-                    toast({
-                      title: "Chyba",
-                      description: "Nepodařilo se nastavit vliv",
-                      variant: "destructive",
-                    });
-                  },
-                });
-
-                const handleInfluenceChange = (side: 'grindelwald' | 'dumbledore', points: number) => {
-                  setInfluenceDialog({
-                    open: true,
-                    side,
-                    points,
-                    reason: ''
-                  });
-                };
-
-                if (!influenceData) {
-                  return <div className="text-center text-muted-foreground">Načítání...</div>;
-                }
-
-                const totalPoints = influenceData.grindelwaldPoints + influenceData.dumbledorePoints;
-                const grindelwaldPercentage = totalPoints > 0 ? (influenceData.grindelwaldPoints / totalPoints) * 100 : 50;
-                const dumbledorePercentage = totalPoints > 0 ? (influenceData.dumbledorePoints / totalPoints) * 100 : 50;
-
-                return (
-                  <div className="space-y-6">
-                    {/* Current Status */}
-                    <div className="space-y-4">
-                      <div className="flex justify-between items-center text-sm">
-                        <div className="flex items-center">
-                          <div className="w-3 h-3 bg-red-600 rounded-full mr-2"></div>
-                          <span className="font-medium text-red-700 dark:text-red-400">Grindelwald</span>
-                          <span className="ml-2 text-muted-foreground">({influenceData.grindelwaldPoints})</span>
-                        </div>
-                        <div className="flex items-center">
-                          <span className="mr-2 text-muted-foreground">({influenceData.dumbledorePoints})</span>
-                          <span className="font-medium text-blue-700 dark:text-blue-400">Brumbál</span>
-                          <div className="w-3 h-3 bg-blue-600 rounded-full ml-2"></div>
-                        </div>
-                      </div>
-                      
-                      <div className="relative w-full h-6 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
-                        <div 
-                          className="absolute left-0 top-0 h-full bg-gradient-to-r from-red-600 to-red-500 transition-all duration-1000 ease-in-out"
-                          style={{ width: `${grindelwaldPercentage}%` }}
-                        ></div>
-                        <div 
-                          className="absolute right-0 top-0 h-full bg-gradient-to-l from-blue-600 to-blue-500 transition-all duration-1000 ease-in-out"
-                          style={{ width: `${dumbledorePercentage}%` }}
-                        ></div>
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <span className="text-white text-xs font-semibold drop-shadow-lg">
-                            {Math.round(grindelwaldPercentage)}% : {Math.round(dumbledorePercentage)}%
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Quick Adjustments */}
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <h4 className="font-medium text-red-700 dark:text-red-400">Grindelwald</h4>
-                        <div className="flex gap-1">
-                          <Button size="sm" variant="outline" onClick={() => handleInfluenceChange('grindelwald', 1)}>+1</Button>
-                          <Button size="sm" variant="outline" onClick={() => handleInfluenceChange('grindelwald', 2)}>+2</Button>
-                          <Button size="sm" variant="outline" onClick={() => handleInfluenceChange('grindelwald', 5)}>+5</Button>
-                          <Button size="sm" variant="outline" onClick={() => handleInfluenceChange('grindelwald', 10)}>+10</Button>
-                        </div>
-                        <div className="flex gap-1">
-                          <Button size="sm" variant="outline" onClick={() => handleInfluenceChange('grindelwald', -1)}>-1</Button>
-                          <Button size="sm" variant="outline" onClick={() => handleInfluenceChange('grindelwald', -2)}>-2</Button>
-                          <Button size="sm" variant="outline" onClick={() => handleInfluenceChange('grindelwald', -5)}>-5</Button>
-                          <Button size="sm" variant="outline" onClick={() => handleInfluenceChange('grindelwald', -10)}>-10</Button>
-                        </div>
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <h4 className="font-medium text-blue-700 dark:text-blue-400">Brumbál</h4>
-                        <div className="flex gap-1">
-                          <Button size="sm" variant="outline" onClick={() => handleInfluenceChange('dumbledore', 1)}>+1</Button>
-                          <Button size="sm" variant="outline" onClick={() => handleInfluenceChange('dumbledore', 2)}>+2</Button>
-                          <Button size="sm" variant="outline" onClick={() => handleInfluenceChange('dumbledore', 5)}>+5</Button>
-                          <Button size="sm" variant="outline" onClick={() => handleInfluenceChange('dumbledore', 10)}>+10</Button>
-                        </div>
-                        <div className="flex gap-1">
-                          <Button size="sm" variant="outline" onClick={() => handleInfluenceChange('dumbledore', -1)}>-1</Button>
-                          <Button size="sm" variant="outline" onClick={() => handleInfluenceChange('dumbledore', -2)}>-2</Button>
-                          <Button size="sm" variant="outline" onClick={() => handleInfluenceChange('dumbledore', -5)}>-5</Button>
-                          <Button size="sm" variant="outline" onClick={() => handleInfluenceChange('dumbledore', -10)}>-10</Button>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Reset Controls */}
-                    <div className="border-t pt-4">
-                      <div className="flex items-center mb-2">
-                        <h4 className="font-medium">Rychlé nastavení</h4>
-                        <Button 
-                          size="sm" 
-                          variant="ghost" 
-                          onClick={() => setShowQuickInfluenceSettings(!showQuickInfluenceSettings)}
-                          className="p-1 ml-2"
-                        >
-                          <Cog className="h-4 w-4" />
-                        </Button>
-                      </div>
-                      {showQuickInfluenceSettings && (
-                        <div className="flex gap-2">
-                          <Button 
-                            size="sm" 
-                            variant="secondary" 
-                            onClick={() => {
-                              if (confirm("Opravdu chcete nastavit vyrovnaný stav (50:50)?")) {
-                                setInfluence.mutate({ grindelwaldPoints: 50, dumbledorePoints: 50 });
-                              }
-                            }}
-                          >
-                            Vyrovnané (50:50)
-                          </Button>
-                          <Button 
-                            size="sm" 
-                            variant="secondary" 
-                            onClick={() => {
-                              if (confirm("Opravdu chcete resetovat všechny body na nulu (0:0)?")) {
-                                setInfluence.mutate({ grindelwaldPoints: 0, dumbledorePoints: 0 });
-                              }
-                            }}
-                          >
-                            Reset (0:0)
-                          </Button>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                );
-              })()}
+          <Card className="bg-card border-border hover:border-accent/50 transition-colors cursor-pointer"
+                onClick={() => setLocation('/admin/spells')}>
+            <CardContent className="p-6">
+              <div className="flex items-center">
+                <div className="p-3 rounded-full bg-purple-500/20 text-purple-400">
+                  <Book className="h-6 w-6" />
+                </div>
+                <div className="ml-4">
+                  <p className="text-lg font-semibold text-foreground">Správa kouzel</p>
+                  <p className="text-sm text-muted-foreground">Spravovat databázi kouzel</p>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Dialog pro zadání poznámky při změně vlivu */}
-        <Dialog open={influenceDialog.open} onOpenChange={(open) => setInfluenceDialog({...influenceDialog, open})}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>
-                {influenceDialog.side === 'grindelwald' ? 'Grindelwald' : 'Brumbál'}: 
-                {influenceDialog.points > 0 ? ' +' : ' '}{influenceDialog.points} bodů
-              </DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="reason">Důvod změny (povinné)</Label>
-                <Input
-                  id="reason"
-                  value={influenceDialog.reason}
-                  onChange={(e) => setInfluenceDialog({...influenceDialog, reason: e.target.value})}
-                  placeholder="Krátký popis důvodu změny vlivu"
-                />
-              </div>
-              <div className="flex gap-2 justify-end">
-                <Button 
-                  variant="outline" 
-                  onClick={() => setInfluenceDialog({open: false, side: 'grindelwald', points: 0, reason: ''})}
-                >
-                  Zrušit
-                </Button>
-                <Button 
-                  onClick={() => {
-                    if (!influenceDialog.reason.trim()) {
-                      toast({
-                        title: "Chyba",
-                        description: "Vyplňte důvod změny",
-                        variant: "destructive",
-                      });
-                      return;
-                    }
-                    adjustInfluenceWithHistory.mutate({
-                      changeType: influenceDialog.side,
-                      points: influenceDialog.points,
-                      reason: influenceDialog.reason.trim()
-                    });
-                  }}
-                  disabled={adjustInfluenceWithHistory.isPending}
-                >
-                  {adjustInfluenceWithHistory.isPending ? "Ukládání..." : "Potvrdit změnu"}
-                </Button>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
-
-        {/* Quick Actions */}
+        {/* Quick Spell Actions */}
         <div className="mb-8">
-          <Card>
+          <Card className="bg-card border-border">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -810,25 +547,43 @@ export default function AdminClean() {
                     <Book className="h-4 w-4" />
                   </div>
                   <div>
-                    <h3 className="font-medium text-foreground">Rychlé akce</h3>
-                    <p className="text-sm text-muted-foreground">Správa systému a herních prvků</p>
+                    <h3 className="font-medium text-foreground">Rychlé akce s kouzly</h3>
+                    <p className="text-sm text-muted-foreground">Inicializujte základní kouzla nebo přejděte do detailní správy</p>
                   </div>
                 </div>
                 <div className="flex gap-2">
                   <Button
-                    onClick={() => setLocation('/admin/archive')}
+                    onClick={() => {
+                      fetch('/api/admin/spells/initialize', { 
+                        method: 'POST',
+                        credentials: 'include'
+                      })
+                      .then(res => res.json())
+                      .then(() => {
+                        toast({
+                          title: "Úspěch",
+                          description: "Základní kouzla byla inicializována a přidána ke všem postavám",
+                        });
+                      })
+                      .catch(() => {
+                        toast({
+                          title: "Chyba", 
+                          description: "Nepodařilo se inicializovat kouzla",
+                          variant: "destructive",
+                        });
+                      });
+                    }}
                     variant="outline"
                     size="sm"
                   >
-                    <MessageCircle className="mr-2 h-4 w-4" />
-                    Archiv chatů
+                    Inicializovat základní kouzla
                   </Button>
                   <Button
                     onClick={() => setLocation('/admin/spells')}
                     variant="default"
                     size="sm"
                   >
-                    Správa kouzel
+                    Detailní správa kouzel
                   </Button>
                   <Button
                     onClick={() => setLocation('/admin/wand-components')}
@@ -843,453 +598,366 @@ export default function AdminClean() {
           </Card>
         </div>
 
-        <div className="grid grid-cols-1 gap-8">
-          {/* User Management */}
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-foreground flex items-center cursor-pointer"
-                    onClick={() => setIsUserManagementCollapsed(!isUserManagementCollapsed)}>
-                  <Settings className="text-accent mr-3 h-5 w-5" />
-                  Správa uživatelů ({users.length})
-                  {isUserManagementCollapsed ? (
-                    <ChevronDown className="ml-2 h-4 w-4" />
-                  ) : (
-                    <ChevronUp className="ml-2 h-4 w-4" />
-                  )}
+        {/* Influence Bar Management */}
+        <div className="mb-8">
+            <Card className="bg-card border-border">
+              <CardContent className="p-6">
+                <h2 className="text-xl font-semibold text-foreground flex items-center mb-6">
+                  <div className="text-accent mr-3">⚔️</div>
+                  Správa magického vlivu
                 </h2>
-                {!isUserManagementCollapsed && (
-                  <div className="space-y-3">
-                    <form onSubmit={handleCreateInviteCode} className="flex space-x-2">
-                      <Input
-                        type="text"
-                        placeholder="Nový zvací kód"
-                        value={newInviteCode}
-                        onChange={(e) => setNewInviteCode(e.target.value)}
-                        className="w-40"
-                      />
-                      <Button 
-                        type="button"
-                        size="sm" 
-                        variant="outline"
-                        onClick={generateRandomInviteCode}
-                        className="whitespace-nowrap"
-                      >
-                        <Settings className="mr-2 h-4 w-4" />
-                        Generovat
-                      </Button>
-                      <Button 
-                        type="submit" 
-                        size="sm" 
-                        disabled={createInviteCodeMutation.isPending}
-                      >
-                        <Plus className="mr-2 h-4 w-4" />
-                        Vytvořit
-                      </Button>
-                    </form>
-                    
-                    {/* Display existing invite codes */}
-                    {inviteCodes.length > 0 && (
-                      <div className="mt-4">
-                        <h4 className="text-sm font-medium text-foreground mb-2">Existující zvací kódy:</h4>
-                        <div className="space-y-2 max-h-40 overflow-y-auto">
-                          {inviteCodes.map((code: any) => (
-                            <div key={code.id} className="flex items-center justify-between p-2 bg-muted/20 rounded text-sm">
-                              <div className="flex items-center space-x-2">
-                                <code className="font-mono bg-muted px-2 py-1 rounded text-xs">
-                                  {code.code}
-                                </code>
-                                <Badge variant={code.isUsed ? "secondary" : "default"}>
-                                  {code.isUsed ? "Použito" : "Aktivní"}
-                                </Badge>
-                              </div>
-                              <div className="text-xs text-muted-foreground">
-                                {new Date(code.createdAt).toLocaleDateString('cs-CZ')}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
+                
+                {(() => {
+                  const { data: influenceData, refetch: refetchInfluence } = useQuery({
+                    queryKey: ['/api/influence-bar'],
+                    staleTime: 5000,
+                  });
 
-              {!isUserManagementCollapsed && (
-                <div className="space-y-3 max-h-96 overflow-y-auto">
-                  {users
-                    .sort((a: any, b: any) => {
-                      if (a.role === 'admin' && b.role !== 'admin') return -1;
-                      if (a.role !== 'admin' && b.role === 'admin') return 1;
-                      return a.username.localeCompare(b.username, 'cs');
-                    })
-                    .map((user: any) => (
-                    <div key={user.id} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
-                      <div className="flex items-center space-x-3">
-                        <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                          user.role === "admin" 
-                            ? "bg-gradient-to-br from-accent to-orange-600" 
-                            : "bg-gradient-to-br from-primary to-secondary"
-                        }`}>
-                          {user.role === "admin" ? (
-                            <Crown className="text-white h-5 w-5" />
-                          ) : (
-                            <Users className="text-white h-5 w-5" />
-                          )}
+                  const adjustInfluence = useMutation({
+                    mutationFn: async ({ side, points }: { side: 'grindelwald' | 'dumbledore', points: number }) => {
+                      const response = await fetch('/api/admin/influence-bar/adjust', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ side, points }),
+                      });
+                      if (!response.ok) throw new Error('Failed to adjust influence');
+                      return response.json();
+                    },
+                    onSuccess: () => {
+                      refetchInfluence();
+                      toast({
+                        title: "Úspěch",
+                        description: "Vliv byl úspěšně upraven",
+                      });
+                    },
+                    onError: () => {
+                      toast({
+                        title: "Chyba",
+                        description: "Nepodařilo se upravit vliv",
+                        variant: "destructive",
+                      });
+                    },
+                  });
+
+                  const setInfluence = useMutation({
+                    mutationFn: async ({ grindelwaldPoints, dumbledorePoints }: { grindelwaldPoints: number, dumbledorePoints: number }) => {
+                      const response = await fetch('/api/admin/influence-bar/set', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ grindelwaldPoints, dumbledorePoints }),
+                      });
+                      if (!response.ok) throw new Error('Failed to set influence');
+                      return response.json();
+                    },
+                    onSuccess: () => {
+                      refetchInfluence();
+                      toast({
+                        title: "Úspěch",
+                        description: "Vliv byl úspěšně nastaven",
+                      });
+                    },
+                    onError: () => {
+                      toast({
+                        title: "Chyba",
+                        description: "Nepodařilo se nastavit vliv",
+                        variant: "destructive",
+                      });
+                    },
+                  });
+
+                  if (!influenceData) {
+                    return <div className="text-center text-muted-foreground">Načítání...</div>;
+                  }
+
+                  const totalPoints = influenceData.grindelwaldPoints + influenceData.dumbledorePoints;
+                  const grindelwaldPercentage = totalPoints > 0 ? (influenceData.grindelwaldPoints / totalPoints) * 100 : 50;
+                  const dumbledorePercentage = totalPoints > 0 ? (influenceData.dumbledorePoints / totalPoints) * 100 : 50;
+
+                  return (
+                    <div className="space-y-6">
+                      {/* Current Status */}
+                      <div className="space-y-4">
+                        <div className="flex justify-between items-center text-sm">
+                          <div className="flex items-center">
+                            <div className="w-3 h-3 bg-red-600 rounded-full mr-2"></div>
+                            <span className="font-medium text-red-700 dark:text-red-400">Grindelwald</span>
+                            <span className="ml-2 text-muted-foreground">({influenceData.grindelwaldPoints})</span>
+                          </div>
+                          <div className="flex items-center">
+                            <span className="mr-2 text-muted-foreground">({influenceData.dumbledorePoints})</span>
+                            <span className="font-medium text-blue-700 dark:text-blue-400">Brumbál</span>
+                            <div className="w-3 h-3 bg-blue-600 rounded-full ml-2"></div>
+                          </div>
                         </div>
-                        <div>
-                          <p className="font-medium text-foreground">{user.username}</p>
-                          <p className="text-sm text-muted-foreground">{user.email}</p>
+                        
+                        <div className="relative w-full h-6 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                          <div 
+                            className="absolute left-0 top-0 h-full bg-gradient-to-r from-red-600 to-red-500 transition-all duration-1000 ease-in-out"
+                            style={{ width: `${grindelwaldPercentage}%` }}
+                          ></div>
+                          <div 
+                            className="absolute right-0 top-0 h-full bg-gradient-to-l from-blue-600 to-blue-500 transition-all duration-1000 ease-in-out"
+                            style={{ width: `${dumbledorePercentage}%` }}
+                          ></div>
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <span className="text-white text-xs font-semibold drop-shadow-lg">
+                              {Math.round(grindelwaldPercentage)}% : {Math.round(dumbledorePercentage)}%
+                            </span>
+                          </div>
                         </div>
                       </div>
-                      <div className="flex items-center space-x-2">
-                        <Badge className={
-                          user.role === "admin" 
-                            ? "bg-accent/20 text-accent" 
-                            : "bg-blue-500/20 text-blue-400"
-                        }>
-                          {user.role.toUpperCase()}
-                        </Badge>
-                        <div className="flex gap-1">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => toggleUserRole(user.id, user.role)}
-                            disabled={updateRoleMutation.isPending}
-                            className="text-accent hover:text-secondary"
-                            title="Změnit roli"
-                          >
-                            <Edit className="h-4 w-4" />
+
+                      {/* Quick Adjustments */}
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <h4 className="font-medium text-red-700 dark:text-red-400">Grindelwald</h4>
+                          <div className="flex gap-1">
+                            <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'grindelwald', points: 1 })}>+1</Button>
+                            <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'grindelwald', points: 2 })}>+2</Button>
+                            <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'grindelwald', points: 5 })}>+5</Button>
+                            <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'grindelwald', points: 10 })}>+10</Button>
+                          </div>
+                          <div className="flex gap-1">
+                            <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'grindelwald', points: -1 })}>-1</Button>
+                            <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'grindelwald', points: -2 })}>-2</Button>
+                            <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'grindelwald', points: -5 })}>-5</Button>
+                            <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'grindelwald', points: -10 })}>-10</Button>
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <h4 className="font-medium text-blue-700 dark:text-blue-400">Brumbál</h4>
+                          <div className="flex gap-1">
+                            <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'dumbledore', points: 1 })}>+1</Button>
+                            <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'dumbledore', points: 2 })}>+2</Button>
+                            <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'dumbledore', points: 5 })}>+5</Button>
+                            <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'dumbledore', points: 10 })}>+10</Button>
+                          </div>
+                          <div className="flex gap-1">
+                            <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'dumbledore', points: -1 })}>-1</Button>
+                            <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'dumbledore', points: -2 })}>-2</Button>
+                            <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'dumbledore', points: -5 })}>-5</Button>
+                            <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'dumbledore', points: -10 })}>-10</Button>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Reset Controls */}
+                      <div className="border-t pt-4">
+                        <h4 className="font-medium mb-2">Rychlé nastavení</h4>
+                        <div className="flex gap-2">
+                          <Button size="sm" variant="secondary" onClick={() => setInfluence.mutate({ grindelwaldPoints: 50, dumbledorePoints: 50 })}>
+                            Vyrovnané (50:50)
                           </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleResetPassword(user.id, user.username)}
-                            disabled={resetPasswordMutation.isPending}
-                            className="text-blue-400 hover:text-blue-300"
-                            title="Resetovat heslo"
-                          >
-                            <ArrowUp className="h-4 w-4" />
+                          <Button size="sm" variant="secondary" onClick={() => setInfluence.mutate({ grindelwaldPoints: 0, dumbledorePoints: 0 })}>
+                            Reset (0:0)
                           </Button>
-                          {user.role !== "admin" && (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleBanUser(user.id, user.username)}
-                              disabled={banUserMutation.isPending}
-                              className="text-red-400 hover:text-red-300"
-                              title="Zabanovat uživatele"
-                            >
-                              <UserPlus className="h-4 w-4" />
-                            </Button>
-                          )}
                         </div>
                       </div>
                     </div>
-                  ))}
+                  );
+                })()}
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* User Management */}
+          <Card className="bg-card border-border">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-semibold text-foreground flex items-center">
+                  <Settings className="text-accent mr-3 h-5 w-5" />
+                  Správa uživatelů
+                </h2>
+                <form onSubmit={handleCreateInviteCode} className="flex space-x-2">
+                  <Input
+                    type="text"
+                    placeholder="Nový zvací kód"
+                    value={newInviteCode}
+                    onChange={(e) => setNewInviteCode(e.target.value)}
+                    className="w-32"
+                  />
+                  <Button 
+                    type="submit" 
+                    size="sm" 
+                    disabled={createInviteCodeMutation.isPending}
+                    className="bg-primary hover:bg-secondary text-primary-foreground"
+                  >
+                    <Plus className="mr-2 h-4 w-4" />
+                    Vytvořit
+                  </Button>
+                </form>
+              </div>
+
+              <div className="space-y-3 max-h-96 overflow-y-auto">
+                {users
+                  .sort((a, b) => {
+                    // First sort by role (admin first)
+                    if (a.role === 'admin' && b.role !== 'admin') return -1;
+                    if (a.role !== 'admin' && b.role === 'admin') return 1;
+                    // Then sort alphabetically by username
+                    return a.username.localeCompare(b.username, 'cs');
+                  })
+                  .map((user) => (
+                  <div key={user.id} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
+                    <div className="flex items-center space-x-3">
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                        user.role === "admin" 
+                          ? "bg-gradient-to-br from-accent to-orange-600" 
+                          : "bg-gradient-to-br from-primary to-secondary"
+                      }`}>
+                        {user.role === "admin" ? (
+                          <Crown className="text-white h-5 w-5" />
+                        ) : (
+                          <User className="text-white h-5 w-5" />
+                        )}
+                      </div>
+                      <div>
+                        <p className="font-medium text-foreground">{user.username}</p>
+                        <p className="text-sm text-muted-foreground">{user.email}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Badge className={
+                        user.role === "admin" 
+                          ? "bg-accent/20 text-accent" 
+                          : "bg-blue-500/20 text-blue-400"
+                      }>
+                        {user.role.toUpperCase()}
+                      </Badge>
+                      <div className="flex gap-1">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => toggleUserRole(user.id, user.role)}
+                          disabled={updateRoleMutation.isPending}
+                          className="text-accent hover:text-secondary"
+                          title="Změnit roli"
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleResetPassword(user.id, user.username)}
+                          disabled={resetPasswordMutation.isPending}
+                          className="text-blue-400 hover:text-blue-300"
+                          title="Resetovat heslo"
+                        >
+                          <ArrowUp className="h-4 w-4" />
+                        </Button>
+                        {user.role !== "admin" && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleBanUser(user.id, user.username)}
+                            disabled={banUserMutation.isPending}
+                            className="text-red-400 hover:text-red-300"
+                            title="Zabanovat uživatele"
+                          >
+                            <UserPlus className="h-4 w-4" />
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Role & Permission Management */}
+          <Card className="bg-card border-border">
+            <CardContent className="p-6">
+              <h2 className="text-xl font-semibold text-foreground mb-6 flex items-center cursor-pointer"
+                  onClick={() => setIsUserManagementCollapsed(!isUserManagementCollapsed)}>
+                <Shield className="text-accent mr-3 h-5 w-5" />
+                Správa rolí a oprávnění
+                {isUserManagementCollapsed ? (
+                  <ChevronDown className="ml-2 h-4 w-4" />
+                ) : (
+                  <ChevronUp className="ml-2 h-4 w-4" />
+                )}
+              </h2>
+
+              {!isUserManagementCollapsed && (
+              <div className="space-y-4">
+                <div className="bg-muted/30 rounded-lg p-4">
+                  <h3 className="font-medium text-foreground mb-3">Dostupné role</h3>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <span className="text-sm font-medium text-foreground">User</span>
+                        <p className="text-xs text-muted-foreground">Základní hráčské oprávnění</p>
+                      </div>
+                      <Badge className="bg-blue-500/20 text-blue-400">
+                        Výchozí
+                      </Badge>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <span className="text-sm font-medium text-foreground">Admin</span>
+                        <p className="text-xs text-muted-foreground">Plná správa systému</p>
+                      </div>
+                      <Badge className="bg-accent/20 text-accent">
+                        Privilegovaná
+                      </Badge>
+                    </div>
+                    <div className="flex items-center justify-between opacity-60">
+                      <div>
+                        <span className="text-sm font-medium text-foreground">Vypravěč</span>
+                        <p className="text-xs text-muted-foreground">Správa příběhů a NPC</p>
+                      </div>
+                      <Badge variant="secondary">
+                        Připravuje se
+                      </Badge>
+                    </div>
+                  </div>
                 </div>
+
+                <div className="bg-muted/30 rounded-lg p-4">
+                  <h3 className="font-medium text-foreground mb-3">Rychlé akce</h3>
+                  <div className="space-y-2">
+                    <Button 
+                      variant="ghost"
+                      className="w-full justify-start p-3 bg-primary/10 hover:bg-primary/20 text-primary rounded-lg transition-all duration-200 text-sm"
+                    >
+                      <ArrowUp className="mr-2 h-4 w-4" />
+                      Povýšit na admin
+                    </Button>
+                    <Button 
+                      variant="ghost"
+                      className="w-full justify-start p-3 bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 rounded-lg transition-all duration-200 text-sm"
+                    >
+                      <Book className="mr-2 h-4 w-4" />
+                      Udělit právo vypravěče
+                    </Button>
+                    <Button 
+                      variant="ghost"
+                      className="w-full justify-start p-3 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 rounded-lg transition-all duration-200 text-sm"
+                    >
+                      <UserPlus className="mr-2 h-4 w-4" />
+                      Povolit více postav
+                    </Button>
+                  </div>
+                </div>
+              </div>
               )}
             </CardContent>
           </Card>
+        </div>
 
-          {/* Chat Management */}
-          <Card>
-            <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold text-foreground flex items-center">
-                <MessageSquare className="mr-2 h-5 w-5" />
-                Správa chatů
-              </h2>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsChatManagementCollapsed(!isChatManagementCollapsed)}
-              >
-                {isChatManagementCollapsed ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
-              </Button>
-            </div>
-
-            {!isChatManagementCollapsed && (
-              <div className="space-y-6">
-                {/* Create Category */}
-                <div className="space-y-4">
-                  <h3 className="text-lg font-medium">Vytvořit kategorii/oblast</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="categoryName">Název</Label>
-                      <Input
-                        id="categoryName"
-                        value={newCategoryName}
-                        onChange={(e) => setNewCategoryName(e.target.value)}
-                        placeholder="Název kategorie nebo oblasti"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="parentCategory">Typ a umístění</Label>
-                      <Select onValueChange={(value) => setNewCategoryParentId(value === "none" ? null : parseInt(value))}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Vyberte typ" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="none">🌍 Hlavní kategorie (1. úroveň)</SelectItem>
-                          {chatCategories
-                            .filter((category: any) => category.parentId === null)
-                            .map((category: any) => (
-                              <SelectItem key={category.id} value={category.id.toString()}>
-                                📍 Oblast v "{category.name}" (2. úroveň)
-                              </SelectItem>
-                            ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-                  <div>
-                    <Label htmlFor="categoryDescription">Popis kategorie</Label>
-                    <Textarea
-                      id="categoryDescription"
-                      value={newCategoryDescription}
-                      onChange={(e) => setNewCategoryDescription(e.target.value)}
-                      placeholder="Volitelný popis kategorie"
-                      rows={2}
-                    />
-                  </div>
-                  <Button
-                    onClick={() => {
-                      if (!newCategoryName.trim()) return;
-                      createCategoryMutation.mutate({
-                        name: newCategoryName.trim(),
-                        description: newCategoryDescription.trim() || null,
-                        parentId: newCategoryParentId,
-                        sortOrder: 0,
-                      });
-                    }}
-                    disabled={!newCategoryName.trim() || createCategoryMutation.isPending}
-                  >
-                    <Plus className="mr-2 h-4 w-4" />
-                    Vytvořit kategorii
-                  </Button>
-                </div>
-
-                {/* Create Room */}
-                <div className="space-y-4">
-                  <h3 className="text-lg font-medium">Vytvořit místnost</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="roomName">Název místnosti</Label>
-                      <Input
-                        id="roomName"
-                        value={newRoomName}
-                        onChange={(e) => setNewRoomName(e.target.value)}
-                        placeholder="Název místnosti"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="roomCategory">Oblast (kategorie 2. úrovně)</Label>
-                      <Select value={newRoomCategoryId?.toString() || ""} onValueChange={(value) => setNewRoomCategoryId(parseInt(value))}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Vyberte oblast" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {chatCategories
-                            .filter((category: any) => category.parentId !== null)
-                            .map((category: any) => {
-                              const parent = chatCategories.find((c: any) => c.id === category.parentId);
-                              return (
-                                <SelectItem key={category.id} value={category.id.toString()}>
-                                  {parent?.name} → {category.name}
-                                </SelectItem>
-                              );
-                            })}
-                          {chatCategories.filter((category: any) => category.parentId !== null).length === 0 && (
-                            <SelectItem value="no-areas" disabled>
-                              Nejsou k dispozici žádné oblasti. Nejprve vytvořte oblast (kategorie 2. úrovně).
-                            </SelectItem>
-                          )}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-                  <div>
-                    <Label htmlFor="roomDescription">Krátký popis</Label>
-                    <Input
-                      id="roomDescription"
-                      value={newRoomDescription}
-                      onChange={(e) => setNewRoomDescription(e.target.value)}
-                      placeholder="Krátký popis místnosti"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="roomLongDescription">Dlouhý popis</Label>
-                    <Textarea
-                      id="roomLongDescription"
-                      value={newRoomLongDescription}
-                      onChange={(e) => setNewRoomLongDescription(e.target.value)}
-                      placeholder="Detailní popis místnosti"
-                      rows={3}
-                    />
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="checkbox"
-                      id="roomIsPublic"
-                      checked={newRoomIsPublic}
-                      onChange={(e) => setNewRoomIsPublic(e.target.checked)}
-                      className="rounded"
-                    />
-                    <Label htmlFor="roomIsPublic">Veřejná místnost (bez hesla)</Label>
-                  </div>
-                  {!newRoomIsPublic && (
-                    <div>
-                      <Label htmlFor="roomPassword">Heslo místnosti</Label>
-                      <Input
-                        id="roomPassword"
-                        type="password"
-                        value={newRoomPassword}
-                        onChange={(e) => setNewRoomPassword(e.target.value)}
-                        placeholder="Heslo pro přístup"
-                      />
-                    </div>
-                  )}
-                  <Button
-                    onClick={() => {
-                      if (!newRoomName.trim() || !newRoomCategoryId) return;
-                      createRoomMutation.mutate({
-                        name: newRoomName.trim(),
-                        description: newRoomDescription.trim() || null,
-                        longDescription: newRoomLongDescription.trim() || null,
-                        categoryId: newRoomCategoryId,
-                        password: newRoomIsPublic ? null : newRoomPassword.trim() || null,
-                        isPublic: newRoomIsPublic,
-                        sortOrder: 0,
-                      });
-                    }}
-                    disabled={!newRoomName.trim() || !newRoomCategoryId || createRoomMutation.isPending}
-                  >
-                    <Plus className="mr-2 h-4 w-4" />
-                    Vytvořit místnost
-                  </Button>
-                </div>
-
-                {/* Existing Categories and Rooms */}
-                <div className="space-y-4">
-                  <h3 className="text-lg font-medium">Hierarchie kategorií, oblastí a místností</h3>
-                  <div className="space-y-2 max-h-96 overflow-y-auto">
-                    {chatCategories
-                      .filter((category: any) => category.parentId === null)
-                      .map((mainCategory: any) => (
-                        <div key={mainCategory.id} className="border rounded-lg p-4">
-                          <div className="flex items-center justify-between mb-2">
-                            <div>
-                              <h4 className="font-medium flex items-center">
-                                🌍 {mainCategory.name} <span className="text-xs text-muted-foreground ml-2">(Hlavní kategorie)</span>
-                              </h4>
-                              {mainCategory.description && (
-                                <p className="text-sm text-muted-foreground">{mainCategory.description}</p>
-                              )}
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => setEditingCategory(mainCategory)}
-                              >
-                                <Edit className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => setDeleteConfirmation({ type: 'category', id: mainCategory.id, name: mainCategory.name })}
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          </div>
-                          
-                          {/* Child categories (Areas) */}
-                          {chatCategories
-                            .filter((category: any) => category.parentId === mainCategory.id)
-                            .map((area: any) => (
-                              <div key={area.id} className="ml-6 mt-2 border rounded p-3 bg-accent/10">
-                                <div className="flex items-center justify-between mb-2">
-                                  <div>
-                                    <h5 className="font-medium flex items-center">
-                                      📍 {area.name} <span className="text-xs text-muted-foreground ml-2">(Oblast)</span>
-                                    </h5>
-                                    {area.description && (
-                                      <p className="text-sm text-muted-foreground">{area.description}</p>
-                                    )}
-                                  </div>
-                                  <div className="flex items-center space-x-2">
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      onClick={() => setEditingCategory(area)}
-                                    >
-                                      <Edit className="h-4 w-4" />
-                                    </Button>
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      onClick={() => setDeleteConfirmation({ type: 'category', id: area.id, name: area.name })}
-                                    >
-                                      <Trash2 className="h-4 w-4" />
-                                    </Button>
-                                  </div>
-                                </div>
-                                
-                                {/* Rooms in this area */}
-                                {area.rooms && area.rooms.length > 0 && (
-                                  <div className="ml-4 space-y-2">
-                                    {area.rooms.map((room: any) => (
-                                      <div key={room.id} className="flex items-center justify-between p-2 bg-white/50 dark:bg-black/20 rounded">
-                                        <div>
-                                          <span className="font-medium flex items-center">
-                                            💬 {room.name} <span className="text-xs text-muted-foreground ml-2">(Místnost)</span>
-                                          </span>
-                                          {room.password && <Badge variant="secondary" className="ml-2">Chráněno heslem</Badge>}
-                                          {room.description && (
-                                            <p className="text-sm text-muted-foreground">{room.description}</p>
-                                          )}
-                                        </div>
-                                        <div className="flex items-center space-x-2">
-                                          <Button
-                                            variant="outline"
-                                            size="sm"
-                                            onClick={() => setEditingRoom(room)}
-                                          >
-                                            <Edit className="h-4 w-4" />
-                                          </Button>
-                                          <Button
-                                            variant="outline"
-                                            size="sm"
-                                            onClick={() => setDeleteConfirmation({ type: 'room', id: room.id, name: room.name })}
-                                          >
-                                            <Trash2 className="h-4 w-4" />
-                                          </Button>
-                                        </div>
-                                      </div>
-                                    ))}
-                                  </div>
-                                )}
-                              </div>
-                            ))}
-                        </div>
-                      ))}
-                  </div>
-                </div>
-              </div>
-            )}
-            </CardContent>
-          </Card>
-
-          {/* Live Characters Management */}
-          <Card>
+        {/* Live Character Management */}
+        <div className="mt-8 grid grid-cols-1 gap-8">
+          <Card className="bg-card border-border">
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-semibold text-foreground flex items-center cursor-pointer" 
                     onClick={() => setIsLiveCharactersCollapsed(!isLiveCharactersCollapsed)}>
-                  <UsersRound className="text-green-500 mr-3 h-5 w-5" />
-                  Živé postavy ({allCharacters.filter((char: any) => !char.deathDate).length})
+                  <Users className="text-green-400 mr-3 h-5 w-5" />
+                  Správa živých postav
                   {isLiveCharactersCollapsed ? (
                     <ChevronDown className="ml-2 h-4 w-4" />
                   ) : (
@@ -1300,8 +968,12 @@ export default function AdminClean() {
 
               {!isLiveCharactersCollapsed && (
               <div className="space-y-4 max-h-96 overflow-y-auto">
-                {allCharacters.filter((char: any) => !char.deathDate).length > 0 ? (
-                  allCharacters.filter((char: any) => !char.deathDate).map((character: any) => (
+                {allCharacters.filter((char: any) => !char.deathDate).sort((a: any, b: any) => 
+                  `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`, 'cs')
+                ).length > 0 ? (
+                  allCharacters.filter((char: any) => !char.deathDate).sort((a: any, b: any) => 
+                    `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`, 'cs')
+                  ).map((character: any) => (
                     <div key={character.id} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
                       <div className="flex items-center space-x-3">
                         <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-blue-600 rounded-full flex items-center justify-center text-white font-semibold">
@@ -1309,10 +981,10 @@ export default function AdminClean() {
                         </div>
                         <div>
                           <h4 className="font-medium text-foreground">
-                            {character.firstName} {character.middleName ? character.middleName + ' ' : ''}{character.lastName}
+                            {character.firstName} {character.middleName} {character.lastName}
                           </h4>
                           <p className="text-sm text-muted-foreground">
-                            {character.school || 'Bez školy'}
+                            {character.school || 'Bez školy'} • Vytvořeno: {new Date(character.createdAt).toLocaleDateString('cs-CZ')}
                           </p>
                         </div>
                       </div>
@@ -1320,10 +992,20 @@ export default function AdminClean() {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => setLocation(`/character/edit?id=${character.id}`)}
-                          title="Upravit postavu"
+                          onClick={() => setLocation(`/characters/${character.id}`)}
+                          className="flex items-center gap-2"
                         >
                           <Edit className="h-4 w-4" />
+                          Upravit
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setLocation(`/characters/${character.id}/spells`)}
+                          className="flex items-center gap-2"
+                        >
+                          <Book className="h-4 w-4" />
+                          Kouzla
                         </Button>
                         <Button
                           variant="destructive"
@@ -1332,9 +1014,10 @@ export default function AdminClean() {
                             id: character.id,
                             name: `${character.firstName} ${character.lastName}`
                           })}
-                          title="Označit jako mrtvou"
+                          className="bg-red-600 hover:bg-red-700"
                         >
-                          <Skull className="h-4 w-4" />
+                          <Skull className="h-4 w-4 mr-1" />
+                          Označit jako zemřelou
                         </Button>
                       </div>
                     </div>
@@ -1350,71 +1033,19 @@ export default function AdminClean() {
             </CardContent>
           </Card>
 
-          {/* Cemetery Management */}
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-foreground flex items-center cursor-pointer" 
-                    onClick={() => setIsDeadCharactersCollapsed(!isDeadCharactersCollapsed)}>
-                  <Skull className="text-red-500 mr-3 h-5 w-5" />
-                  Správa hřbitova ({allCharacters.filter((char: any) => char.deathDate).length})
-                  {isDeadCharactersCollapsed ? (
-                    <ChevronDown className="ml-2 h-4 w-4" />
-                  ) : (
-                    <ChevronUp className="ml-2 h-4 w-4" />
-                  )}
-                </h2>
-              </div>
-
-              {!isDeadCharactersCollapsed && (
-              <div className="space-y-4 max-h-96 overflow-y-auto">
-                {allCharacters.filter((char: any) => char.deathDate).length > 0 ? (
-                  allCharacters.filter((char: any) => char.deathDate).map((character: any) => (
-                    <div key={character.id} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg opacity-75">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-gray-500 to-gray-700 rounded-full flex items-center justify-center text-white font-semibold">
-                          {character.firstName[0]}{character.lastName[0]}
-                        </div>
-                        <div>
-                          <h4 className="font-medium text-foreground line-through">
-                            {character.firstName} {character.middleName ? character.middleName + ' ' : ''}{character.lastName}
-                          </h4>
-                          <p className="text-sm text-muted-foreground">
-                            † {new Date(character.deathDate).toLocaleDateString('cs-CZ')} - {character.deathReason}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setLocation(`/characters/${character.id}`)}
-                          title="Zobrazit postavu"
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <div className="text-center py-8">
-                    <Skull className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                    <p className="text-muted-foreground">Žádné mrtvé postavy</p>
-                  </div>
-                )}
-              </div>
-              )}
-            </CardContent>
-          </Card>
-
           {/* Character Requests Management */}
-          <Card>
+          <Card className="bg-card border-border">
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-semibold text-foreground flex items-center cursor-pointer" 
                     onClick={() => setIsCharacterRequestsCollapsed(!isCharacterRequestsCollapsed)}>
-                  <UserPlus className="text-yellow-500 mr-3 h-5 w-5" />
-                  Žádosti o postavy ({characterRequests.length})
+                  <UserPlus className="text-accent mr-3 h-5 w-5" />
+                  Žádosti o nové postavy
+                  {characterRequests.filter((req: any) => req.status === 'pending').length > 0 && (
+                    <Badge className="ml-2 bg-yellow-100 text-yellow-800">
+                      {characterRequests.filter((req: any) => req.status === 'pending').length} čeká
+                    </Badge>
+                  )}
                   {isCharacterRequestsCollapsed ? (
                     <ChevronDown className="ml-2 h-4 w-4" />
                   ) : (
@@ -1424,84 +1055,75 @@ export default function AdminClean() {
               </div>
 
               {!isCharacterRequestsCollapsed && (
-              <div className="space-y-4 max-h-96 overflow-y-auto">
+              <div className="space-y-4">
                 {characterRequests.length > 0 ? (
                   characterRequests.map((request: any) => (
-                    <div key={request.id} className="p-4 bg-muted/30 rounded-lg">
-                      <div className="flex items-center justify-between mb-3">
-                        <div>
-                          <h4 className="font-medium text-foreground">
-                            {request.firstName} {request.middleName ? request.middleName + ' ' : ''}{request.lastName}
-                          </h4>
-                          <p className="text-sm text-muted-foreground">
-                            Od: {request.user?.username} | {new Date(request.createdAt).toLocaleDateString('cs-CZ')}
-                          </p>
+                    <div key={request.id} className="bg-muted/30 rounded-lg p-4 border-l-4 border-l-accent/30">
+                      <div className="flex items-start justify-between">
+                        <div className="space-y-2 flex-1">
+                          <div className="flex items-center space-x-2">
+                            <h4 className="font-medium text-foreground">
+                              {request.firstName} {request.middleName} {request.lastName}
+                            </h4>
+                            <Badge variant={request.status === 'pending' ? 'secondary' : request.status === 'approved' ? 'default' : 'destructive'}>
+                              {request.status === 'pending' ? 'Čeká na posouzení' : 
+                               request.status === 'approved' ? 'Schváleno' : 'Zamítnuto'}
+                            </Badge>
+                          </div>
+                          <div className="text-sm text-muted-foreground">
+                            <p>Uživatel: {request.user.username} ({request.user.email})</p>
+                            <p>Datum narození: {new Date(request.birthDate).toLocaleDateString('cs-CZ')}</p>
+                            {request.school && <p>Škola: {request.school}</p>}
+                          </div>
+                          <p className="text-sm">{request.reason}</p>
+                          {request.reviewNote && (
+                            <div className="p-3 bg-muted/50 rounded">
+                              <p className="text-sm font-medium">Poznámka administrátora:</p>
+                              <p className="text-sm">{request.reviewNote}</p>
+                            </div>
+                          )}
                         </div>
-                        <Badge className="bg-yellow-500/20 text-yellow-400">
-                          ČEKÁ
-                        </Badge>
-                      </div>
-                      <div className="grid grid-cols-2 gap-2 text-sm mb-3">
-                        <div>
-                          <span className="font-medium">Škola:</span> {request.school}
-                        </div>
-                        <div>
-                          <span className="font-medium">Kolej:</span> {request.house}
-                        </div>
-                        <div>
-                          <span className="font-medium">Ročník:</span> {request.year}
-                        </div>
-                        <div>
-                          <span className="font-medium">Pohlaví:</span> {request.gender === 'male' ? 'Muž' : 'Žena'}
-                        </div>
-                      </div>
-                      {request.description && (
-                        <p className="text-sm text-muted-foreground mb-3">
-                          <span className="font-medium">Popis:</span> {request.description}
-                        </p>
-                      )}
-                      <div className="flex gap-2">
-                        <Button
-                          size="sm"
-                          className="bg-green-600 hover:bg-green-700"
-                          onClick={() => {
-                            if (confirm(`Opravdu chcete schválit žádost o postavu ${request.firstName} ${request.middleName ? request.middleName + ' ' : ''}${request.lastName}?`)) {
-                              approveCharacterRequestMutation.mutate(request.id);
-                            }
-                          }}
-                          disabled={approveCharacterRequestMutation.isPending}
-                        >
-                          Schválit
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="destructive"
-                          onClick={() => {
-                            const reason = prompt("Důvod zamítnutí (povinné, minimálně 10 znaků):");
-                            if (reason && reason.trim().length >= 10) {
-                              rejectCharacterRequestMutation.mutate({
-                                requestId: request.id,
-                                reason: reason.trim()
-                              });
-                            } else if (reason !== null) {
-                              toast({
-                                title: "Chyba",
-                                description: "Důvod zamítnutí musí mít minimálně 10 znaků",
-                                variant: "destructive"
-                              });
-                            }
-                          }}
-                          disabled={rejectCharacterRequestMutation.isPending}
-                        >
-                          Zamítnout
-                        </Button>
+                        {request.status === 'pending' && (
+                          <div className="flex space-x-2 ml-4">
+                            <Button
+                              size="sm"
+                              onClick={() => {
+                                const reviewNote = prompt("Poznámka pro schválení (volitelné):");
+                                approveCharacterRequestMutation.mutate({ 
+                                  requestId: request.id, 
+                                  reviewNote: reviewNote || undefined 
+                                });
+                              }}
+                              disabled={approveCharacterRequestMutation.isPending}
+                              className="bg-green-600 hover:bg-green-700"
+                            >
+                              Schválit
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              onClick={() => {
+                                const reviewNote = prompt("Důvod zamítnutí (povinné):");
+                                if (reviewNote) {
+                                  rejectCharacterRequestMutation.mutate({ 
+                                    requestId: request.id, 
+                                    reviewNote 
+                                  });
+                                }
+                              }}
+                              disabled={rejectCharacterRequestMutation.isPending}
+                            >
+                              Zamítnout
+                            </Button>
+                          </div>
+                        )}
                       </div>
                     </div>
                   ))
                 ) : (
                   <div className="text-center py-8">
                     <UserPlus className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                    <p className="text-muted-foreground">Žádné nové žádosti</p>
+                    <p className="text-muted-foreground">Žádné žádosti o nové postavy</p>
                   </div>
                 )}
               </div>
@@ -1509,14 +1131,80 @@ export default function AdminClean() {
             </CardContent>
           </Card>
 
+          {/* Cemetery Management */}
+          <Card className="bg-card border-border">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <Button
+                  variant="ghost"
+                  onClick={() => setIsCemeteryCollapsed(!isCemeteryCollapsed)}
+                  className="flex items-center p-0 h-auto hover:bg-transparent"
+                >
+                  <h2 className="text-xl font-semibold text-foreground flex items-center">
+                    <Skull className="text-red-400 mr-3 h-5 w-5" />
+                    Správa postav - Hřbitov
+                    {isCemeteryCollapsed ? (
+                      <ChevronDown className="ml-2 h-4 w-4" />
+                    ) : (
+                      <ChevronUp className="ml-2 h-4 w-4" />
+                    )}
+                  </h2>
+                </Button>
+              </div>
+
+              {!isCemeteryCollapsed && (
+                <div className="space-y-4 max-h-96 overflow-y-auto">
+                {allCharacters.filter((char: any) => char.deathDate).length > 0 ? (
+                  allCharacters.filter((char: any) => char.deathDate).map((character: any) => (
+                    <div key={character.id} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold">
+                          {character.firstName[0]}{character.lastName[0]}
+                        </div>
+                        <div>
+                          <h4 className="font-medium text-foreground">
+                            {character.firstName} {character.middleName} {character.lastName}
+                          </h4>
+                          <p className="text-sm text-muted-foreground">
+                            @{character.user?.username} • ID: {character.id}
+                          </p>
+                          <p className="text-xs text-red-400">
+                            Zemřel: {new Date(character.deathDate).toLocaleDateString('cs-CZ')}
+                            {character.deathReason && ` • ${character.deathReason}`}
+                          </p>
+                        </div>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleResurrectCharacter(character.id, `${character.firstName} ${character.lastName}`)}
+                        className="flex items-center gap-2 text-green-400 border-green-400 hover:bg-green-400 hover:text-white"
+                      >
+                        <Heart className="h-4 w-4" />
+                        Oživit
+                      </Button>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-8">
+                    <Users className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                    <p className="text-muted-foreground">Hřbitov je prázdný - všechny postavy jsou naživu</p>
+                  </div>
+                )}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+
           {/* Admin Activity Log */}
-          <Card>
+          <Card className="bg-card border-border">
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-semibold text-foreground flex items-center cursor-pointer" 
                     onClick={() => setIsAdminActivityCollapsed(!isAdminActivityCollapsed)}>
-                  <Book className="text-purple-500 mr-3 h-5 w-5" />
-                  Administrátorská aktivita ({adminActivityLog.length})
+                  <Book className="text-accent mr-3 h-5 w-5" />
+                  Administrační aktivita
                   {isAdminActivityCollapsed ? (
                     <ChevronDown className="ml-2 h-4 w-4" />
                   ) : (
@@ -1526,31 +1214,29 @@ export default function AdminClean() {
               </div>
 
               {!isAdminActivityCollapsed && (
-              <div className="space-y-2 max-h-96 overflow-y-auto">
+              <div className="space-y-3">
                 {adminActivityLog.length > 0 ? (
-                  adminActivityLog.slice(0, 20).map((log: any) => (
-                    <div key={log.id} className="p-3 bg-muted/20 rounded text-sm">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <span className="font-medium text-purple-400">{log.admin?.username}</span>
-                          <span className="text-muted-foreground"> {log.action}</span>
-                          {log.targetUser && (
-                            <span className="text-accent"> {log.targetUser.username}</span>
-                          )}
+                  adminActivityLog.slice(0, 10).map((activity: any) => (
+                    <div key={activity.id} className="bg-muted/30 rounded-lg p-3">
+                      <div className="flex items-center justify-between">
+                        <div className="space-y-1">
+                          <p className="text-sm font-medium text-foreground">{activity.action}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {activity.admin.username}
+                            {activity.targetUser && ` → ${activity.targetUser.username}`}
+                            {activity.details && ` • ${activity.details}`}
+                          </p>
                         </div>
-                        <span className="text-xs text-muted-foreground">
-                          {new Date(log.createdAt).toLocaleString('cs-CZ')}
-                        </span>
+                        <div className="text-xs text-muted-foreground">
+                          {new Date(activity.createdAt).toLocaleString('cs-CZ')}
+                        </div>
                       </div>
-                      {log.details && (
-                        <p className="text-xs text-muted-foreground mt-1">{log.details}</p>
-                      )}
                     </div>
                   ))
                 ) : (
                   <div className="text-center py-8">
                     <Book className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                    <p className="text-muted-foreground">Žádné záznamy</p>
+                    <p className="text-muted-foreground">Žádná administrační aktivita</p>
                   </div>
                 )}
               </div>
@@ -1559,12 +1245,12 @@ export default function AdminClean() {
           </Card>
         </div>
 
-        {/* Dialogs for Kill Character */}
+        {/* Kill Character Dialog */}
         {killCharacterData && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
             <div className="bg-card border border-border rounded-lg p-6 w-full max-w-md mx-4">
               <div className="flex items-center gap-3 mb-4">
-                <Skull className="h-6 w-6 text-red-400" />
+                <AlertTriangle className="h-6 w-6 text-red-400" />
                 <h3 className="text-lg font-semibold text-foreground">
                   Označit postavu jako zemřelou
                 </h3>
@@ -1680,170 +1366,6 @@ export default function AdminClean() {
                     {showConfirmBan ? "POTVRDIT ZÁKAZ" : "Zabanovat uživatele"}
                   </Button>
                 </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Delete Confirmation Dialog */}
-        <AlertDialog open={!!deleteConfirmation} onOpenChange={() => setDeleteConfirmation(null)}>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Potvrdit smazání</AlertDialogTitle>
-              <AlertDialogDescription>
-                Opravdu chcete smazat {deleteConfirmation?.type === 'category' ? 'kategorii' : 'místnost'} "{deleteConfirmation?.name}"?
-                Tato akce je nevratná.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Zrušit</AlertDialogCancel>
-              <AlertDialogAction
-                onClick={() => {
-                  if (deleteConfirmation) {
-                    deleteItemMutation.mutate({
-                      type: deleteConfirmation.type,
-                      id: deleteConfirmation.id,
-                    });
-                  }
-                }}
-                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-              >
-                Smazat
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-
-        {/* Edit Category Dialog */}
-        {editingCategory && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            <div className="bg-card border border-border rounded-lg p-6 w-full max-w-md mx-4">
-              <h3 className="text-lg font-semibold text-foreground mb-4">
-                Upravit {editingCategory.parentId ? 'oblast' : 'kategorii'}
-              </h3>
-              
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="editCategoryName">Název</Label>
-                  <Input
-                    id="editCategoryName"
-                    value={editingCategory.name}
-                    onChange={(e) => setEditingCategory({...editingCategory, name: e.target.value})}
-                    placeholder="Název kategorie/oblasti"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="editCategoryDescription">Popis</Label>
-                  <Textarea
-                    id="editCategoryDescription"
-                    value={editingCategory.description || ''}
-                    onChange={(e) => setEditingCategory({...editingCategory, description: e.target.value})}
-                    placeholder="Volitelný popis"
-                    rows={2}
-                  />
-                </div>
-              </div>
-
-              <div className="flex gap-3 mt-6">
-                <Button
-                  variant="outline"
-                  onClick={() => setEditingCategory(null)}
-                  className="flex-1"
-                >
-                  Zrušit
-                </Button>
-                <Button
-                  onClick={() => {
-                    // TODO: Add update category mutation
-                    setEditingCategory(null);
-                  }}
-                  className="flex-1"
-                >
-                  Uložit
-                </Button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Edit Room Dialog */}
-        {editingRoom && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            <div className="bg-card border border-border rounded-lg p-6 w-full max-w-lg mx-4">
-              <h3 className="text-lg font-semibold text-foreground mb-4">
-                Upravit místnost
-              </h3>
-              
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="editRoomName">Název místnosti</Label>
-                  <Input
-                    id="editRoomName"
-                    value={editingRoom.name}
-                    onChange={(e) => setEditingRoom({...editingRoom, name: e.target.value})}
-                    placeholder="Název místnosti"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="editRoomDescription">Krátký popis</Label>
-                  <Input
-                    id="editRoomDescription"
-                    value={editingRoom.description || ''}
-                    onChange={(e) => setEditingRoom({...editingRoom, description: e.target.value})}
-                    placeholder="Krátký popis místnosti"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="editRoomLongDescription">Dlouhý popis</Label>
-                  <Textarea
-                    id="editRoomLongDescription"
-                    value={editingRoom.longDescription || ''}
-                    onChange={(e) => setEditingRoom({...editingRoom, longDescription: e.target.value})}
-                    placeholder="Detailní popis místnosti"
-                    rows={3}
-                  />
-                </div>
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    id="editRoomIsPublic"
-                    checked={editingRoom.isPublic !== false}
-                    onChange={(e) => setEditingRoom({...editingRoom, isPublic: e.target.checked})}
-                    className="rounded"
-                  />
-                  <Label htmlFor="editRoomIsPublic">Veřejná místnost (bez hesla)</Label>
-                </div>
-                {editingRoom.isPublic === false && (
-                  <div>
-                    <Label htmlFor="editRoomPassword">Heslo místnosti</Label>
-                    <Input
-                      id="editRoomPassword"
-                      type="password"
-                      value={editingRoom.password || ''}
-                      onChange={(e) => setEditingRoom({...editingRoom, password: e.target.value})}
-                      placeholder="Heslo pro přístup"
-                    />
-                  </div>
-                )}
-              </div>
-
-              <div className="flex gap-3 mt-6">
-                <Button
-                  variant="outline"
-                  onClick={() => setEditingRoom(null)}
-                  className="flex-1"
-                >
-                  Zrušit
-                </Button>
-                <Button
-                  onClick={() => {
-                    // TODO: Add update room mutation
-                    setEditingRoom(null);
-                  }}
-                  className="flex-1"
-                >
-                  Uložit
-                </Button>
               </div>
             </div>
           </div>
