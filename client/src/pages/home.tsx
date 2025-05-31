@@ -116,17 +116,18 @@ export default function Home() {
                   Nastavení
                 </Button>
                 {user?.role === 'admin' && (
-                  <Button 
-                    variant="ghost" 
-                    className="text-amber-400 hover:text-amber-300 hover:bg-amber-400/10 cursor-pointer" 
-                    onClick={() => {
+                  <div 
+                    className="flex items-center px-3 py-2 text-amber-400 hover:text-amber-300 hover:bg-amber-400/10 cursor-pointer rounded-md transition-colors"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
                       console.log('Admin button clicked');
                       setLocation('/admin');
                     }}
                   >
                     <Crown className="mr-2 h-4 w-4" />
                     Administrace
-                  </Button>
+                  </div>
                 )}
               </div>
             </div>
