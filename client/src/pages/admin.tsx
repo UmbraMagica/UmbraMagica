@@ -53,6 +53,25 @@ interface AdminUser {
   characters: any[];
 }
 
+interface ChatCategory {
+  id: number;
+  name: string;
+  description?: string;
+  parentId?: number;
+  sortOrder: number;
+}
+
+interface ChatRoom {
+  id: number;
+  name: string;
+  description?: string;
+  longDescription?: string;
+  categoryId: number;
+  password?: string;
+  isPublic: boolean;
+  sortOrder: number;
+}
+
 export default function Admin() {
   const { user, logout } = useAuth();
   const { toast } = useToast();
@@ -107,6 +126,19 @@ export default function Admin() {
   const [newRoomCategoryId, setNewRoomCategoryId] = useState<number | null>(null);
   const [newRoomPassword, setNewRoomPassword] = useState("");
   const [newRoomIsPublic, setNewRoomIsPublic] = useState(true);
+  
+  // Edit states
+  const [editingCategory, setEditingCategory] = useState<ChatCategory | null>(null);
+  const [editingRoom, setEditingRoom] = useState<ChatRoom | null>(null);
+  const [editCategoryName, setEditCategoryName] = useState("");
+  const [editCategoryDescription, setEditCategoryDescription] = useState("");
+  const [editCategoryParentId, setEditCategoryParentId] = useState<number | null>(null);
+  const [editRoomName, setEditRoomName] = useState("");
+  const [editRoomDescription, setEditRoomDescription] = useState("");
+  const [editRoomLongDescription, setEditRoomLongDescription] = useState("");
+  const [editRoomCategoryId, setEditRoomCategoryId] = useState<number | null>(null);
+  const [editRoomPassword, setEditRoomPassword] = useState("");
+  const [editRoomIsPublic, setEditRoomIsPublic] = useState(true);
 
   // Data queries
   const { data: users = [] } = useQuery<AdminUser[]>({
@@ -335,6 +367,88 @@ export default function Admin() {
       toast({
         title: "Chyba",
         description: error.message || "Nepodařilo se vytvořit místnost",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const updateCategoryMutation = useMutation({
+    mutationFn: async ({ id, updates }: { id: number; updates: any }) => {
+      return apiRequest("PUT", `/api/admin/chat-categories/${id}`, updates);
+    },
+    onSuccess: () => {
+      toast({
+        title: "Úspěch",
+        description: "Kategorie byla upravena",
+      });
+      setEditingCategory(null);
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/chat-categories'] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Chyba",
+        description: error.message || "Nepodařilo se upravit kategorii",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const deleteCategoryMutation = useMutation({
+    mutationFn: async (id: number) => {
+      return apiRequest("DELETE", `/api/admin/chat-categories/${id}`);
+    },
+    onSuccess: () => {
+      toast({
+        title: "Úspěch",
+        description: "Kategorie byla smazána",
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/chat-categories'] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Chyba",
+        description: error.message || "Nepodařilo se smazat kategorii",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const updateRoomMutation = useMutation({
+    mutationFn: async ({ id, updates }: { id: number; updates: any }) => {
+      return apiRequest("PUT", `/api/admin/chat-rooms/${id}`, updates);
+    },
+    onSuccess: () => {
+      toast({
+        title: "Úspěch",
+        description: "Místnost byla upravena",
+      });
+      setEditingRoom(null);
+      queryClient.invalidateQueries({ queryKey: ['/api/chat/rooms'] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Chyba",
+        description: error.message || "Nepodařilo se upravit místnost",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const deleteRoomMutation = useMutation({
+    mutationFn: async (id: number) => {
+      return apiRequest("DELETE", `/api/admin/chat-rooms/${id}`);
+    },
+    onSuccess: () => {
+      toast({
+        title: "Úspěch",
+        description: "Místnost byla smazána",
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/chat/rooms'] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Chyba",
+        description: error.message || "Nepodařilo se smazat místnost",
         variant: "destructive",
       });
     },
