@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Mail, MailOpen, Send, Reply, Search, Bird } from "lucide-react";
+import { Mail, MailOpen, Send, Reply, Search, Bird, Home } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -233,6 +233,15 @@ export default function OwlPost() {
   return (
     <div className="container mx-auto p-6 max-w-6xl">
       <div className="flex items-center gap-3 mb-6">
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          onClick={() => window.location.href = '/'}
+          className="mr-2"
+        >
+          <Home className="h-4 w-4 mr-2" />
+          Domů
+        </Button>
         <Bird className="h-8 w-8 text-amber-600" />
         <h1 className="text-3xl font-bold">Soví pošta</h1>
         <div className="flex items-center gap-2 ml-auto">

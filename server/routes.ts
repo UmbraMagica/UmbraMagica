@@ -2944,7 +2944,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Verify the sender character belongs to the authenticated user
       const senderCharacter = await storage.getCharacter(messageData.senderCharacterId);
-      if (!senderCharacter || senderCharacter.userId !== req.session.userId!) {
+      if (!senderCharacter || senderCharacter.userId !== req.session.userId) {
         return res.status(403).json({ message: "Unauthorized to send from this character" });
       }
       
