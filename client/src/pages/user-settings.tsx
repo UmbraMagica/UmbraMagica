@@ -27,7 +27,10 @@ import {
   Lock,
   Mail,
   Eye,
-  EyeOff
+  EyeOff,
+  ChevronDown,
+  ChevronUp,
+  Trash2
 } from "lucide-react";
 import { CharacterAvatar } from "@/components/CharacterAvatar";
 
@@ -79,6 +82,40 @@ export default function UserSettings() {
   const [showHousingForm, setShowHousingForm] = useState(false);
   const [housingType, setHousingType] = useState<'dormitory' | 'custom' | 'shared' | null>(null);
   const [locationType, setLocationType] = useState<'area' | 'custom' | null>(null);
+  
+  // Collapsible sections state
+  const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({
+    characterRequests: false,
+    housingRequests: false,
+    accountSettings: false
+  });
+  
+  const toggleSection = (section: string) => {
+    setCollapsedSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
+
+  // Delete housing request mutation
+  const deleteHousingRequestMutation = useMutation({
+    mutationFn: (requestId: number) => 
+      apiRequest(`/api/housing-requests/${requestId}`, "DELETE"),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/housing-requests/my"] });
+      toast({
+        title: "Žádost byla stažena",
+        description: "Vaše žádost o bydlení byla úspěšně stažena",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Chyba při stahování žádosti",
+        description: error.message || "Nepodařilo se stáhnout žádost",
+        variant: "destructive",
+      });
+    },
+  });
 
   const form = useForm<CharacterRequestForm>({
     resolver: zodResolver(characterRequestSchema),
@@ -677,11 +714,18 @@ export default function UserSettings() {
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle 
+                  className="flex items-center gap-2 cursor-pointer hover:text-accent-foreground"
+                  onClick={() => toggleSection('characterRequests')}
+                >
                   <UserPlus className="h-5 w-5" />
                   Žádosti o nové postavy
+                  {collapsedSections.characterRequests ? 
+                    <ChevronDown className="h-4 w-4" /> : 
+                    <ChevronUp className="h-4 w-4" />
+                  }
                 </CardTitle>
-                {!showNewRequestForm && (
+                {!showNewRequestForm && !collapsedSections.characterRequests && (
                   <Button 
                     onClick={() => setShowNewRequestForm(true)}
                     className="bg-accent hover:bg-accent/90"
@@ -692,6 +736,7 @@ export default function UserSettings() {
                 )}
               </div>
             </CardHeader>
+            {!collapsedSections.characterRequests && (
             <CardContent className="space-y-4">
               {/* New Request Form */}
               {showNewRequestForm && (
@@ -875,16 +920,25 @@ export default function UserSettings() {
                 </div>
               )}
             </CardContent>
+            )}
           </Card>
 
           {/* Housing Requests Section */}
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle 
+                  className="flex items-center gap-2 cursor-pointer hover:text-accent-foreground"
+                  onClick={() => toggleSection('housingRequests')}
+                >
                   <Home className="h-5 w-5" />
                   Žádosti o bydlení
+                  {collapsedSections.housingRequests ? 
+                    <ChevronDown className="h-4 w-4" /> : 
+                    <ChevronUp className="h-4 w-4" />
+                  }
                 </CardTitle>
+                {!collapsedSections.housingRequests && (
                 <Button 
                   onClick={() => setShowHousingForm(!showHousingForm)}
                   className="bg-accent hover:bg-accent/90"
@@ -892,8 +946,10 @@ export default function UserSettings() {
                   <Plus className="h-4 w-4 mr-2" />
                   Požádat o bydlení
                 </Button>
+                )}
               </div>
             </CardHeader>
+            {!collapsedSections.housingRequests && (
             <CardContent className="space-y-4">
               {/* Housing Request Form */}
               {showHousingForm && (
@@ -1294,6 +1350,7 @@ export default function UserSettings() {
                 </div>
               )}
             </CardContent>
+            )}
           </Card>
         </div>
       </div>
