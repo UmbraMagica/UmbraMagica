@@ -17,6 +17,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
 import { 
@@ -57,6 +64,17 @@ export default function AdminClean() {
   const [isCharacterRequestsCollapsed, setIsCharacterRequestsCollapsed] = useState(false);
   const [isAdminActivityCollapsed, setIsAdminActivityCollapsed] = useState(true);
   const [showQuickInfluenceSettings, setShowQuickInfluenceSettings] = useState(false);
+  const [influenceDialog, setInfluenceDialog] = useState<{
+    open: boolean;
+    side: 'grindelwald' | 'dumbledore';
+    points: number;
+    reason: string;
+  }>({
+    open: false,
+    side: 'grindelwald',
+    points: 0,
+    reason: ''
+  });
   
   // Kill character state
   const [killCharacterData, setKillCharacterData] = useState<{id: number, name: string} | null>(null);
@@ -518,6 +536,33 @@ export default function AdminClean() {
                   },
                 });
 
+                const adjustInfluenceWithHistory = useMutation({
+                  mutationFn: async ({ changeType, points, reason }: { changeType: 'grindelwald' | 'dumbledore', points: number, reason: string }) => {
+                    const response = await fetch('/api/admin/influence-bar/adjust-with-history', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ changeType, points, reason }),
+                    });
+                    if (!response.ok) throw new Error('Failed to adjust influence with history');
+                    return response.json();
+                  },
+                  onSuccess: () => {
+                    refetchInfluence();
+                    setInfluenceDialog({ open: false, side: 'grindelwald', points: 0, reason: '' });
+                    toast({
+                      title: "Úspěch",
+                      description: "Vliv byl úspěšně upraven a zaznamenán do historie",
+                    });
+                  },
+                  onError: () => {
+                    toast({
+                      title: "Chyba",
+                      description: "Nepodařilo se upravit vliv",
+                      variant: "destructive",
+                    });
+                  },
+                });
+
                 const setInfluence = useMutation({
                   mutationFn: async ({ grindelwaldPoints, dumbledorePoints }: { grindelwaldPoints: number, dumbledorePoints: number }) => {
                     const response = await fetch('/api/admin/influence-bar/set', {
@@ -543,6 +588,15 @@ export default function AdminClean() {
                     });
                   },
                 });
+
+                const handleInfluenceChange = (side: 'grindelwald' | 'dumbledore', points: number) => {
+                  setInfluenceDialog({
+                    open: true,
+                    side,
+                    points,
+                    reason: ''
+                  });
+                };
 
                 if (!influenceData) {
                   return <div className="text-center text-muted-foreground">Načítání...</div>;
@@ -591,16 +645,16 @@ export default function AdminClean() {
                       <div className="space-y-2">
                         <h4 className="font-medium text-red-700 dark:text-red-400">Grindelwald</h4>
                         <div className="flex gap-1">
-                          <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'grindelwald', points: 1 })}>+1</Button>
-                          <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'grindelwald', points: 2 })}>+2</Button>
-                          <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'grindelwald', points: 5 })}>+5</Button>
-                          <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'grindelwald', points: 10 })}>+10</Button>
+                          <Button size="sm" variant="outline" onClick={() => handleInfluenceChange('grindelwald', 1)}>+1</Button>
+                          <Button size="sm" variant="outline" onClick={() => handleInfluenceChange('grindelwald', 2)}>+2</Button>
+                          <Button size="sm" variant="outline" onClick={() => handleInfluenceChange('grindelwald', 5)}>+5</Button>
+                          <Button size="sm" variant="outline" onClick={() => handleInfluenceChange('grindelwald', 10)}>+10</Button>
                         </div>
                         <div className="flex gap-1">
-                          <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'grindelwald', points: -1 })}>-1</Button>
-                          <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'grindelwald', points: -2 })}>-2</Button>
-                          <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'grindelwald', points: -5 })}>-5</Button>
-                          <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'grindelwald', points: -10 })}>-10</Button>
+                          <Button size="sm" variant="outline" onClick={() => handleInfluenceChange('grindelwald', -1)}>-1</Button>
+                          <Button size="sm" variant="outline" onClick={() => handleInfluenceChange('grindelwald', -2)}>-2</Button>
+                          <Button size="sm" variant="outline" onClick={() => handleInfluenceChange('grindelwald', -5)}>-5</Button>
+                          <Button size="sm" variant="outline" onClick={() => handleInfluenceChange('grindelwald', -10)}>-10</Button>
                         </div>
                       </div>
                       
