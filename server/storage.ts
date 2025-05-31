@@ -1768,7 +1768,6 @@ export class DatabaseStorage implements IStorage {
       subject: "Schválení žádosti o bydlení",
       content: approvalMessage,
       isRead: false,
-      createdAt: new Date(),
     });
 
     // Log admin activity
@@ -1816,6 +1815,32 @@ export class DatabaseStorage implements IStorage {
       })
       .where(eq(housingRequests.id, requestId))
       .returning();
+
+    // Get character information for the message
+    const character = await this.getCharacter(request.characterId);
+    if (character) {
+      // Send automatic message from "Ubytovací správa" (character ID 11)
+      const housingAdminCharacterId = 11;
+      let rejectionMessage = `Vážený/á ${character.firstName} ${character.lastName},\n\n`;
+      rejectionMessage += `Bohužel musíme zamítnout vaši žádost o bydlení.\n\n`;
+      rejectionMessage += `🏠 **Typ žádosti:** ${this.getHousingTypeDescription(request.requestType)}\n`;
+      if (request.size) {
+        rejectionMessage += `📏 **Velikost:** ${request.size}\n`;
+      }
+      rejectionMessage += `📍 **Lokace:** ${request.location}\n\n`;
+      rejectionMessage += `**Důvod zamítnutí:** ${reviewNote}\n\n`;
+      rejectionMessage += `Můžete podat novou žádost s upravenými požadavky.\n\n`;
+      rejectionMessage += `S přátelskými pozdravy,\nUbytovací správa`;
+
+      // Create owl post message
+      await db.insert(owlPostMessages).values({
+        senderCharacterId: housingAdminCharacterId,
+        recipientCharacterId: request.characterId,
+        subject: "Zamítnutí žádosti o bydlení",
+        content: rejectionMessage,
+        isRead: false,
+      });
+    }
 
     // Log admin activity
     await this.logAdminActivity({
