@@ -16,6 +16,7 @@ import {
   influenceBar,
   influenceHistory,
   housingRequests,
+  owlPostMessages,
   type User,
   type InsertUser,
   type Character,
@@ -47,6 +48,8 @@ import {
   type InsertInfluenceBar,
   type HousingRequest,
   type InsertHousingRequest,
+  type OwlPostMessage,
+  type InsertOwlPostMessage,
   wands,
 } from "@shared/schema";
 import { db } from "./db";

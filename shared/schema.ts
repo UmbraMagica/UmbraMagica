@@ -403,6 +403,30 @@ export const housingRequestsRelations = relations(housingRequests, ({ one }) => 
   }),
 }));
 
+// Owl Post Messages table
+export const owlPostMessages = pgTable("owl_post_messages", {
+  id: serial("id").primaryKey(),
+  senderCharacterId: serial("sender_character_id").references(() => characters.id).notNull(),
+  recipientCharacterId: serial("recipient_character_id").references(() => characters.id).notNull(),
+  subject: varchar("subject", { length: 200 }).notNull(),
+  content: text("content").notNull(),
+  isRead: boolean("is_read").default(false).notNull(),
+  sentAt: timestamp("sent_at").defaultNow().notNull(),
+  readAt: timestamp("read_at"),
+});
+
+// Owl Post Message Relations
+export const owlPostMessageRelations = relations(owlPostMessages, ({ one }) => ({
+  sender: one(characters, {
+    fields: [owlPostMessages.senderCharacterId],
+    references: [characters.id],
+  }),
+  recipient: one(characters, {
+    fields: [owlPostMessages.recipientCharacterId],
+    references: [characters.id],
+  }),
+}));
+
 // Schemas for validation
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
@@ -480,6 +504,13 @@ export const insertHousingRequestSchema = createInsertSchema(housingRequests).pi
   description: true,
   housingName: true,
   housingPassword: true,
+});
+
+export const insertOwlPostMessageSchema = createInsertSchema(owlPostMessages).pick({
+  senderCharacterId: true,
+  recipientCharacterId: true,
+  subject: true,
+  content: true,
 });
 
 export const registrationSchema = z.object({
@@ -661,3 +692,5 @@ export type InfluenceHistory = typeof influenceHistory.$inferSelect;
 export type InsertInfluenceHistory = typeof influenceHistory.$inferInsert;
 export type HousingRequest = typeof housingRequests.$inferSelect;
 export type InsertHousingRequest = typeof housingRequests.$inferInsert;
+export type OwlPostMessage = typeof owlPostMessages.$inferSelect;
+export type InsertOwlPostMessage = typeof owlPostMessages.$inferInsert;
