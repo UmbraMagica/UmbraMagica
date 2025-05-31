@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, Calendar, User, Mail, Clock, Edit3, GraduationCap, FileText, Package, BookOpen, Wand2 } from "lucide-react";
+import { ArrowLeft, Calendar, User, Mail, Clock, Edit3, GraduationCap, FileText, Package, BookOpen, Wand2, Home } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { format } from "date-fns";
 import { cs } from "date-fns/locale";
@@ -23,6 +23,7 @@ interface Character {
   school?: string;
   description?: string;
   avatar?: string | null;
+  residence?: string;
   user: {
     username: string;
     email: string;
@@ -202,10 +203,19 @@ export default function CharacterProfile() {
                         </div>
                       </div>
                     )}
+                    {character.residence && (
+                      <div className="flex items-center gap-3">
+                        <Home className="h-4 w-4 text-muted-foreground" />
+                        <div>
+                          <div className="text-sm font-medium">Bydliště</div>
+                          <div className="text-sm text-muted-foreground">
+                            {character.residence}
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
-
-
 
                 {character.school && (
                   <>
