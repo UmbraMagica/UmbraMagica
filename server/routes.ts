@@ -490,13 +490,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Access denied. Only character owner or admin can edit." });
       }
       
-      // Use different validation based on user role
+      // Use different validation based on what fields are being sent
       let validatedData;
-      if (requestingUser.role === "admin") {
-        // Admin can update all fields
+      const bodyKeys = Object.keys(req.body);
+      const isFullEdit = bodyKeys.includes('firstName') || bodyKeys.includes('lastName') || bodyKeys.includes('birthDate');
+      
+      if (isFullEdit && requestingUser.role === "admin") {
+        // Admin can update all fields when full data is provided
         validatedData = characterAdminEditSchema.parse(req.body);
       } else {
-        // Regular users can only update school and description
+        // Regular users can only update school and description, or admin doing limited edit
         validatedData = characterEditSchema.parse(req.body);
       }
       
