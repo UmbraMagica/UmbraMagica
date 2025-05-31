@@ -252,28 +252,67 @@ export default function CharacterEditFixedNav() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <form onSubmit={userForm.handleSubmit(onUserSubmit)} className="space-y-6">
-                  {/* Read-only fields for all users */}
-                  <div className="space-y-4 p-4 bg-muted rounded-lg">
-                    <h4 className="font-medium text-foreground">Základní informace (pouze pro čtení)</h4>
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <span className="text-muted-foreground">Jméno:</span>
-                        <p className="font-medium text-foreground">
-                          {primaryCharacter.firstName} {primaryCharacter.middleName && `${primaryCharacter.middleName} `}{primaryCharacter.lastName}
-                        </p>
-                      </div>
-                      <div>
-                        <span className="text-muted-foreground">Věk:</span>
-                        <p className="font-medium text-foreground">{currentAge} let</p>
+                <form onSubmit={isAdmin ? adminForm.handleSubmit(onAdminSubmit) : userForm.handleSubmit(onUserSubmit)} className="space-y-6">
+                  {/* Basic info - editable for admins, read-only for users */}
+                  {isAdmin ? (
+                    <div className="space-y-4 p-4 bg-amber-500/10 rounded-lg border border-amber-500/20">
+                      <h4 className="font-medium text-foreground">Základní informace (administrátorská editace)</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="admin-firstName" className="text-foreground">Křestní jméno</Label>
+                          <Input
+                            id="admin-firstName"
+                            {...adminForm.register("firstName")}
+                            placeholder="Křestní jméno"
+                            className="bg-muted border-border text-foreground"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="admin-middleName" className="text-foreground">Prostřední jméno (volitelné)</Label>
+                          <Input
+                            id="admin-middleName"
+                            {...adminForm.register("middleName")}
+                            placeholder="Prostřední jméno"
+                            className="bg-muted border-border text-foreground"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="admin-lastName" className="text-foreground">Příjmení</Label>
+                          <Input
+                            id="admin-lastName"
+                            {...adminForm.register("lastName")}
+                            placeholder="Příjmení"
+                            className="bg-muted border-border text-foreground"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="admin-birthDate" className="text-foreground">Datum narození</Label>
+                          <Input
+                            id="admin-birthDate"
+                            type="date"
+                            {...adminForm.register("birthDate")}
+                            className="bg-muted border-border text-foreground"
+                          />
+                        </div>
                       </div>
                     </div>
-                    {isAdmin && (
-                      <p className="text-xs text-amber-400 italic">
-                        Pro úpravu základních údajů použijte administrátorské rozhraní → Správa postav
-                      </p>
-                    )}
-                  </div>
+                  ) : (
+                    <div className="space-y-4 p-4 bg-muted rounded-lg">
+                      <h4 className="font-medium text-foreground">Základní informace (pouze pro čtení)</h4>
+                      <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <span className="text-muted-foreground">Jméno:</span>
+                          <p className="font-medium text-foreground">
+                            {primaryCharacter.firstName} {primaryCharacter.middleName && `${primaryCharacter.middleName} `}{primaryCharacter.lastName}
+                          </p>
+                        </div>
+                        <div>
+                          <span className="text-muted-foreground">Věk:</span>
+                          <p className="font-medium text-foreground">{currentAge} let</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   <div className="space-y-2">
                     <Label htmlFor="school" className="text-foreground flex items-center gap-2">
@@ -285,7 +324,7 @@ export default function CharacterEditFixedNav() {
                     <Select
                       value={userForm.watch("school") || "none"}
                       onValueChange={(value) => userForm.setValue("school", value === "none" ? "" : value)}
-                      disabled={!!primaryCharacter?.schoolSetAt}
+                      disabled={!!primaryCharacter?.schoolSetAt && !isAdmin}
                     >
                       <SelectTrigger className="bg-muted border-border text-foreground">
                         <SelectValue placeholder="Vyberte školu (volitelné)" />
@@ -312,10 +351,10 @@ export default function CharacterEditFixedNav() {
                     <h4 className="font-medium text-foreground">Fyzické vlastnosti</h4>
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="height" className="text-foreground">
+                        <Label htmlFor="height" className="text-foreground flex items-center gap-2">
                           Výška (cm)
                           {primaryCharacter?.heightSetAt && (
-                            <span className="text-xs text-amber-400 ml-2">(pouze jednou editovatelné)</span>
+                            <Lock className="h-4 w-4 text-amber-500" />
                           )}
                         </Label>
                         <Input
@@ -325,7 +364,7 @@ export default function CharacterEditFixedNav() {
                           max="250"
                           {...userForm.register("height", { valueAsNumber: true })}
                           placeholder="např. 175"
-                          disabled={!!primaryCharacter?.heightSetAt}
+                          disabled={!!primaryCharacter?.heightSetAt && !isAdmin}
                           className="bg-muted border-border text-foreground disabled:opacity-50"
                         />
                         {primaryCharacter?.heightSetAt && (
