@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Dialog,
   DialogContent,
@@ -12,7 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { 
   Crown, 
   Home as HomeIcon, 
@@ -29,7 +30,8 @@ import {
   ScrollText,
   Globe,
   Bird,
-  Newspaper
+  Newspaper,
+  ChevronDown
 } from "lucide-react";
 import { GameDate } from "@/components/GameDate";
 import { calculateGameAge } from "@/lib/gameDate";
@@ -70,6 +72,32 @@ export default function Home() {
   // Use the first alive character as default, or displayedCharacter if set
   const firstAliveCharacter = userCharacters.find((char: any) => !char.deathDate);
   const currentDisplayedCharacter = displayedCharacter || firstAliveCharacter;
+
+  // Load character from localStorage on component mount
+  useEffect(() => {
+    if (userCharacters && Array.isArray(userCharacters) && userCharacters.length > 0) {
+      const savedCharacterId = localStorage.getItem('activeCharacterId');
+      if (savedCharacterId) {
+        const savedCharacter = userCharacters.find((char: any) => char.id === parseInt(savedCharacterId));
+        if (savedCharacter && !savedCharacter.deathDate) {
+          setDisplayedCharacter(savedCharacter);
+          return;
+        }
+      }
+      
+      // If no saved character or character is dead, use first alive character
+      if (firstAliveCharacter && !displayedCharacter) {
+        setDisplayedCharacter(firstAliveCharacter);
+        localStorage.setItem('activeCharacterId', firstAliveCharacter.id.toString());
+      }
+    }
+  }, [userCharacters, firstAliveCharacter]);
+
+  // Function to change the displayed character
+  const setCurrentDisplayedCharacter = (character: any) => {
+    setDisplayedCharacter(character);
+    localStorage.setItem('activeCharacterId', character.id.toString());
+  };
 
   // Get current character's wand
   const { data: characterWand } = useQuery({
@@ -129,6 +157,45 @@ export default function Home() {
               </div>
             </div>
             <div className="flex items-center space-x-4">
+              {/* Character Selector */}
+              {userCharacters && Array.isArray(userCharacters) && userCharacters.length > 0 && (
+                <Select
+                  value={currentDisplayedCharacter?.id?.toString() || ""}
+                  onValueChange={(value) => {
+                    const selectedChar = userCharacters.find((char: any) => char.id === parseInt(value));
+                    if (selectedChar) {
+                      setCurrentDisplayedCharacter(selectedChar);
+                    }
+                  }}
+                >
+                  <SelectTrigger className="w-[200px]">
+                    <SelectValue placeholder="Vyberte postavu">
+                      {currentDisplayedCharacter ? (
+                        <div className="flex items-center gap-2">
+                          <CharacterAvatar character={currentDisplayedCharacter} size="sm" />
+                          <span className="truncate">
+                            {currentDisplayedCharacter.firstName} {currentDisplayedCharacter.lastName}
+                          </span>
+                        </div>
+                      ) : (
+                        "Vyberte postavu"
+                      )}
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    {userCharacters.filter((char: any) => !char.deathDate).map((character: any) => (
+                      <SelectItem key={character.id} value={character.id.toString()}>
+                        <div className="flex items-center gap-2">
+                          <CharacterAvatar character={character} size="sm" />
+                          <span>
+                            {character.firstName} {character.lastName}
+                          </span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
               <div className="text-sm text-muted-foreground">{user?.username}</div>
               <Button 
                 variant="ghost" 
