@@ -85,8 +85,8 @@ export default function UserSettings() {
   
   // Collapsible sections state
   const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({
-    characterRequests: false,
-    housingRequests: false,
+    characterRequests: true,
+    housingRequests: true,
     accountSettings: false
   });
   
@@ -100,7 +100,7 @@ export default function UserSettings() {
   // Delete housing request mutation
   const deleteHousingRequestMutation = useMutation({
     mutationFn: (requestId: number) => 
-      apiRequest(`/api/housing-requests/${requestId}`, "DELETE"),
+      apiRequest("DELETE", `/api/housing-requests/${requestId}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/housing-requests/my"] });
       toast({

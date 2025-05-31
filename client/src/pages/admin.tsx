@@ -148,6 +148,7 @@ export default function Admin() {
   });
   const { data: allCharacters = [] } = useQuery({ queryKey: ['/api/characters/all'] });
   const { data: characterRequests = [] } = useQuery({ queryKey: ['/api/admin/character-requests'] });
+  const { data: housingRequests = [] } = useQuery({ queryKey: ['/api/admin/housing-requests'] });
   const { data: adminActivityLog = [] } = useQuery({ queryKey: ['/api/admin/activity-log'] });
   const { data: inviteCodes = [] } = useQuery({ queryKey: ['/api/admin/invite-codes'] });
   const { data: chatCategories = [] } = useQuery({ queryKey: ['/api/admin/chat-categories'] });
@@ -163,7 +164,7 @@ export default function Admin() {
     activeCharacters: Array.isArray(allCharacters) ? allCharacters.filter((c: any) => !c.deathDate).length : 0,
     deadCharacters: Array.isArray(allCharacters) ? allCharacters.filter((c: any) => c.deathDate).length : 0,
     onlineNow: (onlineUsersData as any)?.count || 0,
-    pendingRequests: Array.isArray(characterRequests) ? characterRequests.length : 0,
+    pendingRequests: (Array.isArray(characterRequests) ? characterRequests.length : 0) + (Array.isArray(housingRequests) ? housingRequests.length : 0),
   };
 
   // Generate random invite code
@@ -754,7 +755,7 @@ export default function Admin() {
                 <div>
                   <h3 className="text-lg font-semibold text-purple-400">Nevyřízené žádosti</h3>
                   <p className="text-2xl font-bold text-foreground">{stats.pendingRequests}</p>
-                  <p className="text-sm text-muted-foreground">nových postav</p>
+                  <p className="text-sm text-muted-foreground">čekajících na vyřízení</p>
                 </div>
                 <div className="h-12 w-12 bg-purple-500/20 rounded-full flex items-center justify-center">
                   <UserPlus className="h-6 w-6 text-purple-400" />
@@ -1215,12 +1216,12 @@ export default function Admin() {
 
 
 
-          {/* Žádosti o postavy */}
+          {/* Uživatelské žádosti */}
           <Card>
             <CardHeader className="cursor-pointer" onClick={() => setIsCharacterRequestsCollapsed(!isCharacterRequestsCollapsed)}>
               <CardTitle className="text-xl font-semibold text-foreground flex items-center">
                 <UserPlus className="text-blue-400 mr-3 h-5 w-5" />
-                Žádosti o postavy ({Array.isArray(characterRequests) ? characterRequests.length : 0})
+                Uživatelské žádosti ({(Array.isArray(characterRequests) ? characterRequests.length : 0) + (Array.isArray(housingRequests) ? housingRequests.length : 0)})
                 {isCharacterRequestsCollapsed ? (
                   <ChevronDown className="ml-auto h-4 w-4" />
                 ) : (
