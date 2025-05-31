@@ -181,6 +181,10 @@ export default function UserSettings() {
   const changePasswordMutation = useMutation({
     mutationFn: async (data: { currentPassword: string; newPassword: string }) => {
       const response = await apiRequest("POST", "/api/auth/change-password", data);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Nepodařilo se změnit heslo");
+      }
       return response.json();
     },
     onSuccess: () => {
@@ -193,7 +197,7 @@ export default function UserSettings() {
     },
     onError: (error: any) => {
       toast({
-        title: "Chyba",
+        title: "Chyba při změně hesla",
         description: error.message || "Nepodařilo se změnit heslo",
         variant: "destructive",
       });
@@ -204,6 +208,10 @@ export default function UserSettings() {
   const changeEmailMutation = useMutation({
     mutationFn: async (data: { newEmail: string; confirmPassword: string }) => {
       const response = await apiRequest("POST", "/api/auth/change-email", data);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Nepodařilo se změnit email");
+      }
       return response.json();
     },
     onSuccess: () => {
@@ -217,7 +225,7 @@ export default function UserSettings() {
     },
     onError: (error: any) => {
       toast({
-        title: "Chyba",
+        title: "Chyba při změně emailu",
         description: error.message || "Nepodařilo se změnit email",
         variant: "destructive",
       });
