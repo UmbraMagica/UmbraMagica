@@ -831,6 +831,254 @@ export default function UserSettings() {
               )}
             </CardContent>
           </Card>
+
+          {/* Housing Requests Section */}
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center gap-2">
+                  <Home className="h-5 w-5" />
+                  Žádosti o bydlení
+                </CardTitle>
+                <Button 
+                  onClick={() => setShowHousingForm(!showHousingForm)}
+                  className="bg-accent hover:bg-accent/90"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Požádat o bydlení
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Housing Request Form */}
+              {showHousingForm && (
+                <Card className="border-2 border-accent/20">
+                  <CardHeader>
+                    <CardTitle className="text-lg">Nová žádost o bydlení</CardTitle>
+                    <p className="text-sm text-muted-foreground">
+                      Požádejte o přidělení bytu, domu nebo koleje pro svou postavu. 
+                      Po schválení bude adresa přidána do profilu postavy a bude vytvořena soukromá místnost pro roleplay.
+                    </p>
+                  </CardHeader>
+                  <CardContent>
+                    <form onSubmit={housingForm.handleSubmit(onHousingSubmit)} className="space-y-4">
+                      <div>
+                        <Label htmlFor="characterId">Postava *</Label>
+                        <select
+                          id="characterId"
+                          {...housingForm.register("characterId", { valueAsNumber: true })}
+                          className="w-full p-2 border rounded-md"
+                        >
+                          <option value="">Vyberte postavu</option>
+                          {userCharacters?.map((character: any) => (
+                            <option key={character.id} value={character.id}>
+                              {character.firstName} {character.middleName ? `${character.middleName} ` : ''}{character.lastName}
+                            </option>
+                          ))}
+                        </select>
+                        {housingForm.formState.errors.characterId && (
+                          <p className="text-sm text-destructive">{housingForm.formState.errors.characterId.message}</p>
+                        )}
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="requestType">Typ bydlení *</Label>
+                          <select
+                            id="requestType"
+                            {...housingForm.register("requestType")}
+                            className="w-full p-2 border rounded-md"
+                          >
+                            <option value="">Vyberte typ</option>
+                            <option value="apartment">Byt</option>
+                            <option value="house">Dům</option>
+                            <option value="dormitory">Kolej</option>
+                          </select>
+                          {housingForm.formState.errors.requestType && (
+                            <p className="text-sm text-destructive">{housingForm.formState.errors.requestType.message}</p>
+                          )}
+                        </div>
+
+                        <div>
+                          <Label htmlFor="size">Velikost</Label>
+                          <Input
+                            id="size"
+                            {...housingForm.register("size")}
+                            placeholder="např. 2+1, malý dům, jednolůžkový pokoj"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <Label htmlFor="location">Umístění *</Label>
+                        <select
+                          id="location"
+                          {...housingForm.register("location")}
+                          className="w-full p-2 border rounded-md"
+                          onChange={(e) => {
+                            housingForm.setValue("location", e.target.value);
+                            if (e.target.value === "custom") {
+                              housingForm.setValue("selectedArea", "");
+                            } else {
+                              housingForm.setValue("customLocation", "");
+                            }
+                          }}
+                        >
+                          <option value="">Vyberte umístění</option>
+                          <option value="area">Oblast z nabídky</option>
+                          <option value="custom">Vlastní adresa</option>
+                        </select>
+                        {housingForm.formState.errors.location && (
+                          <p className="text-sm text-destructive">{housingForm.formState.errors.location.message}</p>
+                        )}
+                      </div>
+
+                      {housingForm.watch("location") === "area" && (
+                        <div>
+                          <Label htmlFor="selectedArea">Vyberte oblast *</Label>
+                          <select
+                            id="selectedArea"
+                            {...housingForm.register("selectedArea")}
+                            className="w-full p-2 border rounded-md"
+                          >
+                            <option value="">Vyberte oblast</option>
+                            <option value="Bradavice a okolí">Bradavice a okolí</option>
+                            <option value="Londýn - centrum">Londýn - centrum</option>
+                            <option value="Londýn - předměstí">Londýn - předměstí</option>
+                            <option value="Diagon Alley">Diagon Alley</option>
+                            <option value="Knockturn Alley">Knockturn Alley</option>
+                            <option value="Hogsmeade">Hogsmeade</option>
+                            <option value="Godric's Hollow">Godric's Hollow</option>
+                            <option value="Little Whinging">Little Whinging</option>
+                            <option value="Grimmauld Place a okolí">Grimmauld Place a okolí</option>
+                            <option value="Venkov - Anglie">Venkov - Anglie</option>
+                            <option value="Skotsko">Skotsko</option>
+                            <option value="Wales">Wales</option>
+                            <option value="Irsko">Irsko</option>
+                          </select>
+                        </div>
+                      )}
+
+                      {housingForm.watch("location") === "custom" && (
+                        <div>
+                          <Label htmlFor="customLocation">Vlastní adresa *</Label>
+                          <Input
+                            id="customLocation"
+                            {...housingForm.register("customLocation")}
+                            placeholder="Zadejte konkrétní adresu"
+                          />
+                        </div>
+                      )}
+
+                      <div>
+                        <Label htmlFor="description">Popis žádosti *</Label>
+                        <Textarea
+                          id="description"
+                          {...housingForm.register("description")}
+                          placeholder="Popište důvod žádosti, specifické požadavky a jakékoliv další informace pro administrátory..."
+                          rows={4}
+                        />
+                        {housingForm.formState.errors.description && (
+                          <p className="text-sm text-destructive">{housingForm.formState.errors.description.message}</p>
+                        )}
+                      </div>
+
+                      <div className="flex gap-2">
+                        <Button
+                          type="submit"
+                          disabled={createHousingRequestMutation.isPending}
+                          className="bg-accent hover:bg-accent/90"
+                        >
+                          {createHousingRequestMutation.isPending ? "Odesílám..." : "Odeslat žádost"}
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => {
+                            setShowHousingForm(false);
+                            housingForm.reset();
+                          }}
+                        >
+                          Zrušit
+                        </Button>
+                      </div>
+                    </form>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Existing Housing Requests */}
+              {housingRequests && housingRequests.length > 0 ? (
+                <div className="space-y-3">
+                  {housingRequests.map((request: any) => (
+                    <Card key={request.id} className="border-l-4 border-l-accent">
+                      <CardContent className="pt-6">
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <Badge variant={
+                                request.status === 'pending' ? 'default' :
+                                request.status === 'approved' ? 'secondary' : 'destructive'
+                              }>
+                                {request.status === 'pending' && <Clock className="h-3 w-3 mr-1" />}
+                                {request.status === 'approved' && <CheckCircle className="h-3 w-3 mr-1" />}
+                                {request.status === 'rejected' && <XCircle className="h-3 w-3 mr-1" />}
+                                {request.status === 'pending' ? 'Čeká na vyřízení' :
+                                 request.status === 'approved' ? 'Schváleno' : 'Zamítnuto'}
+                              </Badge>
+                              <span className="font-medium">
+                                {request.requestType === 'apartment' ? 'Byt' :
+                                 request.requestType === 'house' ? 'Dům' : 'Kolej'}
+                              </span>
+                              {request.size && <span className="text-muted-foreground">({request.size})</span>}
+                            </div>
+                            <div className="text-sm text-muted-foreground">
+                              {formatDate(request.createdAt)}
+                            </div>
+                          </div>
+                          
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div>
+                              <span className="font-medium">Postava:</span> {request.character?.firstName} {request.character?.lastName}
+                            </div>
+                            <div>
+                              <span className="font-medium">Umístění:</span> {
+                                request.location === 'area' ? request.selectedArea : request.customLocation
+                              }
+                            </div>
+                          </div>
+
+                          {request.assignedAddress && (
+                            <div className="text-sm">
+                              <span className="font-medium text-green-600">Přidělená adresa:</span> {request.assignedAddress}
+                            </div>
+                          )}
+
+                          <div className="text-sm">
+                            <span className="font-medium">Popis:</span> {request.description}
+                          </div>
+
+                          {request.reviewNote && (
+                            <div className="text-sm">
+                              <span className="font-medium">Poznámka administrátora:</span> {request.reviewNote}
+                            </div>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <Home className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                  <p className="text-muted-foreground">Zatím nemáte žádné žádosti o bydlení</p>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Klikněte na tlačítko výše pro vytvoření nové žádosti
+                  </p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>

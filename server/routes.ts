@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
-import { registrationSchema, loginSchema, insertCharacterSchema, insertMessageSchema, characterEditSchema, characterAdminEditSchema, characterRequestSchema, chatRooms, spellSchema, insertSpellSchema, insertCharacterSpellSchema, insertChatCategorySchema, insertChatRoomSchema } from "@shared/schema";
+import { registrationSchema, loginSchema, insertCharacterSchema, insertMessageSchema, characterEditSchema, characterAdminEditSchema, characterRequestSchema, chatRooms, spellSchema, insertSpellSchema, insertCharacterSpellSchema, insertChatCategorySchema, insertChatRoomSchema, insertHousingRequestSchema } from "@shared/schema";
 import { db } from "./db";
 import { z } from "zod";
 import session from "express-session";
@@ -1934,6 +1934,76 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching influence history:", error);
       res.status(500).json({ message: "Failed to fetch influence history" });
+    }
+  });
+
+  // Housing request endpoints
+  app.post("/api/housing-requests", requireAuth, async (req, res) => {
+    try {
+      const validatedRequest = insertHousingRequestSchema.parse({
+        ...req.body,
+        userId: req.session.userId
+      });
+
+      const request = await storage.createHousingRequest(validatedRequest);
+      res.json(request);
+    } catch (error) {
+      console.error("Error creating housing request:", error);
+      res.status(500).json({ message: "Failed to create housing request" });
+    }
+  });
+
+  app.get("/api/housing-requests/my", requireAuth, async (req, res) => {
+    try {
+      const requests = await storage.getHousingRequestsByUserId(req.session.userId!);
+      res.json(requests);
+    } catch (error) {
+      console.error("Error fetching housing requests:", error);
+      res.status(500).json({ message: "Failed to fetch housing requests" });
+    }
+  });
+
+  app.get("/api/admin/housing-requests", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const requests = await storage.getPendingHousingRequests();
+      res.json(requests);
+    } catch (error) {
+      console.error("Error fetching pending housing requests:", error);
+      res.status(500).json({ message: "Failed to fetch pending housing requests" });
+    }
+  });
+
+  app.post("/api/admin/housing-requests/:requestId/approve", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const requestId = parseInt(req.params.requestId);
+      const { assignedAddress, reviewNote } = req.body;
+
+      if (!assignedAddress) {
+        return res.status(400).json({ message: "Assigned address is required" });
+      }
+
+      const request = await storage.approveHousingRequest(requestId, req.session.userId!, assignedAddress, reviewNote);
+      res.json(request);
+    } catch (error) {
+      console.error("Error approving housing request:", error);
+      res.status(500).json({ message: "Failed to approve housing request" });
+    }
+  });
+
+  app.post("/api/admin/housing-requests/:requestId/reject", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const requestId = parseInt(req.params.requestId);
+      const { reviewNote } = req.body;
+
+      if (!reviewNote) {
+        return res.status(400).json({ message: "Review note is required for rejection" });
+      }
+
+      const request = await storage.rejectHousingRequest(requestId, req.session.userId!, reviewNote);
+      res.json(request);
+    } catch (error) {
+      console.error("Error rejecting housing request:", error);
+      res.status(500).json({ message: "Failed to reject housing request" });
     }
   });
 

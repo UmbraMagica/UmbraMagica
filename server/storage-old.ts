@@ -8,6 +8,7 @@ import {
   archivedMessages,
   characterRequests,
   adminActivityLog,
+  housingRequests,
   type User,
   type InsertUser,
   type Character,
@@ -25,6 +26,8 @@ import {
   type InsertCharacterRequest,
   type AdminActivityLog,
   type InsertAdminActivityLog,
+  type HousingRequest,
+  type InsertHousingRequest,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, desc, lt, gte, count } from "drizzle-orm";
@@ -100,6 +103,13 @@ export interface IStorage {
   // Multi-character operations
   setMainCharacter(userId: number, characterId: number): Promise<void>;
   getMainCharacter(userId: number): Promise<Character | undefined>;
+  
+  // Housing request operations
+  createHousingRequest(request: InsertHousingRequest): Promise<HousingRequest>;
+  getHousingRequestsByUserId(userId: number): Promise<HousingRequest[]>;
+  getPendingHousingRequests(): Promise<(HousingRequest & { user: { username: string; email: string }; character: { firstName: string; middleName?: string | null; lastName: string } })[]>;
+  approveHousingRequest(requestId: number, adminId: number, assignedAddress: string, reviewNote?: string): Promise<HousingRequest>;
+  rejectHousingRequest(requestId: number, adminId: number, reviewNote: string): Promise<HousingRequest>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -611,7 +621,7 @@ export class DatabaseStorage implements IStorage {
       })
       .from(adminActivityLog)
       .innerJoin(users, eq(adminActivityLog.adminId, users.id))
-      .leftJoin(users.as("targetUsers"), eq(adminActivityLog.targetUserId, users.id))
+      .leftJoin(users, eq(adminActivityLog.targetUserId, users.id))
       .orderBy(desc(adminActivityLog.createdAt))
       .limit(limit)
       .offset(offset);
@@ -638,6 +648,128 @@ export class DatabaseStorage implements IStorage {
       .from(characters)
       .where(and(eq(characters.userId, userId), eq(characters.isMainCharacter, true)));
     return character;
+  }
+
+  // Housing request operations
+  async createHousingRequest(insertHousingRequest: InsertHousingRequest): Promise<HousingRequest> {
+    const [request] = await db
+      .insert(housingRequests)
+      .values({
+        ...insertHousingRequest,
+        userId: insertHousingRequest.userId!,
+        status: "pending",
+      })
+      .returning();
+    return request;
+  }
+
+  async getHousingRequestsByUserId(userId: number): Promise<HousingRequest[]> {
+    return await db
+      .select()
+      .from(housingRequests)
+      .where(eq(housingRequests.userId, userId))
+      .orderBy(desc(housingRequests.createdAt));
+  }
+
+  async getPendingHousingRequests(): Promise<(HousingRequest & { user: { username: string; email: string }; character: { firstName: string; middleName?: string | null; lastName: string } })[]> {
+    return await db
+      .select({
+        id: housingRequests.id,
+        userId: housingRequests.userId,
+        characterId: housingRequests.characterId,
+        requestType: housingRequests.requestType,
+        size: housingRequests.size,
+        location: housingRequests.location,
+        customLocation: housingRequests.customLocation,
+        selectedArea: housingRequests.selectedArea,
+        description: housingRequests.description,
+        status: housingRequests.status,
+        assignedAddress: housingRequests.assignedAddress,
+        reviewedBy: housingRequests.reviewedBy,
+        reviewNote: housingRequests.reviewNote,
+        reviewedAt: housingRequests.reviewedAt,
+        createdAt: housingRequests.createdAt,
+        user: {
+          username: users.username,
+          email: users.email,
+        },
+        character: {
+          firstName: characters.firstName,
+          middleName: characters.middleName,
+          lastName: characters.lastName,
+        },
+      })
+      .from(housingRequests)
+      .innerJoin(users, eq(housingRequests.userId, users.id))
+      .innerJoin(characters, eq(housingRequests.characterId, characters.id))
+      .where(eq(housingRequests.status, "pending"))
+      .orderBy(desc(housingRequests.createdAt));
+  }
+
+  async approveHousingRequest(requestId: number, adminId: number, assignedAddress: string, reviewNote?: string): Promise<HousingRequest> {
+    // Update the housing request
+    const [request] = await db
+      .update(housingRequests)
+      .set({
+        status: "approved",
+        reviewedBy: adminId,
+        reviewedAt: new Date(),
+        assignedAddress,
+        reviewNote,
+      })
+      .where(eq(housingRequests.id, requestId))
+      .returning();
+
+    if (!request) {
+      throw new Error("Housing request not found");
+    }
+
+    // Update the character's residence
+    await db
+      .update(characters)
+      .set({ residence: assignedAddress })
+      .where(eq(characters.id, request.characterId));
+
+    // Log admin activity
+    await this.logAdminActivity({
+      adminId,
+      action: "approve_housing",
+      targetUserId: request.userId,
+      targetCharacterId: request.characterId,
+      targetRequestId: requestId,
+      details: `Approved housing request: ${assignedAddress}`,
+    });
+
+    return request;
+  }
+
+  async rejectHousingRequest(requestId: number, adminId: number, reviewNote: string): Promise<HousingRequest> {
+    const [request] = await db
+      .update(housingRequests)
+      .set({
+        status: "rejected",
+        reviewedBy: adminId,
+        reviewedAt: new Date(),
+        reviewNote,
+      })
+      .where(eq(housingRequests.id, requestId))
+      .returning();
+
+    if (!request) {
+      throw new Error("Housing request not found");
+    }
+
+    // Log admin activity
+    await this.logAdminActivity({
+      adminId,
+      action: "reject_housing",
+      targetUserId: request.userId,
+      targetCharacterId: request.characterId,
+      targetRequestId: requestId,
+      details: `Rejected housing request: ${reviewNote}`,
+    });
+
+    return request;
   }
 }
 
