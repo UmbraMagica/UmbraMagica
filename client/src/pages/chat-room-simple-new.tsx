@@ -269,8 +269,8 @@ export default function ChatRoom() {
           setSelectedSpell(null);
           setMessageInput("");
         } catch (spellError: any) {
-          // Always use Czech message for spell errors
-          throw new Error("Vaše postava potřebuje hůlku pro sesílání kouzel.");
+          // Re-throw the original error to preserve the server message
+          throw spellError;
         }
       } else if (messageInput.trim()) {
         // Send regular message only if there's content
@@ -287,10 +287,15 @@ export default function ChatRoom() {
       console.log('Cast spell error:', error); // Debug log
       let errorMessage = "Nepodařilo se odeslat zprávu.";
       
-      // Always use Czech wand message for spell casting errors
-      if (selectedSpell) {
-        errorMessage = "Vaše postava potřebuje hůlku pro sesílání kouzel.";
-        console.log('SPELL ERROR DETECTED - Using Czech message:', errorMessage);
+      // Use the actual server error message for spell casting errors
+      if (selectedSpell && error.message) {
+        if (error.message.includes("Character doesn't know this spell")) {
+          errorMessage = "Vaše postava nezná toto kouzlo.";
+        } else {
+          // Use the server's Czech error message directly
+          errorMessage = error.message;
+        }
+        console.log('SPELL ERROR DETECTED - Using server message:', errorMessage);
       } else if (error.message && error.message.includes("Character doesn't know this spell")) {
         errorMessage = "Vaše postava nezná toto kouzlo.";
       } else if (error.message) {
