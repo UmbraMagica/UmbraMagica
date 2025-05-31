@@ -276,9 +276,6 @@ export default function CharacterEditFixedNav() {
 
                   <div className="space-y-2">
                     <Label htmlFor="description" className="text-foreground">Popis postavy</Label>
-                    <p className="text-xs text-muted-foreground">
-                      Podporuje HTML formátování: <code>&lt;b&gt;tučné&lt;/b&gt;</code>, <code>&lt;i&gt;kurzíva&lt;/i&gt;</code>, <code>&lt;u&gt;podtržené&lt;/u&gt;</code>, odkazy, obrázky
-                    </p>
                     <Textarea
                       id="description"
                       {...userForm.register("description")}
@@ -286,6 +283,9 @@ export default function CharacterEditFixedNav() {
                       className="bg-muted border-border text-foreground min-h-[100px]"
                       rows={4}
                     />
+                    <p className="text-xs text-muted-foreground">
+                      Podporuje HTML formátování: <code>&lt;b&gt;tučné&lt;/b&gt;</code>, <code>&lt;i&gt;kurzíva&lt;/i&gt;</code>, <code>&lt;u&gt;podtržené&lt;/u&gt;</code>, odkazy, obrázky
+                    </p>
                   </div>
 
                   <div className="flex items-center justify-between pt-6 border-t border-border">
