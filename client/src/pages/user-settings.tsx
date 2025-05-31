@@ -133,7 +133,6 @@ export default function UserSettings() {
   const housingForm = useForm<HousingRequestForm>({
     resolver: zodResolver(insertHousingRequestSchema),
     defaultValues: {
-      characterId: 0,
       requestType: "",
       size: "",
       location: "",
@@ -314,7 +313,6 @@ export default function UserSettings() {
     if (housingType === 'dormitory') {
       createHousingRequestMutation.mutate({
         ...data,
-        userId: user.id,
         requestType: 'dormitory',
         size: 'jednolůžkový pokoj',
         location: 'Ubytovna U starého Šeptáka',
@@ -324,16 +322,12 @@ export default function UserSettings() {
       // Pro sdílené bydlení nastavíme speciální hodnoty
       createHousingRequestMutation.mutate({
         ...data,
-        userId: user.id,
         requestType: 'shared',
         location: 'shared',
         size: null, // Není relevantní pro sdílené bydlení
       });
     } else {
-      createHousingRequestMutation.mutate({
-        ...data,
-        userId: user.id,
-      });
+      createHousingRequestMutation.mutate(data);
     }
   };
 
