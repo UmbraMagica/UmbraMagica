@@ -472,12 +472,41 @@ export default function Admin() {
   };
 
   const confirmInfluenceReset = () => {
-    const resetData = resetConfirmation.type === '0:0' 
+    const resetValues = resetConfirmation.type === '0:0' 
       ? { grindelwald: 0, dumbledore: 0 }
       : { grindelwald: 50, dumbledore: 50 };
 
-    // Call reset API endpoint
-    apiRequest("POST", "/api/admin/influence/reset", resetData)
+    // Calculate changes needed and add to history
+    const currentGrindelwald = (influenceBar as any)?.grindelwaldPoints || 0;
+    const currentDumbledore = (influenceBar as any)?.dumbledorePoints || 0;
+    
+    const grindelwaldChange = resetValues.grindelwald - currentGrindelwald;
+    const dumbledoreChange = resetValues.dumbledore - currentDumbledore;
+
+    // Create promise chain for both changes
+    const promises = [];
+    
+    if (grindelwaldChange !== 0) {
+      promises.push(
+        apiRequest("POST", "/api/admin/influence", {
+          side: "grindelwald",
+          points: grindelwaldChange,
+          reason: `Admin reset na ${resetConfirmation.type} - Grindelwald`
+        })
+      );
+    }
+    
+    if (dumbledoreChange !== 0) {
+      promises.push(
+        apiRequest("POST", "/api/admin/influence", {
+          side: "dumbledore", 
+          points: dumbledoreChange,
+          reason: `Admin reset na ${resetConfirmation.type} - Brumbál`
+        })
+      );
+    }
+
+    Promise.all(promises)
       .then(() => {
         toast({
           title: "Úspěch",
