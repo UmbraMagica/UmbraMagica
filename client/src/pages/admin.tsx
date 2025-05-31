@@ -598,6 +598,170 @@ export default function Admin() {
           </Card>
         </div>
 
+        {/* Influence Bar Management */}
+        <div className="mb-8">
+            <Card className="bg-card border-border">
+              <CardContent className="p-6">
+                <h2 className="text-xl font-semibold text-foreground flex items-center mb-6">
+                  <div className="text-accent mr-3">⚔️</div>
+                  Správa magického vlivu
+                </h2>
+                
+                {(() => {
+                  const { data: influenceData, refetch: refetchInfluence } = useQuery({
+                    queryKey: ['/api/influence-bar'],
+                    staleTime: 5000,
+                  });
+
+                  const adjustInfluence = useMutation({
+                    mutationFn: async ({ side, points }: { side: 'grindelwald' | 'dumbledore', points: number }) => {
+                      const response = await fetch('/api/admin/influence-bar/adjust', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ side, points }),
+                      });
+                      if (!response.ok) throw new Error('Failed to adjust influence');
+                      return response.json();
+                    },
+                    onSuccess: () => {
+                      refetchInfluence();
+                      toast({
+                        title: "Úspěch",
+                        description: "Vliv byl úspěšně upraven",
+                      });
+                    },
+                    onError: () => {
+                      toast({
+                        title: "Chyba",
+                        description: "Nepodařilo se upravit vliv",
+                        variant: "destructive",
+                      });
+                    },
+                  });
+
+                  const setInfluence = useMutation({
+                    mutationFn: async ({ grindelwaldPoints, dumbledorePoints }: { grindelwaldPoints: number, dumbledorePoints: number }) => {
+                      const response = await fetch('/api/admin/influence-bar/set', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ grindelwaldPoints, dumbledorePoints }),
+                      });
+                      if (!response.ok) throw new Error('Failed to set influence');
+                      return response.json();
+                    },
+                    onSuccess: () => {
+                      refetchInfluence();
+                      toast({
+                        title: "Úspěch",
+                        description: "Vliv byl úspěšně nastaven",
+                      });
+                    },
+                    onError: () => {
+                      toast({
+                        title: "Chyba",
+                        description: "Nepodařilo se nastavit vliv",
+                        variant: "destructive",
+                      });
+                    },
+                  });
+
+                  if (!influenceData) {
+                    return <div className="text-center text-muted-foreground">Načítání...</div>;
+                  }
+
+                  const totalPoints = influenceData.grindelwaldPoints + influenceData.dumbledorePoints;
+                  const grindelwaldPercentage = totalPoints > 0 ? (influenceData.grindelwaldPoints / totalPoints) * 100 : 50;
+                  const dumbledorePercentage = totalPoints > 0 ? (influenceData.dumbledorePoints / totalPoints) * 100 : 50;
+
+                  return (
+                    <div className="space-y-6">
+                      {/* Current Status */}
+                      <div className="space-y-4">
+                        <div className="flex justify-between items-center text-sm">
+                          <div className="flex items-center">
+                            <div className="w-3 h-3 bg-red-600 rounded-full mr-2"></div>
+                            <span className="font-medium text-red-700 dark:text-red-400">Grindelwald</span>
+                            <span className="ml-2 text-muted-foreground">({influenceData.grindelwaldPoints})</span>
+                          </div>
+                          <div className="flex items-center">
+                            <span className="mr-2 text-muted-foreground">({influenceData.dumbledorePoints})</span>
+                            <span className="font-medium text-blue-700 dark:text-blue-400">Brumbál</span>
+                            <div className="w-3 h-3 bg-blue-600 rounded-full ml-2"></div>
+                          </div>
+                        </div>
+                        
+                        <div className="relative w-full h-6 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                          <div 
+                            className="absolute left-0 top-0 h-full bg-gradient-to-r from-red-600 to-red-500 transition-all duration-1000 ease-in-out"
+                            style={{ width: `${grindelwaldPercentage}%` }}
+                          ></div>
+                          <div 
+                            className="absolute right-0 top-0 h-full bg-gradient-to-l from-blue-600 to-blue-500 transition-all duration-1000 ease-in-out"
+                            style={{ width: `${dumbledorePercentage}%` }}
+                          ></div>
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <span className="text-white text-xs font-semibold drop-shadow-lg">
+                              {Math.round(grindelwaldPercentage)}% : {Math.round(dumbledorePercentage)}%
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Quick Adjustments */}
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <h4 className="font-medium text-red-700 dark:text-red-400">Grindelwald</h4>
+                          <div className="flex gap-1">
+                            <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'grindelwald', points: 1 })}>+1</Button>
+                            <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'grindelwald', points: 2 })}>+2</Button>
+                            <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'grindelwald', points: 5 })}>+5</Button>
+                            <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'grindelwald', points: 10 })}>+10</Button>
+                          </div>
+                          <div className="flex gap-1">
+                            <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'grindelwald', points: -1 })}>-1</Button>
+                            <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'grindelwald', points: -2 })}>-2</Button>
+                            <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'grindelwald', points: -5 })}>-5</Button>
+                            <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'grindelwald', points: -10 })}>-10</Button>
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <h4 className="font-medium text-blue-700 dark:text-blue-400">Brumbál</h4>
+                          <div className="flex gap-1">
+                            <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'dumbledore', points: 1 })}>+1</Button>
+                            <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'dumbledore', points: 2 })}>+2</Button>
+                            <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'dumbledore', points: 5 })}>+5</Button>
+                            <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'dumbledore', points: 10 })}>+10</Button>
+                          </div>
+                          <div className="flex gap-1">
+                            <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'dumbledore', points: -1 })}>-1</Button>
+                            <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'dumbledore', points: -2 })}>-2</Button>
+                            <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'dumbledore', points: -5 })}>-5</Button>
+                            <Button size="sm" variant="outline" onClick={() => adjustInfluence.mutate({ side: 'dumbledore', points: -10 })}>-10</Button>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Reset Controls */}
+                      <div className="border-t pt-4">
+                        <h4 className="font-medium mb-2">Rychlé nastavení</h4>
+                        <div className="flex gap-2">
+                          <Button size="sm" variant="secondary" onClick={() => setInfluence.mutate({ grindelwaldPoints: 50, dumbledorePoints: 50 })}>
+                            Vyrovnané (50:50)
+                          </Button>
+                          <Button size="sm" variant="secondary" onClick={() => setInfluence.mutate({ grindelwaldPoints: 0, dumbledorePoints: 0 })}>
+                            Reset (0:0)
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* User Management */}
           <Card className="bg-card border-border">
