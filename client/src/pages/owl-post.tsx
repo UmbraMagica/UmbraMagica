@@ -65,6 +65,7 @@ export default function OwlPost() {
   const [selectedMessage, setSelectedMessage] = useState<OwlPostMessage | null>(null);
   const [isReplyOpen, setIsReplyOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCharacter, setSelectedCharacter] = useState<any>(null);
 
   // Get user's characters
   const { data: userCharacters = [] } = useQuery<any[]>({
@@ -74,6 +75,9 @@ export default function OwlPost() {
 
   // Get first alive character as default (consistent with home page)
   const firstAliveCharacter = userCharacters.find((char: any) => !char.deathDate);
+  
+  // Use selected character or first alive character
+  const activeCharacter = selectedCharacter || firstAliveCharacter;
 
   // Get all characters for recipient selection
   const { data: allCharacters = [] } = useQuery<Character[]>({
@@ -83,20 +87,20 @@ export default function OwlPost() {
 
   // Get inbox messages
   const { data: inboxMessages = [] } = useQuery<OwlPostMessage[]>({
-    queryKey: [`/api/owl-post/inbox/${firstAliveCharacter?.id}`],
-    enabled: !!firstAliveCharacter,
+    queryKey: [`/api/owl-post/inbox/${activeCharacter?.id}`],
+    enabled: !!activeCharacter,
   });
 
   // Get sent messages
   const { data: sentMessages = [] } = useQuery<OwlPostMessage[]>({
-    queryKey: [`/api/owl-post/sent/${firstAliveCharacter?.id}`],
-    enabled: !!firstAliveCharacter,
+    queryKey: [`/api/owl-post/sent/${activeCharacter?.id}`],
+    enabled: !!activeCharacter,
   });
 
   // Get unread count
   const { data: unreadData } = useQuery<{ count: number }>({
-    queryKey: [`/api/owl-post/unread-count/${firstAliveCharacter?.id}`],
-    enabled: !!firstAliveCharacter,
+    queryKey: [`/api/owl-post/unread-count/${activeCharacter?.id}`],
+    enabled: !!activeCharacter,
   });
 
   const unreadCount = unreadData?.count || 0;
@@ -123,7 +127,7 @@ export default function OwlPost() {
       form.reset();
       replyForm.reset();
       // Invalidate queries to refresh the data
-      queryClient.invalidateQueries({ queryKey: [`/api/owl-post/sent/${firstAliveCharacter?.id}`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/owl-post/sent/${activeCharacter?.id}`] });
       queryClient.invalidateQueries({ queryKey: [`/api/owl-post/inbox`] });
       queryClient.invalidateQueries({ queryKey: [`/api/owl-post/unread-count`] });
     },
@@ -249,10 +253,28 @@ export default function OwlPost() {
         <Bird className="h-8 w-8 text-amber-600" />
         <div>
           <h1 className="text-3xl font-bold">Soví pošta</h1>
-          {firstAliveCharacter && (
-            <p className="text-muted-foreground text-sm">
-              Přihlášen/a jako: {firstAliveCharacter.firstName} {firstAliveCharacter.lastName}
-            </p>
+          {activeCharacter && (
+            <div className="flex items-center gap-2 text-sm">
+              <span className="text-muted-foreground">Aktivní postava:</span>
+              <Select 
+                value={activeCharacter.id.toString()} 
+                onValueChange={(value) => {
+                  const character = userCharacters.find((char: any) => char.id === parseInt(value));
+                  setSelectedCharacter(character);
+                }}
+              >
+                <SelectTrigger className="w-40 h-7 text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {userCharacters.filter((char: any) => !char.deathDate).map((character: any) => (
+                    <SelectItem key={character.id} value={character.id.toString()}>
+                      {character.firstName} {character.lastName}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           )}
         </div>
         <div className="flex items-center gap-2 ml-auto">
