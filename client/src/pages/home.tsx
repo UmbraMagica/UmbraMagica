@@ -312,11 +312,21 @@ export default function Home() {
 
                   <Button 
                     variant="ghost"
-                    className="w-full justify-start text-left h-auto p-3 hover:bg-purple-500/20"
+                    className="w-full justify-start text-left h-auto p-3 hover:bg-purple-500/20 relative"
                     onClick={() => setLocation(`/owl-post?character=${currentDisplayedCharacter?.id || ''}`)}
                   >
                     <div className="flex items-center space-x-3">
-                      <Bird className="h-5 w-5 text-amber-400" />
+                      <div className="relative">
+                        <Bird className="h-5 w-5 text-amber-400" />
+                        {unreadOwlPostData?.count > 0 && (
+                          <Badge 
+                            variant="destructive" 
+                            className="absolute -top-2 -right-2 h-5 w-5 p-0 text-xs flex items-center justify-center rounded-full"
+                          >
+                            {unreadOwlPostData.count > 99 ? '99+' : unreadOwlPostData.count}
+                          </Badge>
+                        )}
+                      </div>
                       <div>
                         <div className="font-medium">Soví pošta</div>
                         <div className="text-xs text-muted-foreground">Zprávy mezi postavami</div>

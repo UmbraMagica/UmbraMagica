@@ -87,8 +87,15 @@ export default function UserSettings() {
   const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({
     characterRequests: true,
     housingRequests: true,
-    accountSettings: false
+    accountSettings: false,
+    characterOrder: true,
+    highlightWords: true
   });
+
+  // Character order state
+  const [characterOrder, setCharacterOrder] = useState<number[]>([]);
+  const [highlightWords, setHighlightWords] = useState('');
+  const [highlightColor, setHighlightColor] = useState('yellow');
   
   const toggleSection = (section: string) => {
     setCollapsedSections(prev => ({
@@ -112,6 +119,44 @@ export default function UserSettings() {
       toast({
         title: "Chyba při stahování žádosti",
         description: error.message || "Nepodařilo se stáhnout žádost",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Character order mutation
+  const updateCharacterOrderMutation = useMutation({
+    mutationFn: (order: number[]) => 
+      apiRequest("POST", "/api/user/character-order", { characterOrder: order }),
+    onSuccess: () => {
+      toast({
+        title: "Pořadí postav uloženo",
+        description: "Vaše nastavení pořadí postav bylo úspěšně uloženo",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Chyba při ukládání",
+        description: error.message || "Nepodařilo se uložit pořadí postav",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Highlight words mutation
+  const updateHighlightWordsMutation = useMutation({
+    mutationFn: (words: string) => 
+      apiRequest("POST", "/api/user/highlight-words", { highlightWords: words }),
+    onSuccess: () => {
+      toast({
+        title: "Zvýrazňovaná slova uložena",
+        description: "Vaše nastavení zvýrazňování slov bylo úspěšně uloženo",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Chyba při ukládání",
+        description: error.message || "Nepodařilo se uložit zvýrazňovaná slova",
         variant: "destructive",
       });
     },
@@ -1362,6 +1407,184 @@ export default function UserSettings() {
                   </p>
                 </div>
               )}
+            </CardContent>
+            )}
+          </Card>
+
+          {/* Character Order Settings */}
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center gap-2">
+                  <User className="h-5 w-5" />
+                  Pořadí postav v chatu
+                </CardTitle>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => toggleSection('characterOrder')}
+                >
+                  {collapsedSections.characterOrder ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
+                </Button>
+              </div>
+            </CardHeader>
+            {!collapsedSections.characterOrder && (
+            <CardContent>
+              <div className="space-y-4">
+                <p className="text-sm text-muted-foreground">
+                  Nastavte pořadí, ve kterém se budou vaše postavy zobrazovat v chat rozhraní při výběru postavy.
+                </p>
+                
+                {userCharacters && userCharacters.length > 0 ? (
+                  <div className="space-y-2">
+                    {userCharacters.map((character: any, index: number) => (
+                      <div key={character.id} className="flex items-center justify-between p-3 border rounded-lg">
+                        <div className="flex items-center gap-3">
+                          <CharacterAvatar character={character} size="sm" />
+                          <div>
+                            <div className="font-medium">
+                              {character.firstName} {character.middleName} {character.lastName}
+                            </div>
+                            <div className="text-sm text-muted-foreground">
+                              {character.deathDate ? 'Zemřel(a)' : 'Aktivní'}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            disabled={index === 0}
+                            onClick={() => {
+                              const newOrder = [...characterOrder];
+                              const currentIndex = newOrder.indexOf(character.id) || index;
+                              if (currentIndex > 0) {
+                                [newOrder[currentIndex], newOrder[currentIndex - 1]] = [newOrder[currentIndex - 1], newOrder[currentIndex]];
+                                setCharacterOrder(newOrder);
+                              }
+                            }}
+                          >
+                            ↑
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            disabled={index === userCharacters.length - 1}
+                            onClick={() => {
+                              const newOrder = [...characterOrder];
+                              const currentIndex = newOrder.indexOf(character.id) || index;
+                              if (currentIndex < userCharacters.length - 1) {
+                                [newOrder[currentIndex], newOrder[currentIndex + 1]] = [newOrder[currentIndex + 1], newOrder[currentIndex]];
+                                setCharacterOrder(newOrder);
+                              }
+                            }}
+                          >
+                            ↓
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                    <Button 
+                      onClick={() => updateCharacterOrderMutation.mutate(characterOrder)}
+                      disabled={updateCharacterOrderMutation.isPending}
+                      className="w-full"
+                    >
+                      {updateCharacterOrderMutation.isPending ? 'Ukládám...' : 'Uložit pořadí'}
+                    </Button>
+                  </div>
+                ) : (
+                  <p className="text-center text-muted-foreground py-4">
+                    Nemáte žádné postavy pro nastavení pořadí.
+                  </p>
+                )}
+              </div>
+            </CardContent>
+            )}
+          </Card>
+
+          {/* Highlight Words Settings */}
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center gap-2">
+                  <Eye className="h-5 w-5" />
+                  Zvýrazňování slov v chatu
+                </CardTitle>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => toggleSection('highlightWords')}
+                >
+                  {collapsedSections.highlightWords ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
+                </Button>
+              </div>
+            </CardHeader>
+            {!collapsedSections.highlightWords && (
+            <CardContent>
+              <div className="space-y-4">
+                <p className="text-sm text-muted-foreground">
+                  Zadejte slova oddělená mezerami, která chcete zvýraznit v chat zprávách. Jména postav se zvýrazňují automaticky.
+                </p>
+                
+                <div className="space-y-3">
+                  <div>
+                    <Label htmlFor="highlightWords">Slova k zvýraznění</Label>
+                    <Input
+                      id="highlightWords"
+                      value={highlightWords}
+                      onChange={(e) => setHighlightWords(e.target.value)}
+                      placeholder="např: magie kouzlo ministerstvo"
+                      className="bg-background text-foreground"
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Slova oddělujte mezerami. Rozlišují se malá a velká písmena.
+                    </p>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="highlightColor">Barva zvýraznění</Label>
+                    <select
+                      id="highlightColor"
+                      value={highlightColor}
+                      onChange={(e) => setHighlightColor(e.target.value)}
+                      className="w-full p-2 border rounded-md bg-background text-foreground"
+                    >
+                      <option value="yellow">Žlutá</option>
+                      <option value="purple">Fialová</option>
+                      <option value="blue">Modrá</option>
+                      <option value="green">Zelená</option>
+                      <option value="red">Červená</option>
+                      <option value="pink">Růžová</option>
+                    </select>
+                  </div>
+
+                  <div className="p-3 border rounded-lg bg-muted/50">
+                    <p className="text-sm font-medium mb-2">Náhled:</p>
+                    <div className="text-sm">
+                      Toto je ukázka textu s <span 
+                        className={`px-1 rounded ${
+                          highlightColor === 'yellow' ? 'bg-yellow-200 text-yellow-900' :
+                          highlightColor === 'purple' ? 'bg-purple-200 text-purple-900' :
+                          highlightColor === 'blue' ? 'bg-blue-200 text-blue-900' :
+                          highlightColor === 'green' ? 'bg-green-200 text-green-900' :
+                          highlightColor === 'red' ? 'bg-red-200 text-red-900' :
+                          'bg-pink-200 text-pink-900'
+                        }`}
+                      >
+                        zvýrazněným slovem
+                      </span> v chat zprávě.
+                    </div>
+                  </div>
+
+                  <Button 
+                    onClick={() => updateHighlightWordsMutation.mutate(highlightWords)}
+                    disabled={updateHighlightWordsMutation.isPending}
+                    className="w-full"
+                  >
+                    {updateHighlightWordsMutation.isPending ? 'Ukládám...' : 'Uložit nastavení'}
+                  </Button>
+                </div>
+              </div>
             </CardContent>
             )}
           </Card>
