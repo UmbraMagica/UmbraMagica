@@ -321,7 +321,7 @@ export default function Home() {
                         {unreadOwlPostData?.count > 0 && (
                           <Badge 
                             variant="destructive" 
-                            className="absolute -top-2 -right-2 h-5 w-5 p-0 text-xs flex items-center justify-center rounded-full"
+                            className="absolute -top-1 -right-3 h-4 w-4 p-0 text-xs flex items-center justify-center rounded-full"
                           >
                             {unreadOwlPostData.count > 99 ? '99+' : unreadOwlPostData.count}
                           </Badge>
