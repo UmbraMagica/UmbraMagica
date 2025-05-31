@@ -39,19 +39,15 @@ export default function CharacterEdit() {
 
   const isAdmin = user?.role === 'admin';
 
-  // Fetch the main character first to get its ID
-  const { data: mainCharacter } = useQuery<any>({
-    queryKey: ["/api/characters/main"],
+  // Get user's characters to find first alive character
+  const { data: userCharacters = [] } = useQuery<any[]>({
+    queryKey: ["/api/characters"],
     enabled: !!user,
   });
 
-  // Then fetch the specific character data directly
-  const { data: characterData } = useQuery<any>({
-    queryKey: ["/api/characters", mainCharacter?.id],
-    enabled: !!mainCharacter?.id,
-  });
-
-  const primaryCharacter = characterData || mainCharacter;
+  // Use first alive character as default
+  const firstAliveCharacter = userCharacters.find((char: any) => !char.deathDate);
+  const primaryCharacter = firstAliveCharacter;
 
   // Regular user form (only school and description)
   const userForm = useForm<UserEditForm>({
