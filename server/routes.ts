@@ -1084,6 +1084,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Verify room password
+  app.post("/api/chat/rooms/:roomId/verify-password", requireAuth, async (req, res) => {
+    try {
+      const roomId = parseInt(req.params.roomId);
+      const { password } = req.body;
+
+      const room = await storage.getChatRoom(roomId);
+      if (!room) {
+        return res.status(404).json({ message: "Room not found" });
+      }
+
+      if (room.isPublic) {
+        return res.json({ success: true });
+      }
+
+      if (room.password === password) {
+        return res.json({ success: true });
+      } else {
+        return res.json({ success: false });
+      }
+    } catch (error) {
+      console.error("Error verifying room password:", error);
+      res.status(500).json({ message: "Failed to verify password" });
+    }
+  });
+
   // Get user's own characters
   app.get("/api/characters", requireAuth, async (req, res) => {
     try {

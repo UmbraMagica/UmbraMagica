@@ -1,12 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ArrowLeft, Users, MapPin, ChevronDown, ChevronRight } from "lucide-react";
+import { ArrowLeft, Users, MapPin, ChevronDown, ChevronRight, Lock } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
 
 interface ChatCategory {
   id: number;
@@ -29,39 +33,85 @@ interface ChatRoom {
 
 function SubCategoryCollapsible({ subCategory }: { subCategory: ChatCategory }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [, setLocation] = useLocation();
+  const { toast } = useToast();
+  const [passwordDialog, setPasswordDialog] = useState<{ isOpen: boolean; roomId: number | null }>({
+    isOpen: false,
+    roomId: null
+  });
+  const [password, setPassword] = useState("");
+
+  const handleRoomClick = async (room: ChatRoom) => {
+    if (room.isPublic) {
+      setLocation(`/chat/room/${room.id}`);
+    } else {
+      setPasswordDialog({ isOpen: true, roomId: room.id });
+    }
+  };
+
+  const handlePasswordSubmit = async () => {
+    if (!passwordDialog.roomId) return;
+
+    try {
+      const response = await apiRequest("POST", `/api/chat/rooms/${passwordDialog.roomId}/verify-password`, {
+        password: password
+      });
+
+      if (response && response.success) {
+        setPasswordDialog({ isOpen: false, roomId: null });
+        setPassword("");
+        setLocation(`/chat/room/${passwordDialog.roomId}`);
+      } else {
+        toast({
+          title: "Nesprávné heslo",
+          description: "Zadané heslo není správné",
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Chyba",
+        description: "Nepodařilo se ověřit heslo",
+        variant: "destructive"
+      });
+    }
+  };
 
   return (
-    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-      <CollapsibleTrigger asChild>
-        <Button 
-          variant="ghost" 
-          className="w-full justify-between p-3 h-auto border rounded-lg hover:bg-muted/50"
-        >
-          <div className="text-left">
-            <h5 className="font-medium">{subCategory.name}</h5>
-            {subCategory.description && (
-              <p className="text-sm text-muted-foreground mt-1">{subCategory.description}</p>
+    <>
+      <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+        <CollapsibleTrigger asChild>
+          <Button 
+            variant="ghost" 
+            className="w-full justify-between p-3 h-auto border rounded-lg hover:bg-muted/50"
+          >
+            <div className="text-left">
+              <h5 className="font-medium">{subCategory.name}</h5>
+              {subCategory.description && (
+                <p className="text-sm text-muted-foreground mt-1">{subCategory.description}</p>
+              )}
+            </div>
+            {isOpen ? (
+              <ChevronDown className="h-4 w-4 shrink-0" />
+            ) : (
+              <ChevronRight className="h-4 w-4 shrink-0" />
             )}
-          </div>
-          {isOpen ? (
-            <ChevronDown className="h-4 w-4 shrink-0" />
-          ) : (
-            <ChevronRight className="h-4 w-4 shrink-0" />
-          )}
-        </Button>
-      </CollapsibleTrigger>
-      <CollapsibleContent className="mt-2 ml-4 space-y-2">
-        {subCategory.rooms.map((room) => (
-          <Link key={room.id} href={`/chat/room/${room.id}`}>
+          </Button>
+        </CollapsibleTrigger>
+        <CollapsibleContent className="mt-2 ml-4 space-y-2">
+          {subCategory.rooms.map((room) => (
             <Button 
+              key={room.id}
               variant="outline" 
               size="sm"
               className="w-full justify-start h-auto p-3"
+              onClick={() => handleRoomClick(room)}
             >
               <div className="text-left">
                 <div className="flex items-center gap-2">
                   <Users className="h-4 w-4" />
                   <span className="font-medium">{room.name}</span>
+                  {!room.isPublic && <Lock className="h-3 w-3 text-yellow-600" />}
                 </div>
                 {room.description && (
                   <p className="text-sm text-muted-foreground mt-1">
@@ -70,10 +120,48 @@ function SubCategoryCollapsible({ subCategory }: { subCategory: ChatCategory }) 
                 )}
               </div>
             </Button>
-          </Link>
-        ))}
-      </CollapsibleContent>
-    </Collapsible>
+          ))}
+        </CollapsibleContent>
+      </Collapsible>
+
+      <Dialog open={passwordDialog.isOpen} onOpenChange={(open) => {
+        if (!open) {
+          setPasswordDialog({ isOpen: false, roomId: null });
+          setPassword("");
+        }
+      }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Zadejte heslo místnosti</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <Input
+              type="password"
+              placeholder="Heslo místnosti"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              onKeyPress={(e) => {
+                if (e.key === "Enter") {
+                  handlePasswordSubmit();
+                }
+              }}
+            />
+            <div className="flex gap-2">
+              <Button onClick={handlePasswordSubmit} className="flex-1">
+                Vstoupit
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={() => setPasswordDialog({ isOpen: false, roomId: null })}
+                className="flex-1"
+              >
+                Zrušit
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
 
