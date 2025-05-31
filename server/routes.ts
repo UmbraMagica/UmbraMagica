@@ -2154,6 +2154,23 @@ Správa ubytování`
     }
   });
 
+  app.post("/api/admin/housing-requests/:requestId/return", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const requestId = parseInt(req.params.requestId);
+      const { reviewNote } = req.body;
+
+      if (!reviewNote) {
+        return res.status(400).json({ message: "Review note is required for returning request" });
+      }
+
+      const request = await storage.returnHousingRequest(requestId, req.session.userId!, reviewNote);
+      res.json(request);
+    } catch (error) {
+      console.error("Error returning housing request:", error);
+      res.status(500).json({ message: "Failed to return housing request" });
+    }
+  });
+
   const httpServer = createServer(app);
   
   // WebSocket server for real-time chat

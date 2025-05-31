@@ -1745,6 +1745,41 @@ export class DatabaseStorage implements IStorage {
     return updatedRequest;
   }
 
+  async returnHousingRequest(requestId: number, adminId: number, reviewNote: string): Promise<HousingRequest> {
+    // First, get the housing request to access user information
+    const [request] = await db
+      .select()
+      .from(housingRequests)
+      .where(eq(housingRequests.id, requestId));
+
+    if (!request) {
+      throw new Error('Housing request not found');
+    }
+
+    // Update the housing request to returned status (pending for revision)
+    const [updatedRequest] = await db
+      .update(housingRequests)
+      .set({
+        status: 'returned',
+        reviewNote,
+        reviewedAt: new Date(),
+        reviewedBy: adminId,
+      })
+      .where(eq(housingRequests.id, requestId))
+      .returning();
+
+    // Log admin activity
+    await this.logAdminActivity({
+      adminId,
+      action: "return_housing_request",
+      targetUserId: request.userId,
+      targetCharacterId: request.characterId,
+      details: `Returned housing request for ${request.requestType} for revision. Note: ${reviewNote}`,
+    });
+
+    return updatedRequest;
+  }
+
   // Owl Post Messages operations
   async sendOwlPostMessage(message: InsertOwlPostMessage): Promise<OwlPostMessage> {
     const [newMessage] = await db.insert(owlPostMessages).values(message).returning();
