@@ -295,6 +295,14 @@ export class DatabaseStorage implements IStorage {
     return character;
   }
 
+  async getCharacterByName(firstName: string, lastName: string): Promise<Character | undefined> {
+    const [character] = await db
+      .select()
+      .from(characters)
+      .where(and(eq(characters.firstName, firstName), eq(characters.lastName, lastName)));
+    return character;
+  }
+
   // Authentication and invite codes remain same...
   async getInviteCode(code: string): Promise<InviteCode | undefined> {
     const [inviteCode] = await db.select().from(inviteCodes).where(eq(inviteCodes.code, code));

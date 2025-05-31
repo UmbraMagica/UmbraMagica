@@ -1949,6 +1949,49 @@ export async function registerRoutes(app: Express): Promise<Server> {
           "Automaticky schváleno - ubytovna"
         );
         
+        // Vytvořit systémovou postavu "Správa ubytování" pokud neexistuje
+        let housingAdminCharacter = await storage.getCharacterByName("Správa", "ubytování");
+        
+        if (!housingAdminCharacter) {
+          // Vytvořit systémovou postavu
+          housingAdminCharacter = await storage.createCharacter({
+            userId: req.session.userId!, // Dočasně přiřadit k current user
+            firstName: "Správa",
+            lastName: "ubytování",
+            birthDate: "1900-01-01",
+            description: "Systémová postava pro správu ubytování",
+            school: "",
+            residence: "Londýn - Ministerstvo kouzel"
+          });
+        }
+        
+        // Zaslat automatickou zprávu do soví pošty
+        await storage.sendOwlPostMessage({
+          senderCharacterId: housingAdminCharacter!.id,
+          recipientCharacterId: requestData.characterId,
+          subject: "Přidělení pokoje na ubytovně",
+          content: `Vážená čarodějko/Vážený čaroději,
+
+s potěšením Vám oznamujeme, že Vaše žádost o pokoj na ubytovně byla schválena.
+
+PODROBNOSTI UBYTOVÁNÍ:
+📍 Adresa: ${approvedRequest.assignedAddress}
+🏠 Typ: Pokoj na ubytovně
+📅 Datum přidělení: ${new Date().toLocaleDateString('cs-CZ')}
+
+Váš pokoj je nyní připraven k nastěhování. Klíče si můžete vyzvednout u správce ubytovny.
+
+DŮLEŽITÉ INFORMACE:
+• Pokoj je určen pro jednu osobu
+• Dodržujte prosím domácí řád ubytovny
+• V případě jakýchkoliv problémů se obraťte na správu ubytování
+
+Přejeme Vám příjemné bydlení!
+
+S pozdravem,
+Správa ubytování`
+        });
+        
         res.json(approvedRequest);
       } else {
         // Normální proces pro ostatní typy bydlení
