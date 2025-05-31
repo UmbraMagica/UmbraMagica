@@ -945,9 +945,10 @@ export default function UserSettings() {
                             className="w-full p-2 border rounded-md"
                           >
                             <option value="">Vyberte typ</option>
+                            <option value="dormitory">Ubytovna</option>
                             <option value="apartment">Byt</option>
                             <option value="house">Dům</option>
-                            <option value="dormitory">Kolej</option>
+                            <option value="mansion">Sídlo</option>
                           </select>
                           {housingForm.formState.errors.requestType && (
                             <p className="text-sm text-destructive">{housingForm.formState.errors.requestType.message}</p>
@@ -960,6 +961,25 @@ export default function UserSettings() {
                             id="size"
                             {...housingForm.register("size")}
                             placeholder="např. 2+1, malý dům, jednolůžkový pokoj"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="housingName">Název bydlení</Label>
+                          <Input
+                            id="housingName"
+                            {...housingForm.register("housingName")}
+                            placeholder="např. Villa Rosewood, Apartmán u Zlaté Konvice"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="housingPassword">Heslo pro vstup</Label>
+                          <Input
+                            id="housingPassword"
+                            {...housingForm.register("housingPassword")}
+                            placeholder="heslo pro přístup do soukromé místnosti"
                           />
                         </div>
                       </div>

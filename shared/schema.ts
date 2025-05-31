@@ -347,12 +347,14 @@ export const housingRequests = pgTable("housing_requests", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").references(() => users.id).notNull(),
   characterId: integer("character_id").references(() => characters.id).notNull(),
-  requestType: varchar("request_type", { length: 20 }).notNull(), // "apartment", "house", "dormitory"
+  requestType: varchar("request_type", { length: 20 }).notNull(), // "apartment", "house", "dormitory", "mansion"
   size: varchar("size", { length: 50 }), // velikost bytu/domu
   location: varchar("location", { length: 20 }).notNull(), // "area" nebo "custom"
   customLocation: text("custom_location"), // vlastní adresa při volbě "custom"
   selectedArea: varchar("selected_area", { length: 100 }), // vybraná oblast při volbě "area"
   description: text("description").notNull(), // popis žádosti
+  housingName: varchar("housing_name", { length: 100 }), // název bydlení
+  housingPassword: varchar("housing_password", { length: 100 }), // heslo pro vstup
   status: varchar("status", { length: 20 }).default("pending").notNull(), // "pending", "approved", "rejected"
   assignedAddress: text("assigned_address"), // přidělená adresa po schválení
   reviewedBy: integer("reviewed_by").references(() => users.id),
@@ -476,6 +478,8 @@ export const insertHousingRequestSchema = createInsertSchema(housingRequests).pi
   customLocation: true,
   selectedArea: true,
   description: true,
+  housingName: true,
+  housingPassword: true,
 });
 
 export const registrationSchema = z.object({

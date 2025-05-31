@@ -1940,13 +1940,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Housing request endpoints
   app.post("/api/housing-requests", requireAuth, async (req, res) => {
     try {
-      const validatedRequest = insertHousingRequestSchema.parse({
-        ...req.body,
-        userId: req.session.userId
-      });
-
-      const request = await storage.createHousingRequest(validatedRequest);
-      res.json(request);
+      const requestData = insertHousingRequestSchema.parse(req.body);
+      
+      // Implementace automatického schvalování pro ubytovny
+      if (requestData.requestType === 'dormitory') {
+        // Automaticky schválit ubytovnu s předem stanovenou adresou
+        const autoApprovedRequest = await storage.createHousingRequest({
+          ...requestData,
+          userId: req.session.userId!
+        });
+        
+        // Okamžitě schválit a přidělit adresu
+        const approvedRequest = await storage.approveHousingRequest(
+          autoApprovedRequest.id,
+          req.session.userId!, // Automatické schválení systémem
+          "Ubytovna U starého Šeptáka",
+          "Automaticky schváleno - ubytovna"
+        );
+        
+        res.json(approvedRequest);
+      } else {
+        // Normální proces pro ostatní typy bydlení
+        const request = await storage.createHousingRequest({
+          ...requestData,
+          userId: req.session.userId!
+        });
+        res.json(request);
+      }
     } catch (error) {
       console.error("Error creating housing request:", error);
       res.status(500).json({ message: "Failed to create housing request" });
