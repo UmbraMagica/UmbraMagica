@@ -290,7 +290,24 @@ export default function UserSettings() {
   };
 
   const onHousingSubmit = (data: HousingRequestForm) => {
-    createHousingRequestMutation.mutate(data);
+    if (!user) return;
+    
+    // Pro ubytovnu automaticky nastavíme požadované hodnoty
+    if (housingType === 'dormitory') {
+      createHousingRequestMutation.mutate({
+        ...data,
+        userId: user.id,
+        requestType: 'dormitory',
+        size: 'jednolůžkový pokoj',
+        location: 'Ubytovna U starého Šeptáka',
+        description: 'Žádost o pokoj na ubytovně',
+      });
+    } else {
+      createHousingRequestMutation.mutate({
+        ...data,
+        userId: user.id,
+      });
+    }
   };
 
   // Validation functions
