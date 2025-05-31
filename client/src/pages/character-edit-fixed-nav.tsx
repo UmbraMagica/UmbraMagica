@@ -277,14 +277,14 @@ export default function CharacterEditFixedNav() {
                   <div className="space-y-2">
                     <Label htmlFor="school" className="text-foreground">Škola</Label>
                     <Select
-                      value={userForm.watch("school") || ""}
-                      onValueChange={(value) => userForm.setValue("school", value === "" ? "" : value)}
+                      value={userForm.watch("school") || "none"}
+                      onValueChange={(value) => userForm.setValue("school", value === "none" ? "" : value)}
                     >
                       <SelectTrigger className="bg-muted border-border text-foreground">
                         <SelectValue placeholder="Vyberte školu (volitelné)" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">Žádná škola</SelectItem>
+                        <SelectItem value="none">Žádná škola</SelectItem>
                         {MAGICAL_SCHOOLS.map((school) => (
                           <SelectItem key={school} value={school}>
                             {school}
