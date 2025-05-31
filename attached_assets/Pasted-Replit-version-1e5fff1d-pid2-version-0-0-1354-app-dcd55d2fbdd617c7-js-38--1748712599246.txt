@@ -1,0 +1,80 @@
+Replit version 1e5fff1d, pid2 version 0.0.1354
+_app-dcd55d2fbdd617c7.js:38 
+      /////////////////////
+   ///////////////////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////        Curious and driven?
+  ///////////////@@@@@@@///////        Work with us!
+  ///////////////@@@@@@@///////
+  ///////////////@@@@@@@///////        https://join.replit.com/hack.with.us
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@#//////////////
+   ///////////////////////////
+      /////////////////////
+      
+_app-dcd55d2fbdd617c7.js:38 [LaunchDarkly] LaunchDarkly client initialized
+/~:1 Banner not shown: beforeinstallpromptevent.preventDefault() called. The page must call beforeinstallpromptevent.prompt() to show the banner.
+49Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.Understand this error
+framework-41f37350d978dfd3.js:1 Unrecognized feature: 'ambient-light-sensor'.
+_ @ framework-41f37350d978dfd3.js:1Understand this warning
+framework-41f37350d978dfd3.js:1 Unrecognized feature: 'battery'.
+_ @ framework-41f37350d978dfd3.js:1Understand this warning
+framework-41f37350d978dfd3.js:1 Unrecognized feature: 'execution-while-not-rendered'.
+_ @ framework-41f37350d978dfd3.js:1Understand this warning
+framework-41f37350d978dfd3.js:1 Unrecognized feature: 'execution-while-out-of-viewport'.
+_ @ framework-41f37350d978dfd3.js:1Understand this warning
+framework-41f37350d978dfd3.js:1 Unrecognized feature: 'layout-animations'.
+_ @ framework-41f37350d978dfd3.js:1Understand this warning
+framework-41f37350d978dfd3.js:1 Unrecognized feature: 'legacy-image-formats'.
+_ @ framework-41f37350d978dfd3.js:1Understand this warning
+framework-41f37350d978dfd3.js:1 Unrecognized feature: 'navigation-override'.
+_ @ framework-41f37350d978dfd3.js:1Understand this warning
+framework-41f37350d978dfd3.js:1 Unrecognized feature: 'oversized-images'.
+_ @ framework-41f37350d978dfd3.js:1Understand this warning
+framework-41f37350d978dfd3.js:1 Unrecognized feature: 'publickey-credentials'.
+_ @ framework-41f37350d978dfd3.js:1Understand this warning
+framework-41f37350d978dfd3.js:1 Unrecognized feature: 'speaker-selection'.
+_ @ framework-41f37350d978dfd3.js:1Understand this warning
+framework-41f37350d978dfd3.js:1 Unrecognized feature: 'unoptimized-images'.
+_ @ framework-41f37350d978dfd3.js:1Understand this warning
+framework-41f37350d978dfd3.js:1 Unrecognized feature: 'unsized-media'.
+_ @ framework-41f37350d978dfd3.js:1Understand this warning
+framework-41f37350d978dfd3.js:1 Unrecognized feature: 'pointer-lock'.
+_ @ framework-41f37350d978dfd3.js:1Understand this warning
+framework-41f37350d978dfd3.js:1 Allow attribute will take precedence over 'allowfullscreen'.
+_ @ framework-41f37350d978dfd3.js:1Understand this warning
+framework-41f37350d978dfd3.js:1 Allow attribute will take precedence over 'allowpaymentrequest'.
+_ @ framework-41f37350d978dfd3.js:1Understand this warning
+_app-dcd55d2fbdd617c7.js:38 task queue exceeded allotted deadline by 324ms
+(anonymous) @ _app-dcd55d2fbdd617c7.js:38Understand this warning
+_app-dcd55d2fbdd617c7.js:38 task queue exceeded allotted deadline by 202ms
+(anonymous) @ _app-dcd55d2fbdd617c7.js:38Understand this warning
+_app-dcd55d2fbdd617c7.js:38 task queue exceeded allotted deadline by 291ms
+(anonymous) @ _app-dcd55d2fbdd617c7.js:38Understand this warning
+_app-dcd55d2fbdd617c7.js:38 task queue exceeded allotted deadline by 95ms
+(anonymous) @ _app-dcd55d2fbdd617c7.js:38Understand this warning
+_app-dcd55d2fbdd617c7.js:38 task queue exceeded allotted deadline by 256ms
+(anonymous) @ _app-dcd55d2fbdd617c7.js:38Understand this warning
+_app-dcd55d2fbdd617c7.js:38 task queue exceeded allotted deadline by 234ms
+(anonymous) @ _app-dcd55d2fbdd617c7.js:38Understand this warning
+stallwart.build.js:1 stallwart: failed ping 1
+/graphql:1 
+            
+            
+           Failed to load resource: net::ERR_CONNECTION_CLOSEDUnderstand this error
+workspace_iframe.html:32 Unrecognized feature: 'ambient-light-sensor'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'battery'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-not-rendered'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-out-of-viewport'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'layout-animations'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'legacy-image-formats'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'navigation-override'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'oversized-images'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'publickey-credentials'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'speaker-selection'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'unoptimized-images'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'unsized-media'.Understand this warning
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowfullscreen'.Understand this warning
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowpaymentrequest'.

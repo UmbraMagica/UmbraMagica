@@ -314,6 +314,33 @@ export default function AdminClean() {
     },
   });
 
+  const adjustInfluenceWithHistory = useMutation({
+    mutationFn: async ({ changeType, points, reason }: { changeType: 'grindelwald' | 'dumbledore', points: number, reason: string }) => {
+      const response = await fetch('/api/admin/influence-bar/adjust-with-history', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ changeType, points, reason }),
+      });
+      if (!response.ok) throw new Error('Failed to adjust influence with history');
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/influence-bar'] });
+      setInfluenceDialog({ open: false, side: 'grindelwald', points: 0, reason: '' });
+      toast({
+        title: "Úspěch",
+        description: "Vliv byl úspěšně upraven a zaznamenán do historie",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Chyba",
+        description: "Nepodařilo se upravit vliv",
+        variant: "destructive",
+      });
+    },
+  });
+
   // Helper functions
   const handleCreateInviteCode = (e: React.FormEvent) => {
     e.preventDefault();
