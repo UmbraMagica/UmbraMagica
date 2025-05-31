@@ -10,6 +10,14 @@ import connectPg from "connect-pg-simple";
 import multer from "multer";
 import sharp from "sharp";
 
+// Game date utility function
+const GAME_YEAR = 1926;
+
+function getCurrentGameDate(): string {
+  const currentDate = new Date();
+  return `${currentDate.getDate()}. ${currentDate.toLocaleDateString('cs-CZ', { month: 'long' })} ${GAME_YEAR}`;
+}
+
 declare module "express-session" {
   interface SessionData {
     userId?: number;
@@ -2033,7 +2041,7 @@ s potěšením Vám oznamujeme, že Vaše žádost o pokoj na ubytovně byla sch
 PODROBNOSTI UBYTOVÁNÍ:
 📍 Adresa: ${approvedRequest.assignedAddress}
 🏠 Typ: Pokoj na ubytovně
-📅 Datum přidělení: 15. prosince 1926
+📅 Datum přidělení: ${getCurrentGameDate()}
 
 Váš pokoj je nyní připraven k nastěhování. Klíče si můžete vyzvednout u správce ubytovny.
 

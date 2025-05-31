@@ -118,6 +118,12 @@ export default function UserSettings() {
     enabled: !!user,
   });
 
+  // Fetch chat categories for location selection
+  const { data: chatCategories = [] } = useQuery({
+    queryKey: ["/api/chat/categories"],
+    enabled: !!user && housingType === 'custom' && locationType === 'area',
+  });
+
   // Fetch user's characters (filter only alive characters)
   const { data: allUserCharacters = [] } = useQuery<any[]>({
     queryKey: ["/api/characters"],
@@ -1128,19 +1134,26 @@ export default function UserSettings() {
                                 className="w-full p-2 border rounded-md bg-background text-foreground"
                               >
                                 <option value="">Vyberte oblast</option>
-                                <option value="Bradavice a okolí">Bradavice a okolí</option>
-                                <option value="Londýn - centrum">Londýn - centrum</option>
-                                <option value="Londýn - předměstí">Londýn - předměstí</option>
-                                <option value="Diagon Alley">Diagon Alley</option>
-                                <option value="Knockturn Alley">Knockturn Alley</option>
-                                <option value="Hogsmeade">Hogsmeade</option>
-                                <option value="Godric's Hollow">Godric's Hollow</option>
-                                <option value="Little Whinging">Little Whinging</option>
-                                <option value="Grimmauld Place a okolí">Grimmauld Place a okolí</option>
-                                <option value="Venkov - Anglie">Venkov - Anglie</option>
-                                <option value="Skotsko">Skotsko</option>
-                                <option value="Wales">Wales</option>
-                                <option value="Irsko">Irsko</option>
+                                {chatCategories && chatCategories.length > 0 ? (
+                                  chatCategories.map((category: any) => (
+                                    <optgroup key={category.id} label={category.name}>
+                                      {category.children && category.children.map((subcategory: any) => (
+                                        <option key={subcategory.id} value={subcategory.name}>
+                                          {subcategory.name}
+                                        </option>
+                                      ))}
+                                    </optgroup>
+                                  ))
+                                ) : (
+                                  <>
+                                    <option value="Kouzelnický Londýn">Kouzelnický Londýn</option>
+                                    <option value="Příčná ulice">Příčná ulice</option>
+                                    <option value="Obrtlá ulice">Obrtlá ulice</option>
+                                    <option value="Ministerstvo kouzel">Ministerstvo kouzel</option>
+                                    <option value="Nemocnice u sv. Munga">Nemocnice u sv. Munga</option>
+                                    <option value="Katakomby">Katakomby</option>
+                                  </>
+                                )}
                               </select>
                             </div>
                           )}
