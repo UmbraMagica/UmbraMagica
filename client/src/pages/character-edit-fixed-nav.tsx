@@ -76,6 +76,8 @@ export default function CharacterEditFixedNav() {
       userForm.reset({
         school: primaryCharacter.school || "",
         description: primaryCharacter.description || "",
+        height: primaryCharacter.height || undefined,
+        weight: primaryCharacter.weight || undefined,
       });
       
       adminForm.reset({
@@ -85,6 +87,8 @@ export default function CharacterEditFixedNav() {
         birthDate: primaryCharacter.birthDate || "",
         school: primaryCharacter.school || "",
         description: primaryCharacter.description || "",
+        height: primaryCharacter.height || undefined,
+        weight: primaryCharacter.weight || undefined,
       });
     }
   }, [primaryCharacter, userForm, adminForm]);
@@ -264,6 +268,48 @@ export default function CharacterEditFixedNav() {
                       placeholder="Zadejte název školy (volitelné)"
                       className="bg-muted border-border text-foreground"
                     />
+                  </div>
+
+                  {/* Fyzické vlastnosti */}
+                  <div className="space-y-4">
+                    <h4 className="font-medium text-foreground">Fyzické vlastnosti</h4>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="height" className="text-foreground">
+                          Výška (cm)
+                          {primaryCharacter?.heightSetAt && (
+                            <span className="text-xs text-amber-400 ml-2">(pouze jednou editovatelné)</span>
+                          )}
+                        </Label>
+                        <Input
+                          id="height"
+                          type="number"
+                          min="120"
+                          max="250"
+                          {...userForm.register("height", { valueAsNumber: true })}
+                          placeholder="např. 175"
+                          disabled={!!primaryCharacter?.heightSetAt}
+                          className="bg-muted border-border text-foreground disabled:opacity-50"
+                        />
+                        {primaryCharacter?.heightSetAt && (
+                          <p className="text-xs text-muted-foreground">
+                            Výška byla nastavena jednou a nelze ji změnit
+                          </p>
+                        )}
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="weight" className="text-foreground">Váha (kg)</Label>
+                        <Input
+                          id="weight"
+                          type="number"
+                          min="30"
+                          max="300"
+                          {...userForm.register("weight", { valueAsNumber: true })}
+                          placeholder="např. 70"
+                          className="bg-muted border-border text-foreground"
+                        />
+                      </div>
+                    </div>
                   </div>
 
                   <div className="space-y-2">

@@ -508,7 +508,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (character.heightSetAt) {
           return res.status(400).json({ message: "Výška může být nastavena pouze jednou" });
         }
-        validatedData.heightSetAt = new Date();
+        // Add heightSetAt to the update data
+        (validatedData as any).heightSetAt = new Date();
       }
       
       const updatedCharacter = await storage.updateCharacter(characterId, validatedData);
