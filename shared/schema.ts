@@ -60,6 +60,7 @@ export const characters = pgTable("characters", {
   weight: integer("weight"), // váha v kg
   heightSetAt: timestamp("height_set_at"), // kdy byla výška nastavena (pro jednoráz editaci)
   schoolSetAt: timestamp("school_set_at"), // kdy byla škola nastavena (pro jednoráz editaci)
+  residence: text("residence"), // bydliště postavy
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
@@ -341,6 +342,25 @@ export const influenceHistory = pgTable("influence_history", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+// Housing requests table
+export const housingRequests = pgTable("housing_requests", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  characterId: integer("character_id").references(() => characters.id).notNull(),
+  requestType: varchar("request_type", { length: 20 }).notNull(), // "apartment", "house", "dormitory"
+  size: varchar("size", { length: 50 }), // velikost bytu/domu
+  location: varchar("location", { length: 20 }).notNull(), // "area" nebo "custom"
+  customLocation: text("custom_location"), // vlastní adresa při volbě "custom"
+  selectedArea: varchar("selected_area", { length: 100 }), // vybraná oblast při volbě "area"
+  description: text("description").notNull(), // popis žádosti
+  status: varchar("status", { length: 20 }).default("pending").notNull(), // "pending", "approved", "rejected"
+  assignedAddress: text("assigned_address"), // přidělená adresa po schválení
+  reviewedBy: integer("reviewed_by").references(() => users.id),
+  reviewNote: text("review_note"),
+  reviewedAt: timestamp("reviewed_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 // Inventory relations
 export const characterInventoryRelations = relations(characterInventory, ({ one }) => ({
   character: one(characters, {
@@ -361,6 +381,22 @@ export const characterJournalRelations = relations(characterJournal, ({ one }) =
 export const influenceHistoryRelations = relations(influenceHistory, ({ one }) => ({
   admin: one(users, {
     fields: [influenceHistory.adminId],
+    references: [users.id],
+  }),
+}));
+
+// Housing requests relations
+export const housingRequestsRelations = relations(housingRequests, ({ one }) => ({
+  user: one(users, {
+    fields: [housingRequests.userId],
+    references: [users.id],
+  }),
+  character: one(characters, {
+    fields: [housingRequests.characterId],
+    references: [characters.id],
+  }),
+  reviewedBy: one(users, {
+    fields: [housingRequests.reviewedBy],
     references: [users.id],
   }),
 }));
@@ -430,6 +466,16 @@ export const insertInfluenceHistorySchema = createInsertSchema(influenceHistory)
   newTotal: true,
   reason: true,
   adminId: true,
+});
+
+export const insertHousingRequestSchema = createInsertSchema(housingRequests).pick({
+  characterId: true,
+  requestType: true,
+  size: true,
+  location: true,
+  customLocation: true,
+  selectedArea: true,
+  description: true,
 });
 
 export const registrationSchema = z.object({
@@ -607,3 +653,7 @@ export type Wand = typeof wands.$inferSelect;
 export type InsertWand = typeof wands.$inferInsert;
 export type InfluenceBar = typeof influenceBar.$inferSelect;
 export type InsertInfluenceBar = typeof influenceBar.$inferInsert;
+export type InfluenceHistory = typeof influenceHistory.$inferSelect;
+export type InsertInfluenceHistory = typeof influenceHistory.$inferInsert;
+export type HousingRequest = typeof housingRequests.$inferSelect;
+export type InsertHousingRequest = typeof housingRequests.$inferInsert;
