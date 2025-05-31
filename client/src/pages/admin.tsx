@@ -162,6 +162,43 @@ export default function AdminClean() {
     },
   });
 
+  const approveCharacterRequestMutation = useMutation({
+    mutationFn: async (requestId: number) => {
+      const response = await fetch(`/api/admin/character-requests/${requestId}/approve`, {
+        method: 'POST',
+      });
+      if (!response.ok) throw new Error('Failed to approve character request');
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({ title: "Úspěch", description: "Žádost o postavu byla schválena" });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/character-requests'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/characters/all'] });
+    },
+    onError: () => {
+      toast({ title: "Chyba", description: "Nepodařilo se schválit žádost", variant: "destructive" });
+    },
+  });
+
+  const rejectCharacterRequestMutation = useMutation({
+    mutationFn: async ({ requestId, reason }: { requestId: number, reason: string }) => {
+      const response = await fetch(`/api/admin/character-requests/${requestId}/reject`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reviewNote: reason }),
+      });
+      if (!response.ok) throw new Error('Failed to reject character request');
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({ title: "Úspěch", description: "Žádost o postavu byla zamítnuta" });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/character-requests'] });
+    },
+    onError: () => {
+      toast({ title: "Chyba", description: "Nepodařilo se zamítnout žádost", variant: "destructive" });
+    },
+  });
+
   // Helper functions
   const handleCreateInviteCode = (e: React.FormEvent) => {
     e.preventDefault();
@@ -260,9 +297,10 @@ export default function AdminClean() {
                 variant="ghost" 
                 size="sm" 
                 onClick={() => setLocation('/')}
-                className="text-muted-foreground hover:text-accent"
+                className="text-muted-foreground hover:text-accent flex items-center gap-2"
               >
                 <Home className="h-4 w-4" />
+                <span className="hidden sm:inline">Hlavní stránka</span>
               </Button>
               <Button 
                 variant="ghost" 
@@ -548,14 +586,6 @@ export default function AdminClean() {
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <Button
-                    onClick={() => setLocation('/')}
-                    variant="outline"
-                    size="sm"
-                  >
-                    <Home className="mr-2 h-4 w-4" />
-                    Hlavní stránka
-                  </Button>
                   <Button
                     onClick={() => setLocation('/admin/archive')}
                     variant="outline"
@@ -879,14 +909,34 @@ export default function AdminClean() {
                         <Button
                           size="sm"
                           className="bg-green-600 hover:bg-green-700"
-                          onClick={() => {/* Handle approve */}}
+                          onClick={() => {
+                            if (confirm(`Opravdu chcete schválit žádost o postavu ${request.firstName} ${request.middleName ? request.middleName + ' ' : ''}${request.lastName}?`)) {
+                              approveCharacterRequestMutation.mutate(request.id);
+                            }
+                          }}
+                          disabled={approveCharacterRequestMutation.isPending}
                         >
                           Schválit
                         </Button>
                         <Button
                           size="sm"
                           variant="destructive"
-                          onClick={() => {/* Handle reject */}}
+                          onClick={() => {
+                            const reason = prompt("Důvod zamítnutí (povinné, minimálně 10 znaků):");
+                            if (reason && reason.trim().length >= 10) {
+                              rejectCharacterRequestMutation.mutate({
+                                requestId: request.id,
+                                reason: reason.trim()
+                              });
+                            } else if (reason !== null) {
+                              toast({
+                                title: "Chyba",
+                                description: "Důvod zamítnutí musí mít minimálně 10 znaků",
+                                variant: "destructive"
+                              });
+                            }
+                          }}
+                          disabled={rejectCharacterRequestMutation.isPending}
                         >
                           Zamítnout
                         </Button>
