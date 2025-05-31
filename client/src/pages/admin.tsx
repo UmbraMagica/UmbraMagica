@@ -993,7 +993,8 @@ export default function AdminClean() {
           </Card>
 
           {/* Chat Management */}
-          <Card className="p-6">
+          <Card>
+            <CardContent className="p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-semibold text-foreground flex items-center">
                 <MessageSquare className="mr-2 h-5 w-5" />
@@ -1278,6 +1279,7 @@ export default function AdminClean() {
                 </div>
               </div>
             )}
+            </CardContent>
           </Card>
 
           {/* Live Characters Management */}
