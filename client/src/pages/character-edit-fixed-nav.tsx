@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { calculateGameAge } from "@/lib/gameDate";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { 
   User, 
   ArrowLeft,
@@ -25,6 +26,19 @@ import { characterEditSchema, characterAdminEditSchema } from "../../../shared/s
 
 type UserEditForm = z.infer<typeof characterEditSchema>;
 type AdminEditForm = z.infer<typeof characterAdminEditSchema>;
+
+// Seznam kouzelných škol seřazený abecedně
+const MAGICAL_SCHOOLS = [
+  "Bradavice",
+  "Durmstrang", 
+  "Ilvermorny",
+  "Koldovstoretz",
+  "Krásnohůlky",
+  "Kruval",
+  "Mahoutokoro",
+  "Salemská škola pro čarodějky",
+  "Uagadou"
+];
 
 export default function CharacterEditFixedNav() {
   const { user } = useAuth();
@@ -262,12 +276,22 @@ export default function CharacterEditFixedNav() {
 
                   <div className="space-y-2">
                     <Label htmlFor="school" className="text-foreground">Škola</Label>
-                    <Input
-                      id="school"
-                      {...userForm.register("school")}
-                      placeholder="Zadejte název školy (volitelné)"
-                      className="bg-muted border-border text-foreground"
-                    />
+                    <Select
+                      value={userForm.watch("school") || ""}
+                      onValueChange={(value) => userForm.setValue("school", value === "" ? "" : value)}
+                    >
+                      <SelectTrigger className="bg-muted border-border text-foreground">
+                        <SelectValue placeholder="Vyberte školu (volitelné)" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">Žádná škola</SelectItem>
+                        {MAGICAL_SCHOOLS.map((school) => (
+                          <SelectItem key={school} value={school}>
+                            {school}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
 
                   {/* Fyzické vlastnosti */}
