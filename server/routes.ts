@@ -556,6 +556,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin routes
+  app.get("/api/admin/invite-codes", requireAdmin, async (req, res) => {
+    try {
+      const inviteCodes = await storage.getAllInviteCodes();
+      res.json(inviteCodes);
+    } catch (error) {
+      console.error("Error fetching invite codes:", error);
+      res.status(500).json({ message: "Failed to fetch invite codes" });
+    }
+  });
+
   app.post("/api/admin/invite-codes", requireAdmin, async (req, res) => {
     try {
       const { code } = req.body;

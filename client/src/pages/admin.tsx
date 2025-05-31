@@ -58,6 +58,17 @@ export default function AdminClean() {
   const { data: allCharacters = [] } = useQuery({ queryKey: ['/api/characters/all'] });
   const { data: characterRequests = [] } = useQuery({ queryKey: ['/api/admin/character-requests'] });
   const { data: adminActivityLog = [] } = useQuery({ queryKey: ['/api/admin/activity-log'] });
+  const { data: inviteCodes = [] } = useQuery({ queryKey: ['/api/admin/invite-codes'] });
+
+  // Generate random invite code function
+  const generateRandomInviteCode = () => {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let result = '';
+    for (let i = 0; i < 8; i++) {
+      result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    setNewInviteCode(result);
+  };
 
   // Mutations
   const createInviteCodeMutation = useMutation({
@@ -630,23 +641,59 @@ export default function AdminClean() {
                   )}
                 </h2>
                 {!isUserManagementCollapsed && (
-                  <form onSubmit={handleCreateInviteCode} className="flex space-x-2">
-                    <Input
-                      type="text"
-                      placeholder="Nový zvací kód"
-                      value={newInviteCode}
-                      onChange={(e) => setNewInviteCode(e.target.value)}
-                      className="w-32"
-                    />
-                    <Button 
-                      type="submit" 
-                      size="sm" 
-                      disabled={createInviteCodeMutation.isPending}
-                    >
-                      <Plus className="mr-2 h-4 w-4" />
-                      Vytvořit
-                    </Button>
-                  </form>
+                  <div className="space-y-3">
+                    <form onSubmit={handleCreateInviteCode} className="flex space-x-2">
+                      <Input
+                        type="text"
+                        placeholder="Nový zvací kód"
+                        value={newInviteCode}
+                        onChange={(e) => setNewInviteCode(e.target.value)}
+                        className="w-40"
+                      />
+                      <Button 
+                        type="button"
+                        size="sm" 
+                        variant="outline"
+                        onClick={generateRandomInviteCode}
+                        className="whitespace-nowrap"
+                      >
+                        <Settings className="mr-2 h-4 w-4" />
+                        Generovat
+                      </Button>
+                      <Button 
+                        type="submit" 
+                        size="sm" 
+                        disabled={createInviteCodeMutation.isPending}
+                      >
+                        <Plus className="mr-2 h-4 w-4" />
+                        Vytvořit
+                      </Button>
+                    </form>
+                    
+                    {/* Display existing invite codes */}
+                    {inviteCodes.length > 0 && (
+                      <div className="mt-4">
+                        <h4 className="text-sm font-medium text-foreground mb-2">Existující zvací kódy:</h4>
+                        <div className="space-y-2 max-h-40 overflow-y-auto">
+                          {inviteCodes.map((code: any) => (
+                            <div key={code.id} className="flex items-center justify-between p-2 bg-muted/20 rounded text-sm">
+                              <div className="flex items-center space-x-2">
+                                <code className="font-mono bg-muted px-2 py-1 rounded text-xs">
+                                  {code.code}
+                                </code>
+                                <Badge variant={code.isUsed ? "secondary" : "default"}>
+                                  {code.isUsed ? "Použito" : "Aktivní"}
+                                </Badge>
+                              </div>
+                              <div className="text-xs text-muted-foreground">
+                                {new Date(code.createdAt).toLocaleDateString('cs-CZ')}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 )}
               </div>
 

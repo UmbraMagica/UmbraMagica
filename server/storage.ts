@@ -70,6 +70,7 @@ export interface IStorage {
   
   // Invite code operations
   getInviteCode(code: string): Promise<InviteCode | undefined>;
+  getAllInviteCodes(): Promise<InviteCode[]>;
   createInviteCode(code: InsertInviteCode): Promise<InviteCode>;
   useInviteCode(code: string, userId: number): Promise<boolean>;
   
@@ -289,6 +290,10 @@ export class DatabaseStorage implements IStorage {
   async getInviteCode(code: string): Promise<InviteCode | undefined> {
     const [inviteCode] = await db.select().from(inviteCodes).where(eq(inviteCodes.code, code));
     return inviteCode;
+  }
+
+  async getAllInviteCodes(): Promise<InviteCode[]> {
+    return db.select().from(inviteCodes).orderBy(desc(inviteCodes.createdAt));
   }
 
   async createInviteCode(insertInviteCode: InsertInviteCode): Promise<InviteCode> {
