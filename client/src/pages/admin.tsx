@@ -623,13 +623,13 @@ export default function AdminClean() {
 
                     {/* Reset Controls */}
                     <div className="border-t pt-4">
-                      <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center mb-2">
                         <h4 className="font-medium">Rychlé nastavení</h4>
                         <Button 
                           size="sm" 
                           variant="ghost" 
                           onClick={() => setShowQuickInfluenceSettings(!showQuickInfluenceSettings)}
-                          className="p-1"
+                          className="p-1 ml-2"
                         >
                           <Cog className="h-4 w-4" />
                         </Button>
@@ -658,168 +658,6 @@ export default function AdminClean() {
                           >
                             Reset (0:0)
                           </Button>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                );
-              })()}
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Influence History Management */}
-        <div className="mb-8">
-          <Card>
-            <CardContent className="p-6">
-              <h2 className="text-xl font-semibold text-foreground flex items-center mb-6">
-                <div className="text-accent mr-3">📊</div>
-                Správa historie změn vlivu
-              </h2>
-              
-              {(() => {
-                const [historyPoints, setHistoryPoints] = useState("");
-                const [historyReason, setHistoryReason] = useState("");
-                const [historyChangeType, setHistoryChangeType] = useState<'grindelwald' | 'dumbledore'>('grindelwald');
-
-                const { data: influenceHistory, refetch: refetchHistory } = useQuery({
-                  queryKey: ['/api/influence-history'],
-                  staleTime: 30000,
-                });
-
-                const adjustInfluenceWithHistory = useMutation({
-                  mutationFn: async ({ changeType, points, reason }: { changeType: 'grindelwald' | 'dumbledore', points: number, reason: string }) => {
-                    const response = await fetch('/api/admin/influence-bar/adjust-with-history', {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({ changeType, points, reason }),
-                    });
-                    if (!response.ok) throw new Error('Failed to adjust influence with history');
-                    return response.json();
-                  },
-                  onSuccess: () => {
-                    refetchHistory();
-                    queryClient.invalidateQueries({ queryKey: ['/api/influence-bar'] });
-                    setHistoryPoints("");
-                    setHistoryReason("");
-                    toast({
-                      title: "Úspěch",
-                      description: "Vliv byl úspěšně upraven a zaznamenán do historie",
-                    });
-                  },
-                  onError: () => {
-                    toast({
-                      title: "Chyba",
-                      description: "Nepodařilo se upravit vliv",
-                      variant: "destructive",
-                    });
-                  },
-                });
-
-                return (
-                  <div className="space-y-6">
-                    {/* Add Change with History */}
-                    <div className="space-y-4 p-4 border rounded-lg">
-                      <h3 className="font-medium text-foreground">Přidat změnu s historií</h3>
-                      
-                      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="changeType">Strana</Label>
-                          <Select value={historyChangeType} onValueChange={(value: 'grindelwald' | 'dumbledore') => setHistoryChangeType(value)}>
-                            <SelectTrigger>
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="grindelwald">🔴 Grindelwald</SelectItem>
-                              <SelectItem value="dumbledore">🔵 Brumbál</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <Label htmlFor="historyPoints">Body (+ nebo -)</Label>
-                          <Input
-                            id="historyPoints"
-                            type="number"
-                            value={historyPoints}
-                            onChange={(e) => setHistoryPoints(e.target.value)}
-                            placeholder="např. +5 nebo -3"
-                          />
-                        </div>
-                        
-                        <div className="space-y-2 md:col-span-2">
-                          <Label htmlFor="historyReason">Důvod změny</Label>
-                          <Input
-                            id="historyReason"
-                            value={historyReason}
-                            onChange={(e) => setHistoryReason(e.target.value)}
-                            placeholder="Krátký popis důvodu změny"
-                          />
-                        </div>
-                      </div>
-                      
-                      <Button
-                        onClick={() => {
-                          const points = parseInt(historyPoints);
-                          if (isNaN(points) || !historyReason.trim()) {
-                            toast({
-                              title: "Chyba",
-                              description: "Vyplňte všechna pole správně",
-                              variant: "destructive",
-                            });
-                            return;
-                          }
-                          adjustInfluenceWithHistory.mutate({
-                            changeType: historyChangeType,
-                            points,
-                            reason: historyReason.trim()
-                          });
-                        }}
-                        disabled={adjustInfluenceWithHistory.isPending}
-                        className="w-full md:w-auto"
-                      >
-                        {adjustInfluenceWithHistory.isPending ? "Ukládání..." : "Přidat změnu"}
-                      </Button>
-                    </div>
-
-                    {/* History Display */}
-                    <div className="space-y-4">
-                      <h3 className="font-medium text-foreground">Historie změn</h3>
-                      
-                      {!influenceHistory ? (
-                        <div className="text-center text-muted-foreground py-8">Načítání historie...</div>
-                      ) : influenceHistory.length === 0 ? (
-                        <div className="text-center text-muted-foreground py-8">Žádné záznamy v historii</div>
-                      ) : (
-                        <div className="space-y-2 max-h-96 overflow-y-auto">
-                          {influenceHistory.map((entry: any) => (
-                            <div
-                              key={entry.id}
-                              className="flex items-center justify-between p-3 border rounded-lg bg-card/50"
-                            >
-                              <div className="flex items-center gap-3">
-                                <div className={`w-3 h-3 rounded-full ${
-                                  entry.changeType === 'grindelwald' ? 'bg-red-600' : 'bg-blue-600'
-                                }`}></div>
-                                <div>
-                                  <div className="font-medium text-sm">
-                                    {entry.changeType === 'grindelwald' ? 'Grindelwald' : 'Brumbál'}: 
-                                    <span className={`ml-1 ${entry.pointsChanged > 0 ? 'text-green-600' : 'text-red-600'}`}>
-                                      {entry.pointsChanged > 0 ? '+' : ''}{entry.pointsChanged}
-                                    </span>
-                                    <span className="text-muted-foreground ml-1">
-                                      ({entry.previousTotal} → {entry.newTotal})
-                                    </span>
-                                  </div>
-                                  <div className="text-sm text-muted-foreground">{entry.reason}</div>
-                                </div>
-                              </div>
-                              <div className="text-right text-sm text-muted-foreground">
-                                <div>{entry.admin.username}</div>
-                                <div>{new Date(entry.createdAt).toLocaleString('cs-CZ')}</div>
-                              </div>
-                            </div>
-                          ))}
                         </div>
                       )}
                     </div>
