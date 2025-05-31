@@ -186,6 +186,22 @@ export default function CharacterProfile() {
                         </div>
                       </div>
                     </div>
+                    {(character.height || character.weight) && (
+                      <div className="flex items-center gap-3">
+                        <User className="h-4 w-4 text-muted-foreground" />
+                        <div>
+                          <div className="text-sm font-medium">Fyzické vlastnosti</div>
+                          <div className="text-sm text-muted-foreground">
+                            {character.height && character.weight 
+                              ? `${character.height} cm, ${character.weight} kg`
+                              : character.height 
+                                ? `${character.height} cm`
+                                : `${character.weight} kg`
+                            }
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
 

@@ -37,7 +37,8 @@ const MAGICAL_SCHOOLS = [
   "Kruval",
   "Mahoutokoro",
   "Salemská škola pro čarodějky",
-  "Uagadou"
+  "Uagadou",
+  "Domácí vzdělávání"
 ];
 
 export default function CharacterEditFixedNav() {
