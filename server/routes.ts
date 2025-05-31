@@ -20,7 +20,7 @@ declare module "express-session" {
 // Simple rate limiter
 const rateLimiter = new Map<string, { count: number; resetTime: number }>();
 
-const checkRateLimit = (identifier: string, maxRequests: number = 30, windowMs: number = 60000) => {
+const checkRateLimit = (identifier: string, maxRequests: number = 100, windowMs: number = 60000) => {
   const now = Date.now();
   const userLimit = rateLimiter.get(identifier);
   
