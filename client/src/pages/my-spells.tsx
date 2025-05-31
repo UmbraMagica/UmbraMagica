@@ -10,15 +10,18 @@ export default function MySpells() {
   const [, setLocation] = useLocation();
   const { user } = useAuth();
 
-  // Get user's main character
-  const { data: mainCharacter } = useQuery({
-    queryKey: ["/api/characters/main"]
+  // Get user's characters
+  const { data: userCharacters = [] } = useQuery({
+    queryKey: ["/api/characters"]
   });
+
+  // Use first alive character
+  const firstAliveCharacter = userCharacters.find((char: any) => !char.deathDate);
 
   // Get character's spells
   const { data: characterSpells = [], isLoading } = useQuery({
-    queryKey: [`/api/characters/${mainCharacter?.id}/spells`],
-    enabled: !!mainCharacter?.id
+    queryKey: [`/api/characters/${firstAliveCharacter?.id}/spells`],
+    enabled: !!firstAliveCharacter?.id
   });
 
   const getSpellCategoryColor = (category: string) => {
@@ -49,12 +52,12 @@ export default function MySpells() {
     return <div>Přihlaste se prosím</div>;
   }
 
-  if (!mainCharacter) {
+  if (!firstAliveCharacter) {
     return (
       <div className="container mx-auto p-6 max-w-4xl">
         <div className="text-center py-8">
           <Book className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-          <p className="text-muted-foreground">Nemáte nastavenou hlavní postavu</p>
+          <p className="text-muted-foreground">Nemáte vytvořenou žádnou postavu</p>
         </div>
       </div>
     );
@@ -77,7 +80,7 @@ export default function MySpells() {
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => setLocation(`/characters/${mainCharacter.id}`)}
+          onClick={() => setLocation(`/characters/${firstAliveCharacter.id}`)}
           className="flex items-center gap-2"
         >
           <ArrowLeft className="h-4 w-4" />
@@ -86,7 +89,7 @@ export default function MySpells() {
         <div className="flex items-center gap-2">
           <Wand2 className="h-5 w-5" />
           <h1 className="text-2xl font-bold">
-            Moje kouzla - {mainCharacter.firstName} {mainCharacter.lastName}
+            Moje kouzla - {firstAliveCharacter.firstName} {firstAliveCharacter.lastName}
           </h1>
         </div>
       </div>
@@ -126,7 +129,7 @@ export default function MySpells() {
             <div className="text-center">
               <Wand2 className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
               <p className="text-muted-foreground">
-                {mainCharacter.firstName} zatím nemá přiřazena žádná kouzla
+                {firstAliveCharacter.firstName} zatím nemá přiřazena žádná kouzla
               </p>
               <p className="text-sm text-muted-foreground mt-2">
                 Kontaktujte administrátora pro přidání kouzel

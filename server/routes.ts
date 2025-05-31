@@ -1945,7 +1945,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const approvedRequest = await storage.approveHousingRequest(
           autoApprovedRequest.id,
           req.session.userId!, // Automatické schválení systémem
-          "Ubytovna U starého Šeptáka",
+          "Londýn - Ubytovna U starého Šeptáka",
           "Automaticky schváleno - ubytovna"
         );
         
