@@ -34,9 +34,11 @@ export default function AdminClean() {
   
   // State for various dialogs and forms
   const [newInviteCode, setNewInviteCode] = useState("");
+  const [isUserManagementCollapsed, setIsUserManagementCollapsed] = useState(false);
   const [isLiveCharactersCollapsed, setIsLiveCharactersCollapsed] = useState(false);
+  const [isDeadCharactersCollapsed, setIsDeadCharactersCollapsed] = useState(true);
   const [isCharacterRequestsCollapsed, setIsCharacterRequestsCollapsed] = useState(false);
-  const [isAdminActivityCollapsed, setIsAdminActivityCollapsed] = useState(false);
+  const [isAdminActivityCollapsed, setIsAdminActivityCollapsed] = useState(true);
   
   // Kill character state
   const [killCharacterData, setKillCharacterData] = useState<{id: number, name: string} | null>(null);
@@ -536,113 +538,126 @@ export default function AdminClean() {
           </Card>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 gap-8">
           {/* User Management */}
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-foreground flex items-center">
+                <h2 className="text-xl font-semibold text-foreground flex items-center cursor-pointer"
+                    onClick={() => setIsUserManagementCollapsed(!isUserManagementCollapsed)}>
                   <Settings className="text-accent mr-3 h-5 w-5" />
-                  Správa uživatelů
+                  Správa uživatelů ({users.length})
+                  {isUserManagementCollapsed ? (
+                    <ChevronDown className="ml-2 h-4 w-4" />
+                  ) : (
+                    <ChevronUp className="ml-2 h-4 w-4" />
+                  )}
                 </h2>
-                <form onSubmit={handleCreateInviteCode} className="flex space-x-2">
-                  <Input
-                    type="text"
-                    placeholder="Nový zvací kód"
-                    value={newInviteCode}
-                    onChange={(e) => setNewInviteCode(e.target.value)}
-                    className="w-32"
-                  />
-                  <Button 
-                    type="submit" 
-                    size="sm" 
-                    disabled={createInviteCodeMutation.isPending}
-                  >
-                    <Plus className="mr-2 h-4 w-4" />
-                    Vytvořit
-                  </Button>
-                </form>
+                {!isUserManagementCollapsed && (
+                  <form onSubmit={handleCreateInviteCode} className="flex space-x-2">
+                    <Input
+                      type="text"
+                      placeholder="Nový zvací kód"
+                      value={newInviteCode}
+                      onChange={(e) => setNewInviteCode(e.target.value)}
+                      className="w-32"
+                    />
+                    <Button 
+                      type="submit" 
+                      size="sm" 
+                      disabled={createInviteCodeMutation.isPending}
+                    >
+                      <Plus className="mr-2 h-4 w-4" />
+                      Vytvořit
+                    </Button>
+                  </form>
+                )}
               </div>
 
-              <div className="space-y-3 max-h-96 overflow-y-auto">
-                {users
-                  .sort((a: any, b: any) => {
-                    if (a.role === 'admin' && b.role !== 'admin') return -1;
-                    if (a.role !== 'admin' && b.role === 'admin') return 1;
-                    return a.username.localeCompare(b.username, 'cs');
-                  })
-                  .map((user: any) => (
-                  <div key={user.id} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
-                    <div className="flex items-center space-x-3">
-                      <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                        user.role === "admin" 
-                          ? "bg-gradient-to-br from-accent to-orange-600" 
-                          : "bg-gradient-to-br from-primary to-secondary"
-                      }`}>
-                        {user.role === "admin" ? (
-                          <Crown className="text-white h-5 w-5" />
-                        ) : (
-                          <Users className="text-white h-5 w-5" />
-                        )}
+              {!isUserManagementCollapsed && (
+                <div className="space-y-3 max-h-96 overflow-y-auto">
+                  {users
+                    .sort((a: any, b: any) => {
+                      if (a.role === 'admin' && b.role !== 'admin') return -1;
+                      if (a.role !== 'admin' && b.role === 'admin') return 1;
+                      return a.username.localeCompare(b.username, 'cs');
+                    })
+                    .map((user: any) => (
+                    <div key={user.id} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
+                      <div className="flex items-center space-x-3">
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                          user.role === "admin" 
+                            ? "bg-gradient-to-br from-accent to-orange-600" 
+                            : "bg-gradient-to-br from-primary to-secondary"
+                        }`}>
+                          {user.role === "admin" ? (
+                            <Crown className="text-white h-5 w-5" />
+                          ) : (
+                            <Users className="text-white h-5 w-5" />
+                          )}
+                        </div>
+                        <div>
+                          <p className="font-medium text-foreground">{user.username}</p>
+                          <p className="text-sm text-muted-foreground">{user.email}</p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="font-medium text-foreground">{user.username}</p>
-                        <p className="text-sm text-muted-foreground">{user.email}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Badge className={
-                        user.role === "admin" 
-                          ? "bg-accent/20 text-accent" 
-                          : "bg-blue-500/20 text-blue-400"
-                      }>
-                        {user.role.toUpperCase()}
-                      </Badge>
-                      <div className="flex gap-1">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => toggleUserRole(user.id, user.role)}
-                          disabled={updateRoleMutation.isPending}
-                          className="text-accent hover:text-secondary"
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleResetPassword(user.id, user.username)}
-                          disabled={resetPasswordMutation.isPending}
-                          className="text-blue-400 hover:text-blue-300"
-                        >
-                          <ArrowUp className="h-4 w-4" />
-                        </Button>
-                        {user.role !== "admin" && (
+                      <div className="flex items-center space-x-2">
+                        <Badge className={
+                          user.role === "admin" 
+                            ? "bg-accent/20 text-accent" 
+                            : "bg-blue-500/20 text-blue-400"
+                        }>
+                          {user.role.toUpperCase()}
+                        </Badge>
+                        <div className="flex gap-1">
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => handleBanUser(user.id, user.username)}
-                            disabled={banUserMutation.isPending}
-                            className="text-red-400 hover:text-red-300"
+                            onClick={() => toggleUserRole(user.id, user.role)}
+                            disabled={updateRoleMutation.isPending}
+                            className="text-accent hover:text-secondary"
+                            title="Změnit roli"
                           >
-                            <UserPlus className="h-4 w-4" />
+                            <Edit className="h-4 w-4" />
                           </Button>
-                        )}
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleResetPassword(user.id, user.username)}
+                            disabled={resetPasswordMutation.isPending}
+                            className="text-blue-400 hover:text-blue-300"
+                            title="Resetovat heslo"
+                          >
+                            <ArrowUp className="h-4 w-4" />
+                          </Button>
+                          {user.role !== "admin" && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleBanUser(user.id, user.username)}
+                              disabled={banUserMutation.isPending}
+                              className="text-red-400 hover:text-red-300"
+                              title="Zabanovat uživatele"
+                            >
+                              <UserPlus className="h-4 w-4" />
+                            </Button>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
 
-          {/* Character Management */}
+          {/* Live Characters Management */}
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-semibold text-foreground flex items-center cursor-pointer" 
                     onClick={() => setIsLiveCharactersCollapsed(!isLiveCharactersCollapsed)}>
-                  <UsersRound className="text-accent mr-3 h-5 w-5" />
+                  <UsersRound className="text-green-500 mr-3 h-5 w-5" />
                   Živé postavy ({allCharacters.filter((char: any) => !char.deathDate).length})
                   {isLiveCharactersCollapsed ? (
                     <ChevronDown className="ml-2 h-4 w-4" />
@@ -675,6 +690,7 @@ export default function AdminClean() {
                           variant="outline"
                           size="sm"
                           onClick={() => setLocation(`/characters/${character.id}`)}
+                          title="Upravit postavu"
                         >
                           <Edit className="h-4 w-4" />
                         </Button>
@@ -685,6 +701,7 @@ export default function AdminClean() {
                             id: character.id,
                             name: `${character.firstName} ${character.lastName}`
                           })}
+                          title="Označit jako mrtvou"
                         >
                           <Skull className="h-4 w-4" />
                         </Button>
@@ -695,6 +712,203 @@ export default function AdminClean() {
                   <div className="text-center py-8">
                     <Users className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                     <p className="text-muted-foreground">Žádné živé postavy</p>
+                  </div>
+                )}
+              </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Dead Characters Management */}
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-semibold text-foreground flex items-center cursor-pointer" 
+                    onClick={() => setIsDeadCharactersCollapsed(!isDeadCharactersCollapsed)}>
+                  <Skull className="text-red-500 mr-3 h-5 w-5" />
+                  Mrtvé postavy ({allCharacters.filter((char: any) => char.deathDate).length})
+                  {isDeadCharactersCollapsed ? (
+                    <ChevronDown className="ml-2 h-4 w-4" />
+                  ) : (
+                    <ChevronUp className="ml-2 h-4 w-4" />
+                  )}
+                </h2>
+              </div>
+
+              {!isDeadCharactersCollapsed && (
+              <div className="space-y-4 max-h-96 overflow-y-auto">
+                {allCharacters.filter((char: any) => char.deathDate).length > 0 ? (
+                  allCharacters.filter((char: any) => char.deathDate).map((character: any) => (
+                    <div key={character.id} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg opacity-75">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 bg-gradient-to-br from-gray-500 to-gray-700 rounded-full flex items-center justify-center text-white font-semibold">
+                          {character.firstName[0]}{character.lastName[0]}
+                        </div>
+                        <div>
+                          <h4 className="font-medium text-foreground line-through">
+                            {character.firstName} {character.middleName} {character.lastName}
+                          </h4>
+                          <p className="text-sm text-muted-foreground">
+                            † {new Date(character.deathDate).toLocaleDateString('cs-CZ')} - {character.deathReason}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setLocation(`/characters/${character.id}`)}
+                          title="Zobrazit postavu"
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-8">
+                    <Skull className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                    <p className="text-muted-foreground">Žádné mrtvé postavy</p>
+                  </div>
+                )}
+              </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Character Requests Management */}
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-semibold text-foreground flex items-center cursor-pointer" 
+                    onClick={() => setIsCharacterRequestsCollapsed(!isCharacterRequestsCollapsed)}>
+                  <UserPlus className="text-yellow-500 mr-3 h-5 w-5" />
+                  Žádosti o postavy ({characterRequests.length})
+                  {isCharacterRequestsCollapsed ? (
+                    <ChevronDown className="ml-2 h-4 w-4" />
+                  ) : (
+                    <ChevronUp className="ml-2 h-4 w-4" />
+                  )}
+                </h2>
+              </div>
+
+              {!isCharacterRequestsCollapsed && (
+              <div className="space-y-4 max-h-96 overflow-y-auto">
+                {characterRequests.length > 0 ? (
+                  characterRequests.map((request: any) => (
+                    <div key={request.id} className="p-4 bg-muted/30 rounded-lg">
+                      <div className="flex items-center justify-between mb-3">
+                        <div>
+                          <h4 className="font-medium text-foreground">
+                            {request.firstName} {request.middleName} {request.lastName}
+                          </h4>
+                          <p className="text-sm text-muted-foreground">
+                            Od: {request.user?.username} | {new Date(request.createdAt).toLocaleDateString('cs-CZ')}
+                          </p>
+                        </div>
+                        <Badge className="bg-yellow-500/20 text-yellow-400">
+                          ČEKÁ
+                        </Badge>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 text-sm mb-3">
+                        <div>
+                          <span className="font-medium">Škola:</span> {request.school}
+                        </div>
+                        <div>
+                          <span className="font-medium">Kolej:</span> {request.house}
+                        </div>
+                        <div>
+                          <span className="font-medium">Ročník:</span> {request.year}
+                        </div>
+                        <div>
+                          <span className="font-medium">Pohlaví:</span> {request.gender === 'male' ? 'Muž' : 'Žena'}
+                        </div>
+                      </div>
+                      {request.description && (
+                        <p className="text-sm text-muted-foreground mb-3">
+                          <span className="font-medium">Popis:</span> {request.description}
+                        </p>
+                      )}
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          className="bg-green-600 hover:bg-green-700"
+                          onClick={() => {/* Handle approve */}}
+                        >
+                          Schválit
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={() => {/* Handle reject */}}
+                        >
+                          Zamítnout
+                        </Button>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-8">
+                    <UserPlus className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                    <p className="text-muted-foreground">Žádné nové žádosti</p>
+                  </div>
+                )}
+              </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Admin Activity Log */}
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-semibold text-foreground flex items-center cursor-pointer" 
+                    onClick={() => setIsAdminActivityCollapsed(!isAdminActivityCollapsed)}>
+                  <Book className="text-purple-500 mr-3 h-5 w-5" />
+                  Administrátorská aktivita ({adminActivityLog.length})
+                  {isAdminActivityCollapsed ? (
+                    <ChevronDown className="ml-2 h-4 w-4" />
+                  ) : (
+                    <ChevronUp className="ml-2 h-4 w-4" />
+                  )}
+                </h2>
+                {!isAdminActivityCollapsed && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setLocation('/admin/archive')}
+                  >
+                    Archiv chatů
+                  </Button>
+                )}
+              </div>
+
+              {!isAdminActivityCollapsed && (
+              <div className="space-y-2 max-h-96 overflow-y-auto">
+                {adminActivityLog.length > 0 ? (
+                  adminActivityLog.slice(0, 20).map((log: any) => (
+                    <div key={log.id} className="p-3 bg-muted/20 rounded text-sm">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <span className="font-medium text-purple-400">{log.admin?.username}</span>
+                          <span className="text-muted-foreground"> {log.action}</span>
+                          {log.targetUser && (
+                            <span className="text-accent"> {log.targetUser.username}</span>
+                          )}
+                        </div>
+                        <span className="text-xs text-muted-foreground">
+                          {new Date(log.createdAt).toLocaleString('cs-CZ')}
+                        </span>
+                      </div>
+                      {log.details && (
+                        <p className="text-xs text-muted-foreground mt-1">{log.details}</p>
+                      )}
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-8">
+                    <Book className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                    <p className="text-muted-foreground">Žádné záznamy</p>
                   </div>
                 )}
               </div>
