@@ -1742,6 +1742,35 @@ export class DatabaseStorage implements IStorage {
       });
     }
 
+    // Send automatic message from "Ubytovací správa" (character ID 11)
+    const housingAdminCharacterId = 11;
+    let approvalMessage = `Vážený/á ${character.firstName} ${character.lastName},\n\n`;
+    approvalMessage += `Vaše žádost o bydlení byla schválena!\n\n`;
+    approvalMessage += `📍 **Přidělená adresa:** ${assignedAddress}\n`;
+    approvalMessage += `🏠 **Typ bydlení:** ${this.getHousingTypeDescription(request.requestType)}\n`;
+    if (request.size) {
+      approvalMessage += `📏 **Velikost:** ${request.size}\n`;
+    }
+    if (request.housingName) {
+      approvalMessage += `🏡 **Název:** ${request.housingName}\n`;
+      approvalMessage += `🔑 **Vytvořena chat místnost** pro vaše bydlení\n`;
+    }
+    approvalMessage += `\nAdresa byla přidána do vašeho profilu postavy.\n\n`;
+    if (reviewNote) {
+      approvalMessage += `**Poznámka správy:** ${reviewNote}\n\n`;
+    }
+    approvalMessage += `S přátelskými pozdravy,\nUbytovací správa`;
+
+    // Create owl post message
+    await db.insert(owlPostMessages).values({
+      senderCharacterId: housingAdminCharacterId,
+      recipientCharacterId: request.characterId,
+      subject: "Schválení žádosti o bydlení",
+      content: approvalMessage,
+      isRead: false,
+      createdAt: new Date(),
+    });
+
     // Log admin activity
     await this.logAdminActivity({
       adminId,
