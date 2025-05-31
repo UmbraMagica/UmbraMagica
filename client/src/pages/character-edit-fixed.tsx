@@ -260,9 +260,9 @@ export default function CharacterEditFixed() {
           </p>
           <Button 
             className="mt-4" 
-            onClick={() => setLocation('/')}
+            onClick={() => setLocation(`/characters/${primaryCharacter?.id || ''}`)}
           >
-            Zpět na domovskou stránku
+            Zpět na profil postavy
           </Button>
         </div>
       </div>
