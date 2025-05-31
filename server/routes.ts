@@ -1106,16 +1106,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get user's main character (must be before :id route)
-  app.get("/api/characters/main", requireAuth, async (req, res) => {
-    try {
-      const mainCharacter = await storage.getMainCharacter(req.session.userId!);
-      res.json(mainCharacter || null);
-    } catch (error) {
-      console.error("Error fetching main character:", error);
-      res.status(500).json({ message: "Failed to fetch main character" });
-    }
-  });
+
 
   // Get specific character with user info
   app.get("/api/characters/:id", requireAuth, async (req, res) => {
@@ -2598,24 +2589,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Multi-character operations
   
-  // Set main character
-  app.post("/api/characters/:id/set-main", requireAuth, async (req, res) => {
-    try {
-      const characterId = parseInt(req.params.id);
-      
-      // Verify character belongs to user
-      const character = await storage.getCharacter(characterId);
-      if (!character || character.userId !== req.session.userId!) {
-        return res.status(403).json({ message: "Access denied" });
-      }
-      
-      await storage.setMainCharacter(req.session.userId!, characterId);
-      res.json({ message: "Main character updated" });
-    } catch (error) {
-      console.error("Error setting main character:", error);
-      res.status(500).json({ message: "Failed to set main character" });
-    }
-  });
+
 
   // Change character for a message (within 5 minutes)
   app.patch("/api/chat/messages/:id/character", requireAuth, async (req, res) => {

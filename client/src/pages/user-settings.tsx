@@ -127,11 +127,7 @@ export default function UserSettings() {
   // Filter only alive characters (not in cemetery)
   const userCharacters = allUserCharacters.filter((char: any) => !char.deathDate);
 
-  // Fetch main character
-  const { data: mainCharacter } = useQuery<any>({
-    queryKey: ["/api/characters/main"],
-    enabled: !!user,
-  });
+
 
   // Create character request mutation
   const createRequestMutation = useMutation({
@@ -207,28 +203,7 @@ export default function UserSettings() {
     },
   });
 
-  // Set main character mutation
-  const setMainCharacterMutation = useMutation({
-    mutationFn: async (characterId: number) => {
-      const response = await apiRequest("POST", `/api/characters/${characterId}/set-main`);
-      return response.json();
-    },
-    onSuccess: () => {
-      toast({
-        title: "Primární postava nastavena",
-        description: "Vaše primární postava byla úspěšně změněna.",
-      });
-      queryClient.invalidateQueries({ queryKey: ["/api/characters/main"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/characters"] });
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Chyba",
-        description: error.message || "Nepodařilo se nastavit primární postavu",
-        variant: "destructive",
-      });
-    },
-  });
+
 
   // Change password mutation
   const changePasswordMutation = useMutation({
