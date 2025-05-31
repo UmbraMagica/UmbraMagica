@@ -57,7 +57,7 @@ function SubCategoryCollapsible({ subCategory }: { subCategory: ChatCategory }) 
         password: password
       });
 
-      if (response && response.success) {
+      if (response && (response as any).success) {
         setPasswordDialog({ isOpen: false, roomId: null });
         setPassword("");
         setLocation(`/chat/room/${passwordDialog.roomId}`);
