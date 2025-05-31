@@ -90,6 +90,7 @@ export default function Admin() {
   const [isUserManagementCollapsed, setIsUserManagementCollapsed] = useState(false);
   const [isChatManagementCollapsed, setIsChatManagementCollapsed] = useState(false);
   const [isExistingRoomsCollapsed, setIsExistingRoomsCollapsed] = useState(true);
+  const [isExistingCategoriesCollapsed, setIsExistingCategoriesCollapsed] = useState(true);
   const [isSpellManagementCollapsed, setIsSpellManagementCollapsed] = useState(false);
   const [banUserData, setBanUserData] = useState<{ id: number; username: string } | null>(null);
   const [resetPasswordData, setResetPasswordData] = useState<{ id: number; username: string } | null>(null);
@@ -1465,10 +1466,21 @@ export default function Admin() {
 
                   {/* Existing Categories Management */}
                   <div className="space-y-4">
-                    <h3 className="text-lg font-medium">Správa existujících kategorií</h3>
-                    <div className="border rounded-lg">
-                      <div className="p-4 space-y-3 max-h-64 overflow-y-auto">
-                        {Array.isArray(chatCategories) && chatCategories.length > 0 ? (
+                    <div className="flex items-center justify-between cursor-pointer" onClick={() => setIsExistingCategoriesCollapsed(!isExistingCategoriesCollapsed)}>
+                      <h3 className="text-lg font-medium flex items-center">
+                        Správa existujících kategorií
+                        {isExistingCategoriesCollapsed ? (
+                          <ChevronDown className="ml-2 h-4 w-4" />
+                        ) : (
+                          <ChevronUp className="ml-2 h-4 w-4" />
+                        )}
+                      </h3>
+                    </div>
+                    
+                    {!isExistingCategoriesCollapsed && (
+                      <div className="border rounded-lg">
+                        <div className="p-4 space-y-3 max-h-64 overflow-y-auto">
+                          {Array.isArray(chatCategories) && chatCategories.length > 0 ? (
                           chatCategories.map((category: any) => (
                             <div key={category.id} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
                               <div className="flex-1">
@@ -1523,8 +1535,9 @@ export default function Admin() {
                             Žádné kategorie
                           </div>
                         )}
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
 
                   {/* Existing Rooms Management */}
