@@ -72,6 +72,7 @@ export default function Admin() {
   const [resetPasswordData, setResetPasswordData] = useState<{ id: number; username: string } | null>(null);
   const [showConfirmBan, setShowConfirmBan] = useState(false);
   const [banReason, setBanReason] = useState("");
+  const [showInfluenceSettings, setShowInfluenceSettings] = useState(false);
   const [influenceDialog, setInfluenceDialog] = useState<{
     open: boolean;
     side: 'grindelwald' | 'dumbledore';
@@ -82,6 +83,13 @@ export default function Admin() {
     side: 'grindelwald',
     points: 0,
     reason: ''
+  });
+  const [resetConfirmation, setResetConfirmation] = useState<{
+    open: boolean;
+    type: '0:0' | '50:50';
+  }>({
+    open: false,
+    type: '0:0'
   });
 
   // Chat management state
@@ -450,6 +458,44 @@ export default function Admin() {
     });
   };
 
+  const handleQuickInfluenceAdjustment = (side: 'grindelwald' | 'dumbledore', points: number) => {
+    setInfluenceDialog({ 
+      open: true, 
+      side, 
+      points, 
+      reason: '' 
+    });
+  };
+
+  const handleInfluenceReset = (type: '0:0' | '50:50') => {
+    setResetConfirmation({ open: true, type });
+  };
+
+  const confirmInfluenceReset = () => {
+    const resetData = resetConfirmation.type === '0:0' 
+      ? { grindelwald: 0, dumbledore: 0 }
+      : { grindelwald: 50, dumbledore: 50 };
+
+    // Call reset API endpoint
+    apiRequest("POST", "/api/admin/influence/reset", resetData)
+      .then(() => {
+        toast({
+          title: "Úspěch",
+          description: `Magický vliv byl resetován na ${resetConfirmation.type}`,
+        });
+        setResetConfirmation({ open: false, type: '0:0' });
+        queryClient.invalidateQueries({ queryKey: ['/api/influence-bar'] });
+        queryClient.invalidateQueries({ queryKey: ['/api/influence-history'] });
+      })
+      .catch((error: any) => {
+        toast({
+          title: "Chyba",
+          description: error.message || "Nepodařilo se resetovat magický vliv",
+          variant: "destructive",
+        });
+      });
+  };
+
   if (!user || user.role !== 'admin') {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -562,12 +608,22 @@ export default function Admin() {
           </Card>
         </div>
 
-        {/* Magický vliv Bar */}
+        {/* Správa magického vlivu */}
         <Card className="mb-8">
           <CardHeader>
-            <CardTitle className="text-xl font-semibold text-foreground flex items-center">
-              <Gauge className="text-purple-400 mr-3 h-5 w-5" />
-              Magický vliv - Grindelwald vs Dumbledore
+            <CardTitle className="text-xl font-semibold text-foreground flex items-center justify-between">
+              <div className="flex items-center">
+                <Gauge className="text-purple-400 mr-3 h-5 w-5" />
+                Správa magického vlivu
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowInfluenceSettings(!showInfluenceSettings)}
+                className="text-muted-foreground hover:text-accent"
+              >
+                <Cog className="h-4 w-4" />
+              </Button>
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -577,7 +633,7 @@ export default function Admin() {
                   Grindelwald: {(influenceBar as any)?.grindelwaldPoints || 0} bodů
                 </div>
                 <div className="text-sm font-medium text-blue-400">
-                  Dumbledore: {(influenceBar as any)?.dumbledorePoints || 0} bodů
+                  Brumbál: {(influenceBar as any)?.dumbledorePoints || 0} bodů
                 </div>
               </div>
               
@@ -596,24 +652,110 @@ export default function Admin() {
                 />
               </div>
 
-              <div className="flex gap-4 mt-4">
-                <Button 
-                  variant="outline" 
-                  onClick={() => handleInfluenceAdjustment('grindelwald')}
-                  className="text-red-400 border-red-400 hover:bg-red-400/10"
-                >
-                  <Plus className="mr-2 h-4 w-4" />
-                  Přidat Grindelwaldovi
-                </Button>
-                <Button 
-                  variant="outline" 
-                  onClick={() => handleInfluenceAdjustment('dumbledore')}
-                  className="text-blue-400 border-blue-400 hover:bg-blue-400/10"
-                >
-                  <Plus className="mr-2 h-4 w-4" />
-                  Přidat Dumbledorovi
-                </Button>
+              <div className="grid grid-cols-2 gap-4 mt-4">
+                {/* Grindelwald buttons */}
+                <div className="space-y-2">
+                  <div className="text-sm font-medium text-red-400 text-center">Grindelwald</div>
+                  <div className="flex gap-2">
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => handleQuickInfluenceAdjustment('grindelwald', 1)}
+                      className="text-red-400 border-red-400 hover:bg-red-400/10 flex-1"
+                    >
+                      +1
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => handleQuickInfluenceAdjustment('grindelwald', 2)}
+                      className="text-red-400 border-red-400 hover:bg-red-400/10 flex-1"
+                    >
+                      +2
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => handleQuickInfluenceAdjustment('grindelwald', 5)}
+                      className="text-red-400 border-red-400 hover:bg-red-400/10 flex-1"
+                    >
+                      +5
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => handleQuickInfluenceAdjustment('grindelwald', 10)}
+                      className="text-red-400 border-red-400 hover:bg-red-400/10 flex-1"
+                    >
+                      +10
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Brumbál buttons */}
+                <div className="space-y-2">
+                  <div className="text-sm font-medium text-blue-400 text-center">Brumbál</div>
+                  <div className="flex gap-2">
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => handleQuickInfluenceAdjustment('dumbledore', 1)}
+                      className="text-blue-400 border-blue-400 hover:bg-blue-400/10 flex-1"
+                    >
+                      +1
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => handleQuickInfluenceAdjustment('dumbledore', 2)}
+                      className="text-blue-400 border-blue-400 hover:bg-blue-400/10 flex-1"
+                    >
+                      +2
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => handleQuickInfluenceAdjustment('dumbledore', 5)}
+                      className="text-blue-400 border-blue-400 hover:bg-blue-400/10 flex-1"
+                    >
+                      +5
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => handleQuickInfluenceAdjustment('dumbledore', 10)}
+                      className="text-blue-400 border-blue-400 hover:bg-blue-400/10 flex-1"
+                    >
+                      +10
+                    </Button>
+                  </div>
+                </div>
               </div>
+
+              {/* Reset options */}
+              {showInfluenceSettings && (
+                <div className="mt-4 p-4 bg-muted/20 rounded-lg border">
+                  <h4 className="text-sm font-medium mb-3">Nastavení magického vlivu</h4>
+                  <div className="flex gap-2">
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => handleInfluenceReset('0:0')}
+                      className="text-yellow-400 border-yellow-400 hover:bg-yellow-400/10"
+                    >
+                      Reset na 0:0
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => handleInfluenceReset('50:50')}
+                      className="text-yellow-400 border-yellow-400 hover:bg-yellow-400/10"
+                    >
+                      Reset na 50:50
+                    </Button>
+                  </div>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -1312,7 +1454,7 @@ export default function Admin() {
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
             <div className="bg-card p-6 rounded-lg max-w-md w-full mx-4">
               <h3 className="text-lg font-semibold mb-4 text-foreground">
-                Upravit Magický vliv - {influenceDialog.side === 'grindelwald' ? 'Grindelwald' : 'Dumbledore'}
+                Upravit Magický vliv - {influenceDialog.side === 'grindelwald' ? 'Grindelwald' : 'Brumbál'}
               </h3>
               
               <div className="space-y-4">
@@ -1353,6 +1495,37 @@ export default function Admin() {
                     Upravit
                   </Button>
                 </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {resetConfirmation.open && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <div className="bg-card p-6 rounded-lg max-w-md w-full mx-4">
+              <h3 className="text-lg font-semibold mb-4 text-foreground">Potvrzení resetu</h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                Opravdu chcete resetovat magický vliv na <strong>{resetConfirmation.type}</strong>?
+              </p>
+              <p className="text-xs text-yellow-400 mb-4">
+                ⚠️ Tato akce je nevratná a ovlivní celou hru!
+              </p>
+              
+              <div className="flex gap-3">
+                <Button
+                  variant="outline"
+                  onClick={() => setResetConfirmation({ open: false, type: '0:0' })}
+                  className="flex-1"
+                >
+                  Zrušit
+                </Button>
+                <Button
+                  variant="destructive"
+                  onClick={confirmInfluenceReset}
+                  className="flex-1"
+                >
+                  Potvrdit reset
+                </Button>
               </div>
             </div>
           </div>
