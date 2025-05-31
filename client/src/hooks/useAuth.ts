@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest, getQueryFn } from "@/lib/queryClient";
+import { useLocation } from "wouter";
 
 interface User {
   id: number;
@@ -21,6 +22,7 @@ interface Character {
 
 export function useAuth() {
   const queryClient = useQueryClient();
+  const [, setLocation] = useLocation();
 
   const { data: user, isLoading } = useQuery<User | null>({
     queryKey: ["/api/auth/user"],
@@ -36,6 +38,7 @@ export function useAuth() {
     },
     onSuccess: (data) => {
       queryClient.setQueryData(["/api/auth/user"], data);
+      setLocation("/");
     },
   });
 
@@ -46,6 +49,7 @@ export function useAuth() {
     onSuccess: () => {
       queryClient.setQueryData(["/api/auth/user"], null);
       queryClient.removeQueries();
+      setLocation("/login");
     },
   });
 

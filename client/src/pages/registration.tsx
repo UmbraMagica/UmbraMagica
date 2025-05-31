@@ -227,6 +227,9 @@ export default function Registration() {
                     className="rpg-input"
                     required
                   />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Minimálně 8 znaků, musí obsahovat velké a malé písmeno a číslici
+                  </p>
                 </div>
                 
                 <div>
@@ -265,7 +268,9 @@ export default function Registration() {
                     className="rpg-input"
                     required
                   />
-                  <p className="text-xs text-muted-foreground mt-1">Nutný pro dokončení registrace</p>
+                  <p className="text-xs text-amber-600 mt-1 font-medium">
+                    ⚠️ Bez platného zvacího kódu není registrace možná
+                  </p>
                 </div>
 
                 <Button type="submit" className="rpg-button-primary">
