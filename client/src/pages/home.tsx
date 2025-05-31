@@ -552,15 +552,28 @@ export default function Home() {
             {currentDisplayedCharacter && (
               <Card className="bg-card border-border">
                 <CardContent className="p-6">
-                  <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center">
-                    <User className="text-accent mr-3 h-5 w-5" />
-                    Moje postava
-                  </h3>
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold text-foreground flex items-center">
+                      <User className="text-accent mr-3 h-5 w-5" />
+                      Moje postava
+                    </h3>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setLocation('/character/edit')}
+                      className="text-muted-foreground hover:text-foreground"
+                    >
+                      <Settings className="h-4 w-4" />
+                    </Button>
+                  </div>
                   <div className="text-center">
                     <div className="mx-auto mb-3 flex justify-center">
                       <CharacterAvatar character={currentDisplayedCharacter} size="lg" />
                     </div>
-                    <h4 className="font-medium text-foreground">
+                    <h4 
+                      className="font-bold text-xl text-foreground cursor-pointer hover:text-accent transition-colors font-serif"
+                      onClick={() => setLocation(`/character/${currentDisplayedCharacter.id}`)}
+                    >
                       {currentDisplayedCharacter.firstName}
                       {currentDisplayedCharacter.middleName && ` ${currentDisplayedCharacter.middleName}`}
                       {` ${currentDisplayedCharacter.lastName}`}

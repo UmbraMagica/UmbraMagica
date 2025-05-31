@@ -167,7 +167,7 @@ export default function CharacterEditSimple() {
         <div className="text-center">
           <p className="text-muted-foreground">Žádná postava k úpravě</p>
           <Button onClick={() => setLocation("/")} className="mt-4">
-            Zpět na dashboard
+            Zpět na domovskou stránku
           </Button>
         </div>
       </div>
