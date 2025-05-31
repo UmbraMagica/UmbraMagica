@@ -214,6 +214,13 @@ export default function UserSettings() {
   // Filter only alive characters (not in cemetery)
   const userCharacters = allUserCharacters.filter((char: any) => !char.deathDate);
 
+  // Initialize character order when userCharacters is loaded
+  useEffect(() => {
+    if (userCharacters && userCharacters.length > 0 && characterOrder.length === 0) {
+      const initialOrder = userCharacters.map((char: any) => char.id);
+      setCharacterOrder(initialOrder);
+    }
+  }, [userCharacters, characterOrder.length]);
 
 
   // Create character request mutation
