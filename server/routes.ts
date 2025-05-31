@@ -2081,6 +2081,35 @@ Správa ubytování`
     }
   });
 
+  app.delete("/api/housing-requests/:id", requireAuth, async (req, res) => {
+    try {
+      const requestId = parseInt(req.params.id);
+      const request = await storage.getHousingRequestById(requestId);
+      
+      if (!request) {
+        return res.status(404).json({ message: "Request not found" });
+      }
+      
+      if (request.userId !== req.session.userId) {
+        return res.status(403).json({ message: "Not authorized to delete this request" });
+      }
+      
+      if (request.status !== 'pending') {
+        return res.status(400).json({ message: "Only pending requests can be withdrawn" });
+      }
+      
+      const success = await storage.deleteHousingRequest(requestId);
+      if (!success) {
+        return res.status(500).json({ message: "Failed to delete request" });
+      }
+      
+      res.json({ message: "Housing request withdrawn successfully" });
+    } catch (error) {
+      console.error("Error deleting housing request:", error);
+      res.status(500).json({ message: "Failed to delete housing request" });
+    }
+  });
+
   app.get("/api/admin/housing-requests", requireAuth, requireAdmin, async (req, res) => {
     try {
       const requests = await storage.getPendingHousingRequests();

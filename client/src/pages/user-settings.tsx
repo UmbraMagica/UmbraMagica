@@ -1335,6 +1335,25 @@ export default function UserSettings() {
                               <span className="font-medium">Poznámka administrátora:</span> {request.reviewNote}
                             </div>
                           )}
+
+                          {request.status === 'pending' && (
+                            <div className="flex justify-end mt-4">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => {
+                                  if (confirm("Opravdu chcete stáhnout tuto žádost? Tato akce je nevratná.")) {
+                                    deleteHousingRequestMutation.mutate(request.id);
+                                  }
+                                }}
+                                disabled={deleteHousingRequestMutation.isPending}
+                                className="text-xs"
+                              >
+                                <Trash2 className="h-3 w-3 mr-1" />
+                                Stáhnout žádost
+                              </Button>
+                            </div>
+                          )}
                         </div>
                       </CardContent>
                     </Card>

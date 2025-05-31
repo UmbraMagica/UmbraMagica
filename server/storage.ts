@@ -1610,6 +1610,21 @@ export class DatabaseStorage implements IStorage {
       .orderBy(desc(housingRequests.createdAt));
   }
 
+  async getHousingRequestById(requestId: number): Promise<HousingRequest | undefined> {
+    const [request] = await db
+      .select()
+      .from(housingRequests)
+      .where(eq(housingRequests.id, requestId));
+    return request;
+  }
+
+  async deleteHousingRequest(requestId: number): Promise<boolean> {
+    const result = await db
+      .delete(housingRequests)
+      .where(eq(housingRequests.id, requestId));
+    return result.rowCount > 0;
+  }
+
   async getPendingHousingRequests(): Promise<(HousingRequest & { 
     user: { username: string; email: string }; 
     character: { firstName: string; middleName?: string | null; lastName: string } 
