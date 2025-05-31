@@ -547,7 +547,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const promises = Array.from(activeConnections.entries()).map(async ([ws, connInfo]) => {
         if (ws.readyState === WebSocket.OPEN && connInfo.characterId) {
           const character = await storage.getCharacter(connInfo.characterId);
-          if (character && character.isActive) {
+          if (character && character.isActive && !character.isSystem) {
             // Get the room name for location
             let location = "Lobby";
             if (connInfo.roomId) {
@@ -586,16 +586,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Get unique user IDs from active WebSocket connections
       const connectedUserIds = new Set<number>();
       
-      Array.from(activeConnections.entries()).forEach(([ws, connInfo]) => {
+      for (const [ws, connInfo] of activeConnections.entries()) {
         if (ws.readyState === WebSocket.OPEN && connInfo.userId) {
-          connectedUserIds.add(connInfo.userId);
+          // Check if user is not a system user
+          const user = await storage.getUser(connInfo.userId);
+          if (user && !user.isSystem) {
+            connectedUserIds.add(connInfo.userId);
+          }
         }
-      });
+      }
       
       // Add current admin user as online (since they're making this request)
       const currentUserId = (req.session as any).userId;
       if (currentUserId) {
-        connectedUserIds.add(currentUserId);
+        const currentUser = await storage.getUser(currentUserId);
+        if (currentUser && !currentUser.isSystem) {
+          connectedUserIds.add(currentUserId);
+        }
       }
       
       const onlineUsersCount = connectedUserIds.size;
@@ -1087,8 +1094,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const allCharacters = [];
 
       for (const user of users) {
+        // Skip system users unless requesting user is admin
+        if (user.isSystem && req.session.userRole !== 'admin') {
+          continue;
+        }
+        
         const characters = await storage.getCharactersByUserId(user.id);
         for (const character of characters) {
+          // Skip system characters unless requesting user is admin
+          if (character.isSystem && req.session.userRole !== 'admin') {
+            continue;
+          }
+          
           allCharacters.push({
             ...character,
             user: {
@@ -1113,8 +1130,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const dormitoryCharacters = [];
 
       for (const user of users) {
+        // Skip system users unless requesting user is admin
+        if (user.isSystem && req.session.userRole !== 'admin') {
+          continue;
+        }
+        
         const characters = await storage.getCharactersByUserId(user.id);
         for (const character of characters) {
+          // Skip system characters unless requesting user is admin
+          if (character.isSystem && req.session.userRole !== 'admin') {
+            continue;
+          }
+          
           // Check if character has dormitory housing
           if (character.residence && character.residence.includes("Ubytovna U starého Šeptáka")) {
             dormitoryCharacters.push({
