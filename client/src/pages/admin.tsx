@@ -325,6 +325,81 @@ export default function Admin() {
     },
   });
 
+  // Housing request mutations
+  const approveHousingMutation = useMutation({
+    mutationFn: async (requestId: number) => {
+      const assignedAddress = prompt("Přidělená adresa (povinné):");
+      if (!assignedAddress) throw new Error("Adresa je povinná");
+      const reviewNote = prompt("Poznámka (volitelné):") || "";
+      return apiRequest("POST", `/api/admin/housing-requests/${requestId}/approve`, { 
+        assignedAddress, 
+        reviewNote 
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Úspěch",
+        description: "Žádost o bydlení byla schválena",
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/housing-requests'] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Chyba",
+        description: error.message || "Nepodařilo se schválit žádost o bydlení",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const rejectHousingMutation = useMutation({
+    mutationFn: async (requestId: number) => {
+      const reviewNote = prompt("Důvod vrácení k přepracování (povinné):");
+      if (!reviewNote) throw new Error("Důvod je povinný");
+      return apiRequest("POST", `/api/admin/housing-requests/${requestId}/return`, { 
+        reviewNote 
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Úspěch",
+        description: "Žádost byla vrácena k přepracování",
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/housing-requests'] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Chyba",
+        description: error.message || "Nepodařilo se vrátit žádost",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const denyHousingMutation = useMutation({
+    mutationFn: async (requestId: number) => {
+      const reviewNote = prompt("Důvod zamítnutí (povinné):");
+      if (!reviewNote) throw new Error("Důvod je povinný");
+      return apiRequest("POST", `/api/admin/housing-requests/${requestId}/reject`, { 
+        reviewNote 
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Úspěch",
+        description: "Žádost o bydlení byla zamítnuta",
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/housing-requests'] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Chyba",
+        description: error.message || "Nepodařilo se zamítnout žádost",
+        variant: "destructive",
+      });
+    },
+  });
+
   const createCategoryMutation = useMutation({
     mutationFn: async (category: any) => {
       return apiRequest("POST", "/api/admin/chat-categories", category);
@@ -1233,16 +1308,20 @@ export default function Admin() {
             {!isCharacterRequestsCollapsed && (
               <CardContent>
                 <div className="space-y-3 max-h-96 overflow-y-auto">
+                  {/* Character Requests */}
                   {Array.isArray(characterRequests) && characterRequests.map((request: any) => (
-                    <div key={request.id} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
+                    <div key={`char-${request.id}`} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg border-l-4 border-l-blue-500">
                       <div className="flex items-center space-x-3">
                         <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
                           <UserPlus className="text-white h-5 w-5" />
                         </div>
                         <div>
-                          <p className="font-medium text-foreground">
-                            {request.firstName} {request.middleName ? `${request.middleName} ` : ''}{request.lastName}
-                          </p>
+                          <div className="flex items-center gap-2">
+                            <p className="font-medium text-foreground">
+                              {request.firstName} {request.middleName ? `${request.middleName} ` : ''}{request.lastName}
+                            </p>
+                            <Badge variant="secondary" className="text-xs">Postava</Badge>
+                          </div>
                           <p className="text-sm text-muted-foreground">
                             {request.user?.username} • {request.school || 'Neznámá škola'}
                           </p>
@@ -1273,7 +1352,63 @@ export default function Admin() {
                       </div>
                     </div>
                   ))}
-                  {Array.isArray(characterRequests) && characterRequests.length === 0 && (
+                  
+                  {/* Housing Requests */}
+                  {Array.isArray(housingRequests) && housingRequests.map((request: any) => (
+                    <div key={`house-${request.id}`} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg border-l-4 border-l-green-500">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center">
+                          <Home className="text-white h-5 w-5" />
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <p className="font-medium text-foreground">
+                              {request.character?.firstName} {request.character?.middleName ? `${request.character.middleName} ` : ''}{request.character?.lastName}
+                            </p>
+                            <Badge variant="outline" className="text-xs border-green-500 text-green-600">Bydlení</Badge>
+                          </div>
+                          <p className="text-sm text-muted-foreground">
+                            {request.user?.username} • {request.requestType === 'dormitory' ? 'Ubytovna' : request.requestType === 'shared' ? 'Sdílené bydlení' : 'Vlastní bydlení'}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            Místo: {request.location} • Požádáno: {new Date(request.createdAt).toLocaleDateString('cs-CZ')}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => approveHousingMutation.mutate(request.id)}
+                          disabled={approveHousingMutation.isPending}
+                          className="text-green-400 hover:text-green-300"
+                        >
+                          Schválit
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => rejectHousingMutation.mutate(request.id)}
+                          disabled={rejectHousingMutation.isPending}
+                          className="text-orange-400 hover:text-orange-300"
+                        >
+                          Vrátit
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => denyHousingMutation.mutate(request.id)}
+                          disabled={denyHousingMutation.isPending}
+                          className="text-red-400 hover:text-red-300"
+                        >
+                          Zamítnout
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                  
+                  {Array.isArray(characterRequests) && characterRequests.length === 0 && 
+                   Array.isArray(housingRequests) && housingRequests.length === 0 && (
                     <div className="text-center text-muted-foreground py-8">
                       Žádné čekající žádosti
                     </div>
