@@ -144,7 +144,7 @@ export default function Home() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Urgent Wand Warning for characters without wands */}
-        {mainCharacter && (characterWand === null || characterWand === undefined) && (
+        {currentDisplayedCharacter && (characterWand === null || characterWand === undefined) && (
           <div className="mb-6">
             <Card className="bg-gradient-to-r from-amber-500/20 to-orange-500/20 border-amber-400/50 border-2 shadow-lg">
               <CardContent className="p-6">
@@ -206,9 +206,9 @@ export default function Home() {
                   </Button>
                   
                   <Button 
-                    variant={mainCharacter && (characterWand === null || characterWand === undefined) ? "default" : "ghost"}
+                    variant={currentDisplayedCharacter && (characterWand === null || characterWand === undefined) ? "default" : "ghost"}
                     className={`w-full justify-start text-left h-auto p-3 ${
-                      mainCharacter && (characterWand === null || characterWand === undefined)
+                      currentDisplayedCharacter && (characterWand === null || characterWand === undefined)
                         ? "bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/50 animate-pulse" 
                         : "hover:bg-purple-500/20"
                     }`}
@@ -216,19 +216,19 @@ export default function Home() {
                   >
                     <div className="flex items-center space-x-3">
                       <Wand2 className={`h-5 w-5 ${
-                        mainCharacter && (characterWand === null || characterWand === undefined) ? "text-amber-300" : "text-amber-400"
+                        currentDisplayedCharacter && (characterWand === null || characterWand === undefined) ? "text-amber-300" : "text-amber-400"
                       }`} />
                       <div>
                         <div className={`font-medium ${
-                          mainCharacter && (characterWand === null || characterWand === undefined) ? "text-amber-200" : ""
+                          currentDisplayedCharacter && (characterWand === null || characterWand === undefined) ? "text-amber-200" : ""
                         }`}>
                           U Ollivandera
-                          {mainCharacter && (characterWand === null || characterWand === undefined) && " ⚠️"}
+                          {currentDisplayedCharacter && (characterWand === null || characterWand === undefined) && " ⚠️"}
                         </div>
                         <div className={`text-xs ${
-                          mainCharacter && (characterWand === null || characterWand === undefined) ? "text-amber-300/80" : "text-muted-foreground"
+                          currentDisplayedCharacter && (characterWand === null || characterWand === undefined) ? "text-amber-300/80" : "text-muted-foreground"
                         }`}>
-                          {mainCharacter && (characterWand === null || characterWand === undefined) ? "POTŘEBUJETE HŮLKU!" : "Získat hůlku"}
+                          {currentDisplayedCharacter && (characterWand === null || characterWand === undefined) ? "POTŘEBUJETE HŮLKU!" : "Získat hůlku"}
                         </div>
                       </div>
                     </div>
@@ -604,15 +604,13 @@ export default function Home() {
                   <div className="space-y-2">
                     {userCharacters
                       .sort((a: any, b: any) => {
-                        if (mainCharacter?.id === a.id) return -1;
-                        if (mainCharacter?.id === b.id) return 1;
                         return a.firstName.localeCompare(b.firstName, 'cs');
                       })
                       .map((character: any) => (
                       <div 
                         key={character.id} 
                         className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-colors hover:bg-muted/50 ${
-                          (displayedCharacter?.id === character.id || (!displayedCharacter && mainCharacter?.id === character.id))
+                          (displayedCharacter?.id === character.id || (!displayedCharacter && currentDisplayedCharacter?.id === character.id))
                             ? 'bg-accent/20 border border-accent/30' 
                             : 'bg-muted/30'
                         }`}
@@ -631,14 +629,7 @@ export default function Home() {
                             </p>
                           </div>
                         </div>
-                        {mainCharacter?.id === character.id && (
-                          <div className="flex items-center space-x-1">
-                            <span className="text-yellow-500">👑</span>
-                            <Badge className="bg-accent/20 text-accent text-xs">
-                              Primární
-                            </Badge>
-                          </div>
-                        )}
+
                       </div>
                     ))}
                   </div>
