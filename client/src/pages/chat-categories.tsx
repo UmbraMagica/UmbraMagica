@@ -64,7 +64,8 @@ function SubCategoryCollapsible({ subCategory }: { subCategory: ChatCategory }) 
         const roomId = passwordDialog.roomId;
         setPasswordDialog({ isOpen: false, roomId: null });
         setPassword("");
-        setLocation(`/chat/room/${roomId}`);
+        // Use window.location instead of useLocation
+        window.location.href = `/chat/room/${roomId}`;
         toast({
           title: "Úspěch",
           description: "Heslo je správné, vstupujete do místnosti",
