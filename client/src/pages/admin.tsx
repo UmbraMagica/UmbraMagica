@@ -948,17 +948,22 @@ export default function AdminClean() {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="roomCategory">Kategorie</Label>
+                      <Label htmlFor="roomCategory">Oblast (kategorie 2. úrovně)</Label>
                       <Select onValueChange={(value) => setNewRoomCategoryId(parseInt(value))}>
                         <SelectTrigger>
-                          <SelectValue placeholder="Vyberte kategorii" />
+                          <SelectValue placeholder="Vyberte oblast" />
                         </SelectTrigger>
                         <SelectContent>
-                          {chatCategories.map((category: any) => (
-                            <SelectItem key={category.id} value={category.id.toString()}>
-                              {category.name}
-                            </SelectItem>
-                          ))}
+                          {chatCategories
+                            .filter((category: any) => category.parentId !== null)
+                            .map((category: any) => {
+                              const parent = chatCategories.find((c: any) => c.id === category.parentId);
+                              return (
+                                <SelectItem key={category.id} value={category.id.toString()}>
+                                  {parent?.name} → {category.name}
+                                </SelectItem>
+                              );
+                            })}
                         </SelectContent>
                       </Select>
                     </div>

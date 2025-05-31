@@ -63,6 +63,8 @@ export default function Home() {
     enabled: !!mainCharacter?.id,
   });
 
+
+
   const currentDisplayedCharacter = displayedCharacter || mainCharacter;
   const characterAge = currentDisplayedCharacter ? calculateGameAge(currentDisplayedCharacter.birthDate) : 0;
 
@@ -125,7 +127,7 @@ export default function Home() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Urgent Wand Warning for characters without wands */}
-        {mainCharacter && !characterWand && (
+        {mainCharacter && (characterWand === null || characterWand === undefined) && (
           <div className="mb-6">
             <Card className="bg-gradient-to-r from-amber-500/20 to-orange-500/20 border-amber-400/50 border-2 shadow-lg">
               <CardContent className="p-6">
@@ -187,9 +189,9 @@ export default function Home() {
                   </Button>
                   
                   <Button 
-                    variant={mainCharacter && !characterWand ? "default" : "ghost"}
+                    variant={mainCharacter && (characterWand === null || characterWand === undefined) ? "default" : "ghost"}
                     className={`w-full justify-start text-left h-auto p-3 ${
-                      mainCharacter && !characterWand 
+                      mainCharacter && (characterWand === null || characterWand === undefined)
                         ? "bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/50 animate-pulse" 
                         : "hover:bg-purple-500/20"
                     }`}
@@ -197,19 +199,19 @@ export default function Home() {
                   >
                     <div className="flex items-center space-x-3">
                       <Wand2 className={`h-5 w-5 ${
-                        mainCharacter && !characterWand ? "text-amber-300" : "text-amber-400"
+                        mainCharacter && (characterWand === null || characterWand === undefined) ? "text-amber-300" : "text-amber-400"
                       }`} />
                       <div>
                         <div className={`font-medium ${
-                          mainCharacter && !characterWand ? "text-amber-200" : ""
+                          mainCharacter && (characterWand === null || characterWand === undefined) ? "text-amber-200" : ""
                         }`}>
                           U Ollivandera
-                          {mainCharacter && !characterWand && " ⚠️"}
+                          {mainCharacter && (characterWand === null || characterWand === undefined) && " ⚠️"}
                         </div>
                         <div className={`text-xs ${
-                          mainCharacter && !characterWand ? "text-amber-300/80" : "text-muted-foreground"
+                          mainCharacter && (characterWand === null || characterWand === undefined) ? "text-amber-300/80" : "text-muted-foreground"
                         }`}>
-                          {mainCharacter && !characterWand ? "POTŘEBUJETE HŮLKU!" : "Získat hůlku"}
+                          {mainCharacter && (characterWand === null || characterWand === undefined) ? "POTŘEBUJETE HŮLKU!" : "Získat hůlku"}
                         </div>
                       </div>
                     </div>
