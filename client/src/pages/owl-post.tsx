@@ -511,24 +511,39 @@ export default function OwlPost() {
             filteredSentMessages.map((message) => (
               <Card key={message.id} className="cursor-pointer transition-colors hover:bg-muted/50">
                 <CardContent className="p-4">
-                  <div className="flex items-start gap-3" onClick={() => setSelectedMessage(message)}>
-                    <div className="mt-1">
-                      <Send className="h-5 w-5 text-green-500" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <p className="font-medium">
-                          Pro: {message.recipient ? formatRecipientName(message.recipient) : 'Neznámý příjemce'}
-                        </p>
-                        <span className="text-sm text-muted-foreground">
-                          {formatDistanceToNow(new Date(message.sentAt), { addSuffix: true, locale: cs })}
-                        </span>
+                  <div className="flex items-start gap-3 justify-between">
+                    <div className="flex items-start gap-3 flex-1" onClick={() => setSelectedMessage(message)}>
+                      <div className="mt-1">
+                        <Send className="h-5 w-5 text-green-500" />
                       </div>
-                      <h3 className="text-sm font-medium mb-2">{message.subject}</h3>
-                      <p className="text-sm text-muted-foreground line-clamp-2">
-                        {message.content}
-                      </p>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <p className="font-medium">
+                            Pro: {message.recipient ? formatRecipientName(message.recipient) : 'Neznámý příjemce'}
+                          </p>
+                          <span className="text-sm text-muted-foreground">
+                            {formatDistanceToNow(new Date(message.sentAt), { addSuffix: true, locale: cs })}
+                          </span>
+                        </div>
+                        <h3 className="text-sm font-medium mb-2">{message.subject}</h3>
+                        <p className="text-sm text-muted-foreground line-clamp-2">
+                          {message.content}
+                        </p>
+                      </div>
                     </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (confirm('Opravdu chcete smazat tuto zprávu?')) {
+                          deleteMessageMutation.mutate(message.id);
+                        }
+                      }}
+                      disabled={deleteMessageMutation.isPending}
+                    >
+                      <Trash2 className="h-4 w-4 text-red-500" />
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
