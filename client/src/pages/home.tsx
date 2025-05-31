@@ -104,6 +104,14 @@ export default function Home() {
     queryKey: [`/api/characters/${currentDisplayedCharacter?.id}/wand`],
     enabled: !!currentDisplayedCharacter?.id,
   });
+
+  // Get unread owl post count
+  const { data: unreadOwlPostData } = useQuery({
+    queryKey: ["/api/owl-post/unread-total"],
+    enabled: !!user,
+    refetchInterval: 30000, // Refresh every 30 seconds
+  });
+
   const characterAge = currentDisplayedCharacter ? calculateGameAge(currentDisplayedCharacter.birthDate) : 0;
 
   const handleLogout = async () => {

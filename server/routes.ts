@@ -3294,16 +3294,22 @@ Správa ubytování`
     try {
       const messageId = parseInt(req.params.messageId);
       
-      // Get message and verify ownership
-      const messages = await storage.getOwlPostInbox(0, 1, 0); // This is a hack, we need a better method
-      // For now, let's just mark as read without verification
-      const message = await storage.markOwlPostAsRead(messageId);
-      
+      // Get the message to verify ownership
+      const message = await storage.getOwlPostMessage(messageId);
       if (!message) {
         return res.status(404).json({ message: "Message not found" });
       }
       
-      res.json(message);
+      // Get recipient character to verify user ownership
+      const recipientCharacter = await storage.getCharacter(message.recipientCharacterId);
+      
+      // User can mark message as read if they own the recipient character
+      if (!recipientCharacter || recipientCharacter.userId !== req.session.userId) {
+        return res.status(403).json({ message: "Unauthorized to mark this message as read" });
+      }
+      
+      await storage.markOwlPostAsRead(messageId);
+      res.json({ success: true });
     } catch (error) {
       console.error('Error marking message as read:', error);
       res.status(500).json({ message: 'Failed to mark message as read' });
@@ -3378,6 +3384,25 @@ Správa ubytování`
     } catch (error) {
       console.error('Error fetching characters for owl post:', error);
       res.status(500).json({ message: 'Failed to fetch characters' });
+    }
+  });
+
+  // Get total unread owl post count for all user characters
+  app.get("/api/owl-post/unread-total", requireAuth, async (req, res) => {
+    try {
+      const userCharacters = await storage.getCharactersByUserId(req.session.userId!);
+      const aliveCharacters = userCharacters.filter(char => !char.deathDate);
+      
+      let totalUnread = 0;
+      for (const character of aliveCharacters) {
+        const count = await storage.getUnreadOwlPostCount(character.id);
+        totalUnread += count;
+      }
+      
+      res.json({ count: totalUnread });
+    } catch (error) {
+      console.error('Error fetching total unread count:', error);
+      res.status(500).json({ message: 'Failed to fetch total unread count' });
     }
   });
 
