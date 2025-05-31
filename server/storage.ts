@@ -1706,16 +1706,25 @@ export class DatabaseStorage implements IStorage {
 
     // Create chat room for the housing if it has a name and password
     if (request.housingName && request.housingPassword) {
-      // Find the appropriate category for housing (assuming there's a "Bydlení" category)
-      let housingCategory = await this.getChatCategoryByName("Bydlení");
+      let targetCategory;
       
-      // If no housing category exists, create one
-      if (!housingCategory) {
-        housingCategory = await this.createChatCategory({
-          name: "Bydlení",
-          description: "Soukromá bydlení a sídla",
-          sortOrder: 100
-        });
+      // If selectedArea is specified, try to find that category first
+      if (request.selectedArea) {
+        targetCategory = await this.getChatCategoryByName(request.selectedArea);
+      }
+      
+      // If no area was selected or area category not found, use default "Bydlení" category
+      if (!targetCategory) {
+        targetCategory = await this.getChatCategoryByName("Bydlení");
+        
+        // If no housing category exists, create one
+        if (!targetCategory) {
+          targetCategory = await this.createChatCategory({
+            name: "Bydlení",
+            description: "Soukromá bydlení a sídla",
+            sortOrder: 100
+          });
+        }
       }
 
       // Create the chat room
@@ -1735,7 +1744,7 @@ export class DatabaseStorage implements IStorage {
         name: request.housingName,
         description: roomDescription,
         longDescription: longDescription,
-        categoryId: housingCategory.id,
+        categoryId: targetCategory.id,
         password: request.housingPassword,
         isPublic: false,
         sortOrder: 0
