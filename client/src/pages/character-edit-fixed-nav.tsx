@@ -21,25 +21,10 @@ import {
 import { z } from "zod";
 import { useLocation } from "wouter";
 import { useEffect } from "react";
+import { characterEditSchema, characterAdminEditSchema } from "../../../shared/schema";
 
-// Simple schema for user edits (only school and description)
-const userEditSchema = z.object({
-  school: z.string().optional(),
-  description: z.string().optional(),
-});
-
-// Admin schema (all fields)
-const adminEditSchema = z.object({
-  firstName: z.string().min(1, "Jméno je povinné"),
-  middleName: z.string().optional(),
-  lastName: z.string().min(1, "Příjmení je povinné"),
-  birthDate: z.string().min(1, "Datum narození je povinné"),
-  school: z.string().optional(),
-  description: z.string().optional(),
-});
-
-type UserEditForm = z.infer<typeof userEditSchema>;
-type AdminEditForm = z.infer<typeof adminEditSchema>;
+type UserEditForm = z.infer<typeof characterEditSchema>;
+type AdminEditForm = z.infer<typeof characterAdminEditSchema>;
 
 export default function CharacterEditFixedNav() {
   const { user } = useAuth();
@@ -63,7 +48,7 @@ export default function CharacterEditFixedNav() {
 
   // User form for editing limited fields
   const userForm = useForm<UserEditForm>({
-    resolver: zodResolver(userEditSchema),
+    resolver: zodResolver(characterEditSchema),
     defaultValues: {
       school: primaryCharacter?.school || "",
       description: primaryCharacter?.description || "",
@@ -72,7 +57,7 @@ export default function CharacterEditFixedNav() {
 
   // Admin form for editing all fields
   const adminForm = useForm<AdminEditForm>({
-    resolver: zodResolver(adminEditSchema),
+    resolver: zodResolver(characterAdminEditSchema),
     defaultValues: {
       firstName: primaryCharacter?.firstName || "",
       middleName: primaryCharacter?.middleName || "",
