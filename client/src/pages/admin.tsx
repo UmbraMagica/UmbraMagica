@@ -519,6 +519,22 @@ export default function AdminClean() {
                 </div>
                 <div className="flex gap-2">
                   <Button
+                    onClick={() => setLocation('/')}
+                    variant="outline"
+                    size="sm"
+                  >
+                    <Home className="mr-2 h-4 w-4" />
+                    Hlavní stránka
+                  </Button>
+                  <Button
+                    onClick={() => setLocation('/admin/archive')}
+                    variant="outline"
+                    size="sm"
+                  >
+                    <MessageCircle className="mr-2 h-4 w-4" />
+                    Archiv chatů
+                  </Button>
+                  <Button
                     onClick={() => setLocation('/admin/spells')}
                     variant="default"
                     size="sm"
@@ -689,7 +705,7 @@ export default function AdminClean() {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => setLocation(`/characters/${character.id}`)}
+                          onClick={() => setLocation(`/character/edit?id=${character.id}`)}
                           title="Upravit postavu"
                         >
                           <Edit className="h-4 w-4" />
@@ -872,15 +888,6 @@ export default function AdminClean() {
                     <ChevronUp className="ml-2 h-4 w-4" />
                   )}
                 </h2>
-                {!isAdminActivityCollapsed && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setLocation('/admin/archive')}
-                  >
-                    Archiv chatů
-                  </Button>
-                )}
               </div>
 
               {!isAdminActivityCollapsed && (
