@@ -162,7 +162,6 @@ export default function CharacterEditFixed() {
         description: "Profilový obrázek byl úspěšně aktualizován",
       });
       queryClient.invalidateQueries({ queryKey: ["/api/characters"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/characters/main"] });
       queryClient.invalidateQueries({ queryKey: [`/api/characters/${primaryCharacter?.id}`] });
       setIsUploadingAvatar(false);
     },
