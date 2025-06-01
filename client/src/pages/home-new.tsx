@@ -247,14 +247,7 @@ export default function Home() {
                       .map((character: any) => (
                       <div 
                         key={character.id} 
-                        className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-colors hover:bg-muted/50 ${
-                          (displayedCharacter?.id === character.id || (!displayedCharacter && mainCharacter?.id === character.id))
-                            ? 'bg-accent/20 border border-accent/30' 
-                            : 'bg-muted/30'
-                        }`}
-                        onClick={() => {
-                          setDisplayedCharacter(character);
-                        }}
+                        className="flex items-center justify-between p-3 rounded-lg bg-muted/30"
                       >
                         <div className="flex items-center space-x-3">
                           <CharacterAvatar character={character} size="sm" />

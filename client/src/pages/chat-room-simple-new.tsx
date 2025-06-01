@@ -807,42 +807,19 @@ export default function ChatRoom() {
 
         {/* Message Input */}
         <div className="flex-none border-t bg-card p-4">
-          {/* Character Switcher */}
-          {userCharacters.length > 1 && (
+          {/* Current Character Display */}
+          {currentCharacter && (
             <div className="mb-4 p-3 bg-muted/30 rounded-lg border">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-foreground">Psát jako postava:</span>
-                <span className="text-xs text-muted-foreground">
-                  {userCharacters.length} postav k dispozici
-                </span>
+                <span className="text-sm font-medium text-foreground">Píšete jako:</span>
               </div>
-              <div className="flex flex-wrap gap-2">
-                {userCharacters.map((character: any) => (
-                  <Button
-                    key={character.id}
-                    variant={currentCharacter?.id === character.id ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => {
-                      if (currentCharacter?.id !== character.id) {
-                        setChatCharacter(character);
-                        toast({
-                          title: "Postava změněna",
-                          description: `Nyní píšete jako ${character.firstName} ${character.lastName}`,
-                        });
-                      }
-                    }}
-                    className="text-xs"
-                  >
-                    <div className="flex items-center space-x-1">
-                      <div className="w-4 h-4 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center">
-                        <span className="text-primary-foreground text-xs">
-                          {character.firstName[0]}{character.lastName[0]}
-                        </span>
-                      </div>
-                      <span>{character.firstName} {character.lastName}</span>
-                    </div>
-                  </Button>
-                ))}
+              <div className="flex items-center space-x-2">
+                <div className="w-6 h-6 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center">
+                  <span className="text-primary-foreground text-xs">
+                    {currentCharacter.firstName[0]}{currentCharacter.lastName[0]}
+                  </span>
+                </div>
+                <span className="text-sm font-medium">{currentCharacter.firstName} {currentCharacter.lastName}</span>
               </div>
             </div>
           )}
