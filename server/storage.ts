@@ -286,6 +286,15 @@ export class DatabaseStorage implements IStorage {
       .where(eq(users.id, id));
   }
 
+  async updateUserNarratorPermissions(id: number, canNarrate: boolean): Promise<User | undefined> {
+    const [user] = await db
+      .update(users)
+      .set({ canNarrate, updatedAt: new Date() })
+      .where(eq(users.id, id))
+      .returning();
+    return user;
+  }
+
   // Character operations
   async getCharacter(id: number): Promise<Character | undefined> {
     const [character] = await db.select().from(characters).where(eq(characters.id, id));

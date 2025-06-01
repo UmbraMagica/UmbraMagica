@@ -3183,6 +3183,36 @@ Správa ubytování`
     }
   });
 
+  // Admin: Update user narrator permissions
+  app.patch("/api/admin/users/:id/narrator", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const userId = parseInt(req.params.id);
+      const { canNarrate, reason } = req.body;
+      const adminId = req.session.userId!;
+      
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Update narrator permissions
+      await storage.updateUserNarratorPermissions(userId, canNarrate);
+      
+      // Log admin activity
+      await storage.logAdminActivity({
+        adminId,
+        action: 'narrator_permission_change',
+        targetUserId: userId,
+        details: `Vypravěčská oprávnění pro uživatele ${user.username} ${canNarrate ? 'udělena' : 'odebrána'}${reason ? `. Důvod: ${reason}` : ''}`
+      });
+      
+      res.json({ message: "Narrator permissions updated successfully" });
+    } catch (error) {
+      console.error("Error updating narrator permissions:", error);
+      res.status(500).json({ message: "Failed to update narrator permissions" });
+    }
+  });
+
   // Admin chat management endpoints
   app.get('/api/admin/chat-categories', requireAuth, requireAdmin, async (req, res) => {
     try {

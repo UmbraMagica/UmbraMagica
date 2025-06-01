@@ -690,16 +690,17 @@ export default function Admin() {
     const categories = chatCategories || [];
     const currentIndex = categories.findIndex((c: any) => c.id === categoryId);
     if (currentIndex > 0) {
-      // Create new array with swapped positions
-      const newCategories = [...categories];
-      [newCategories[currentIndex], newCategories[currentIndex - 1]] = [newCategories[currentIndex - 1], newCategories[currentIndex]];
+      const currentCategory = categories[currentIndex];
+      const previousCategory = categories[currentIndex - 1];
       
-      // Update sort orders sequentially
-      newCategories.forEach((category: any, index: number) => {
-        updateCategorySortOrderMutation.mutate({ 
-          id: category.id, 
-          sortOrder: index + 1
-        });
+      // Swap only the two affected categories
+      updateCategorySortOrderMutation.mutate({ 
+        id: currentCategory.id, 
+        sortOrder: previousCategory.sortOrder 
+      });
+      updateCategorySortOrderMutation.mutate({ 
+        id: previousCategory.id, 
+        sortOrder: currentCategory.sortOrder 
       });
     }
   };
@@ -708,16 +709,17 @@ export default function Admin() {
     const categories = chatCategories || [];
     const currentIndex = categories.findIndex((c: any) => c.id === categoryId);
     if (currentIndex < categories.length - 1) {
-      // Create new array with swapped positions
-      const newCategories = [...categories];
-      [newCategories[currentIndex], newCategories[currentIndex + 1]] = [newCategories[currentIndex + 1], newCategories[currentIndex]];
+      const currentCategory = categories[currentIndex];
+      const nextCategory = categories[currentIndex + 1];
       
-      // Update sort orders sequentially
-      newCategories.forEach((category: any, index: number) => {
-        updateCategorySortOrderMutation.mutate({ 
-          id: category.id, 
-          sortOrder: index + 1
-        });
+      // Swap only the two affected categories
+      updateCategorySortOrderMutation.mutate({ 
+        id: currentCategory.id, 
+        sortOrder: nextCategory.sortOrder 
+      });
+      updateCategorySortOrderMutation.mutate({ 
+        id: nextCategory.id, 
+        sortOrder: currentCategory.sortOrder 
       });
     }
   };
@@ -726,16 +728,17 @@ export default function Admin() {
     const rooms = chatRooms || [];
     const currentIndex = rooms.findIndex((r: any) => r.id === roomId);
     if (currentIndex > 0) {
-      // Create new array with swapped positions
-      const newRooms = [...rooms];
-      [newRooms[currentIndex], newRooms[currentIndex - 1]] = [newRooms[currentIndex - 1], newRooms[currentIndex]];
+      const currentRoom = rooms[currentIndex];
+      const previousRoom = rooms[currentIndex - 1];
       
-      // Update sort orders sequentially
-      newRooms.forEach((room: any, index: number) => {
-        updateRoomSortOrderMutation.mutate({ 
-          id: room.id, 
-          sortOrder: index + 1
-        });
+      // Swap only the two affected rooms
+      updateRoomSortOrderMutation.mutate({ 
+        id: currentRoom.id, 
+        sortOrder: previousRoom.sortOrder 
+      });
+      updateRoomSortOrderMutation.mutate({ 
+        id: previousRoom.id, 
+        sortOrder: currentRoom.sortOrder 
       });
     }
   };
@@ -744,16 +747,17 @@ export default function Admin() {
     const rooms = chatRooms || [];
     const currentIndex = rooms.findIndex((r: any) => r.id === roomId);
     if (currentIndex < rooms.length - 1) {
-      // Create new array with swapped positions
-      const newRooms = [...rooms];
-      [newRooms[currentIndex], newRooms[currentIndex + 1]] = [newRooms[currentIndex + 1], newRooms[currentIndex]];
+      const currentRoom = rooms[currentIndex];
+      const nextRoom = rooms[currentIndex + 1];
       
-      // Update sort orders sequentially
-      newRooms.forEach((room: any, index: number) => {
-        updateRoomSortOrderMutation.mutate({ 
-          id: room.id, 
-          sortOrder: index + 1
-        });
+      // Swap only the two affected rooms
+      updateRoomSortOrderMutation.mutate({ 
+        id: currentRoom.id, 
+        sortOrder: nextRoom.sortOrder 
+      });
+      updateRoomSortOrderMutation.mutate({ 
+        id: nextRoom.id, 
+        sortOrder: currentRoom.sortOrder 
       });
     }
   };
