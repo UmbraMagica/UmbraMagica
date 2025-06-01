@@ -1008,6 +1008,7 @@ export default function ChatRoom() {
                   {renderMessageWithHighlight(message.content, user?.highlightWords, user?.highlightColor)}
                 </div>
               </div>
+            </div>
             );
           })}
           <div ref={messagesEndRef} />
