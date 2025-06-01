@@ -151,6 +151,8 @@ export default function UserSettings() {
         highlightColor: data.color 
       }),
     onSuccess: () => {
+      // Invalidate user data to refresh the cache
+      queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
       toast({
         title: "Zvýrazňovaná slova uložena",
         description: "Vaše nastavení zvýrazňování slov bylo úspěšně uloženo",
