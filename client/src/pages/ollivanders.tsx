@@ -640,10 +640,9 @@ export default function Ollivanders() {
                   <p><strong>10":</strong> Klasická délka</p>
                   <p><strong>11":</strong> Univerzální volba</p>
                   <p><strong>12":</strong> Standardní délka</p>
-                  <p><strong>13":</strong> Neobyčejný potenciál <span className="text-orange-600 dark:text-orange-400">[Ruční pouze]</span></p>
-                  <p><strong>14":</strong> Formální, velkolepá <span className="text-orange-600 dark:text-orange-400">[Ruční pouze]</span></p>
-                  <p><strong>15":</strong> Rarita, silné zaměření <span className="text-orange-600 dark:text-orange-400">[Ruční pouze]</span></p>
-                  <p><strong>16"+:</strong> Výstřední délka <span className="text-orange-600 dark:text-orange-400">[Ruční pouze]</span></p>
+                  <p><strong>13":</strong> Neobyčejný potenciál</p>
+                  <p><strong>14":</strong> Formální, velkolepá</p>
+                  <p><strong>15":</strong> Rarita, silné zaměření</p>
                 </div>
               </div>
 
@@ -651,17 +650,16 @@ export default function Ollivanders() {
               <div>
                 <h4 className="font-medium mb-2 text-indigo-600 dark:text-indigo-400">🌊 Ohebnost (11 stupňů)</h4>
                 <div className="text-xs space-y-1">
-                  <p><strong>Nezlomná:</strong> Nekompromisní povaha <span className="text-orange-600 dark:text-orange-400">[Ruční pouze]</span></p>
-                  <p><strong>Velmi nepoddajná:</strong> Rozhodní majitelé <span className="text-orange-600 dark:text-orange-400">[Ruční pouze]</span></p>
+                  <p><strong>Nezlomná:</strong> Nekompromisní povaha</p>
+                  <p><strong>Velmi nepoddajná:</strong> Rozhodní majitelé</p>
                   <p><strong>Nepoddajná:</strong> Stabilní čarodějové</p>
                   <p><strong>Mírně nepoddajná:</strong> Metodičtí čarodějové</p>
                   <p><strong>Pevná:</strong> Vyvážená stabilita</p>
                   <p><strong>Tvrdá:</strong> Tradiční magie</p>
                   <p><strong>Ohebná:</strong> Kreativní adaptabilita</p>
                   <p><strong>Pružná:</strong> Experimentální přístupy</p>
-                  <p><strong>Velmi pružná:</strong> Proměnlivá povaha <span className="text-orange-600 dark:text-orange-400">[Ruční pouze]</span></p>
-                  <p><strong>Výjimečně poddajná:</strong> Nejjemnější pohyby <span className="text-orange-600 dark:text-orange-400">[Ruční pouze]</span></p>
-                  <p><strong>Vrbovitá:</strong> Nejdelikátnější dotek <span className="text-orange-600 dark:text-orange-400">[Ruční pouze]</span></p>
+                  <p><strong>Velmi pružná:</strong> Proměnlivá povaha</p>
+                  <p><strong>Výjimečně poddajná:</strong> Nejjemnější pohyby</p>
                 </div>
               </div>
             </div>
