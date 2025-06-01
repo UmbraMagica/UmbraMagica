@@ -968,9 +968,9 @@ export default function ChatRoom() {
                 </Button>
               </div>
               
-              {/* Bottom row - Character selector and action buttons */}
+              {/* Bottom row - Character selector, action buttons and counter */}
               <div className="flex items-center justify-between">
-                {/* Left side - Character selector (if multiple characters) */}
+                {/* Left side - Character selector and action buttons */}
                 <div className="flex items-center gap-2">
                   {userCharacters.length > 1 ? (
                     <select
@@ -992,9 +992,56 @@ export default function ChatRoom() {
                       {currentCharacter?.firstName} {currentCharacter?.lastName}
                     </span>
                   )}
+                  
+                  {/* Action buttons as tiles with text */}
+                  <Button
+                    onClick={handleDiceRoll}
+                    disabled={!isConnected}
+                    variant="outline"
+                    size="sm"
+                    className="h-7 px-2 text-xs"
+                    title="Hodit kostkou (1d10)"
+                  >
+                    🎲 Kostka
+                  </Button>
+                  <Button
+                    onClick={handleCoinFlip}
+                    disabled={!isConnected}
+                    variant="outline"
+                    size="sm"
+                    className="h-7 px-2 text-xs"
+                    title="Hodit mincí (1d2)"
+                  >
+                    🪙 Mince
+                  </Button>
+                  {selectedSpell ? (
+                    <Button
+                      onClick={() => setSelectedSpell(null)}
+                      variant="default"
+                      size="sm"
+                      className="h-7 px-2 text-xs"
+                      title="Zrušit vybrané kouzlo"
+                    >
+                      <Wand2 className="h-3 w-3 mr-1" />
+                      {selectedSpell.name}
+                      <X className="h-2 w-2 ml-1" />
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={() => setShowSpellDialog(true)}
+                      disabled={!isConnected || characterSpells.length === 0}
+                      variant="outline"
+                      size="sm"
+                      className="h-7 px-2 text-xs"
+                      title="Vybrat kouzlo"
+                    >
+                      <Wand2 className="h-3 w-3 mr-1" />
+                      Kouzla
+                    </Button>
+                  )}
                 </div>
                 
-                {/* Right side - Action buttons and counter */}
+                {/* Right side - Character counter */}
                 <div className="flex items-center gap-2">
                   <Button
                     onClick={handleDiceRoll}
