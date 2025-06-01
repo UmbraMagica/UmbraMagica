@@ -156,13 +156,17 @@ export default function ChatRoomFixed() {
     );
   }
 
-  if (!canAccess) {
+  if (!canAccess && !charactersLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Card>
           <CardContent className="p-6">
             <h2 className="text-xl font-semibold mb-2">Přístup zamítnut</h2>
             <p>Pro přístup do chatu potřebujete alespoň jednu živou postavu.</p>
+            <div className="mt-4 text-sm text-muted-foreground">
+              <p>Debug: Načteno {allUserCharacters.length} postav, filtrováno {userCharacters.length}</p>
+              <p>Role: {user?.role}</p>
+            </div>
           </CardContent>
         </Card>
       </div>
