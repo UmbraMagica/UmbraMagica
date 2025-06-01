@@ -57,11 +57,25 @@ export default function CharacterEditFixedNav() {
     enabled: !!user,
   });
   
-  // Get primary character (first alive character if no ID provided)
-  const primaryCharacter = characterIdFromUrl 
-    ? (userCharacters as any[])?.find((c: any) => c.id === parseInt(characterIdFromUrl))
-    : (userCharacters as any[])?.find((c: any) => !c.deathDate) || (userCharacters as any[])?.[0];
+  // Get selected character from localStorage first, then fallback to URL or first alive character
+  const getSelectedCharacter = () => {
+    if (characterIdFromUrl) {
+      // If URL has character ID, use that
+      return (userCharacters as any[])?.find((c: any) => c.id === parseInt(characterIdFromUrl));
+    }
+    
+    // Try to get selected character from localStorage
+    const selectedCharacterId = localStorage.getItem('selectedCharacterId');
+    if (selectedCharacterId && userCharacters) {
+      const selectedChar = (userCharacters as any[])?.find((c: any) => c.id === parseInt(selectedCharacterId));
+      if (selectedChar) return selectedChar;
+    }
+    
+    // Fallback to first alive character or first character
+    return (userCharacters as any[])?.find((c: any) => !c.deathDate) || (userCharacters as any[])?.[0];
+  };
 
+  const primaryCharacter = getSelectedCharacter();
   const characterId = characterIdFromUrl || primaryCharacter?.id;
 
   const isAdmin = user?.role === 'admin';
@@ -416,7 +430,7 @@ export default function CharacterEditFixedNav() {
                     <Button 
                       type="button" 
                       variant="outline" 
-                      onClick={() => setLocation(isAdmin ? "/admin" : `/character/${characterId}`)}
+                      onClick={() => setLocation(isAdmin ? "/admin" : "/")}
                       className="border-border text-muted-foreground hover:text-foreground"
                     >
                       <ArrowLeft className="h-4 w-4 mr-2" />
