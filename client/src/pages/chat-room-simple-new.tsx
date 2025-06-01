@@ -163,6 +163,15 @@ export default function ChatRoom() {
   // Check if user needs a character (non-admin users need a character)
   const needsCharacter = user?.role !== 'admin';
   
+  // Debug information
+  console.log('Chat access debug:', {
+    userRole: user?.role,
+    needsCharacter,
+    userCharactersLength: userCharacters.length,
+    chatCharacter: chatCharacter?.firstName + ' ' + chatCharacter?.lastName,
+    allUserCharacters: allUserCharacters.map(c => ({ id: c.id, name: c.firstName + ' ' + c.lastName, deathDate: c.deathDate }))
+  });
+  
   // If characters are available but none is selected yet, wait for initialization
   if (needsCharacter && userCharacters.length > 0 && !chatCharacter) {
     return (
@@ -170,6 +179,9 @@ export default function ChatRoom() {
         <div className="text-center">
           <h2 className="text-xl font-semibold mb-2">Načítání postavy...</h2>
           <p className="text-muted-foreground">Inicializuji chatovací postavu.</p>
+          <p className="text-xs text-muted-foreground mt-2">
+            Dostupné postavy: {userCharacters.length}, Role: {user?.role}
+          </p>
         </div>
       </div>
     );
@@ -182,6 +194,9 @@ export default function ChatRoom() {
         <div className="text-center">
           <h2 className="text-xl font-semibold mb-2">Postava nenalezena</h2>
           <p className="text-muted-foreground">Pro přístup do chatu potřebujete aktivní postavu.</p>
+          <p className="text-xs text-muted-foreground mt-2">
+            Celkem postav: {allUserCharacters.length}, Živých postav: {userCharacters.length}
+          </p>
           <Link href="/character/edit">
             <Button className="mt-4">Vytvořit postavu</Button>
           </Link>
