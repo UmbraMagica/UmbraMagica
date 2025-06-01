@@ -70,13 +70,13 @@ function renderMessageWithHighlight(content: string, highlightWords?: string, hi
     const regex = new RegExp(`(${escapedWord})`, 'gi');
     const colorClass = (() => {
       switch (highlightColor || 'yellow') {
-        case 'yellow': return 'bg-yellow-200 text-yellow-900 dark:bg-yellow-700 dark:text-yellow-100';
-        case 'purple': return 'bg-purple-200 text-purple-900 dark:bg-purple-700 dark:text-purple-100';
-        case 'blue': return 'bg-blue-200 text-blue-900 dark:bg-blue-700 dark:text-blue-100';
-        case 'green': return 'bg-green-200 text-green-900 dark:bg-green-700 dark:text-green-100';
-        case 'red': return 'bg-red-200 text-red-900 dark:bg-red-700 dark:text-red-100';
-        case 'pink': return 'bg-pink-200 text-pink-900 dark:bg-pink-700 dark:text-pink-100';
-        default: return 'bg-yellow-200 text-yellow-900 dark:bg-yellow-700 dark:text-yellow-100';
+        case 'yellow': return 'bg-yellow-200 text-yellow-900';
+        case 'purple': return 'bg-purple-200 text-purple-900';
+        case 'blue': return 'bg-blue-200 text-blue-900';
+        case 'green': return 'bg-green-200 text-green-900';
+        case 'red': return 'bg-red-200 text-red-900';
+        case 'pink': return 'bg-pink-200 text-pink-900';
+        default: return 'bg-yellow-200 text-yellow-900';
       }
     })();
     highlightedContent = highlightedContent.replace(regex, `<span class="px-1 rounded ${colorClass}">$1</span>`);
