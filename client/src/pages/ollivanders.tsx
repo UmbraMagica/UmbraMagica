@@ -605,28 +605,26 @@ export default function Ollivanders() {
                   <p><strong>🦄 Vlas z hřívy jednorožce:</strong> Nejvěrnější, léčivá kouzla</p>
                   <p><strong>🔥 Pero fénixe:</strong> Nejrřídší, největší kouzla</p>
                   
-                  <div className="font-medium text-blue-600 dark:text-blue-400 mt-2">Méně ušlechtilé:</div>
-                  <p><strong>🕷️ Střevo akromantuly:</strong> Nestabilní, ale mocné <span className="text-orange-600 dark:text-orange-400">[Ruční pouze]</span></p>
-                  <p><strong>🐍 Kožešina kappa:</strong> Vodní magie</p>
-                  <p><strong>🌙 Prach z rohu jednorožce:</strong> Léčivé vlastnosti</p>
-                  <p><strong>🗲 Kormidlo bouře:</strong> Ovládání počasí</p>
-                  <p><strong>🌟 Hvězdný prach:</strong> Astronomická magie</p>
-                  <p><strong>🌿 Srst z srdce stvoření:</strong> Přírodnická magie</p>
-                  <p><strong>🦅 Pero sokola:</strong> Rychlost a přesnost</p>
-                  <p><strong>🐨 Chlup z vousu koala:</strong> Klid a moudrost</p>
-                  <p><strong>🌊 Slza mořské sirény:</strong> Emocionální magie</p>
-                  <p><strong>🌸 Květina z magické louky:</strong> Přírodní magie</p>
-                  <p><strong>🔮 Krystal z jeskyně věštby:</strong> Věšteckká síla</p>
-                  <p><strong>⚡ Blesk ze srdce bouře:</strong> Elementární magie</p>
-                  <p><strong>🍀 List čtyřlístku:</strong> Štěstí a náhoda</p>
-                  <p><strong>🌙 Prach z meteoru:</strong> Kosmická síla</p>
-                  <p><strong>💎 Úlomek z magického kamene:</strong> Stabilita</p>
-                  <p><strong>🕊️ Pero holubice míru:</strong> Harmonická magie</p>
-                  <p><strong>🌿 Kořen prastarého stromu:</strong> Původní síla</p>
-                  <p><strong>🦋 Křídlo kouzelného motýla:</strong> Transformace</p>
+                  <div className="font-medium text-blue-600 dark:text-blue-400 mt-2">Rostlinná jádra:</div>
+                  <p><strong>🌱 Kořen mandragory:</strong> Spojení se zemí a životní silou</p>
+                  <p><strong>🌸 Květ Asfodelu:</strong> Vztah ke smrti a přechodu</p>
+                  <p><strong>🍃 List měsíční kapradiny:</strong> Iluze a neviditelnost</p>
                   
-                  <div className="font-medium text-gray-600 dark:text-gray-400 mt-2">Nejméně ušlechtilé:</div>
-                  <p><strong>🐺 Tesák vlkodlaka:</strong> Brutální a agresivní magie <span className="text-orange-600 dark:text-orange-400">[Ruční pouze]</span></p>
+                  <div className="font-medium text-purple-600 dark:text-purple-400 mt-2">Tvorové:</div>
+                  <p><strong>🐺 Zub vlkodlaka:</strong> Útočná kouzla a transformace <span className="text-orange-600 dark:text-orange-400">[Ruční pouze]</span></p>
+                  <p><strong>🕷️ Jed z akromantule:</strong> Subtilní jedovatá magie <span className="text-orange-600 dark:text-orange-400">[Ruční pouze]</span></p>
+                  <p><strong>🐍 Hadí jazyk:</strong> Hadomluvy a temná zaklínadla</p>
+                  <p><strong>🦉 Opeření stínového hippogryfa:</strong> Kouzla spánku a vizí</p>
+                  
+                  <div className="font-medium text-indigo-600 dark:text-indigo-400 mt-2">Elementární:</div>
+                  <p><strong>🪨 Dračí kámen:</strong> Vztah k oběti a krvi</p>
+                  <p><strong>🖤 Obsidián s runovým leptem:</strong> Magie štítů a ochrany</p>
+                  <p><strong>🔮 Měsíční kámen:</strong> Ženská magie a věštění</p>
+                  <p><strong>⚡ Rudý jantar s duší hmyzího krále:</strong> Experimentální magie</p>
+                  
+                  <div className="font-medium text-gray-600 dark:text-gray-400 mt-2">Méně ušlechtilé:</div>
+                  <p><strong>🧝‍♀️ Vlas víly:</strong> Krásné, ale nestálé</p>
+                  <p><strong>🦴 Nehet ďasovce:</strong> Brutální primitivní magie</p>
                 </div>
               </div>
             </div>
