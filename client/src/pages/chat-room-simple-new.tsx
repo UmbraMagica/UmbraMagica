@@ -864,28 +864,86 @@ export default function ChatRoom() {
 
         {/* Messages */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {localMessages.map((message) => (
-            <div key={message.id} className="flex items-start gap-3">
-              <CharacterAvatar character={message.character} size="sm" />
-              <div className="flex-1 min-w-0">
-                <div className="flex items-baseline gap-2 mb-1">
-                  <Link 
-                    href={`/characters/${message.characterId}`}
-                    className="font-medium text-sm hover:text-primary hover:underline cursor-pointer"
-                  >
-                    {message.character.firstName} {message.character.lastName}
-                  </Link>
+          {localMessages.map((message) => {
+            // Check if this is a narrator message
+            const isNarratorMessage = message.messageType === 'narrator' || message.characterId === 0;
+            
+            return (
+              <div key={message.id} className="flex items-start gap-3">
+                {/* Avatar - special handling for narrator messages */}
+                {isNarratorMessage ? (
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+                       style={{
+                         backgroundColor: '#8b5cf6' // Default purple for narrator
+                       }}>
+                    <span className="text-xs font-bold text-white">V</span>
+                  </div>
+                ) : (
+                  <CharacterAvatar character={message.character} size="sm" />
+                )}
+                
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-baseline gap-2 mb-1">
+                    {isNarratorMessage ? (
+                      <span className="font-medium text-sm italic"
+                            style={{ color: '#8b5cf6' }}>
+                        Vypravěč
+                      </span>
+                    ) : (
+                      <Link 
+                        href={`/characters/${message.characterId}`}
+                        className="font-medium text-sm hover:text-primary hover:underline cursor-pointer"
+                      >
+                        {message.character.firstName} {message.character.lastName}
+                      </Link>
+                    )}
                   <span className="text-xs text-muted-foreground">
                     {new Date(message.createdAt).toLocaleTimeString('cs-CZ', {
                       hour: '2-digit',
                       minute: '2-digit'
                     })}
                   </span>
-                  {/* Character change button - show for own messages within 5 minutes */}
+                  {/* Action buttons for own messages */}
                   {(() => {
                     const messageTime = new Date(message.createdAt);
                     const now = new Date();
                     const timeDiffMinutes = (now.getTime() - messageTime.getTime()) / (1000 * 60);
+                    
+                    // For narrator messages - check if user is the author and within 2 minutes
+                    if (isNarratorMessage) {
+                      const canDeleteNarrator = message.userId === user?.id && timeDiffMinutes <= 2;
+                      return canDeleteNarrator && (
+                        <Button
+                          onClick={() => {
+                            if (confirm('Opravdu chcete smazat tuto vypravěčskou zprávu?')) {
+                              apiRequest("DELETE", `/api/chat/messages/${message.id}`)
+                                .then(() => {
+                                  queryClient.invalidateQueries({ queryKey: ["/api/chat/rooms", currentRoomId, "messages"] });
+                                  toast({
+                                    title: "Zpráva smazána",
+                                    description: "Vypravěčská zpráva byla úspěšně smazána",
+                                  });
+                                })
+                                .catch(() => {
+                                  toast({
+                                    title: "Chyba",
+                                    description: "Nepodařilo se smazat zprávu",
+                                    variant: "destructive",
+                                  });
+                                });
+                            }
+                          }}
+                          variant="ghost"
+                          size="sm"
+                          className="h-5 w-5 p-0 text-xs"
+                          title="Smazat vypravěčskou zprávu"
+                        >
+                          <X className="h-3 w-3" />
+                        </Button>
+                      );
+                    }
+                    
+                    // For regular character messages - show character change option
                     const isOwnMessage = userCharacters.some((char: any) => char.id === message.characterId);
                     const canChangeCharacter = isOwnMessage && timeDiffMinutes <= 5;
                     
@@ -928,22 +986,30 @@ export default function ChatRoom() {
                     );
                   })()}
                 </div>
-                <p className={`text-sm !break-words !whitespace-pre-wrap !overflow-wrap-anywhere !word-break-break-all max-w-full ${
+                
+                {/* Message content with special styling for narrator messages */}
+                <div className={`text-sm !break-words !whitespace-pre-wrap !overflow-wrap-anywhere !word-break-break-all max-w-full ${
+                  isNarratorMessage ? 'italic font-medium p-3 rounded-lg border-l-4' : ''
+                } ${
                   message.character.firstName === 'Správa' && message.character.lastName === 'ubytování' 
                     ? 'text-blue-600 dark:text-blue-400' 
                     : 'text-foreground'
                 }`} style={{ 
-                  wordWrap: 'break-word', 
+                  wordWrap: 'break-word',
                   overflowWrap: 'anywhere', 
                   wordBreak: 'break-all',
                   whiteSpace: 'pre-wrap',
-                  maxWidth: '100%'
+                  maxWidth: '100%',
+                  ...(isNarratorMessage && {
+                    backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                    borderLeftColor: '#8b5cf6'
+                  })
                 }}>
                   {renderMessageWithHighlight(message.content, user?.highlightWords, user?.highlightColor)}
-                </p>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
           <div ref={messagesEndRef} />
         </div>
 
@@ -1111,6 +1177,96 @@ export default function ChatRoom() {
               </div>
             </div>
           </div>
+          
+          {/* Narrator Input - Only show when narrator mode is active */}
+          {isNarratorMode && user?.canNarrate && (
+            <div className="flex items-start gap-3 mt-3 pt-3 border-t">
+              {/* Narrator Avatar */}
+              <div className="relative flex-shrink-0">
+                <div className="w-12 h-12 rounded-full flex items-center justify-center"
+                     style={{
+                       backgroundColor: 
+                         user.narratorColor === 'yellow' ? '#fbbf24' :
+                         user.narratorColor === 'red' ? '#ef4444' :
+                         user.narratorColor === 'blue' ? '#3b82f6' :
+                         user.narratorColor === 'green' ? '#10b981' :
+                         user.narratorColor === 'pink' ? '#ec4899' :
+                         '#8b5cf6'
+                     }}>
+                  <span className="text-lg font-bold text-white">V</span>
+                </div>
+              </div>
+              
+              {/* Narrator input */}
+              <div className="flex-1 space-y-2">
+                <div className="flex items-end gap-2">
+                  <textarea
+                    value={narratorMessage}
+                    onChange={(e) => setNarratorMessage(e.target.value)}
+                    placeholder="Vypravěčská zpráva..."
+                    className="flex-1 min-h-[2.5rem] max-h-[10rem] resize-none text-sm border rounded-md px-3 py-2 bg-background focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+                    style={{
+                      borderColor: 
+                        user.narratorColor === 'yellow' ? '#fbbf24' :
+                        user.narratorColor === 'red' ? '#ef4444' :
+                        user.narratorColor === 'blue' ? '#3b82f6' :
+                        user.narratorColor === 'green' ? '#10b981' :
+                        user.narratorColor === 'pink' ? '#ec4899' :
+                        '#8b5cf6'
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        handleNarratorMessage();
+                      }
+                    }}
+                    maxLength={5000}
+                    rows={1}
+                    onInput={(e) => {
+                      const target = e.target as HTMLTextAreaElement;
+                      target.style.height = 'auto';
+                      target.style.height = Math.min(target.scrollHeight, 160) + 'px';
+                    }}
+                  />
+                  <Button
+                    onClick={handleNarratorMessage}
+                    disabled={!isConnected || !narratorMessage.trim() || narratorMessage.length > 5000}
+                    size="sm"
+                    className="h-10 px-4 text-sm"
+                    style={{
+                      backgroundColor: 
+                        user.narratorColor === 'yellow' ? '#fbbf24' :
+                        user.narratorColor === 'red' ? '#ef4444' :
+                        user.narratorColor === 'blue' ? '#3b82f6' :
+                        user.narratorColor === 'green' ? '#10b981' :
+                        user.narratorColor === 'pink' ? '#ec4899' :
+                        '#8b5cf6'
+                    }}
+                  >
+                    Vypravět
+                  </Button>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <span className="text-xs italic"
+                        style={{
+                          color: 
+                            user.narratorColor === 'yellow' ? '#fbbf24' :
+                            user.narratorColor === 'red' ? '#ef4444' :
+                            user.narratorColor === 'blue' ? '#3b82f6' :
+                            user.narratorColor === 'green' ? '#10b981' :
+                            user.narratorColor === 'pink' ? '#ec4899' :
+                            '#8b5cf6'
+                        }}>
+                    Režim vypravěče aktivní
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    {narratorMessage.length}/5000
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
