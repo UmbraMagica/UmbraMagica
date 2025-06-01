@@ -1460,17 +1460,17 @@ export default function UserSettings() {
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="flex items-center gap-2">
-                  <User className="h-5 w-5" />
-                  Pořadí postav v chatu
-                </CardTitle>
-                <Button
-                  variant="ghost"
-                  size="sm"
+                <CardTitle 
+                  className="flex items-center gap-2 cursor-pointer hover:text-accent-foreground"
                   onClick={() => toggleSection('characterOrder')}
                 >
-                  {collapsedSections.characterOrder ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
-                </Button>
+                  <User className="h-5 w-5" />
+                  Pořadí postav v chatu
+                  {collapsedSections.characterOrder ? 
+                    <ChevronDown className="h-4 w-4" /> : 
+                    <ChevronUp className="h-4 w-4" />
+                  }
+                </CardTitle>
               </div>
             </CardHeader>
             {!collapsedSections.characterOrder && (
@@ -1558,17 +1558,17 @@ export default function UserSettings() {
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="flex items-center gap-2">
-                  <Eye className="h-5 w-5" />
-                  Zvýrazňování slov v chatu
-                </CardTitle>
-                <Button
-                  variant="ghost"
-                  size="sm"
+                <CardTitle 
+                  className="flex items-center gap-2 cursor-pointer hover:text-accent-foreground"
                   onClick={() => toggleSection('highlightWords')}
                 >
-                  {collapsedSections.highlightWords ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
-                </Button>
+                  <Eye className="h-5 w-5" />
+                  Zvýrazňování slov v chatu
+                  {collapsedSections.highlightWords ? 
+                    <ChevronDown className="h-4 w-4" /> : 
+                    <ChevronUp className="h-4 w-4" />
+                  }
+                </CardTitle>
               </div>
             </CardHeader>
             {!collapsedSections.highlightWords && (

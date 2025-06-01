@@ -878,7 +878,11 @@ export default function ChatRoom() {
                     );
                   })()}
                 </div>
-                <p className="text-sm text-foreground break-words whitespace-pre-wrap">
+                <p className={`text-sm break-words whitespace-pre-wrap ${
+                  message.character.firstName === 'Správa' && message.character.lastName === 'ubytování' 
+                    ? 'text-blue-600 dark:text-blue-400' 
+                    : 'text-foreground'
+                }`}>
                   {renderMessageWithHighlight(message.content, user?.highlightWords, user?.highlightColor)}
                 </p>
               </div>

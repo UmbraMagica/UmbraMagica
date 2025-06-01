@@ -1780,21 +1780,21 @@ export class DatabaseStorage implements IStorage {
     // Send automatic message from "Ubytovací správa" (character ID 11)
     const housingAdminCharacterId = 11;
     let approvalMessage = `Vážený/á ${character.firstName} ${character.lastName},\n\n`;
-    approvalMessage += `Vaše žádost o bydlení byla schválena.\n\n`;
-    approvalMessage += `Přidělená adresa: ${assignedAddress}\n`;
-    approvalMessage += `Typ: ${this.getHousingTypeDescription(request.requestType)}`;
+    approvalMessage += `Vaše žádost o bydlení byla schválena!\n\n`;
+    approvalMessage += `📍 **Přidělená adresa:** ${assignedAddress}\n`;
+    approvalMessage += `🏠 **Typ bydlení:** ${this.getHousingTypeDescription(request.requestType)}\n`;
     if (request.size) {
-      approvalMessage += ` (${request.size})`;
+      approvalMessage += `📏 **Velikost:** ${request.size}\n`;
     }
     if (request.housingName) {
-      approvalMessage += `\nNázev: ${request.housingName}`;
-      approvalMessage += `\nVytvořena privátní chatovací místnost`;
+      approvalMessage += `🏡 **Název:** ${request.housingName}\n`;
+      approvalMessage += `🔑 **Vytvořena chat místnost** pro vaše bydlení\n`;
     }
-    approvalMessage += `\n\nAdresa byla přidána do profilu vaší postavy.`;
-    if (reviewNote && reviewNote !== "Automaticky schváleno - ubytovna") {
-      approvalMessage += `\n\nPoznámka: ${reviewNote}`;
+    approvalMessage += `\nAdresa byla přidána do vašeho profilu postavy.\n\n`;
+    if (reviewNote) {
+      approvalMessage += `**Poznámka správy:** ${reviewNote}\n\n`;
     }
-    approvalMessage += `\n\nS pozdravem,\nUbytovací správa`;
+    approvalMessage += `S přátelskými pozdravy,\nUbytovací správa`;
 
     // Create owl post message
     await db.insert(owlPostMessages).values({
