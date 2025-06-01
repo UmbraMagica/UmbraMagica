@@ -1290,7 +1290,7 @@ export default function Admin() {
                                   <Button
                                     variant="ghost"
                                     size="sm"
-                                    onClick={() => setLocation(`/characters/${character.id}`)}
+                                    onClick={() => setLocation(`/characters/${character.id}?from=admin`)}
                                     className="text-purple-400 hover:text-purple-300 h-6 w-6 p-0"
                                     title="Zobrazit profil postavy"
                                   >
@@ -1365,7 +1365,7 @@ export default function Admin() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => setLocation(`/characters/${character.id}`)}
+                          onClick={() => setLocation(`/characters/${character.id}?from=admin`)}
                           className="text-purple-400 hover:text-purple-300"
                           title="Zobrazit profil postavy"
                         >

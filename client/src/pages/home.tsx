@@ -813,7 +813,7 @@ export default function Home() {
                           size="sm"
                           onClick={(e) => {
                             e.stopPropagation();
-                            setLocation(`/characters/${character.id}/edit`);
+                            setLocation(`/characters/${character.id}/edit?from=home`);
                           }}
                           className="text-muted-foreground hover:text-foreground ml-2"
                         >

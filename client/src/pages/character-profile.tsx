@@ -34,6 +34,10 @@ export default function CharacterProfile() {
   const { id } = useParams();
   const [, setLocation] = useLocation();
   const { user } = useAuth();
+  
+  // Get the 'from' parameter from URL to determine navigation
+  const urlParams = new URLSearchParams(window.location.search);
+  const fromPage = urlParams.get('from');
 
   const { data: character, isLoading, error } = useQuery<Character>({
     queryKey: [`/api/characters/${id}`],
@@ -49,11 +53,11 @@ export default function CharacterProfile() {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => setLocation(user?.role === 'admin' ? '/admin' : '/')}
+            onClick={() => setLocation(fromPage === 'admin' ? '/admin' : '/')}
             className="flex items-center gap-2"
           >
             <ArrowLeft className="h-4 w-4" />
-            {user?.role === 'admin' ? 'Zpět do administrace' : 'Zpět na hlavní stránku'}
+            {fromPage === 'admin' ? 'Zpět do administrace' : 'Zpět na hlavní stránku'}
           </Button>
         </div>
         <div className="text-center">Načítání profilu postavy...</div>
