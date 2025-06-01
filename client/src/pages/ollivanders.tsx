@@ -270,6 +270,15 @@ export default function Ollivanders() {
                 <li>• Každá postava může mít pouze jednu hůlku</li>
               </ul>
             </div>
+            
+            <div className="bg-blue-50 dark:bg-blue-950/30 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+              <p className="text-sm font-medium mb-2 text-blue-900 dark:text-blue-100">Dostupnost komponent:</p>
+              <ul className="text-sm text-blue-800 dark:text-blue-200 space-y-1">
+                <li>• <span className="font-medium">Náhodný výběr:</span> Ollivander vybírá ze standardně dostupných komponent</li>
+                <li>• <span className="font-medium">Ruční tvorba:</span> Můžete si vybrat z úplného sortimentu včetně vzácných materiálů</li>
+                <li>• <span className="bg-amber-100 dark:bg-amber-900 text-amber-800 dark:text-amber-200 px-1 rounded text-xs">Ruční pouze</span> komponenty nejsou používány při náhodném výběru</li>
+              </ul>
+            </div>
           </CardContent>
         </Card>
 

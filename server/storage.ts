@@ -1278,7 +1278,7 @@ export class DatabaseStorage implements IStorage {
     // Generate random selections from available components
     const randomCore = coresToUse[Math.floor(Math.random() * coresToUse.length)];
     const randomWood = woodsToUse[Math.floor(Math.random() * woodsToUse.length)];
-    const randomLength = lengthsToUse[Math.floor(Math.random() * Math.min(lengthsToUse.length, 6))]; // Limit to first 6 (up to 12")
+    const randomLength = lengthsToUse[Math.floor(Math.random() * lengthsToUse.length)]; // Use all available lengths
     const randomFlexibility = flexibilitiesToUse[Math.floor(Math.random() * flexibilitiesToUse.length)];
 
     const description = `Hůlka z ${randomWood.name.toLowerCase()}, ${randomLength.name} dlouhá, ${randomFlexibility.name.toLowerCase()}, s jádrem ${randomCore.name.toLowerCase()}. Vybrána Ollivanderem osobně pro svého nového majitele.`;
