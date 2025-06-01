@@ -80,7 +80,7 @@ export default function Ollivanders() {
   // Get currently selected character's wand
   const { data: characterWand, isLoading: wandLoading } = useQuery<Wand | null>({
     queryKey: [`/api/characters/${mainCharacter?.id}/wand`],
-    enabled: !!mainCharacter?.id,
+    enabled: !!mainCharacter?.id && mainCharacter.id !== undefined,
     staleTime: 0, // Force fresh data
     gcTime: 0     // Don't cache (TanStack Query v5)
   });
