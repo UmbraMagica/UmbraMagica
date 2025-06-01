@@ -237,17 +237,23 @@ export default function ChatRoom() {
       setIsConnected(true);
       setWs(newWs);
       
-      // Join the room
-      newWs.send(JSON.stringify({
-        type: 'join-room',
-        roomId: currentRoomId,
-        character: chatCharacter ? {
-          id: chatCharacter.id,
-          firstName: chatCharacter.firstName,
-          middleName: chatCharacter.middleName,
-          lastName: chatCharacter.lastName
-        } : null
-      }));
+      // Join the room - first authenticate, then join
+      if (user && chatCharacter) {
+        newWs.send(JSON.stringify({
+          type: 'authenticate',
+          sessionId: 'session-' + user.id, // Simple session ID
+          userId: user.id,
+          characterId: chatCharacter.id
+        }));
+        
+        // Wait a bit then join room
+        setTimeout(() => {
+          newWs.send(JSON.stringify({
+            type: 'join_room',
+            roomId: currentRoomId
+          }));
+        }, 100);
+      }
     };
 
     newWs.onmessage = (event) => {
@@ -267,6 +273,9 @@ export default function ChatRoom() {
           });
         } else if (data.type === 'room-update') {
           queryClient.invalidateQueries({ queryKey: ["/api/chat/rooms"] });
+        } else if (data.type === 'presence_update') {
+          // Update room presence data and invalidate query for fresh data
+          queryClient.invalidateQueries({ queryKey: [`/api/chat/rooms/${currentRoomId}/presence`] });
         } else if (data.type === 'character-presence') {
           setPresentCharacters(data.characters || []);
         }
