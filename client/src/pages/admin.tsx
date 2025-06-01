@@ -121,6 +121,7 @@ export default function Admin() {
   const [isChatManagementCollapsed, setIsChatManagementCollapsed] = useState(true);
   const [isCemeteryCollapsed, setIsCemeteryCollapsed] = useState(true);
   const [isAdminActivityCollapsed, setIsAdminActivityCollapsed] = useState(true);
+  const [isMagicalItemsCollapsed, setIsMagicalItemsCollapsed] = useState(true);
 
   // Chat management state
   const [newCategoryName, setNewCategoryName] = useState("");
@@ -2161,15 +2162,20 @@ export default function Admin() {
 
           {/* Správa magických předmětů a kouzel */}
           <Card>
-            <CardHeader>
+            <CardHeader className="cursor-pointer" onClick={() => setIsMagicalItemsCollapsed(!isMagicalItemsCollapsed)}>
               <CardTitle className="text-xl font-semibold text-foreground flex items-center">
-                <div className="flex items-center">
-                  <div className="text-2xl mr-3">🪄</div>
-                  Správa magických předmětů a kouzel
-                </div>
+                <div className="text-2xl mr-3">🪄</div>
+                Správa magických předmětů a kouzel
+                {isMagicalItemsCollapsed ? (
+                  <ChevronDown className="ml-auto h-4 w-4" />
+                ) : (
+                  <ChevronUp className="ml-auto h-4 w-4" />
+                )}
               </CardTitle>
             </CardHeader>
-            <CardContent>
+
+            {!isMagicalItemsCollapsed && (
+              <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Button
                   onClick={() => setLocation('/admin/spells')}
@@ -2191,7 +2197,8 @@ export default function Admin() {
                   <div className="text-sm text-muted-foreground">Editace dřev, jader, délek a ohebností hůlek</div>
                 </Button>
               </div>
-            </CardContent>
+              </CardContent>
+            )}
           </Card>
 
           {/* Hřbitov */}

@@ -3634,5 +3634,51 @@ Správa ubytování`
     }
   });
 
+  // Update category sort order
+  app.put('/api/admin/chat-categories/:id/sort-order', requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const categoryId = parseInt(req.params.id);
+      const { sortOrder } = req.body;
+      
+      if (typeof sortOrder !== 'number') {
+        return res.status(400).json({ message: 'Sort order must be a number' });
+      }
+      
+      const category = await storage.updateChatCategorySortOrder(categoryId, sortOrder);
+      
+      if (!category) {
+        return res.status(404).json({ message: 'Category not found' });
+      }
+      
+      res.json(category);
+    } catch (error) {
+      console.error('Error updating category sort order:', error);
+      res.status(500).json({ message: 'Failed to update category sort order' });
+    }
+  });
+
+  // Update room sort order
+  app.put('/api/admin/chat-rooms/:id/sort-order', requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const roomId = parseInt(req.params.id);
+      const { sortOrder } = req.body;
+      
+      if (typeof sortOrder !== 'number') {
+        return res.status(400).json({ message: 'Sort order must be a number' });
+      }
+      
+      const room = await storage.updateChatRoomSortOrder(roomId, sortOrder);
+      
+      if (!room) {
+        return res.status(404).json({ message: 'Room not found' });
+      }
+      
+      res.json(room);
+    } catch (error) {
+      console.error('Error updating room sort order:', error);
+      res.status(500).json({ message: 'Failed to update room sort order' });
+    }
+  });
+
   return httpServer;
 }
