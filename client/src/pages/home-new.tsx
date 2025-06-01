@@ -116,18 +116,20 @@ export default function Home() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-
+  
+  // Simple mobile detection
+  const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
+  
   useEffect(() => {
-    const checkScreenSize = () => {
-      setIsMobile(window.innerWidth < 1024);
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
     };
     
-    checkScreenSize();
-    window.addEventListener('resize', checkScreenSize);
-    
-    return () => window.removeEventListener('resize', checkScreenSize);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
+  
+  const isMobile = windowWidth < 1024;
 
 
   const { data: onlineCharacters = [] } = useQuery<OnlineCharacter[]>({
@@ -180,7 +182,8 @@ export default function Home() {
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-4">
               <div className="text-xl font-bold text-accent">RPG Realm</div>
-              <div className={`items-center space-x-2 ${isMobile ? 'hidden' : 'flex'}`}>
+              {!isMobile && (
+                <div className="flex items-center space-x-2">
                 <Button variant="ghost" className="text-foreground hover:text-accent" onClick={() => setLocation('/')}>
                   <HomeIcon className="mr-2 h-4 w-4" />
                   Domov
@@ -206,11 +209,13 @@ export default function Home() {
                     Administrace
                   </Button>
                 )}
-              </div>
+                </div>
+              )}
             </div>
             <div className="flex items-center space-x-4">
-              <div className={`items-center space-x-4 ${isMobile ? 'hidden' : 'flex'}`}>
-                <div className="text-sm text-muted-foreground">{user?.username}</div>
+              {!isMobile && (
+                <div className="flex items-center space-x-4">
+                  <div className="text-sm text-muted-foreground">{user?.username}</div>
                 {user?.role === 'admin' && (
                   <div className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-amber-500/20 text-amber-400">
                     <Crown className="h-3 w-3 mr-1" />
@@ -228,7 +233,8 @@ export default function Home() {
                 >
                   <LogOut className="h-4 w-4" />
                 </Button>
-              </div>
+                </div>
+              )}
               
               {/* Mobile menu button */}
               <div className={`${isMobile ? 'block' : 'hidden'}`}>
@@ -246,8 +252,8 @@ export default function Home() {
         </div>
         
         {/* Mobile menu dropdown */}
-        {mobileMenuOpen && (
-          <div className="lg:hidden border-t border-border bg-card">
+        {mobileMenuOpen && isMobile && (
+          <div className="border-t border-border bg-card">
             <div className="px-4 py-2 space-y-1">
               <Button variant="ghost" className="w-full justify-start text-foreground hover:text-accent" onClick={() => {setLocation('/'); setMobileMenuOpen(false);}}>
                 <HomeIcon className="mr-2 h-4 w-4" />
