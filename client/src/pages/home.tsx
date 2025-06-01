@@ -31,7 +31,9 @@ import {
   Globe,
   Bird,
   Newspaper,
-  ChevronDown
+  ChevronDown,
+  Menu,
+  X
 } from "lucide-react";
 import { GameDate } from "@/components/GameDate";
 import { calculateGameAge } from "@/lib/gameDate";
@@ -51,6 +53,7 @@ export default function Home() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const [displayedCharacter, setDisplayedCharacter] = useState<any>(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const { data: onlineCharacters = [] } = useQuery<OnlineCharacter[]>({
     queryKey: ["/api/characters/online"],
@@ -139,7 +142,9 @@ export default function Home() {
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-4">
               <div className="text-xl font-bold text-accent">RPG Realm</div>
-              <div className="flex items-center space-x-2">
+              
+              {/* Desktop Navigation */}
+              <div className="hidden md:flex items-center space-x-2">
                 <Button variant="ghost" className="text-foreground hover:text-accent" onClick={() => setLocation('/')}>
                   <HomeIcon className="mr-2 h-4 w-4" />
                   Domov
@@ -162,6 +167,18 @@ export default function Home() {
                     Administrace
                   </div>
                 )}
+              </div>
+
+              {/* Mobile Hamburger Menu */}
+              <div className="md:hidden">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsMenuOpen(!isMenuOpen)}
+                  aria-label="Toggle menu"
+                >
+                  {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+                </Button>
               </div>
             </div>
             <div className="flex items-center space-x-4">
@@ -216,6 +233,49 @@ export default function Home() {
             </div>
           </div>
         </div>
+        
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <div className="md:hidden bg-card border-t border-border">
+            <div className="max-w-7xl mx-auto px-4 py-4 space-y-2">
+              <Button 
+                variant="ghost" 
+                className="w-full justify-start text-foreground hover:text-accent" 
+                onClick={() => {
+                  setLocation('/');
+                  setIsMenuOpen(false);
+                }}
+              >
+                <HomeIcon className="mr-2 h-4 w-4" />
+                Domov
+              </Button>
+              <Button 
+                variant="ghost" 
+                className="w-full justify-start text-foreground hover:text-accent" 
+                onClick={() => {
+                  setLocation('/settings');
+                  setIsMenuOpen(false);
+                }}
+              >
+                <Settings className="mr-2 h-4 w-4" />
+                Nastavení
+              </Button>
+              {user?.role === 'admin' && (
+                <Button 
+                  variant="ghost" 
+                  className="w-full justify-start text-amber-400 hover:text-amber-300 hover:bg-amber-400/10" 
+                  onClick={() => {
+                    setLocation('/admin');
+                    setIsMenuOpen(false);
+                  }}
+                >
+                  <Crown className="mr-2 h-4 w-4" />
+                  Administrace
+                </Button>
+              )}
+            </div>
+          </div>
+        )}
       </nav>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
