@@ -1589,7 +1589,7 @@ export default function UserSettings() {
                       className="bg-background text-foreground"
                     />
                     <p className="text-xs text-muted-foreground mt-1">
-                      Slova oddělujte mezerami. Rozlišují se malá a velká písmena.
+                      Slova oddělujte čárkou, bez mezery. Nerozlišují se malá a velká písmena.
                     </p>
                   </div>
 
