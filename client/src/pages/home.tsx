@@ -45,6 +45,7 @@ interface OnlineCharacter {
   firstName: string;
   lastName: string;
   location: string;
+  roomId?: number;
   avatar?: string | null;
 }
 

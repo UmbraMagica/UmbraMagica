@@ -666,8 +666,6 @@ export const insertInfluenceBarSchema = createInsertSchema(influenceBar).pick({
   updatedBy: true,
 });
 
-export type User = typeof users.$inferSelect;
-export type InsertUser = typeof users.$inferInsert;
 export type Character = typeof characters.$inferSelect;
 export type InsertCharacter = typeof characters.$inferInsert;
 export type InviteCode = typeof inviteCodes.$inferSelect;
@@ -701,3 +699,7 @@ export type HousingRequest = typeof housingRequests.$inferSelect;
 export type InsertHousingRequest = typeof housingRequests.$inferInsert;
 export type OwlPostMessage = typeof owlPostMessages.$inferSelect;
 export type InsertOwlPostMessage = typeof owlPostMessages.$inferInsert;
+
+// Update User type to include narrator fields
+export type User = typeof users.$inferSelect;
+export type InsertUser = typeof users.$inferInsert;
