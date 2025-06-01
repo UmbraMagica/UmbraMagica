@@ -891,109 +891,131 @@ export default function ChatRoom() {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Message Input - Enhanced Design */}
+        {/* Message Input - Two Row Layout with Avatar on Left */}
         <div className="flex-none border-t bg-card p-3">
-          {/* Character Selection Row */}
-          {userCharacters.length > 1 && (
-            <div className="mb-3">
-              <div className="flex items-center gap-2">
-                {/* Character Avatar - enlarged */}
-                {currentCharacter && (
-                  <div className="relative">
-                    <CharacterAvatar character={currentCharacter} size="lg" />
-                    {/* Character selector dropdown in bottom-left corner */}
+          <div className="flex items-start gap-3">
+            {/* Character Avatar - spans both rows */}
+            {currentCharacter && (
+              <div className="relative flex-shrink-0">
+                <CharacterAvatar character={currentCharacter} size="lg" />
+                {/* Character selector dropdown for multiple characters */}
+                {userCharacters.length > 1 && (
+                  <select
+                    value={chatCharacter?.id || ''}
+                    onChange={(e) => {
+                      const selectedChar = userCharacters.find((char: any) => char.id === parseInt(e.target.value));
+                      if (selectedChar) setChatCharacter(selectedChar);
+                    }}
+                    className="absolute -bottom-1 -left-1 text-xs border rounded bg-background w-6 h-6 text-center opacity-80 hover:opacity-100"
+                    title="Změnit postavu"
+                  >
+                    {userCharacters.map((character: any) => (
+                      <option key={character.id} value={character.id}>
+                        {character.firstName[0]}{character.lastName[0]}
+                      </option>
+                    ))}
+                  </select>
+                )}
+              </div>
+            )}
+            
+            {/* Right side with two rows */}
+            <div className="flex-1 space-y-2">
+              {/* Top row - Message input */}
+              <div className="flex items-end gap-2">
+                <textarea
+                  value={messageInput}
+                  onChange={(e) => setMessageInput(e.target.value)}
+                  placeholder="Napište zprávu..."
+                  className="flex-1 min-h-[2.5rem] max-h-[10rem] resize-none text-sm border rounded-md px-3 py-2 bg-background focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault();
+                      handleSendMessage();
+                    }
+                  }}
+                  maxLength={5000}
+                  rows={1}
+                  style={{
+                    height: 'auto',
+                    minHeight: '2.5rem',
+                    maxHeight: '10rem'
+                  }}
+                  onInput={(e) => {
+                    const target = e.target as HTMLTextAreaElement;
+                    target.style.height = 'auto';
+                    target.style.height = Math.min(target.scrollHeight, 160) + 'px';
+                  }}
+                />
+                <Button
+                  onClick={handleSendMessage}
+                  disabled={!isConnected || (!messageInput.trim() && !selectedSpell) || messageInput.length > 5000}
+                  size="sm"
+                  className="h-10 px-4 text-sm"
+                >
+                  {selectedSpell ? "Seslat" : "Odeslat"}
+                </Button>
+              </div>
+              
+              {/* Bottom row - Character selector and action buttons */}
+              <div className="flex items-center justify-between">
+                {/* Left side - Character selector (if multiple characters) */}
+                <div className="flex items-center gap-2">
+                  {userCharacters.length > 1 ? (
                     <select
                       value={chatCharacter?.id || ''}
                       onChange={(e) => {
                         const selectedChar = userCharacters.find((char: any) => char.id === parseInt(e.target.value));
                         if (selectedChar) setChatCharacter(selectedChar);
                       }}
-                      className="absolute -bottom-1 -left-1 text-xs border rounded bg-background w-6 h-6 text-center opacity-80 hover:opacity-100"
-                      title="Změnit postavu"
+                      className="text-sm border rounded px-2 py-1 bg-background"
                     >
                       {userCharacters.map((character: any) => (
                         <option key={character.id} value={character.id}>
-                          {character.firstName[0]}{character.lastName[0]}
+                          {character.firstName} {character.lastName}
                         </option>
                       ))}
                     </select>
-                  </div>
-                )}
-                <div className="text-sm font-medium">
-                  {currentCharacter?.firstName} {currentCharacter?.lastName}
+                  ) : (
+                    <span className="text-sm text-muted-foreground">
+                      {currentCharacter?.firstName} {currentCharacter?.lastName}
+                    </span>
+                  )}
                 </div>
-              </div>
-            </div>
-          )}
-          
-          {/* Message Input and Actions Row */}
-          <div className="flex items-end gap-3">
-            {/* Character Avatar for single character users */}
-            {userCharacters.length === 1 && currentCharacter && (
-              <CharacterAvatar character={currentCharacter} size="lg" />
-            )}
-            
-            {/* Message input area */}
-            <div className="flex-1">
-              <textarea
-                value={messageInput}
-                onChange={(e) => setMessageInput(e.target.value)}
-                placeholder="Napište zprávu..."
-                className="w-full min-h-[2.5rem] max-h-[10rem] resize-none text-sm border rounded-md px-3 py-2 bg-background focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.shiftKey) {
-                    e.preventDefault();
-                    handleSendMessage();
-                  }
-                }}
-                maxLength={5000}
-                rows={1}
-                style={{
-                  height: 'auto',
-                  minHeight: '2.5rem',
-                  maxHeight: '10rem'
-                }}
-                onInput={(e) => {
-                  const target = e.target as HTMLTextAreaElement;
-                  target.style.height = 'auto';
-                  target.style.height = Math.min(target.scrollHeight, 160) + 'px';
-                }}
-              />
-              
-              {/* Counter and action buttons */}
-              <div className="flex items-center justify-between mt-2">
-                <div className="flex gap-2">
+                
+                {/* Right side - Action buttons and counter */}
+                <div className="flex items-center gap-2">
                   <Button
                     onClick={handleDiceRoll}
                     disabled={!isConnected}
                     variant="outline"
                     size="sm"
-                    className="h-8 px-3 text-xs"
+                    className="h-8 w-8 p-0"
                     title="Hodit kostkou (1d10)"
                   >
-                    🎲 Kostka
+                    🎲
                   </Button>
                   <Button
                     onClick={handleCoinFlip}
                     disabled={!isConnected}
                     variant="outline"
                     size="sm"
-                    className="h-8 px-3 text-xs"
+                    className="h-8 w-8 p-0"
                     title="Hodit mincí (1d2)"
                   >
-                    🪙 Mince
+                    🪙
                   </Button>
                   {selectedSpell ? (
                     <Button
                       onClick={() => setSelectedSpell(null)}
                       variant="default"
                       size="sm"
-                      className="h-8 px-3 text-xs"
+                      className="h-8 px-2 text-xs"
                       title="Zrušit vybrané kouzlo"
                     >
-                      <Wand2 className="h-4 w-4 mr-1" />
+                      <Wand2 className="h-3 w-3 mr-1" />
                       {selectedSpell.name}
-                      <X className="h-3 w-3 ml-1" />
+                      <X className="h-2 w-2 ml-1" />
                     </Button>
                   ) : (
                     <Button
@@ -1001,26 +1023,15 @@ export default function ChatRoom() {
                       disabled={!isConnected || characterSpells.length === 0}
                       variant="outline"
                       size="sm"
-                      className="h-8 px-3 text-xs"
+                      className="h-8 w-8 p-0"
                       title="Vybrat kouzlo"
                     >
-                      <Wand2 className="h-4 w-4 mr-1" />
-                      Kouzlo
+                      <Wand2 className="h-3 w-3" />
                     </Button>
                   )}
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-xs text-muted-foreground ml-2">
                     {messageInput.length}/5000
                   </span>
-                  <Button
-                    onClick={handleSendMessage}
-                    disabled={!isConnected || (!messageInput.trim() && !selectedSpell) || messageInput.length > 5000}
-                    size="sm"
-                    className="h-8 px-4 text-sm"
-                  >
-                    {selectedSpell ? "Seslat kouzlo" : "Odeslat"}
-                  </Button>
                 </div>
               </div>
             </div>
