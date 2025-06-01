@@ -77,7 +77,7 @@ export default function Ollivanders() {
     refreshData();
   }, []);
 
-  // Get character's current wand
+  // Get currently selected character's wand
   const { data: characterWand, isLoading: wandLoading } = useQuery<Wand | null>({
     queryKey: [`/api/characters/${mainCharacter?.id}/wand`],
     enabled: !!mainCharacter?.id,
@@ -223,7 +223,7 @@ export default function Ollivanders() {
           <div className="flex items-center gap-2">
             <span className="text-sm text-muted-foreground">Postava:</span>
             <Select 
-              value={mainCharacter?.id?.toString() || ""} 
+              value={selectedCharacter?.id?.toString() || activeCharacter?.id?.toString() || ""} 
               onValueChange={(value) => {
                 const character = userCharacters.find((char: any) => char.id === parseInt(value));
                 if (character) {
