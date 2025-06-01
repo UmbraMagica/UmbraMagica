@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -33,7 +33,9 @@ export default function Ollivanders() {
 
   const { data: allCharacters = [] } = useQuery({
     queryKey: ['/api/characters'],
-    enabled: !!user
+    enabled: !!user,
+    staleTime: 0, // Always fetch fresh data
+    gcTime: 0     // Don't cache
   });
 
   // Get user's alive characters and find the active one
@@ -43,6 +45,19 @@ export default function Ollivanders() {
 
   console.log('Ollivanders - User characters:', userCharacters);
   console.log('Ollivanders - Main character:', mainCharacter);
+  
+  // Function to refresh cache
+  const refreshData = () => {
+    queryClient.invalidateQueries({ queryKey: ['/api/characters'] });
+    if (mainCharacter?.id) {
+      queryClient.invalidateQueries({ queryKey: [`/api/characters/${mainCharacter.id}/wand`] });
+    }
+  };
+
+  // Auto-refresh when component mounts to ensure fresh data
+  useEffect(() => {
+    refreshData();
+  }, []);
 
   // Get character's current wand
   const { data: characterWand, isLoading: wandLoading } = useQuery<Wand | null>({
