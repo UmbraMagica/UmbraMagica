@@ -841,13 +841,20 @@ export default function Home() {
                     <div key={character.id} className="flex items-center space-x-3">
                       <CharacterAvatar character={character} size="sm" />
                       <div className="flex-1">
-                        <button
-                          onClick={() => setLocation(`/characters/${character.id}`)}
-                          className="text-left w-full hover:bg-muted/30 rounded p-1 -m-1 transition-colors"
-                        >
-                          <p className="text-sm font-medium text-foreground">{character.fullName}</p>
-                          <p className="text-xs text-muted-foreground hover:text-primary">v {character.location}</p>
-                        </button>
+                        <div className="space-y-1">
+                          <button
+                            onClick={() => setLocation(`/characters/${character.id}`)}
+                            className="text-left hover:bg-muted/30 rounded p-1 -m-1 transition-colors"
+                          >
+                            <p className="text-sm font-medium text-foreground hover:text-primary">{character.fullName}</p>
+                          </button>
+                          <button
+                            onClick={() => setLocation(`/chat/${character.roomId}`)}
+                            className="text-left hover:bg-muted/30 rounded p-1 -m-1 transition-colors"
+                          >
+                            <p className="text-xs text-muted-foreground hover:text-primary">v {character.location}</p>
+                          </button>
+                        </div>
                       </div>
                       <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                     </div>

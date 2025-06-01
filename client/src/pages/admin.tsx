@@ -247,8 +247,8 @@ export default function Admin() {
   });
 
   const updateNarratorMutation = useMutation({
-    mutationFn: async ({ userId, canNarrate }: { userId: number; canNarrate: boolean }) => {
-      return apiRequest("PATCH", `/api/admin/users/${userId}/narrator`, { canNarrate });
+    mutationFn: async ({ userId, canNarrate, reason }: { userId: number; canNarrate: boolean; reason?: string }) => {
+      return apiRequest("PATCH", `/api/admin/users/${userId}/narrator`, { canNarrate, reason });
     },
     onSuccess: () => {
       toast({
@@ -642,9 +642,28 @@ export default function Admin() {
     updateRoleMutation.mutate({ userId, role: newRole });
   };
 
-  const toggleNarratorPermission = (userId: number, currentCanNarrate: boolean) => {
-    const newCanNarrate = !currentCanNarrate;
-    updateNarratorMutation.mutate({ userId, canNarrate: newCanNarrate });
+  const toggleNarratorPermission = (userId: number, currentCanNarrate: boolean, userRole: string) => {
+    if (userRole === 'admin') {
+      toast({
+        title: "Nelze změnit",
+        description: "Administrátoři mají automaticky právo vypravěče",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (currentCanNarrate) {
+      // If removing narrator permission, ask for reason
+      const reason = prompt('Důvod odebrání narrator oprávnění:');
+      if (!reason) return;
+      
+      if (confirm(`Opravdu chcete odebrat narrator oprávnění tomuto uživateli?`)) {
+        updateNarratorMutation.mutate({ userId, canNarrate: false, reason });
+      }
+    } else {
+      // If adding narrator permission
+      updateNarratorMutation.mutate({ userId, canNarrate: true });
+    }
   };
 
   const handleBanUser = (userId: number, username: string) => {
