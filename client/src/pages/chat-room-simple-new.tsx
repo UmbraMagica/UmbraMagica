@@ -891,117 +891,139 @@ export default function ChatRoom() {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Message Input - Ultra Compact Design */}
-        <div className="flex-none border-t bg-card p-2">
-          {/* Combined Character Selection and Input in one row */}
-          <div className="flex items-center gap-2">
-            {/* Character selector - only if multiple characters */}
-            {userCharacters.length > 1 && (
-              <select
-                value={chatCharacter?.id || ''}
-                onChange={(e) => {
-                  const selectedChar = userCharacters.find((char: any) => char.id === parseInt(e.target.value));
-                  if (selectedChar) setChatCharacter(selectedChar);
-                }}
-                className="text-xs border rounded px-2 py-1 bg-background min-w-0 flex-shrink-0"
-                style={{ maxWidth: '120px' }}
-              >
-                {userCharacters.map((character: any) => (
-                  <option key={character.id} value={character.id}>
-                    {character.firstName} {character.lastName}
-                  </option>
-                ))}
-              </select>
-            )}
-            
-            {/* Current character indicator - compact */}
-            {currentCharacter && (
-              <div className="flex items-center gap-1 text-xs text-muted-foreground flex-shrink-0">
-                <div className="w-3 h-3 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center">
-                  <span className="text-primary-foreground text-[9px]">
-                    {currentCharacter.firstName[0]}{currentCharacter.lastName[0]}
-                  </span>
+        {/* Message Input - Enhanced Design */}
+        <div className="flex-none border-t bg-card p-3">
+          {/* Character Selection Row */}
+          {userCharacters.length > 1 && (
+            <div className="mb-3">
+              <div className="flex items-center gap-2">
+                {/* Character Avatar - enlarged */}
+                {currentCharacter && (
+                  <div className="relative">
+                    <CharacterAvatar character={currentCharacter} size="lg" />
+                    {/* Character selector dropdown in bottom-left corner */}
+                    <select
+                      value={chatCharacter?.id || ''}
+                      onChange={(e) => {
+                        const selectedChar = userCharacters.find((char: any) => char.id === parseInt(e.target.value));
+                        if (selectedChar) setChatCharacter(selectedChar);
+                      }}
+                      className="absolute -bottom-1 -left-1 text-xs border rounded bg-background w-6 h-6 text-center opacity-80 hover:opacity-100"
+                      title="Změnit postavu"
+                    >
+                      {userCharacters.map((character: any) => (
+                        <option key={character.id} value={character.id}>
+                          {character.firstName[0]}{character.lastName[0]}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+                <div className="text-sm font-medium">
+                  {currentCharacter?.firstName} {currentCharacter?.lastName}
                 </div>
               </div>
+            </div>
+          )}
+          
+          {/* Message Input and Actions Row */}
+          <div className="flex items-end gap-3">
+            {/* Character Avatar for single character users */}
+            {userCharacters.length === 1 && currentCharacter && (
+              <CharacterAvatar character={currentCharacter} size="lg" />
             )}
             
-            {/* Message input */}
-            <Input
-              value={messageInput}
-              onChange={(e) => setMessageInput(e.target.value)}
-              placeholder="Napište zprávu..."
-              className="text-sm h-8 flex-1"
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                  handleSendMessage();
-                }
-              }}
-              maxLength={5000}
-            />
-            
-            {/* Send button */}
-            <Button
-              onClick={handleSendMessage}
-              disabled={!isConnected || (!messageInput.trim() && !selectedSpell) || messageInput.length > 5000}
-              size="sm"
-              className="h-8 px-3 text-xs flex-shrink-0"
-            >
-              {selectedSpell ? "Seslat" : "Odeslat"}
-            </Button>
-          </div>
-          
-          {/* Action buttons row - very compact */}
-          <div className="flex items-center justify-between mt-1">
-            <div className="flex gap-1">
-              <Button
-                onClick={handleDiceRoll}
-                disabled={!isConnected}
-                variant="outline"
-                size="sm"
-                className="h-6 w-6 p-0 text-xs"
-                title="Hodit kostkou (1d10)"
-              >
-                🎲
-              </Button>
-              <Button
-                onClick={handleCoinFlip}
-                disabled={!isConnected}
-                variant="outline"
-                size="sm"
-                className="h-6 w-6 p-0 text-xs"
-                title="Hodit mincí (1d2)"
-              >
-                🪙
-              </Button>
-              {selectedSpell ? (
-                <Button
-                  onClick={() => setSelectedSpell(null)}
-                  variant="default"
-                  size="sm"
-                  className="h-6 px-2 text-xs"
-                  title="Zrušit vybrané kouzlo"
-                >
-                  <Wand2 className="h-3 w-3 mr-1" />
-                  {selectedSpell.name}
-                  <X className="h-2 w-2 ml-1" />
-                </Button>
-              ) : (
-                <Button
-                  onClick={() => setShowSpellDialog(true)}
-                  disabled={!isConnected || characterSpells.length === 0}
-                  variant="outline"
-                  size="sm"
-                  className="h-6 w-6 p-0"
-                  title="Vybrat kouzlo"
-                >
-                  <Wand2 className="h-3 w-3" />
-                </Button>
-              )}
+            {/* Message input area */}
+            <div className="flex-1">
+              <textarea
+                value={messageInput}
+                onChange={(e) => setMessageInput(e.target.value)}
+                placeholder="Napište zprávu..."
+                className="w-full min-h-[2.5rem] max-h-[10rem] resize-none text-sm border rounded-md px-3 py-2 bg-background focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSendMessage();
+                  }
+                }}
+                maxLength={5000}
+                rows={1}
+                style={{
+                  height: 'auto',
+                  minHeight: '2.5rem',
+                  maxHeight: '10rem'
+                }}
+                onInput={(e) => {
+                  const target = e.target as HTMLTextAreaElement;
+                  target.style.height = 'auto';
+                  target.style.height = Math.min(target.scrollHeight, 160) + 'px';
+                }}
+              />
+              
+              {/* Counter and action buttons */}
+              <div className="flex items-center justify-between mt-2">
+                <div className="flex gap-2">
+                  <Button
+                    onClick={handleDiceRoll}
+                    disabled={!isConnected}
+                    variant="outline"
+                    size="sm"
+                    className="h-8 px-3 text-xs"
+                    title="Hodit kostkou (1d10)"
+                  >
+                    🎲 Kostka
+                  </Button>
+                  <Button
+                    onClick={handleCoinFlip}
+                    disabled={!isConnected}
+                    variant="outline"
+                    size="sm"
+                    className="h-8 px-3 text-xs"
+                    title="Hodit mincí (1d2)"
+                  >
+                    🪙 Mince
+                  </Button>
+                  {selectedSpell ? (
+                    <Button
+                      onClick={() => setSelectedSpell(null)}
+                      variant="default"
+                      size="sm"
+                      className="h-8 px-3 text-xs"
+                      title="Zrušit vybrané kouzlo"
+                    >
+                      <Wand2 className="h-4 w-4 mr-1" />
+                      {selectedSpell.name}
+                      <X className="h-3 w-3 ml-1" />
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={() => setShowSpellDialog(true)}
+                      disabled={!isConnected || characterSpells.length === 0}
+                      variant="outline"
+                      size="sm"
+                      className="h-8 px-3 text-xs"
+                      title="Vybrat kouzlo"
+                    >
+                      <Wand2 className="h-4 w-4 mr-1" />
+                      Kouzlo
+                    </Button>
+                  )}
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-muted-foreground">
+                    {messageInput.length}/5000
+                  </span>
+                  <Button
+                    onClick={handleSendMessage}
+                    disabled={!isConnected || (!messageInput.trim() && !selectedSpell) || messageInput.length > 5000}
+                    size="sm"
+                    className="h-8 px-4 text-sm"
+                  >
+                    {selectedSpell ? "Seslat kouzlo" : "Odeslat"}
+                  </Button>
+                </div>
+              </div>
             </div>
-            <span className="text-[10px] text-muted-foreground">
-              {messageInput.length}/5000
-            </span>
           </div>
         </div>
       </div>
