@@ -83,12 +83,7 @@ export default function Admin() {
   const [killCharacterData, setKillCharacterData] = useState<{ id: number; name: string } | null>(null);
   const [deathReason, setDeathReason] = useState("");
   const [showConfirmKill, setShowConfirmKill] = useState(false);
-  const [isCemeteryCollapsed, setIsCemeteryCollapsed] = useState(false);
-  const [isLiveCharactersCollapsed, setIsLiveCharactersCollapsed] = useState(false);
-  const [isAdminActivityCollapsed, setIsAdminActivityCollapsed] = useState(false);
-  const [isCharacterRequestsCollapsed, setIsCharacterRequestsCollapsed] = useState(false);
-  const [isUserManagementCollapsed, setIsUserManagementCollapsed] = useState(false);
-  const [isChatManagementCollapsed, setIsChatManagementCollapsed] = useState(false);
+  const [isLiveCharactersCollapsed, setIsLiveCharactersCollapsed] = useState(true);
   const [isExistingRoomsCollapsed, setIsExistingRoomsCollapsed] = useState(true);
   const [isExistingCategoriesCollapsed, setIsExistingCategoriesCollapsed] = useState(true);
   const [isSpellManagementCollapsed, setIsSpellManagementCollapsed] = useState(false);
@@ -117,7 +112,15 @@ export default function Admin() {
   });
   const [showInviteCodes, setShowInviteCodes] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
-  const [isHousingManagementCollapsed, setIsHousingManagementCollapsed] = useState(false);
+  const [isHousingManagementCollapsed, setIsHousingManagementCollapsed] = useState(true);
+  
+  // Collapsible sections state
+  const [isUserManagementCollapsed, setIsUserManagementCollapsed] = useState(true);
+  const [isCharacterManagementCollapsed, setIsCharacterManagementCollapsed] = useState(true);
+  const [isCharacterRequestsCollapsed, setIsCharacterRequestsCollapsed] = useState(true);
+  const [isChatManagementCollapsed, setIsChatManagementCollapsed] = useState(true);
+  const [isCemeteryCollapsed, setIsCemeteryCollapsed] = useState(true);
+  const [isAdminActivityCollapsed, setIsAdminActivityCollapsed] = useState(true);
 
   // Chat management state
   const [newCategoryName, setNewCategoryName] = useState("");
@@ -1380,11 +1383,11 @@ export default function Admin() {
 
           {/* Správa postav */}
           <Card>
-            <CardHeader className="cursor-pointer" onClick={() => setIsLiveCharactersCollapsed(!isLiveCharactersCollapsed)}>
+            <CardHeader className="cursor-pointer" onClick={() => setIsCharacterManagementCollapsed(!isCharacterManagementCollapsed)}>
               <CardTitle className="text-xl font-semibold text-foreground flex items-center">
                 <Heart className="text-green-400 mr-3 h-5 w-5" />
                 Správa postav ({stats.activeCharacters} živých)
-                {isLiveCharactersCollapsed ? (
+                {isCharacterManagementCollapsed ? (
                   <ChevronDown className="ml-auto h-4 w-4" />
                 ) : (
                   <ChevronUp className="ml-auto h-4 w-4" />
@@ -1392,7 +1395,7 @@ export default function Admin() {
               </CardTitle>
             </CardHeader>
 
-            {!isLiveCharactersCollapsed && (
+            {!isCharacterManagementCollapsed && (
               <CardContent>
                 <div className="space-y-3 max-h-96 overflow-y-auto">
                   {nonSystemCharacters
