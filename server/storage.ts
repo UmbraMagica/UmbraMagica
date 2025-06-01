@@ -1570,7 +1570,11 @@ export class DatabaseStorage implements IStorage {
       { name: "9\"", description: "Vyvážená kratší délka vhodná pro jemné a přesné kouzla. Oblíbená u mladších čarodějů." },
       { name: "10\"", description: "Klasická délka poskytující dobrý poměr mezi kontrolou a silou. Vhodná pro většinu čarodějů." },
       { name: "11\"", description: "Vyvážená hůlka s výbornou univerzálností. Populární volba pro studenty i zkušené mistry." },
-      { name: "12\"", description: "Standardní délka nabízející stabilitu a spolehlivost. Ideální pro formální magii a výuku." }
+      { name: "12\"", description: "Standardní délka nabízející stabilitu a spolehlivost. Ideální pro formální magii a výuku." },
+      { name: "13\"", description: "Pro ty, kteří mají neobyčejný potenciál nebo extrémní specializaci." },
+      { name: "14\"", description: "Dlouhá hůlka, vhodná pro formální, velkolepou nebo rituální magii." },
+      { name: "15\"", description: "Rarita – vyžaduje silné zaměření, ale odmění velkým dosahem a účinkem." },
+      { name: "16\"+", description: "Neobvyklá až výstřední délka. Obvykle jen u obrů, divotvůrců nebo výjimečných osobností." }
     ];
 
     const flexibilities = [
