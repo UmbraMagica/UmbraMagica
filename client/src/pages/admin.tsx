@@ -1443,7 +1443,7 @@ export default function Admin() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => setLocation(`/character-edit/${character.id}`)}
+                          onClick={() => setLocation(`/admin/characters/${character.id}`)}
                           className="text-green-400 hover:text-green-300"
                           title="Editovat postavu"
                         >

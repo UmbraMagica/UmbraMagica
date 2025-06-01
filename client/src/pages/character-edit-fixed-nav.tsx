@@ -69,9 +69,9 @@ export default function CharacterEditFixedNav() {
   const primaryCharacter = getSelectedCharacter();
   const characterId = primaryCharacter?.id;
 
-  // Check if we're in admin context based on URL or if user is admin AND accessed from admin area
+  // Check if we're in admin context based on URL
   const currentPath = window.location.pathname;
-  const isAdminContext = currentPath.includes('/admin') || currentPath.includes('/characters/') && user?.role === 'admin';
+  const isAdminContext = currentPath.includes('/admin');
   const isAdmin = user?.role === 'admin' && isAdminContext;
 
   // User form for editing limited fields
