@@ -116,18 +116,6 @@ export default function Home() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-
-  // Monitor window size for responsive navigation
-  useEffect(() => {
-    const checkScreenSize = () => {
-      setIsMobile(window.innerWidth < 1024);
-    };
-
-    checkScreenSize();
-    window.addEventListener('resize', checkScreenSize);
-    return () => window.removeEventListener('resize', checkScreenSize);
-  }, []);
 
 
   const { data: onlineCharacters = [] } = useQuery<OnlineCharacter[]>({
@@ -179,7 +167,7 @@ export default function Home() {
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-4">
               <div className="text-xl font-bold text-accent">RPG Realm</div>
-              <div style={{ display: isMobile ? 'none' : 'flex' }} className="items-center space-x-2">
+              <div className="hidden lg:flex items-center space-x-2">
                 <Button variant="ghost" className="text-foreground hover:text-accent" onClick={() => setLocation('/')}>
                   <HomeIcon className="mr-2 h-4 w-4" />
                   Domov
@@ -208,7 +196,7 @@ export default function Home() {
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <div style={{ display: isMobile ? 'none' : 'flex' }} className="items-center space-x-4">
+              <div className="hidden lg:flex items-center space-x-4">
                 <div className="text-sm text-muted-foreground">{user?.username}</div>
                 {user?.role === 'admin' && (
                   <div className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-amber-500/20 text-amber-400">
@@ -230,7 +218,7 @@ export default function Home() {
               </div>
               
               {/* Mobile menu button */}
-              <div style={{ display: isMobile ? 'block' : 'none' }}>
+              <div className="lg:hidden">
                 <Button
                   variant="ghost"
                   size="sm"
