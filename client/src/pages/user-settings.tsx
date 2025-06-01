@@ -1492,11 +1492,11 @@ export default function UserSettings() {
                               variant="outline"
                               size="sm"
                               disabled={index === 0}
-                              onClick={() => {
-                                console.log('Moving up - current order:', characterOrder, 'index:', index);
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
                                 const newOrder = [...characterOrder];
                                 [newOrder[index], newOrder[index - 1]] = [newOrder[index - 1], newOrder[index]];
-                                console.log('New order after move up:', newOrder);
                                 setCharacterOrder(newOrder);
                               }}
                             >
@@ -1506,11 +1506,11 @@ export default function UserSettings() {
                               variant="outline"
                               size="sm"
                               disabled={index === characterOrder.length - 1}
-                              onClick={() => {
-                                console.log('Moving down - current order:', characterOrder, 'index:', index);
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
                                 const newOrder = [...characterOrder];
                                 [newOrder[index], newOrder[index + 1]] = [newOrder[index + 1], newOrder[index]];
-                                console.log('New order after move down:', newOrder);
                                 setCharacterOrder(newOrder);
                               }}
                             >

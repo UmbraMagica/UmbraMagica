@@ -118,7 +118,22 @@ export default function ChatRoom() {
   });
 
   // Filter only alive characters (not in cemetery)
-  const userCharacters = allUserCharacters.filter((char: any) => !char.deathDate);
+  const filteredCharacters = allUserCharacters.filter((char: any) => !char.deathDate);
+  
+  // Sort characters according to user's preferred order
+  const userCharacters = (() => {
+    if (!user?.characterOrder || !Array.isArray(user.characterOrder)) {
+      return filteredCharacters;
+    }
+    
+    const orderMap = new Map(user.characterOrder.map((id, index) => [id, index]));
+    
+    return [...filteredCharacters].sort((a, b) => {
+      const orderA = orderMap.get(a.id) ?? 999;
+      const orderB = orderMap.get(b.id) ?? 999;
+      return orderA - orderB;
+    });
+  })();
 
   // Fetch main character
   const { data: mainCharacter } = useQuery<any>({
