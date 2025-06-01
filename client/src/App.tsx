@@ -15,7 +15,7 @@ import AdminCharacterSpells from "@/pages/admin-character-spells";
 import Registration from "@/pages/registration";
 import ChatList from "@/pages/chat-list";
 import ChatCategories from "@/pages/chat-categories";
-import ChatRoom from "@/pages/chat-room-simple-new";
+import ChatRoom from "@/pages/chat-room-fixed";
 import ChatDebug from "@/pages/chat-debug";
 import ChatRoomSimpleTest from "@/pages/chat-room-simple-test";
 import CharacterEdit from "@/pages/character-edit-fixed-nav";
