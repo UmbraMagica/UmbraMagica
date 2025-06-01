@@ -253,14 +253,20 @@ export default function AdminWandComponents() {
                   onChange={(e) => setNewWood(prev => ({ ...prev, name: e.target.value }))}
                 />
                 <Textarea
-                  placeholder="Popis vlastností a účinků dřeva..."
-                  value={newWood.description}
-                  onChange={(e) => setNewWood(prev => ({ ...prev, description: e.target.value }))}
-                  rows={3}
+                  placeholder="Krátký popis (zobrazuje se v selectu)..."
+                  value={newWood.shortDescription}
+                  onChange={(e) => setNewWood(prev => ({ ...prev, shortDescription: e.target.value }))}
+                  rows={2}
+                />
+                <Textarea
+                  placeholder="Dlouhý popis (podrobné informace o vlastnostech)..."
+                  value={newWood.longDescription}
+                  onChange={(e) => setNewWood(prev => ({ ...prev, longDescription: e.target.value }))}
+                  rows={4}
                 />
                 <Button 
                   onClick={addWood} 
-                  disabled={!newWood.name.trim() || !newWood.description.trim()}
+                  disabled={!newWood.name.trim() || !newWood.shortDescription.trim() || !newWood.longDescription.trim()}
                 >
                   <Plus className="h-4 w-4 mr-2" />
                   Přidat dřevo
@@ -274,7 +280,8 @@ export default function AdminWandComponents() {
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <h3 className="font-semibold">{wood.name}</h3>
-                        <p className="text-sm text-muted-foreground mt-1">{wood.description}</p>
+                        <p className="text-sm text-muted-foreground mt-1 font-medium">{wood.shortDescription}</p>
+                        <p className="text-xs text-muted-foreground mt-2">{wood.longDescription}</p>
                       </div>
                       <div className="flex gap-2">
                         <Dialog>
@@ -296,10 +303,18 @@ export default function AdminWandComponents() {
                                 />
                               </div>
                               <div>
-                                <Label>Popis</Label>
+                                <Label>Krátký popis</Label>
                                 <Textarea
-                                  defaultValue={wood.description}
-                                  onChange={(e) => setEditingWood(prev => ({ ...(prev || wood), description: e.target.value }))}
+                                  defaultValue={wood.shortDescription}
+                                  onChange={(e) => setEditingWood(prev => ({ ...(prev || wood), shortDescription: e.target.value }))}
+                                  rows={2}
+                                />
+                              </div>
+                              <div>
+                                <Label>Dlouhý popis</Label>
+                                <Textarea
+                                  defaultValue={wood.longDescription}
+                                  onChange={(e) => setEditingWood(prev => ({ ...(prev || wood), longDescription: e.target.value }))}
                                   rows={4}
                                 />
                               </div>
