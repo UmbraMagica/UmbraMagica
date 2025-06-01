@@ -1345,22 +1345,22 @@ export class DatabaseStorage implements IStorage {
     const woods = [
       { 
         name: "Akácie", 
-        shortDescription: "Vzácná a temperamentní hůlka pro neobyčejně nadané kouzelníky; odmítá spolupracovat s kýmkoliv jiným než se svým pravým majitelem.",
+        shortDescription: "Velmi neobvyklé hůlkové dřevo, z něhož, jak se mi zdá, pochází hůlky tak trochu lstivé a úskočné",
         longDescription: "Velmi neobvyklé hůlkové dřevo, z něhož pochází hůlky tak trochu lstivé a úskočné, které často odmítnou spolupracovat s kýmkoliv jiným než se svým majitelem a které jsou nejlepší a nejúčinnější v rukou těch nejnadanějších. Tato citlivost je činí obtížně přiřaditelnými. Pokud najde dobrého majitele, akáciová hůlka může poskytnout hodně energie, avšak nebývá takto často využívána kvůli zvláštnosti jejího temperamentu."
       },
       { 
         name: "Anglický dub", 
-        shortDescription: "Silná, věrná a intuitivní hůlka pro čaroděje s odvahou, věrností a blízkým vztahem k přírodní magii.",
+        shortDescription: "Silné, věrné dřevo pro odvážné a intuitivní jedince spojené s přírodní magií",
         longDescription: "To jsou hůlky vhodné v časech dobrých i zlých, a jsou věrnými přáteli kouzelníků, kteří si je zaslouží. Hůlky z anglického dubu požadují po svých partnerech sílu, odvahu a věrnost. Méně známý je fakt, že majitelé těchto hůlek mívají silnou intuici a často jsou přitahováni přírodní magií obklopující tvory i rostliny."
       },
       { 
         name: "Borovice", 
-        shortDescription: "Hůlka nezávislých a originálních jedinců s dlouhověkostí v osudu; výborně reaguje na neverbální magii.",
+        shortDescription: "Tiché a nezávislé hůlky pro výjimečně samostatné kouzelníky",
         longDescription: "Hůlka vyrobená z rovnovláknitého dřeva borovice si vždy vybírá ty, kdož jsou nezávislí a samostatní, a bývají považováni za osamělé, zvláštní a možná i tajemné. Borovicové hůlky chtějí být používány kreativně, a na rozdíl od mnohých se bez protestů podvolí novým metodám a zaklínadlům. Mnoho hůlkařů tvrdí, že borovicové hůlky vyhledávají majitele předurčené se dožít vysokého věku."
       },
       { 
         name: "Buk", 
-        shortDescription: "Elegantní a náročná hůlka pro moudré, tolerantní a zkušené čaroděje, kteří v ní probudí její výjimečnou jemnost a umění.",
+        shortDescription: "Elegantní a vzácné dřevo pro moudré a tolerantní čaroděje",
         longDescription: "Správný protějšek bukové hůlky bude, pokud mladý, tak na svůj věk moudřejší, pokud dospělý, pak bohatý v porozumění a zkušenostech. Bukové hůlky velmi málo slouží omezeným a netolerantním. Pokud však buková hůlka najde toho správného majitele, je schopná jemnosti a umění, které lze velmi zřídka nalézt u jakéhokoliv jiného dřeva."
       },
       { 
