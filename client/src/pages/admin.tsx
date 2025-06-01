@@ -2143,15 +2143,49 @@ export default function Admin() {
 
                   {/* Hierarchical Categories Management */}
                   <div className="space-y-4">
-                    <div className="flex items-center justify-between cursor-pointer" onClick={() => setIsExistingCategoriesCollapsed(!isExistingCategoriesCollapsed)}>
-                      <h3 className="text-lg font-medium flex items-center">
-                        Hierarchická správa kategorií a místností
-                        {isExistingCategoriesCollapsed ? (
-                          <ChevronDown className="ml-2 h-4 w-4" />
-                        ) : (
-                          <ChevronUp className="ml-2 h-4 w-4" />
-                        )}
-                      </h3>
+                    <div className="flex items-center justify-between">
+                      <div 
+                        className="flex items-center cursor-pointer" 
+                        onClick={() => setIsExistingCategoriesCollapsed(!isExistingCategoriesCollapsed)}
+                      >
+                        <h3 className="text-lg font-medium flex items-center">
+                          Hierarchická správa kategorií a místností
+                          {isExistingCategoriesCollapsed ? (
+                            <ChevronDown className="ml-2 h-4 w-4" />
+                          ) : (
+                            <ChevronUp className="ml-2 h-4 w-4" />
+                          )}
+                        </h3>
+                      </div>
+                      {!isExistingCategoriesCollapsed && (
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              // Expand all main categories
+                              const mainCategories = chatCategories?.filter((c: any) => c.parentId === null) || [];
+                              const allAreas = chatCategories?.filter((c: any) => c.parentId !== null) || [];
+                              setExpandedCategories(new Set(mainCategories.map((c: any) => c.id)));
+                              setExpandedAreas(new Set(allAreas.map((c: any) => c.id)));
+                            }}
+                            className="text-xs"
+                          >
+                            Rozbalit vše
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              setExpandedCategories(new Set());
+                              setExpandedAreas(new Set());
+                            }}
+                            className="text-xs"
+                          >
+                            Sbalit vše
+                          </Button>
+                        </div>
+                      )}
                     </div>
                     
                     {!isExistingCategoriesCollapsed && (
