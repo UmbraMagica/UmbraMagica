@@ -116,6 +116,7 @@ export default function Admin() {
     type: '0:0'
   });
   const [showInviteCodes, setShowInviteCodes] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
 
   // Chat management state
   const [newCategoryName, setNewCategoryName] = useState("");
@@ -1189,7 +1190,10 @@ export default function Admin() {
                     })
                     .map((user: any) => (
                     <div key={user.id} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
-                      <div className="flex items-center space-x-3">
+                      <div 
+                        className="flex items-center space-x-3 flex-1 cursor-pointer hover:bg-muted/40 -m-4 p-4 rounded-lg transition-colors"
+                        onClick={() => setSelectedUserId(selectedUserId === user.id ? null : user.id)}
+                      >
                         <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
                           user.role === "admin" 
                             ? "bg-gradient-to-br from-accent to-orange-600" 
@@ -1201,10 +1205,18 @@ export default function Admin() {
                             <Users className="text-white h-5 w-5" />
                           )}
                         </div>
-                        <div>
+                        <div className="flex-1">
                           <p className="font-medium text-foreground">{user.username}</p>
                           <p className="text-sm text-muted-foreground">{user.email}</p>
+                          {user.characters && user.characters.length > 0 && (
+                            <p className="text-xs text-blue-400 mt-1">
+                              {user.characters.length} {user.characters.length === 1 ? 'postava' : user.characters.length < 5 ? 'postavy' : 'postav'}
+                            </p>
+                          )}
                         </div>
+                        <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${
+                          selectedUserId === user.id ? 'rotate-180' : ''
+                        }`} />
                       </div>
                       <div className="flex items-center space-x-2">
                         <Badge className={
@@ -1249,6 +1261,55 @@ export default function Admin() {
                           )}
                         </div>
                       </div>
+                      
+                      {/* Expandable Characters List */}
+                      {selectedUserId === user.id && user.characters && user.characters.length > 0 && (
+                        <div className="mt-3 p-3 bg-muted/50 rounded-lg border-l-2 border-blue-400">
+                          <h4 className="text-sm font-medium text-foreground mb-2">Postavy uživatele {user.username}:</h4>
+                          <div className="space-y-2">
+                            {user.characters.map((character: any) => (
+                              <div key={character.id} className="flex items-center justify-between p-2 bg-background/50 rounded">
+                                <div className="flex items-center space-x-2">
+                                  <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs text-white ${
+                                    character.deathDate ? 'bg-red-500' : 'bg-green-500'
+                                  }`}>
+                                    {character.firstName.charAt(0)}{character.lastName.charAt(0)}
+                                  </div>
+                                  <div>
+                                    <p className="text-sm font-medium">
+                                      {character.firstName} {character.middleName ? `${character.middleName} ` : ''}{character.lastName}
+                                    </p>
+                                    <p className="text-xs text-muted-foreground">
+                                      {character.deathDate ? 'Mrtvá postava' : 'Živá postava'}
+                                      {character.school && ` • ${character.school}`}
+                                    </p>
+                                  </div>
+                                </div>
+                                <div className="flex items-center space-x-1">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => setLocation(`/characters/${character.id}`)}
+                                    className="text-purple-400 hover:text-purple-300 h-6 w-6 p-0"
+                                    title="Zobrazit profil postavy"
+                                  >
+                                    <Eye className="h-3 w-3" />
+                                  </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => setLocation(`/character-edit/${character.id}`)}
+                                    className="text-green-400 hover:text-green-300 h-6 w-6 p-0"
+                                    title="Editovat postavu"
+                                  >
+                                    <Edit className="h-3 w-3" />
+                                  </Button>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
