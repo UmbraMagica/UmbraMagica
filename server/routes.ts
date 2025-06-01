@@ -457,6 +457,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             email: user.email,
             role: user.role,
             createdAt: user.createdAt,
+            canNarrate: user.canNarrate || false,
             characters,
           };
         })
