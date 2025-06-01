@@ -1325,42 +1325,42 @@ export class DatabaseStorage implements IStorage {
     const woods = [
       { 
         name: "Akácie", 
-        shortDescription: "Vzácná a temperamentní hůlka pro neobyčejně nadané kouzelníky",
+        shortDescription: "Vzácná a temperamentní hůlka pro neobyčejně nadané kouzelníky; odmítá spolupracovat s kýmkoliv jiným než se svým pravým majitelem.",
         longDescription: "Velmi neobvyklé hůlkové dřevo, z něhož pochází hůlky tak trochu lstivé a úskočné, které často odmítnou spolupracovat s kýmkoliv jiným než se svým majitelem a které jsou nejlepší a nejúčinnější v rukou těch nejnadanějších. Tato citlivost je činí obtížně přiřaditelnými. Pokud najde dobrého majitele, akáciová hůlka může poskytnout hodně energie, avšak nebývá takto často využívána kvůli zvláštnosti jejího temperamentu."
       },
       { 
         name: "Anglický dub", 
-        shortDescription: "Příjemná hůlka pro dobrý kouzelník",
+        shortDescription: "Silná, věrná a intuitivní hůlka pro čaroděje s odvahou, věrností a blízkým vztahem k přírodní magii.",
         longDescription: "To jsou hůlky vhodné v časech dobrých i zlých, a jsou věrnými přáteli kouzelníků, kteří si je zaslouží. Hůlky z anglického dubu požadují po svých partnerech sílu, odvahu a věrnost. Méně známý je fakt, že majitelé těchto hůlek mívají silnou intuici a často jsou přitahováni přírodní magií obklopující tvory i rostliny."
       },
       { 
         name: "Borovice", 
-        shortDescription: "Hůlka nezávislých a originálních jedinců",
+        shortDescription: "Hůlka nezávislých a originálních jedinců s dlouhověkostí v osudu; výborně reaguje na neverbální magii.",
         longDescription: "Hůlka vyrobená z rovnovláknitého dřeva borovice si vždy vybírá ty, kdož jsou nezávislí a samostatní, a bývají považováni za osamělé, zvláštní a možná i tajemné. Borovicové hůlky chtějí být používány kreativně, a na rozdíl od mnohých se bez protestů podvolí novým metodám a zaklínadlům. Mnoho hůlkařů tvrdí, že borovicové hůlky vyhledávají majitele předurčené se dožít vysokého věku."
       },
       { 
         name: "Buk", 
-        shortDescription: "Elegantní a náročná hůlka pro moudré čaroděje",
+        shortDescription: "Elegantní a náročná hůlka pro moudré, tolerantní a zkušené čaroděje, kteří v ní probudí její výjimečnou jemnost a umění.",
         longDescription: "Správný protějšek bukové hůlky bude, pokud mladý, tak na svůj věk moudřejší, pokud dospělý, pak bohatý v porozumění a zkušenostech. Bukové hůlky velmi málo slouží omezeným a netolerantním. Pokud však buková hůlka najde toho správného majitele, je schopná jemnosti a umění, které lze velmi zřídka nalézt u jakéhokoliv jiného dřeva."
       },
       { 
         name: "Cedr", 
-        shortDescription: "Silná a loajální hůlka pro důvtipné osobnosti",
+        shortDescription: "Silná a loajální hůlka pro důvtipné a bystré osobnosti s pevným morálním kompasem – nebezpečné, když jde o ochranu jejich blízkých.",
         longDescription: "Cedrová hůlka najde dokonalý domov právě tam, kde je důvtip a postřeh. Čarodějka nebo čaroděj, kteří byli vybráni hůlkou z cedru, v sobě mají potenciál být nebezpečnými protivníky, což často bývá nepříjemným překvapením pro ty, kteří je lehkomyslně vyzvali k souboji."
       },
       { 
         name: "Cesmína", 
-        shortDescription: "Vzácná ochranářská hůlka pro vznětlivé jedince",
+        shortDescription: "Vzácná a ochranářská hůlka pro vznětlivé jedince na duchovní cestě; její skutečná síla září ve výjimečném spojení s jádrem.",
         longDescription: "Cesmína je jedním z vzácnějších hůlkových dřev; jakožto odjakživa považována za ochranářskou, cesmínová hůlka nejraději pracuje s těmi, co bývají vznětliví a mohou potřebovat pomoc při přemáhání hněvu. Zároveň si však vybírají i ty, kteří jsou namočeni v nějakém nebezpečném a často duchovním hledání."
       },
       { 
         name: "Cypřiš", 
-        shortDescription: "Šlechetná hůlka spojená s urozeností",
+        shortDescription: "Šlechetná hůlka pro statečné a obětavé duše, které se nebojí čelit temnotě – často spojená s hrdinskou smrtí.",
         longDescription: "Cypřišové hůlky jsou spojovány s urozeností. Hůlky z cypřiše nalézají své partnery v statečných, troufalých a sebeobětavých – v těch, kdo se nebojí čelit stínům v myslích svých i ostatních."
       },
       { 
         name: "Černý bez", 
-        shortDescription: "Nejneobvyklejší hůlkové dřevo s velmi silnou magií",
+        shortDescription: "Tajuplná a mimořádně mocná hůlka určená pouze výjimečným kouzelníkům s osudovým posláním – odmítá sloužit komukoliv slabšímu.",
         longDescription: "Je to snad nejneobvyklejší hůlkové dřevo, navíc se o něm říká, že přináší smůlu, a hůlky z něho vyrobené lze velmi těžko ovládnout. Má v sobě velmi silnou magii, ale odmítá zůstat s kýmkoliv, kdo není ve své společnosti nadřazený. Pouze pozoruhodní a výjimeční čarodějové si dokáží bezovou hůlku udržet po delší dobu."
       },
       { 
