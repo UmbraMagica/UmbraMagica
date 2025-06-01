@@ -889,7 +889,7 @@ export default function ChatRoom() {
                     );
                   })()}
                 </div>
-                <p className={`text-sm break-words whitespace-pre-wrap ${
+                <p className={`text-sm break-words whitespace-pre-wrap overflow-wrap-anywhere word-break-break-all ${
                   message.character.firstName === 'Správa' && message.character.lastName === 'ubytování' 
                     ? 'text-blue-600 dark:text-blue-400' 
                     : 'text-foreground'
