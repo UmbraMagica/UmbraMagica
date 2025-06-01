@@ -611,8 +611,8 @@ export default function Ollivanders() {
                   <p><strong>🍃 List měsíční kapradiny:</strong> Iluze a neviditelnost</p>
                   
                   <div className="font-medium text-purple-600 dark:text-purple-400 mt-2">Tvorové:</div>
-                  <p><strong>🐺 Zub vlkodlaka:</strong> Útočná kouzla a transformace <span className="text-orange-600 dark:text-orange-400">[Ruční pouze]</span></p>
-                  <p><strong>🕷️ Jed z akromantule:</strong> Subtilní jedovatá magie <span className="text-orange-600 dark:text-orange-400">[Ruční pouze]</span></p>
+                  <p><strong>🐺 Zub vlkodlaka:</strong> Útočná kouzla a transformace</p>
+                  <p><strong>🕷️ Jed z akromantule:</strong> Subtilní jedovatá magie</p>
                   <p><strong>🐍 Hadí jazyk:</strong> Hadomluvy a temná zaklínadla</p>
                   <p><strong>🦉 Opeření stínového hippogryfa:</strong> Kouzla spánku a vizí</p>
                   
