@@ -1442,6 +1442,61 @@ export class DatabaseStorage implements IStorage {
         name: "Líska", 
         shortDescription: "Citlivá hůlka, která reaguje na emoce majitele, může ale také absorbovat negativní energii. Má schopnost hledat podzemní vodu.",
         longDescription: "Lísková hůlka je tak citlivá na emoce svého majitele, že často vadne, pokud je někdo předat jiné osobě, i když jen na krátkou dobu. Má také unikátní schopnost absorbovat negativní energii a může být použita k detekci podzemní vody. Líska je obzvláště dobrá na překonávání vlastní povahy majitele."
+      },
+      { 
+        name: "Modřín", 
+        shortDescription: "Pevné a odolné dřevo, které vyžaduje odvážného a věrného majitele; hůlky z modřínu často odhalí skryté schopnosti svého držitele.",
+        longDescription: "Modřín je jedním z nejpevnějších hůlkových dřev. Vyžaduje odvážného a věrného majitele, který není snadno odrazitelný od svých cílů. Hůlky z modřínu mají pověst, že dokáží odhalit a rozvinout skryté magické schopnosti svého držitele, které ani sám netuší, že má."
+      },
+      { 
+        name: "Olše", 
+        shortDescription: "Nepoddajné dřevo, ideální pro nápomocné a ohleduplné kouzelníky; vyniká v non-verbální magii na nejvyšší úrovni.",
+        longDescription: "Olše je velmi nepoddajné dřevo, které si vybírá kouzelníky s přirozenou sklony pomáhat ostatním. Je ideální pro nápomocné a ohleduplné čaroděje, kteří si získají jejich respekt nejen svými schopnostmi, ale i charakterem. Vyniká především v non-verbální magii na nejvyšší úrovni."
+      },
+      { 
+        name: "Osika", 
+        shortDescription: "Bílé a jemné dřevo, které nejlépe sluší sebevědomým duelantům a bojovým mágům; symbolem odvahy a výzev.",
+        longDescription: "Osika je bílé a jemné dřevo, které však v sobě skrývá nečekanou sílu. Nejlépe sluší sebevědomým duelantům a bojovým mágům, kteří se nebojí výzev. Je symbolem odvahy a připravenosti čelit nebezpečí. Hůlky z osiky mají pověst, že povzbuzují svého majitele k odvážným činům."
+      },
+      { 
+        name: "Sekvoj", 
+        shortDescription: "Vzácné a štěstí nepřinášející, ale přitahující kouzelníky s neotřelým úsudkem a schopností obrátit neštěstí ve svůj prospěch.",
+        longDescription: "Sekvoj je vzácné dřevo, o kterém se říká, že nepřináší štěstí. Přesto přitahuje kouzelníky s neotřelým úsudkem a výjimečnou schopností obrátit zdánlivé neštěstí ve svůj prospěch. Majitelé sekvoje jsou často schopni najít příležitosti tam, kde jiní vidí pouze problémy."
+      },
+      { 
+        name: "Smrk", 
+        shortDescription: "Vyžaduje pevnou ruku a smysl pro humor; hůlky ze smrku jsou věrné a skvělé pro okázalou magii, ale nemají rády nervózní povahy.",
+        longDescription: "Smrk vyžaduje pevnou ruku a smysl pro humor. Hůlky ze smrku jsou věrné svému majiteli a skvělé pro okázalou magii, ale nemají rády nervózní nebo úzkostlivé povahy. Nejlépe pracují s klidnými a sebejistými kouzelníky, kteří dokáží ocenit jak sílu, tak krásu magie."
+      },
+      { 
+        name: "Sykomora", 
+        shortDescription: "Zvědavé a dobrodružné dřevo, které nesnáší nudu; hůlky ze sykomory vzplanou, pokud se jejich majitel nudí.",
+        longDescription: "Sykomora je zvědavé a dobrodružné dřevo, které nade vše nesnáší nudu. Hůlky ze sykomory mají pověst, že doslova vzplanou, pokud se jejich majitel nudí nebo se nechá unášet rutinou. Vyhledává aktivní a zvědavé kouzelníky, kteří hledají neustále nové výzvy a dobrodružství."
+      },
+      { 
+        name: "Tis", 
+        shortDescription: "Temné a vzácné dřevo, spojující se s mocí nad životem a smrtí; nevybírá bojácné majitele a často se pojí s osudy hrdinů i zlosynů.",
+        longDescription: "Tis je temné a vzácné dřevo, které se tradičně spojuje s mocí nad životem a smrtí. Nevybírá si bojácné majitele a často se pojí s osudy významných postav – jak hrdinů, tak zlosynů. Majitelé tisových hůlek jsou obvykle jedinci s výjimečným osudem a silnou vůlí."
+      },
+      { 
+        name: "Topol", 
+        shortDescription: "Dřevo spolehlivé a zásadové, pro kouzelníky s jasnou morální vizí; ideální pro ty, kdo věří v pevné hodnoty.",
+        longDescription: "Topol je dřevo spolehlivé a zásadové, které si vybírá kouzelníky s jasnou morální vizí a pevnými zásadami. Je ideální pro ty, kdo věří v nezměnné hodnoty a jsou ochotni za ně bojovat. Hůlky z topolu jsou známé svou stálostí a věrností svým přesvědčením."
+      },
+      { 
+        name: "Trnka", 
+        shortDescription: "Pevné dřevo pro válečníky a odolné jedince; hůlky z trnky potřebují majitele, kteří prošli těžkostmi, aby se skutečně spojili.",
+        longDescription: "Trnka je pevné dřevo určené pro válečníky a odolné jedince. Hůlky z trnky potřebují majitele, kteří prošli životními těžkostmi a prokázali svou sílu v nepřízni osudu, aby se s nimi skutečně spojili. Teprve po takovém spojení odhalí svou plnou moc."
+      },
+      { 
+        name: "Třešeň", 
+        shortDescription: "Vzácné a smrtící dřevo, vyhledávané v japonské magii; vyžaduje majitele s pevnou sebekontrolou a silnou myslí.",
+        longDescription: "Třešeň je vzácné a potenciálně smrtící dřevo, které je obzvláště vyhledávané v japonské magické tradici. Vyžaduje majitele s mimořádně pevnou sebekontrolou a silnou myslí, protože nezvládnutí jeho síly může mít fatální následky. V rukách zkušeného mága je však nesmírně mocné."
+      },
+      { 
+        name: "Vavřín", 
+        shortDescription: "Nezná lenost; věrná hůlka, která dokáže sama sebe bránit a ztrestat zloděje nečekaným bleskem.",
+        longDescription: "Vavřín je dřevo, které nezná lenost ani pasivitu. Je to věrná hůlka, která dokáže sama sebe bránit a je schopna ztrestat zloděje nebo nehodného majitele nečekaným bleskem. Vybírá si aktivní a cílevědomé kouzelníky, kteří sdílejí jeho odpor k nečinnosti a lenosti."
       }
     ];
 
