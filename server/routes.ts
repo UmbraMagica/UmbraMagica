@@ -166,7 +166,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
         })() : null,
         highlightWords: user.highlightWords || '',
-        highlightColor: user.highlightColor || 'yellow'
+        highlightColor: user.highlightColor || 'yellow',
+        canNarrate: user.canNarrate || false,
+        narratorColor: user.narratorColor || 'yellow'
       });
     } catch (error) {
       console.error("Error fetching user:", error);
