@@ -429,21 +429,21 @@ export default function AdminWandComponents() {
                                 <Label>Název</Label>
                                 <Input
                                   defaultValue={core.name}
-                                  onChange={(e) => setEditingCore({ ...core, name: e.target.value })}
+                                  onChange={(e) => setEditingCore(prev => ({ ...(prev || core), name: e.target.value }))}
                                 />
                               </div>
                               <div>
                                 <Label>Kategorie</Label>
                                 <Input
                                   defaultValue={core.category}
-                                  onChange={(e) => setEditingCore({ ...core, category: e.target.value })}
+                                  onChange={(e) => setEditingCore(prev => ({ ...(prev || core), category: e.target.value }))}
                                 />
                               </div>
                               <div>
                                 <Label>Popis</Label>
                                 <Textarea
                                   defaultValue={core.description}
-                                  onChange={(e) => setEditingCore({ ...core, description: e.target.value })}
+                                  onChange={(e) => setEditingCore(prev => ({ ...(prev || core), description: e.target.value }))}
                                   rows={4}
                                 />
                               </div>
