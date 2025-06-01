@@ -220,7 +220,7 @@ export default function Home() {
                     const selectedChar = userCharacters.find((char: any) => char.id === parseInt(value));
                     if (selectedChar) {
                       setDisplayedCharacter(selectedChar);
-                      localStorage.setItem('activeCharacterId', selectedChar.id.toString());
+                      localStorage.setItem('selectedCharacterId', selectedChar.id.toString());
                     }
                   }}
                 >
