@@ -558,24 +558,41 @@ export default function Ollivanders() {
                   <p><strong>Akácie:</strong> Velmi neobvyklé, lstivé a škodolibé</p>
                   <p><strong>Anglický dub:</strong> Síla a vytrvalost, oblíbené u aurorů</p>
                   <p><strong>Borovice:</strong> Nezávislost a originalita</p>
+                  <p><strong>Bříza:</strong> Poslušnost vůči moudrému majiteli</p>
                   <p><strong>Buk:</strong> Moudrost a porozumění pro učence</p>
                   <p><strong>Cedr:</strong> Věrnost a ochrana, stabilní</p>
                   <p><strong>Cesmína:</strong> Ochrana proti temné magii</p>
                   <p><strong>Cypřiš:</strong> Spojení s nebezpečím a smrtí</p>
                   <p><strong>Černý bez:</strong> Nejšťastnější s necromancií</p>
-                  <p><strong>Třešeň:</strong> Vzácné dřevo s výjimečnou silou</p>
-                  <p><strong>Lípa:</strong> Hledané divákožrouty a léčiteli</p>
-                  <p><strong>Jilm:</strong> Důstojnost a magická elegance</p>
-                  <p><strong>Javor:</strong> Ambiciózní a dobrodružné</p>
-                  <p><strong>Bříza:</strong> Poslušnost vůči moudrému majiteli</p>
-                  <p><strong>Jasan:</strong> Tvrdohlavé a přilnavé ke svému majiteli</p>
+                  <p><strong>Ebenovník:</strong> Černá magie a síla temnoty</p>
+                  <p><strong>Fíkovník:</strong> Úrodnost a pohostinnost</p>
+                  <p><strong>Habr:</strong> Tvrdé jako kámen, nepoddajné</p>
                   <p><strong>Hloh:</strong> Komplexní a protichůdná povaha</p>
-                  <p><strong>Ořech:</strong> Skvělé pro transfiguraci</p>
-                  <p><strong>Tis:</strong> Síla nad životem a smrtí</p>
-                  <p><strong>Růže:</strong> Velmi vzácné kouzelnické dřevo</p>
+                  <p><strong>Hruška:</strong> Láska a něžnost</p>
+                  <p><strong>Jasan:</strong> Tvrdohlavé a přilnavé ke svému majiteli</p>
+                  <p><strong>Javor:</strong> Ambiciózní a dobrodružné</p>
+                  <p><strong>Jedlovec:</strong> Průvodce duchovní cesty</p>
+                  <p><strong>Jilm:</strong> Důstojnost a magická elegance</p>
+                  <p><strong>Jírovec:</strong> Léčivé vlastnosti a ochrana</p>
+                  <p><strong>Kaštanovník:</strong> Spravedlnost a čestnost</p>
+                  <p><strong>Lípa:</strong> Hledané divákožrouty a léčiteli</p>
                   <p><strong>Mahagon:</strong> Transfigurace a transformace</p>
                   <p><strong>Modřín:</strong> Odvaha a sebedůvěra</p>
-                  <p>...a dalších 18 vzácných druhů</p>
+                  <p><strong>Ořech:</strong> Skvělé pro transfiguraci</p>
+                  <p><strong>Ořešák:</strong> Intelekt a rozum</p>
+                  <p><strong>Osika:</strong> Překonávání strachu</p>
+                  <p><strong>Palma:</strong> Vítězství a triumf</p>
+                  <p><strong>Platan:</strong> Moudrost a vytrvalost</p>
+                  <p><strong>Rohožník:</strong> Spojení s magickou přírodou</p>
+                  <p><strong>Růže:</strong> Velmi vzácné kouzelnické dřevo</p>
+                  <p><strong>Smrk:</strong> Věčnost a stálost</p>
+                  <p><strong>Švestka:</strong> Zdraví a obnova</p>
+                  <p><strong>Tis:</strong> Síla nad životem a smrtí</p>
+                  <p><strong>Topol:</strong> Překonávání překážek</p>
+                  <p><strong>Třešeň:</strong> Vzácné dřevo s výjimečnou silou</p>
+                  <p><strong>Vrba:</strong> Intuice a emoce</p>
+                  <p><strong>Wiggentree:</strong> Ochrana a léčení</p>
+                  <p><strong>Zimostráz:</strong> Výdrž a neústupnost</p>
                 </div>
               </div>
 
@@ -595,10 +612,21 @@ export default function Ollivanders() {
                   <p><strong>🗲 Kormidlo bouře:</strong> Ovládání počasí</p>
                   <p><strong>🌟 Hvězdný prach:</strong> Astronomická magie</p>
                   <p><strong>🌿 Srst z srdce stvoření:</strong> Přírodnická magie</p>
+                  <p><strong>🦅 Pero sokola:</strong> Rychlost a přesnost</p>
+                  <p><strong>🐨 Chlup z vousu koala:</strong> Klid a moudrost</p>
+                  <p><strong>🌊 Slza mořské sirény:</strong> Emocionální magie</p>
+                  <p><strong>🌸 Květina z magické louky:</strong> Přírodní magie</p>
+                  <p><strong>🔮 Krystal z jeskyně věštby:</strong> Věšteckká síla</p>
+                  <p><strong>⚡ Blesk ze srdce bouře:</strong> Elementární magie</p>
+                  <p><strong>🍀 List čtyřlístku:</strong> Štěstí a náhoda</p>
+                  <p><strong>🌙 Prach z meteoru:</strong> Kosmická síla</p>
+                  <p><strong>💎 Úlomek z magického kamene:</strong> Stabilita</p>
+                  <p><strong>🕊️ Pero holubice míru:</strong> Harmonická magie</p>
+                  <p><strong>🌿 Kořen prastarého stromu:</strong> Původní síla</p>
+                  <p><strong>🦋 Křídlo kouzelného motýla:</strong> Transformace</p>
                   
                   <div className="font-medium text-gray-600 dark:text-gray-400 mt-2">Nejméně ušlechtilé:</div>
                   <p><strong>🐺 Tesák vlkodlaka:</strong> Brutální a agresivní magie <span className="text-orange-600 dark:text-orange-400">[Ruční pouze]</span></p>
-                  <p>...a dalších 12 vzácných jader</p>
                 </div>
               </div>
             </div>
@@ -608,12 +636,16 @@ export default function Ollivanders() {
               <div>
                 <h4 className="font-medium mb-2 text-purple-600 dark:text-purple-400">📏 Délky hůlek (10 velikostí)</h4>
                 <div className="text-xs grid grid-cols-2 gap-1">
-                  <p><strong>7"-8":</strong> Kompaktní, diskrétní</p>
-                  <p><strong>9"-10":</strong> Vyvážené, univerzální</p>
-                  <p><strong>11"-12":</strong> Standardní, spolehlivé</p>
-                  <p><strong>13"-14":</strong> Pro specializace <span className="text-orange-600 dark:text-orange-400">[Ruční pouze]</span></p>
-                  <p><strong>15"-16":</strong> Raritní, mocné <span className="text-orange-600 dark:text-orange-400">[Ruční pouze]</span></p>
-                  <p><strong>16"+:</strong> Výjimečné osobnosti <span className="text-orange-600 dark:text-orange-400">[Ruční pouze]</span></p>
+                  <p><strong>7":</strong> Kratší, diskrétní</p>
+                  <p><strong>8":</strong> Kompaktní, rychlé reakce</p>
+                  <p><strong>9":</strong> Vyvážená kratší délka</p>
+                  <p><strong>10":</strong> Klasická délka</p>
+                  <p><strong>11":</strong> Univerzální volba</p>
+                  <p><strong>12":</strong> Standardní délka</p>
+                  <p><strong>13":</strong> Neobyčejný potenciál <span className="text-orange-600 dark:text-orange-400">[Ruční pouze]</span></p>
+                  <p><strong>14":</strong> Formální, velkolepá <span className="text-orange-600 dark:text-orange-400">[Ruční pouze]</span></p>
+                  <p><strong>15":</strong> Rarita, silné zaměření <span className="text-orange-600 dark:text-orange-400">[Ruční pouze]</span></p>
+                  <p><strong>16"+:</strong> Výstřední délka <span className="text-orange-600 dark:text-orange-400">[Ruční pouze]</span></p>
                 </div>
               </div>
 
@@ -621,12 +653,17 @@ export default function Ollivanders() {
               <div>
                 <h4 className="font-medium mb-2 text-indigo-600 dark:text-indigo-400">🌊 Ohebnost (11 stupňů)</h4>
                 <div className="text-xs space-y-1">
-                  <p><strong>Nezlomná → Velmi nepoddajná:</strong> Tvrdohlavci <span className="text-orange-600 dark:text-orange-400">[Ruční pouze]</span></p>
-                  <p><strong>Nepoddajná → Mírně nepoddajná:</strong> Disciplinovaní</p>
-                  <p><strong>Pevná → Tvrdá:</strong> Stabilní čarodějové</p>
-                  <p><strong>Ohebná → Pružná:</strong> Adaptabilní</p>
-                  <p><strong>Velmi pružná → Výjimečně poddajná:</strong> Experimentátoři <span className="text-orange-600 dark:text-orange-400">[Ruční pouze]</span></p>
-                  <p><strong>Vrbovitá:</strong> Nejjemnější dotek <span className="text-orange-600 dark:text-orange-400">[Ruční pouze]</span></p>
+                  <p><strong>Nezlomná:</strong> Nekompromisní povaha <span className="text-orange-600 dark:text-orange-400">[Ruční pouze]</span></p>
+                  <p><strong>Velmi nepoddajná:</strong> Rozhodní majitelé <span className="text-orange-600 dark:text-orange-400">[Ruční pouze]</span></p>
+                  <p><strong>Nepoddajná:</strong> Stabilní čarodějové</p>
+                  <p><strong>Mírně nepoddajná:</strong> Metodičtí čarodějové</p>
+                  <p><strong>Pevná:</strong> Vyvážená stabilita</p>
+                  <p><strong>Tvrdá:</strong> Tradiční magie</p>
+                  <p><strong>Ohebná:</strong> Kreativní adaptabilita</p>
+                  <p><strong>Pružná:</strong> Experimentální přístupy</p>
+                  <p><strong>Velmi pružná:</strong> Proměnlivá povaha <span className="text-orange-600 dark:text-orange-400">[Ruční pouze]</span></p>
+                  <p><strong>Výjimečně poddajná:</strong> Nejjemnější pohyby <span className="text-orange-600 dark:text-orange-400">[Ruční pouze]</span></p>
+                  <p><strong>Vrbovitá:</strong> Nejdelikátnější dotek <span className="text-orange-600 dark:text-orange-400">[Ruční pouze]</span></p>
                 </div>
               </div>
             </div>
