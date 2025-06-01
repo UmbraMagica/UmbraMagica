@@ -807,6 +807,33 @@ export default function ChatRoom() {
 
         {/* Message Input */}
         <div className="flex-none border-t bg-card p-4">
+          {/* Character Selection */}
+          {userCharacters.length > 1 && (
+            <div className="mb-4 p-3 bg-muted/30 rounded-lg border">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium text-foreground">Vyberte postavu:</span>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {userCharacters.map((character: any) => (
+                  <Button
+                    key={character.id}
+                    variant={chatCharacter?.id === character.id ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setChatCharacter(character)}
+                    className="flex items-center gap-2"
+                  >
+                    <div className="w-4 h-4 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center">
+                      <span className="text-primary-foreground text-xs">
+                        {character.firstName[0]}{character.lastName[0]}
+                      </span>
+                    </div>
+                    {character.firstName} {character.lastName}
+                  </Button>
+                ))}
+              </div>
+            </div>
+          )}
+          
           {/* Current Character Display */}
           {currentCharacter && (
             <div className="mb-4 p-3 bg-muted/30 rounded-lg border">
