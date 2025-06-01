@@ -1346,33 +1346,34 @@ export class DatabaseStorage implements IStorage {
       { 
         name: "Akácie", 
         shortDescription: "Velmi neobvyklé hůlkové dřevo, z něhož, jak se mi zdá, pochází hůlky tak trochu lstivé a úskočné",
-        longDescription: "Velmi neobvyklé hůlkové dřevo, z něhož pochází hůlky tak trochu lstivé a úskočné, které často odmítnou spolupracovat s kýmkoliv jiným než se svým majitelem a které jsou nejlepší a nejúčinnější v rukou těch nejnadanějších. Tato citlivost je činí obtížně přiřaditelnými. Pokud najde dobrého majitele, akáciová hůlka může poskytnout hodně energie, avšak nebývá takto často využívána kvůli zvláštnosti jejího temperamentu."
+        longDescription: "Velmi neobvyklé hůlkové dřevo, z něhož, jak se mi zdá, pochází hůlky tak trochu lstivé a úskočné, které často odmítnou spolupracovat s kýmkoliv jiným než se svým majitelem a které jsou nejlepší a nejúčinnější v rukou těh nejnadanějších. Tato citlivost je činí obtížně přiřaditelnými, a proto jich mám ve skladu pouze málo pro ty čarodějky a kouzelníky, kteří jsou dostatečně jemní; pro akát se nehodí to, čemu se říká ,bum-a-puf' magie. Pokud najde dobrého majitele, akáciová hůlka může poskytnout hodně energie, avšak nebývá takto často využívána kvůli zvláštnosti jejího temperamentu."
       },
       { 
         name: "Anglický dub", 
         shortDescription: "Silné, věrné dřevo pro odvážné a intuitivní jedince spojené s přírodní magií",
-        longDescription: "To jsou hůlky vhodné v časech dobrých i zlých, a jsou věrnými přáteli kouzelníků, kteří si je zaslouží. Hůlky z anglického dubu požadují po svých partnerech sílu, odvahu a věrnost. Méně známý je fakt, že majitelé těchto hůlek mívají silnou intuici a často jsou přitahováni přírodní magií obklopující tvory i rostliny."
+        longDescription: "To jsou hůlky vhodné v časech dobrých i zlých, a jsou věrnými přáteli kouzelníků, kteří si je zaslouží. Hůlky z anglického dubu požadují po svých partnerech sílu, odvahu a věrnost. Méně známý je fakt, že majitelé těchto hůlek mívají silnou intuici a často jsou přitahováni přírodní magií obklopující tvory i rostliny, jež jsou pro kouzelníky nezbytné jak na jejich kouzla, tak pro potěšení. Dub je nazýván králem lesa vládnoucím od zimního do letního slunovratu, a tudíž by jeho dřevo mělo být získáváno pouze v této době (královnou v čase, kdy den začíná znovu ubývat, je cesmína, takže ta by zase měla být sbírána pouze s koncem roku. Z toho možná plyne ona stará pověra: \"když jeho hůlka z dubu a její z cesmíny, vzít se by byl omyl nesmírný\", kteréžto pořekadlo mi osobně připadá jako nesmysl). Říká se, že Merlinova hůlka byla z anglického dubu (ale ježto se jeho hrob nikdy nenašel, nejsou pro to žádné důkazy)."
       },
       { 
         name: "Borovice", 
         shortDescription: "Tiché a nezávislé hůlky pro výjimečně samostatné kouzelníky",
-        longDescription: "Hůlka vyrobená z rovnovláknitého dřeva borovice si vždy vybírá ty, kdož jsou nezávislí a samostatní, a bývají považováni za osamělé, zvláštní a možná i tajemné. Borovicové hůlky chtějí být používány kreativně, a na rozdíl od mnohých se bez protestů podvolí novým metodám a zaklínadlům. Mnoho hůlkařů tvrdí, že borovicové hůlky vyhledávají majitele předurčené se dožít vysokého věku."
+        longDescription: "Hůlka vyrobená z rovnovláknitého dřeva borovice si vždy vybírá ty, kdož jsou nezávislí a samostatní, a bývají považováni za osamělé, zvláštní a možná i tajemné. Borovicové hůlky chtějí být používány kreativně, a na rozdíl od mnohých se bez protestů podvolí novým metodám a zaklínadlům. Mnoho hůlkařů tvrdí, že borovicové hůlky vyhledávají a také odvádějí nejlepší práci majitelům, kteří jsou předurčeni se dožít vysokého věku, a já mohu potvrdit, že jsem ještě nikdy neznal kouzelníka s borovicovou hůlkou, který by zemřel mladý. Borovicová hůlka také patří k těm, které jsou nejvíce vnímavé vůči non-verbálním kouzlům."
       },
       { 
         name: "Buk", 
         shortDescription: "Elegantní a vzácné dřevo pro moudré a tolerantní čaroděje",
-        longDescription: "Správný protějšek bukové hůlky bude, pokud mladý, tak na svůj věk moudřejší, pokud dospělý, pak bohatý v porozumění a zkušenostech. Bukové hůlky velmi málo slouží omezeným a netolerantním. Pokud však buková hůlka najde toho správného majitele, je schopná jemnosti a umění, které lze velmi zřídka nalézt u jakéhokoliv jiného dřeva."
+        longDescription: "Správný protějšek bukové hůlky bude, pokud mladý, tak na svůj věk moudřejší, pokud dospělý, pak bohatý v porozumění a zkušenostech. Bukové hůlky velmi málo slouží omezeným a netolerantním. Takoví čarodějové a čarodějky, obdržíce bukovou hůlku bez řádného vybrání (prahnouce po této nejvíce žádané, nádherně barevné a velmi drahé hůlce) se poté často objevují na prazích domů zkušených hůlkařů – včetně toho mého – chtíce vědět, proč jejich úžasná hůlka nefunguje pořádně. Pokud však buková hůlka najde toho správného majitele, je schopná jemnosti a umění, které lze velmi zřídka nalézt u jakéhokoliv jiného dřeva, a proto má tak dobrou pověst."
       },
       { 
         name: "Cedr", 
-        shortDescription: "Silná a loajální hůlka pro důvtipné a bystré osobnosti s pevným morálním kompasem – nebezpečné, když jde o ochranu jejich blízkých.",
-        longDescription: "Cedrová hůlka najde dokonalý domov právě tam, kde je důvtip a postřeh. Čarodějka nebo čaroděj, kteří byli vybráni hůlkou z cedru, v sobě mají potenciál být nebezpečnými protivníky, což často bývá nepříjemným překvapením pro ty, kteří je lehkomyslně vyzvali k souboji."
+        shortDescription: "Silná a loajální hůlka pro důvtipné a bystré osobnosti s pevným morálním kompasem",
+        longDescription: "Kdykoliv se setkám s někým, kdo u sebe nosí hůlku z cedru, najdu u něho silnou osobnost a neobvyklou loajalitu. Můj otec, Žervé Ollivander, vždycky říkával \"Nikdy neoklameš majitele cedrové hůlky.\" A já souhlasím: cedrová hůlka najde dokonalý domov právě tam, kde je důvtip a postřeh. Avšak já bych šel v tomto tvrzení ještě dál než můj otec a dodal bych, že jsem nikdy nepotkal nositele cedrové hůlky, kterého by bylo radno rozzuřit, obzvláště pokud je ublíženo jeho blízkým. Čarodějka nebo čaroděj, kteří byli vybráni hůlkou z cedru, v sobě mají potenciál být nebezpečnými protivníky, což často bývá nepříjemným překvapením pro ty, kteří je lehkomyslně vyzvali k souboji."
       },
       { 
         name: "Cesmína", 
-        shortDescription: "Vzácná a ochranářská hůlka pro vznětlivé jedince na duchovní cestě; její skutečná síla září ve výjimečném spojení s jádrem.",
-        longDescription: "Cesmína je jedním z vzácnějších hůlkových dřev; jakožto odjakživa považována za ochranářskou, cesmínová hůlka nejraději pracuje s těmi, co bývají vznětliví a mohou potřebovat pomoc při přemáhání hněvu. Zároveň si však vybírají i ty, kteří jsou namočeni v nějakém nebezpečném a často duchovním hledání."
+        shortDescription: "Ochranářské dřevo pro vznětlivé osobnosti procházející nebezpečnými duchovními hledáními",
+        longDescription: "Cesmína je jedním z vzácnějších hůlkových dřev; jakožto odjakživa považována za ochranářskou, cesmínová hůlka nejraději pracuje s těmi, co bývají vznětliví a mohou potřebovat pomoc při přemáhání hněvu. Zároveň si však vybírají i ty, kteří jsou namočeni v nějakém nebezpečném a často duchovním hledání. Cesmínové dřevo je z těch, jejichž schopnosti se velmi liší v závislosti na jádru hůlky, a je všeobecně velmi těžké skloubit s pařezem fénixe, neboť jejich spojení je neobvyklé a musí se velmi přesně sladit. Když se to ale podaří, se s ničím nevyrovná. Cesmína je jedním z tradičních materiálů používaných při výrobě hůlek a také jedním z nejsvátečnějších. Majitelé: Harry Potter."
       },
+
       { 
         name: "Cypřiš", 
         shortDescription: "Šlechetná hůlka pro statečné a obětavé duše, které se nebojí čelit temnotě – často spojená s hrdinskou smrtí.",
