@@ -850,7 +850,7 @@ export default function Home() {
                             <p className="text-sm font-medium text-foreground hover:text-primary">{character.fullName}</p>
                           </button>
                           <button
-                            onClick={() => setLocation(`/chat/${character.roomId}`)}
+                            onClick={() => setLocation(`/chat/room/${character.roomId}`)}
                             className="text-left hover:bg-muted/30 rounded p-1 -m-1 transition-colors"
                           >
                             <p className="text-xs text-muted-foreground hover:text-primary">v {character.location}</p>
