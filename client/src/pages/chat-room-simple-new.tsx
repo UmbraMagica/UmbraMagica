@@ -41,6 +41,36 @@ interface ChatMessage {
   };
 }
 
+// Function to highlight words in message content
+function renderMessageWithHighlight(content: string, highlightWords?: string, highlightColor?: string) {
+  if (!highlightWords || !highlightWords.trim()) {
+    return content;
+  }
+
+  const words = highlightWords.split(',').map(word => word.trim()).filter(word => word.length > 0);
+  if (words.length === 0) {
+    return content;
+  }
+
+  const colorClass = {
+    'yellow': 'bg-yellow-200 text-yellow-900',
+    'purple': 'bg-purple-200 text-purple-900',
+    'blue': 'bg-blue-200 text-blue-900',
+    'green': 'bg-green-200 text-green-900',
+    'red': 'bg-red-200 text-red-900',
+    'pink': 'bg-pink-200 text-pink-900'
+  }[highlightColor || 'yellow'] || 'bg-yellow-200 text-yellow-900';
+
+  let highlightedContent = content;
+  
+  words.forEach(word => {
+    const regex = new RegExp(`(${word})`, 'gi');
+    highlightedContent = highlightedContent.replace(regex, `<span class="px-1 rounded ${colorClass}">$1</span>`);
+  });
+
+  return <span dangerouslySetInnerHTML={{ __html: highlightedContent }} />;
+}
+
 export default function ChatRoom() {
   const { roomId } = useParams();
   const [, setLocation] = useLocation();
@@ -744,7 +774,9 @@ export default function ChatRoom() {
                     );
                   })()}
                 </div>
-                <p className="text-sm text-foreground break-words whitespace-pre-wrap">{message.content}</p>
+                <p className="text-sm text-foreground break-words whitespace-pre-wrap">
+                  {renderMessageWithHighlight(message.content, user?.highlightWords, user?.highlightColor)}
+                </p>
               </div>
             </div>
           ))}

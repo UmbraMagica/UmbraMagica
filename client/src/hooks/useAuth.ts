@@ -10,6 +10,7 @@ interface User {
   characters: Character[];
   characterOrder?: number[];
   highlightWords?: string;
+  highlightColor?: string;
 }
 
 interface Character {

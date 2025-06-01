@@ -225,6 +225,11 @@ export default function UserSettings() {
         setHighlightWords(user.highlightWords);
       }
       
+      // Initialize highlight color
+      if (user.highlightColor) {
+        setHighlightColor(user.highlightColor);
+      }
+      
       // Initialize character order
       if (user.characterOrder && userCharacters.length > 0) {
         setCharacterOrder(user.characterOrder);
