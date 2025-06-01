@@ -87,7 +87,7 @@ export default function Home() {
   const activeCharacter = Array.isArray(userCharacters) ? userCharacters.find((char: any) => char.isActive && !char.deathDate) : null;
   // Fallback to first alive character if no active character is set
   const firstAliveCharacter = Array.isArray(userCharacters) ? userCharacters.find((char: any) => !char.deathDate) : null;
-  const currentDisplayedCharacter = activeCharacter || firstAliveCharacter;
+  const currentDisplayedCharacter = displayedCharacter || activeCharacter || firstAliveCharacter;
 
   // Load character from localStorage on component mount
   useEffect(() => {
