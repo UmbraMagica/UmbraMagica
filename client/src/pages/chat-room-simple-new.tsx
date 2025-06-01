@@ -142,23 +142,20 @@ export default function ChatRoom() {
     enabled: !!user,
   });
 
-  // Current character for chat (use chat-specific character if set, otherwise main character)
-  const currentCharacter = chatCharacter || ((mainCharacter && !mainCharacter.deathDate) ? mainCharacter : userCharacters[0]);
+  // Current character for chat - NEVER change automatically, only when user explicitly chooses
+  const currentCharacter = chatCharacter;
 
-  // Initialize chat character to main character only on very first load
+  // Initialize chat character ONLY once when first visiting the app
   useEffect(() => {
-    if (mainCharacter && !chatCharacter && !isCharacterInitialized && userCharacters.length > 0) {
-      setChatCharacter(mainCharacter);
+    if (!isCharacterInitialized && userCharacters.length > 0) {
+      // Use main character if available and alive, otherwise first available character
+      const initialCharacter = (mainCharacter && !mainCharacter.deathDate) ? mainCharacter : userCharacters[0];
+      if (initialCharacter) {
+        setChatCharacter(initialCharacter);
+      }
       setIsCharacterInitialized(true);
     }
-  }, [mainCharacter, chatCharacter, isCharacterInitialized, userCharacters.length]);
-
-  // Prevent re-initialization when returning from other pages
-  useEffect(() => {
-    if (chatCharacter) {
-      setIsCharacterInitialized(true);
-    }
-  }, [chatCharacter]);
+  }, [userCharacters, mainCharacter, isCharacterInitialized]);
 
   // Fetch character's spells
   const { data: characterSpells = [] } = useQuery<any[]>({
