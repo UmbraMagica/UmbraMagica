@@ -169,11 +169,11 @@ export default function Home() {
             {/* Logo */}
             <div className="text-xl font-bold text-accent">RPG Realm</div>
             
-            {/* Desktop Navigation - always visible */}
+            {/* Navigation - always visible with text */}
             <div className="flex items-center space-x-2">
               <Button variant="ghost" className="text-foreground hover:text-accent" onClick={() => setLocation('/')}>
                 <HomeIcon className="mr-2 h-4 w-4" />
-                <span className="hidden sm:inline">Domov</span>
+                Domov
               </Button>
               <Button variant="ghost" className="text-foreground hover:text-accent" onClick={() => {
                 if (currentDisplayedCharacter) {
@@ -183,19 +183,19 @@ export default function Home() {
                 }
               }}>
                 <User className="mr-2 h-4 w-4" />
-                <span className="hidden sm:inline">Postava</span>
+                Postava
               </Button>
               <Button variant="ghost" className="text-foreground hover:text-accent" onClick={() => window.location.href = '/settings'}>
                 <Settings className="mr-2 h-4 w-4" />
-                <span className="hidden sm:inline">Nastavení</span>
+                Nastavení
               </Button>
               {user?.role === 'admin' && (
                 <Button variant="ghost" className="text-amber-400 hover:text-amber-300" onClick={() => window.location.href = '/admin'}>
                   <Crown className="mr-2 h-4 w-4" />
-                  <span className="hidden sm:inline">Admin</span>
+                  Admin
                 </Button>
               )}
-              <div className="hidden lg:block text-sm text-muted-foreground">{user?.username}</div>
+              <div className="text-sm text-muted-foreground">{user?.username}</div>
               <Button 
                 variant="ghost" 
                 size="sm" 
