@@ -549,58 +549,94 @@ export default function Ollivanders() {
           <CardHeader>
             <CardTitle>O hůlkách</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-6">
-            <div>
-              <h4 className="font-medium mb-3">Hůlková dřeva:</h4>
-              <div className="space-y-2 text-sm">
-                <p><strong>🌳 Akácie:</strong> Symbolizuje čistotu a obrození. Citlivé hůlky pro zkušené čaroděje</p>
-                <p><strong>🍂 Anglický dub:</strong> Síla a vytrvalost. Oblíbené u Aurorů a ochránců</p>
-                <p><strong>🌲 Borovice:</strong> Nezávislost a originalita. Pro kreativní a nekonvenční čaroděje</p>
-                <p><strong>🌿 Buk:</strong> Moudrost a porozumění. Ideální pro studenty a učence</p>
-                <p><strong>🌾 Cedr:</strong> Věrnost a ochrana. Známé svou stabilitou a spolehlivostí</p>
-                <p><strong>🎄 Cesmína:</strong> Ochrana a přemáhání zla. Symbolizuje štěstí a obranu</p>
-                <p><strong>🌲 Cypřiš:</strong> Smrt a znovuzrození. Spojení s věčností a cykly života</p>
-                <p><strong>🫐 Černý bez:</strong> Tajemství a mystika. Pro čaroděje s hlubokým porozuměním magie</p>
-                <p><strong>🌸 Třešeň:</strong> Krása a obnova. Hůlky pro umělecky nadané čaroděje</p>
-                <p><strong>🍃 Lípa:</strong> Mír a harmonie. Vhodné pro healery a mírové čaroděje</p>
-                <p><strong>🌰 Jilm:</strong> Důstojnost a síla. Tradiční volba pro váženné čaroděje</p>
-                <p><strong>🍁 Javor:</strong> Vyrovnanost a stabilita. Pro čaroděje hledající harmonii</p>
+          <CardContent className="space-y-4">
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* Woods */}
+              <div>
+                <h4 className="font-medium mb-2 text-amber-600 dark:text-amber-400">🌳 Hůlková dřeva (38 druhů)</h4>
+                <div className="text-xs space-y-1 max-h-40 overflow-y-auto">
+                  <p><strong>Akácie:</strong> Velmi neobvyklé, lstivé a škodolibé</p>
+                  <p><strong>Anglický dub:</strong> Síla a vytrvalost, oblíbené u aurorů</p>
+                  <p><strong>Borovice:</strong> Nezávislost a originalita</p>
+                  <p><strong>Buk:</strong> Moudrost a porozumění pro učence</p>
+                  <p><strong>Cedr:</strong> Věrnost a ochrana, stabilní</p>
+                  <p><strong>Cesmína:</strong> Ochrana proti temné magii</p>
+                  <p><strong>Cypřiš:</strong> Spojení s nebezpečím a smrtí</p>
+                  <p><strong>Černý bez:</strong> Nejšťastnější s necromancií</p>
+                  <p><strong>Třešeň:</strong> Vzácné dřevo s výjimečnou silou</p>
+                  <p><strong>Lípa:</strong> Hledané divákožrouty a léčiteli</p>
+                  <p><strong>Jilm:</strong> Důstojnost a magická elegance</p>
+                  <p><strong>Javor:</strong> Ambiciózní a dobrodružné</p>
+                  <p><strong>Bříza:</strong> Poslušnost vůči moudrému majiteli</p>
+                  <p><strong>Jasan:</strong> Tvrdohlavé a přilnavé ke svému majiteli</p>
+                  <p><strong>Hloh:</strong> Komplexní a protichůdná povaha</p>
+                  <p><strong>Ořech:</strong> Skvělé pro transfiguraci</p>
+                  <p><strong>Tis:</strong> Síla nad životem a smrtí</p>
+                  <p><strong>Růže:</strong> Velmi vzácné kouzelnické dřevo</p>
+                  <p><strong>Mahagon:</strong> Transfigurace a transformace</p>
+                  <p><strong>Modřín:</strong> Odvaha a sebedůvěra</p>
+                  <p>...a dalších 18 vzácných druhů</p>
+                </div>
+              </div>
+
+              {/* Cores */}
+              <div>
+                <h4 className="font-medium mb-2 text-red-600 dark:text-red-400">🔥 Jádra hůlek (23 druhů)</h4>
+                <div className="text-xs space-y-1">
+                  <div className="font-medium text-green-600 dark:text-green-400">Nejvznešenější:</div>
+                  <p><strong>🐉 Blána z dračího srdce:</strong> Nejsilnější pro bojová kouzla</p>
+                  <p><strong>🦄 Vlas z hřívy jednorožce:</strong> Nejvěrnější, léčivá kouzla</p>
+                  <p><strong>🔥 Pero fénixe:</strong> Nejrřídší, největší kouzla</p>
+                  
+                  <div className="font-medium text-blue-600 dark:text-blue-400 mt-2">Méně ušlechtilé:</div>
+                  <p><strong>🕷️ Střevo akromantuly:</strong> Nestabilní, ale mocné</p>
+                  <p><strong>🐍 Kožešina kappa:</strong> Vodní magie</p>
+                  <p><strong>🌙 Prach z rohu jednorožce:</strong> Léčivé vlastnosti</p>
+                  <p><strong>🗲 Kormidlo bouře:</strong> Ovládání počasí</p>
+                  <p><strong>🌟 Hvězdný prach:</strong> Astronomická magie</p>
+                  <p><strong>🌿 Srst z srdce stvoření:</strong> Přírodnická magie</p>
+                  
+                  <div className="font-medium text-gray-600 dark:text-gray-400 mt-2">Nejméně ušlechtilé:</div>
+                  <p><strong>🐺 Tesák vlkodlaka:</strong> Brutální a agresivní magie</p>
+                  <p>...a dalších 12 vzácných jader</p>
+                </div>
               </div>
             </div>
 
-            <div>
-              <h4 className="font-medium mb-3">Jádra hůlek:</h4>
-              <div className="space-y-2 text-sm">
-                <p><strong>🐉 Blána z dračího srdce:</strong> Nejsilnější jádro, ideální pro bojová kouzla</p>
-                <p><strong>🦄 Vlas z hřívy jednorožce:</strong> Nejvěrnější jádro, vhodné pro léčivá kouzla</p>
-                <p><strong>🔥 Pero fénixe:</strong> Nejrřídší jádro, schopné největších kouzel</p>
+            <div className="grid md:grid-cols-2 gap-6 border-t pt-4">
+              {/* Lengths */}
+              <div>
+                <h4 className="font-medium mb-2 text-purple-600 dark:text-purple-400">📏 Délky hůlek (10 velikostí)</h4>
+                <div className="text-xs grid grid-cols-2 gap-1">
+                  <p><strong>7"-8":</strong> Kompaktní, diskrétní</p>
+                  <p><strong>9"-10":</strong> Vyvážené, univerzální</p>
+                  <p><strong>11"-12":</strong> Standardní, spolehlivé</p>
+                  <p><strong>13"-14":</strong> Pro specializace</p>
+                  <p><strong>15"-16":</strong> Raritní, mocné</p>
+                  <p><strong>16"+:</strong> Výjimečné osobnosti</p>
+                </div>
               </div>
-            </div>
-            
-            <div>
-              <h4 className="font-medium mb-3">Délky hůlek:</h4>
-              <div className="grid grid-cols-2 gap-2 text-sm">
-                <p><strong>7"-9":</strong> Krátké, precizní hůlky</p>
-                <p><strong>10"-12":</strong> Běžné, vyvážené hůlky</p>
-                <p><strong>13"-15":</strong> Dlouhé, mocné hůlky</p>
-                <p><strong>16"+:</strong> Výjimečně dlouhé hůlky</p>
+
+              {/* Flexibilities */}
+              <div>
+                <h4 className="font-medium mb-2 text-indigo-600 dark:text-indigo-400">🌊 Ohebnost (11 stupňů)</h4>
+                <div className="text-xs space-y-1">
+                  <p><strong>Nezlomná → Velmi nepoddajná:</strong> Tvrdohlavci</p>
+                  <p><strong>Nepoddajná → Mírně nepoddajná:</strong> Disciplinovaní</p>
+                  <p><strong>Pevná → Tvrdá:</strong> Stabilní čarodějové</p>
+                  <p><strong>Ohebná → Pružná:</strong> Adaptabilní</p>
+                  <p><strong>Velmi pružná → Výjimečně poddajná:</strong> Experimentátoři</p>
+                  <p><strong>Vrbovitá:</strong> Nejjemnější dotek</p>
+                </div>
               </div>
             </div>
 
-            <div>
-              <h4 className="font-medium mb-3">Ohebnost hůlek:</h4>
-              <div className="space-y-2 text-sm">
-                <p><strong>Nezlomná:</strong> Pro tvrdohlavé a odhodlané čaroděje</p>
-                <p><strong>Nepříjemně tuhá:</strong> Vyžaduje respekt a disciplínu</p>
-                <p><strong>Poměrně tuhá:</strong> Pro čaroděje s pevnými zásadami</p>
-                <p><strong>Tuhá:</strong> Spolehlivá a vytrvalá, ale ne nepružná</p>
-                <p><strong>Poněkud pružná:</strong> Vyvážená mezi stabilitou a adaptabilitou</p>
-                <p><strong>Docela pružná:</strong> Pro přizpůsobivé a otevřené čaroděje</p>
-                <p><strong>Pružná:</strong> Snadno se přizpůsobuje novým technikám</p>
-                <p><strong>Překvapivě ohebná:</strong> Pro kreativní a inovativní čaroděje</p>
-                <p><strong>Velmi ohebná:</strong> Ideální pro experimentátory</p>
-                <p><strong>Vrbovitá:</strong> Nejohebněji, pro ty s nejjemnějšími schopnostmi</p>
-              </div>
+            <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 p-3 rounded-lg">
+              <p className="text-xs text-amber-800 dark:text-amber-200">
+                <strong>💡 Tip:</strong> Pan Ollivander má v zásobě celkem <strong>38 druhů dřeva</strong>, <strong>23 typů jader</strong>, 
+                <strong>10 délek</strong> a <strong>11 stupňů ohebnosti</strong> - to je přes <strong>95 000 možných kombinací</strong> hůlek! 
+                Každá hůlka je jedinečná a vybírá si svého majitele.
+              </p>
             </div>
           </CardContent>
         </Card>
