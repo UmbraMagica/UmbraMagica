@@ -163,7 +163,7 @@ export default function ChatRoom() {
         setChatCharacter(initialCharacter);
       }
     }
-  }, [userCharacters]);
+  }, [userCharacters, chatCharacter]);
 
   // Clear local messages when room changes
   useEffect(() => {
