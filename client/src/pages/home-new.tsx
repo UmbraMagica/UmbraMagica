@@ -28,7 +28,9 @@ import {
   MessageSquare,
   BarChart3,
   Newspaper,
-  Sparkles
+  Sparkles,
+  Menu,
+  X
 } from "lucide-react";
 import { GameDate } from "@/components/GameDate";
 import { calculateGameAge } from "@/lib/gameDate";
@@ -47,6 +49,7 @@ export default function Home() {
   const { user, logout } = useAuth();
   const { toast } = useToast();
   const [, setLocation] = useLocation();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
 
   const { data: onlineCharacters = [] } = useQuery<OnlineCharacter[]>({
@@ -127,27 +130,89 @@ export default function Home() {
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <div className="text-sm text-muted-foreground">{user?.username}</div>
-              {user?.role === 'admin' && (
-                <div className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-amber-500/20 text-amber-400">
-                  <Crown className="h-3 w-3 mr-1" />
-                  Admin
-                </div>
-              )}
-              <Button variant="ghost" size="sm" className="bg-muted hover:bg-primary text-foreground hover:text-primary-foreground">
-                <User className="h-4 w-4" />
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={handleLogout}
-                className="text-muted-foreground hover:text-destructive"
-              >
-                <LogOut className="h-4 w-4" />
-              </Button>
+              <div className="hidden md:flex items-center space-x-4">
+                <div className="text-sm text-muted-foreground">{user?.username}</div>
+                {user?.role === 'admin' && (
+                  <div className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-amber-500/20 text-amber-400">
+                    <Crown className="h-3 w-3 mr-1" />
+                    Admin
+                  </div>
+                )}
+                <Button variant="ghost" size="sm" className="bg-muted hover:bg-primary text-foreground hover:text-primary-foreground">
+                  <User className="h-4 w-4" />
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={handleLogout}
+                  className="text-muted-foreground hover:text-destructive"
+                >
+                  <LogOut className="h-4 w-4" />
+                </Button>
+              </div>
+              
+              {/* Mobile menu button */}
+              <div className="md:hidden">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                  className="text-foreground hover:text-accent"
+                >
+                  {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+                </Button>
+              </div>
             </div>
           </div>
         </div>
+        
+        {/* Mobile menu dropdown */}
+        {mobileMenuOpen && (
+          <div className="md:hidden border-t border-border bg-card">
+            <div className="px-4 py-2 space-y-1">
+              <Button variant="ghost" className="w-full justify-start text-foreground hover:text-accent" onClick={() => {setLocation('/'); setMobileMenuOpen(false);}}>
+                <HomeIcon className="mr-2 h-4 w-4" />
+                Domov
+              </Button>
+              <Button variant="ghost" className="w-full justify-start text-foreground hover:text-accent" onClick={() => {
+                if (currentDisplayedCharacter) {
+                  setLocation(`/characters/${currentDisplayedCharacter.id}`);
+                } else {
+                  window.location.href = '/character/edit';
+                }
+                setMobileMenuOpen(false);
+              }}>
+                <User className="mr-2 h-4 w-4" />
+                Moje postava
+              </Button>
+              <Button variant="ghost" className="w-full justify-start text-foreground hover:text-accent" onClick={() => {window.location.href = '/settings'; setMobileMenuOpen(false);}}>
+                <Settings className="mr-2 h-4 w-4" />
+                Nastavení
+              </Button>
+              {user?.role === 'admin' && (
+                <Button variant="ghost" className="w-full justify-start text-amber-400 hover:text-amber-300" onClick={() => {window.location.href = '/admin'; setMobileMenuOpen(false);}}>
+                  <Crown className="mr-2 h-4 w-4" />
+                  Administrace
+                </Button>
+              )}
+              <div className="border-t border-border pt-2">
+                <div className="px-3 py-2 text-sm text-muted-foreground">{user?.username}</div>
+                {user?.role === 'admin' && (
+                  <div className="px-3 py-1">
+                    <div className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-amber-500/20 text-amber-400">
+                      <Crown className="h-3 w-3 mr-1" />
+                      Admin
+                    </div>
+                  </div>
+                )}
+                <Button variant="ghost" className="w-full justify-start text-muted-foreground hover:text-destructive" onClick={() => {handleLogout(); setMobileMenuOpen(false);}}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Odhlásit se
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
       </nav>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
