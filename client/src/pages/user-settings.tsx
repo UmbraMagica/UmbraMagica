@@ -1498,8 +1498,10 @@ export default function UserSettings() {
                               size="sm"
                               disabled={index === 0}
                               onClick={() => {
+                                console.log('Moving up - before:', characterOrder);
                                 const newOrder = [...characterOrder];
                                 [newOrder[index], newOrder[index - 1]] = [newOrder[index - 1], newOrder[index]];
+                                console.log('Moving up - after:', newOrder);
                                 setCharacterOrder(newOrder);
                                 // Auto-save immediately
                                 updateCharacterOrderMutation.mutate(newOrder);
@@ -1512,8 +1514,10 @@ export default function UserSettings() {
                               size="sm"
                               disabled={index === characterOrder.length - 1}
                               onClick={() => {
+                                console.log('Moving down - before:', characterOrder);
                                 const newOrder = [...characterOrder];
                                 [newOrder[index], newOrder[index + 1]] = [newOrder[index + 1], newOrder[index]];
+                                console.log('Moving down - after:', newOrder);
                                 setCharacterOrder(newOrder);
                                 // Auto-save immediately
                                 updateCharacterOrderMutation.mutate(newOrder);
