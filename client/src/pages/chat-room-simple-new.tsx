@@ -138,11 +138,7 @@ export default function ChatRoom() {
     });
   })();
 
-  // Fetch main character
-  const { data: mainCharacter } = useQuery<any>({
-    queryKey: ["/api/characters/main"],
-    enabled: !!user,
-  });
+  // We don't need to fetch main character for chat - we use the first available character instead
 
   // Current character for chat - NEVER change automatically, only when user explicitly chooses
   const currentCharacter = chatCharacter;
