@@ -1284,7 +1284,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllWandComponents(): Promise<{
-    woods: { name: string; description: string }[];
+    woods: { name: string; shortDescription: string; longDescription: string }[];
     cores: { name: string; category: string; description: string }[];
     lengths: { name: string; description: string }[];
     flexibilities: { name: string; description: string }[];
@@ -1317,14 +1317,18 @@ export class DatabaseStorage implements IStorage {
   }
 
   private getDefaultWandComponents(): {
-    woods: { name: string; description: string }[];
+    woods: { name: string; shortDescription: string; longDescription: string }[];
     cores: { name: string; category: string; description: string }[];
     lengths: { name: string; description: string }[];
     flexibilities: { name: string; description: string }[];
   } {
     const woods = [
-      { name: "Akácie", description: "Vzácná a temperamentní hůlka pro neobyčejně nadané kouzelníky; odmítá spolupracovat s kýmkoliv jiným než se svým pravým majitelem." },
-      { name: "Anglický dub", description: "Silná, věrná a intuitivní hůlka pro čaroděje s odvahou, věrností a blízkým vztahem k přírodní magii." },
+      { 
+        name: "Akácie", 
+        shortDescription: "Vzácná a temperamentní hůlka pro neobyčejně nadané kouzelníky",
+        longDescription: "Vzácná a temperamentní hůlka pro neobyčejně nadané kouzelníky; odmítá spolupracovat s kýmkoliv jiným než se svým pravým majitelem."
+      },
+      { name: "Anglický dub", description: "Příjemná hůlka pro dobrý kouzelník, vytrvalý obránce práva, spravedlnosti a morálky." },
       { name: "Borovice", description: "Hůlka nezávislých a originálních jedinců s dlouhověkostí v osudu; výborně reaguje na neverbální magii." },
       { name: "Buk", description: "Elegantní a náročná hůlka pro moudré, tolerantní a zkušené čaroděje, kteří v ní probudí její výjimečnou jemnost a umění." },
       { name: "Cedr", description: "Silná a loajální hůlka pro důvtipné a bystré osobnosti s pevným morálním kompasem – nebezpečné, když jde o ochranu jejich blízkých." },
@@ -1457,14 +1461,14 @@ export class DatabaseStorage implements IStorage {
   }
 
   private storedWandComponents: {
-    woods: { name: string; description: string }[];
+    woods: { name: string; shortDescription: string; longDescription: string }[];
     cores: { name: string; category: string; description: string }[];
     lengths: { name: string; description: string }[];
     flexibilities: { name: string; description: string }[];
   } | null = null;
 
   async updateWandComponents(components: {
-    woods: { name: string; description: string }[];
+    woods: { name: string; shortDescription: string; longDescription: string }[];
     cores: { name: string; category: string; description: string }[];
     lengths: { name: string; description: string }[];
     flexibilities: { name: string; description: string }[];
