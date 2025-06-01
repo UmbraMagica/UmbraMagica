@@ -1310,9 +1310,17 @@ export class DatabaseStorage implements IStorage {
       return this.storedWandComponents;
     }
     
-    // If no stored components, return fallback
+    // If no stored components, create and store default ones
     const defaultComponents = this.getDefaultWandComponents();
     this.storedWandComponents = defaultComponents;
+    
+    // Save to database for persistence
+    try {
+      await this.updateWandComponents(defaultComponents);
+    } catch (error) {
+      console.error("Error saving default wand components to database:", error);
+    }
+    
     return defaultComponents;
   }
 
