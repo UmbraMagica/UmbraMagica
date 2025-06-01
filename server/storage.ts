@@ -1294,7 +1294,7 @@ export class DatabaseStorage implements IStorage {
       const [configRow] = await db.select().from(configuration).where(eq(configuration.key, 'wand_components'));
       if (configRow && configRow.value) {
         this.storedWandComponents = configRow.value as {
-          woods: { name: string; description: string }[];
+          woods: { name: string; shortDescription: string; longDescription: string }[];
           cores: { name: string; category: string; description: string }[];
           lengths: { name: string; description: string }[];
           flexibilities: { name: string; description: string }[];
