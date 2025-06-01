@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Plus, Edit, Trash2, Wand2, ArrowLeft, Search, Filter, Upload, FileText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { Spell } from "@shared/schema";
@@ -190,7 +191,8 @@ export default function AdminSpells() {
       effect: spell.effect,
       category: spell.category,
       type: spell.type,
-      targetType: spell.targetType as "self" | "other" | "object" | "both"
+      targetType: spell.targetType as "self" | "other" | "object" | "both",
+      isDefault: spell.isDefault || false
     });
     setIsCreating(true);
   };
@@ -329,7 +331,8 @@ export default function AdminSpells() {
                 effect: "",
                 category: "Kouzelné formule",
                 type: "Základní",
-                targetType: "self"
+                targetType: "self",
+                isDefault: false
               });
             }} 
             disabled={isCreating}
@@ -558,6 +561,18 @@ Nox,Kouzelné formule,Základní,Zhasne světlo vyvolané kouzlem Lumos,self"
                 rows={3}
               />
             </div>
+            
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="default"
+                checked={formData.isDefault}
+                onCheckedChange={(checked) => setFormData({ ...formData, isDefault: !!checked })}
+              />
+              <label htmlFor="default" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                Výchozí kouzlo (automaticky přiděleno novým postavám)
+              </label>
+            </div>
+            
             <div className="flex gap-2">
               <Button
                 onClick={handleSubmit}
@@ -602,6 +617,7 @@ Nox,Kouzelné formule,Základní,Zhasne světlo vyvolané kouzlem Lumos,self"
                     <TableHead className="w-[150px]">Kategorie</TableHead>
                     <TableHead className="w-[120px]">Typ</TableHead>
                     <TableHead className="w-[140px]">Cíl</TableHead>
+                    <TableHead className="w-[100px]">Default</TableHead>
                     <TableHead>Efekt</TableHead>
                     <TableHead className="w-[120px]">Akce</TableHead>
                   </TableRow>
@@ -624,6 +640,17 @@ Nox,Kouzelné formule,Základní,Zhasne světlo vyvolané kouzlem Lumos,self"
                         {spell.targetType === "self" ? "Sebe" : 
                          spell.targetType === "other" ? "Jinou postavu" : 
                          spell.targetType === "both" ? "Sebe i jinou postavu" : "Předmět"}
+                      </TableCell>
+                      <TableCell>
+                        {spell.isDefault ? (
+                          <Badge variant="default" className="text-xs bg-green-500 text-white">
+                            Ano
+                          </Badge>
+                        ) : (
+                          <Badge variant="outline" className="text-xs">
+                            Ne
+                          </Badge>
+                        )}
                       </TableCell>
                       <TableCell className="max-w-[300px]">
                         <div className="truncate text-sm" title={spell.effect}>

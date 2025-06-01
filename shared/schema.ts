@@ -583,6 +583,7 @@ export const insertSpellSchema = createInsertSchema(spells).pick({
   category: true,
   type: true,
   targetType: true,
+  isDefault: true,
 });
 
 export const insertCharacterSpellSchema = createInsertSchema(characterSpells).pick({
@@ -596,6 +597,7 @@ export const spellSchema = z.object({
   category: z.string().min(1, "Kategorie je povinná").max(50),
   type: z.string().min(1, "Typ je povinný").max(50),
   targetType: z.enum(["self", "other", "object", "both"]).default("self"),
+  isDefault: z.boolean().default(false),
 });
 
 export const insertWandSchema = createInsertSchema(wands).pick({
