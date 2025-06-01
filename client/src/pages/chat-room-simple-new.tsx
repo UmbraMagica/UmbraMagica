@@ -110,6 +110,8 @@ export default function ChatRoom() {
   const [showSpellDialog, setShowSpellDialog] = useState(false);
   const [selectedSpell, setSelectedSpell] = useState<any>(null);
   const [chatCharacter, setChatCharacter] = useState<any>(null);
+  const [isNarratorMode, setIsNarratorMode] = useState(false);
+  const [narratorMessage, setNarratorMessage] = useState("");
   
   const currentRoomId = roomId ? parseInt(roomId) : null;
 
@@ -531,6 +533,31 @@ export default function ChatRoom() {
       title: "Kouzlo vybráno",
       description: `${spell.name} bude sesláno s dalším příspěvkem`,
     });
+  };
+
+  const handleNarratorMessage = async () => {
+    if (!currentRoomId || !narratorMessage.trim()) return;
+
+    try {
+      await apiRequest("POST", "/api/chat/narrator-message", {
+        roomId: currentRoomId,
+        content: narratorMessage.trim()
+      });
+      
+      setNarratorMessage("");
+      setIsNarratorMode(false);
+      
+      toast({
+        title: "Vypravěčská zpráva odeslána",
+        description: "Vaša zpráva byla úspěšně odeslána",
+      });
+    } catch (error) {
+      toast({
+        title: "Chyba",
+        description: "Nepodařilo se odeslat vypravěčskou zprávu.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleDownloadChat = async () => {
@@ -1037,6 +1064,40 @@ export default function ChatRoom() {
                     >
                       <Wand2 className="h-3 w-3 mr-1" />
                       Kouzla
+                    </Button>
+                  )}
+                  
+                  {/* Narrator mode button - only show if user has narrator permissions */}
+                  {user?.canNarrate && (
+                    <Button
+                      onClick={() => setIsNarratorMode(!isNarratorMode)}
+                      variant={isNarratorMode ? "default" : "outline"}
+                      size="sm"
+                      className="h-7 px-2 text-xs"
+                      title={isNarratorMode ? "Ukončit režim vypravěče" : "Zapnout režim vypravěče"}
+                    >
+                      <div className="w-3 h-3 rounded-full flex items-center justify-center mr-1"
+                           style={{
+                             backgroundColor: isNarratorMode ? 'white' : (
+                               user.narratorColor === 'yellow' ? '#fbbf24' :
+                               user.narratorColor === 'red' ? '#ef4444' :
+                               user.narratorColor === 'blue' ? '#3b82f6' :
+                               user.narratorColor === 'green' ? '#10b981' :
+                               user.narratorColor === 'pink' ? '#ec4899' :
+                               '#8b5cf6'
+                             ),
+                             color: isNarratorMode ? (
+                               user.narratorColor === 'yellow' ? '#fbbf24' :
+                               user.narratorColor === 'red' ? '#ef4444' :
+                               user.narratorColor === 'blue' ? '#3b82f6' :
+                               user.narratorColor === 'green' ? '#10b981' :
+                               user.narratorColor === 'pink' ? '#ec4899' :
+                               '#8b5cf6'
+                             ) : 'white'
+                           }}>
+                        <span className="text-xs font-bold">V</span>
+                      </div>
+                      Vypravěč
                     </Button>
                   )}
                 </div>

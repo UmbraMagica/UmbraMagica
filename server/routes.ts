@@ -1436,6 +1436,54 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Narrator message endpoint
+  app.post("/api/chat/narrator-message", requireAuth, async (req, res) => {
+    try {
+      const { roomId, content } = req.body;
+      const userId = req.session.userId!;
+      
+      if (!roomId || !content || !content.trim()) {
+        return res.status(400).json({ message: "roomId and content are required" });
+      }
+
+      // Check if user has narrator permissions
+      const user = await storage.getUser(userId);
+      if (!user || !user.canNarrate) {
+        return res.status(403).json({ message: "Narrator permissions required" });
+      }
+
+      // Create narrator message with special character ID (0 for narrator)
+      const narratorMessage = await storage.createMessage({
+        roomId: parseInt(roomId),
+        characterId: 0, // Special ID for narrator messages
+        content: content.trim(),
+        messageType: 'narrator',
+      });
+
+      // Broadcast to all clients in the room
+      broadcastToRoom(parseInt(roomId), {
+        type: 'new_message',
+        message: {
+          ...narratorMessage,
+          character: {
+            firstName: 'Vypravěč',
+            middleName: null,
+            lastName: '',
+            avatar: null
+          }
+        }
+      });
+
+      res.json({ 
+        message: narratorMessage,
+        success: true 
+      });
+    } catch (error) {
+      console.error("Error sending narrator message:", error);
+      res.status(500).json({ message: "Failed to send narrator message" });
+    }
+  });
+
   // Spell management endpoints
   
   // Get all spells (for admin)
