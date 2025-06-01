@@ -43,15 +43,17 @@ export default function Ollivanders() {
   // Always prioritize the active character, don't fall back to first character if no active one
   const mainCharacter = userCharacters.find((char: any) => char.isActive);
 
-  console.log('Ollivanders - User characters:', userCharacters);
-  console.log('Ollivanders - Main character:', mainCharacter);
-  
   // Function to refresh cache
   const refreshData = () => {
     queryClient.invalidateQueries({ queryKey: ['/api/characters'] });
-    if (mainCharacter?.id) {
-      queryClient.invalidateQueries({ queryKey: [`/api/characters/${mainCharacter.id}/wand`] });
-    }
+    queryClient.removeQueries({ queryKey: ['/api/characters'] }); // Force complete removal
+    // Invalidate all wand queries for any character
+    queryClient.invalidateQueries({ 
+      predicate: (query) => {
+        return query.queryKey[0]?.toString().includes('/api/characters/') && 
+               query.queryKey[0]?.toString().includes('/wand');
+      }
+    });
   };
 
   // Auto-refresh when component mounts to ensure fresh data
