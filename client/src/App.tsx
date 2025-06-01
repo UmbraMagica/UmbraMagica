@@ -18,7 +18,7 @@ import ChatCategories from "@/pages/chat-categories";
 import ChatRoom from "@/pages/chat-room-simple-new";
 import ChatDebug from "@/pages/chat-debug";
 import ChatRoomSimpleTest from "@/pages/chat-room-simple-test";
-import CharacterEdit from "@/pages/character-edit-fixed-nav";
+import CharacterEditFixedNav from "@/pages/character-edit-fixed-nav";
 import CharactersList from "@/pages/characters-list";
 import CharacterProfile from "@/pages/character-profile";
 import CharacterInventory from "@/pages/character-inventory";
@@ -76,8 +76,8 @@ function Router() {
           <Route path="/admin/spells/character/:characterId" component={AdminCharacterSpells} />
           <Route path="/admin/wand-components" component={AdminWandComponents} />
           <Route path="/home" component={Home} />
-          <Route path="/character/edit" component={CharacterEdit} />
-          <Route path="/character-edit/:characterId" component={CharacterEdit} />
+          <Route path="/character/edit" component={CharacterEditFixedNav} />
+          <Route path="/character-edit/:characterId" component={CharacterEditFixedNav} />
           <Route path="/settings" component={UserSettings} />
           <Route path="/user-settings" component={UserSettings} />
           <Route path="/chat" component={ChatCategories} />
@@ -88,7 +88,7 @@ function Router() {
           <Route path="/chat-test" component={ChatRoomSimpleTest} />
           <Route path="/characters" component={CharactersList} />
           <Route path="/characters/:id" component={CharacterProfile} />
-          <Route path="/characters/:id/edit" component={CharacterEdit} />
+          <Route path="/characters/:id/edit" component={CharacterEditFixedNav} />
           <Route path="/character/:id" component={CharacterProfile} />
           <Route path="/characters/:characterId/inventory" component={CharacterInventory} />
           <Route path="/characters/:characterId/journal" component={CharacterJournal} />
