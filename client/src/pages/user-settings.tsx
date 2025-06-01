@@ -96,6 +96,7 @@ export default function UserSettings() {
   const [characterOrder, setCharacterOrder] = useState<number[]>([]);
   const [highlightWords, setHighlightWords] = useState('');
   const [highlightColor, setHighlightColor] = useState('yellow');
+  const [narratorColor, setNarratorColor] = useState('purple');
   
   const toggleSection = (section: string) => {
     setCollapsedSections(prev => ({
@@ -172,6 +173,31 @@ export default function UserSettings() {
     },
   });
 
+  // Narrator color mutation
+  const updateNarratorColorMutation = useMutation({
+    mutationFn: (data: { color: string }) => 
+      apiRequest("POST", "/api/user/narrator-color", { 
+        narratorColor: data.color 
+      }),
+    onSuccess: (data, variables) => {
+      // Update local state immediately
+      setNarratorColor(variables.color);
+      // Invalidate user data to refresh the cache
+      queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
+      toast({
+        title: "Barva vypravěče uložena",
+        description: "Vaše nastavení barvy vypravěče bylo úspěšně uloženo",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Chyba při ukládání",
+        description: error.message || "Nepodařilo se uložit barvu vypravěče",
+        variant: "destructive",
+      });
+    },
+  });
+
   const form = useForm<CharacterRequestForm>({
     resolver: zodResolver(characterRequestSchema),
     defaultValues: {
@@ -235,6 +261,11 @@ export default function UserSettings() {
       // Initialize highlight color
       if (user.highlightColor) {
         setHighlightColor(user.highlightColor);
+      }
+      
+      // Initialize narrator color
+      if (user.narratorColor) {
+        setNarratorColor(user.narratorColor);
       }
     }
   }, [user]);
@@ -1640,6 +1671,78 @@ export default function UserSettings() {
             </CardContent>
             )}
           </Card>
+
+          {/* Narrator Settings */}
+          {user?.canNarrate && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <div className="w-6 h-6 bg-purple-600 rounded-full flex items-center justify-center">
+                    <span className="text-xs font-bold text-white">V</span>
+                  </div>
+                  Nastavení vypravěče
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="narratorColor">Barva vypravěčských zpráv</Label>
+                    <select
+                      id="narratorColor"
+                      value={narratorColor}
+                      onChange={(e) => setNarratorColor(e.target.value)}
+                      className="w-full p-2 border rounded-md bg-background text-foreground"
+                    >
+                      <option value="yellow">Žlutá</option>
+                      <option value="red">Červená</option>
+                      <option value="blue">Modrá</option>
+                      <option value="green">Zelená</option>
+                      <option value="pink">Růžová</option>
+                      <option value="purple">Fialová</option>
+                    </select>
+                  </div>
+
+                  <div className="p-3 border rounded-lg bg-muted/50">
+                    <p className="text-sm font-medium mb-2">Náhled vypravěčské zprávy:</p>
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-full flex items-center justify-center"
+                           style={{
+                             backgroundColor: 
+                               narratorColor === 'yellow' ? '#fbbf24' :
+                               narratorColor === 'red' ? '#ef4444' :
+                               narratorColor === 'blue' ? '#3b82f6' :
+                               narratorColor === 'green' ? '#10b981' :
+                               narratorColor === 'pink' ? '#ec4899' :
+                               '#8b5cf6'
+                           }}>
+                        <span className="text-xs font-bold text-white">V</span>
+                      </div>
+                      <div className="text-sm italic"
+                           style={{
+                             color: 
+                               narratorColor === 'yellow' ? '#fbbf24' :
+                               narratorColor === 'red' ? '#ef4444' :
+                               narratorColor === 'blue' ? '#3b82f6' :
+                               narratorColor === 'green' ? '#10b981' :
+                               narratorColor === 'pink' ? '#ec4899' :
+                               '#8b5cf6'
+                           }}>
+                        Toto je ukázka vypravěčské zprávy...
+                      </div>
+                    </div>
+                  </div>
+
+                  <Button 
+                    onClick={() => updateNarratorColorMutation.mutate({ color: narratorColor })}
+                    disabled={updateNarratorColorMutation.isPending}
+                    className="w-full"
+                  >
+                    {updateNarratorColorMutation.isPending ? 'Ukládám...' : 'Uložit barvu vypravěče'}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
     </div>
