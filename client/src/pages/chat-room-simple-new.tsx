@@ -53,13 +53,13 @@ function renderMessageWithHighlight(content: string, highlightWords?: string, hi
   }
 
   const colorClass = {
-    'yellow': 'bg-yellow-200 text-yellow-900 dark:bg-yellow-600 dark:text-yellow-100',
-    'purple': 'bg-purple-200 text-purple-900 dark:bg-purple-600 dark:text-purple-100',
-    'blue': 'bg-blue-200 text-blue-900 dark:bg-blue-600 dark:text-blue-100',
-    'green': 'bg-green-200 text-green-900 dark:bg-green-600 dark:text-green-100',
-    'red': 'bg-red-200 text-red-900 dark:bg-red-600 dark:text-red-100',
-    'pink': 'bg-pink-200 text-pink-900 dark:bg-pink-600 dark:text-pink-100'
-  }[highlightColor || 'yellow'] || 'bg-yellow-200 text-yellow-900 dark:bg-yellow-600 dark:text-yellow-100';
+    'yellow': 'bg-yellow-200/60 text-yellow-900 dark:bg-yellow-400/30 dark:text-yellow-100',
+    'purple': 'bg-purple-200/60 text-purple-900 dark:bg-purple-400/30 dark:text-purple-100',
+    'blue': 'bg-blue-200/60 text-blue-900 dark:bg-blue-400/30 dark:text-blue-100',
+    'green': 'bg-green-200/60 text-green-900 dark:bg-green-400/30 dark:text-green-100',
+    'red': 'bg-red-200/60 text-red-900 dark:bg-red-400/30 dark:text-red-100',
+    'pink': 'bg-pink-200/60 text-pink-900 dark:bg-pink-400/30 dark:text-pink-100'
+  }[highlightColor || 'yellow'] || 'bg-yellow-200/60 text-yellow-900 dark:bg-yellow-400/30 dark:text-yellow-100';
 
   let highlightedContent = content;
   
@@ -68,7 +68,18 @@ function renderMessageWithHighlight(content: string, highlightWords?: string, hi
     const escapedWord = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     // Remove word boundaries - search anywhere in text like Ctrl+F, case insensitive
     const regex = new RegExp(`(${escapedWord})`, 'gi');
-    highlightedContent = highlightedContent.replace(regex, `<span class="inline ${colorClass}" style="padding: 1px 2px; border-radius: 2px; box-decoration-break: clone;">$1</span>`);
+    const style = (() => {
+      switch (highlightColor || 'yellow') {
+        case 'yellow': return 'background-color: rgba(254, 240, 138, 0.6); color: rgb(133, 77, 14);';
+        case 'purple': return 'background-color: rgba(196, 181, 253, 0.6); color: rgb(88, 28, 135);';
+        case 'blue': return 'background-color: rgba(147, 197, 253, 0.6); color: rgb(30, 58, 138);';
+        case 'green': return 'background-color: rgba(134, 239, 172, 0.6); color: rgb(20, 83, 45);';
+        case 'red': return 'background-color: rgba(252, 165, 165, 0.6); color: rgb(153, 27, 27);';
+        case 'pink': return 'background-color: rgba(244, 164, 252, 0.6); color: rgb(131, 24, 67);';
+        default: return 'background-color: rgba(254, 240, 138, 0.6); color: rgb(133, 77, 14);';
+      }
+    })();
+    highlightedContent = highlightedContent.replace(regex, `<span class="inline" style="padding: 1px 3px; border-radius: 3px; box-decoration-break: clone; ${style}">$1</span>`);
   });
 
   return <span dangerouslySetInnerHTML={{ __html: highlightedContent }} />;
