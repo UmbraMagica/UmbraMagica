@@ -572,7 +572,7 @@ export class DatabaseStorage implements IStorage {
     // Handle narrator messages (characterId = null)
     return result.map(row => ({
       ...row,
-      character: row.character.firstName ? row.character : {
+      character: row.character && row.character.firstName ? row.character : {
         firstName: 'Vypravěč',
         middleName: null,
         lastName: '',
