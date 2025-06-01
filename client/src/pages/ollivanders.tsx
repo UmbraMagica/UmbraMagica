@@ -554,7 +554,7 @@ export default function Ollivanders() {
               {/* Woods */}
               <div>
                 <h4 className="font-medium mb-2 text-amber-600 dark:text-amber-400">🌳 Hůlková dřeva (38 druhů)</h4>
-                <div className="text-xs space-y-1 max-h-64 overflow-y-auto">
+                <div className="text-xs space-y-1 max-h-48 overflow-y-auto">
                   <p><strong>Akácie:</strong> Velmi neobvyklé, lstivé a škodolibé</p>
                   <p><strong>Anglický dub:</strong> Síla a vytrvalost, oblíbené u aurorů</p>
                   <p><strong>Borovice:</strong> Nezávislost a originalita</p>
