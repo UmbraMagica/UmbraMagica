@@ -156,7 +156,7 @@ export default function Ollivanders() {
     );
   }
 
-  const hasWand = characterWand && !wandLoading;
+  const hasWand = !wandLoading && characterWand !== null && characterWand !== undefined;
 
   return (
     <div className="container mx-auto p-6 max-w-4xl">
