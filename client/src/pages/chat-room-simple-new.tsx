@@ -147,16 +147,13 @@ export default function ChatRoom() {
   // Current character for chat - NEVER change automatically, only when user explicitly chooses
   const currentCharacter = chatCharacter;
 
-  // Initialize chat character ONLY once when first visiting the app
+  // Initialize chat character when entering chat room
   useEffect(() => {
-    const hasBeenInitialized = localStorage.getItem('chatCharacterInitialized');
-    
-    if (!hasBeenInitialized && !chatCharacter && userCharacters.length > 0) {
+    if (!chatCharacter && userCharacters.length > 0) {
       // Use main character if available and alive, otherwise first available character
       const initialCharacter = (mainCharacter && !mainCharacter.deathDate) ? mainCharacter : userCharacters[0];
       if (initialCharacter) {
         setChatCharacter(initialCharacter);
-        localStorage.setItem('chatCharacterInitialized', 'true');
       }
     }
   }, [userCharacters, mainCharacter, chatCharacter]);
