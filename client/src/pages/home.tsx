@@ -139,7 +139,7 @@ export default function Home() {
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-4">
               <div className="text-xl font-bold text-accent">RPG Realm</div>
-              <div className="hidden md:flex items-center space-x-2">
+              <div className="flex items-center space-x-2">
                 <Button variant="ghost" className="text-foreground hover:text-accent" onClick={() => setLocation('/')}>
                   <HomeIcon className="mr-2 h-4 w-4" />
                   Domov
