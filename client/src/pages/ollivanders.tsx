@@ -16,6 +16,7 @@ export default function Ollivanders() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [showWandDetails, setShowWandDetails] = useState(false);
+  const [selectedCharacter, setSelectedCharacter] = useState<any>(null);
   
   // Custom wand creation state
   const [customWand, setCustomWand] = useState({
@@ -40,8 +41,16 @@ export default function Ollivanders() {
 
   // Get user's alive characters and find the active one
   const userCharacters = Array.isArray(allCharacters) ? allCharacters.filter((char: any) => !char.deathDate && !char.isSystem) : [];
-  // Always prioritize the active character, don't fall back to first character if no active one
-  const mainCharacter = userCharacters.find((char: any) => char.isActive);
+  // Use selected character or fallback to active character
+  const activeCharacter = userCharacters.find((char: any) => char.isActive);
+  const mainCharacter = selectedCharacter || activeCharacter;
+
+  // Set default selected character to active character on first load
+  useEffect(() => {
+    if (activeCharacter && !selectedCharacter) {
+      setSelectedCharacter(activeCharacter);
+    }
+  }, [activeCharacter, selectedCharacter]);
 
   // Function to refresh cache
   const refreshData = () => {
@@ -186,19 +195,49 @@ export default function Ollivanders() {
 
   return (
     <div className="container mx-auto p-6 max-w-4xl">
-      <div className="flex items-center gap-4 mb-6">
-        <Button
-          onClick={() => setLocation('/')}
-          variant="outline"
-          size="sm"
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Zpět domů
-        </Button>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Wand2 className="h-8 w-8" />
-          U Ollivandera - Výrobce hůlek
-        </h1>
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-4">
+          <Button
+            onClick={() => setLocation('/')}
+            variant="outline"
+            size="sm"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Zpět domů
+          </Button>
+          <h1 className="text-3xl font-bold flex items-center gap-2">
+            <Wand2 className="h-8 w-8" />
+            U Ollivandera - Výrobce hůlek
+          </h1>
+        </div>
+        
+        {/* Character Selector */}
+        {userCharacters.length > 1 && (
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground">Postava:</span>
+            <Select 
+              value={mainCharacter?.id?.toString() || ""} 
+              onValueChange={(value) => {
+                const character = userCharacters.find((char: any) => char.id === parseInt(value));
+                if (character) {
+                  setSelectedCharacter(character);
+                }
+              }}
+            >
+              <SelectTrigger className="w-48">
+                <SelectValue placeholder="Vyberte postavu" />
+              </SelectTrigger>
+              <SelectContent>
+                {userCharacters.map((character: any) => (
+                  <SelectItem key={character.id} value={character.id.toString()}>
+                    {character.firstName} {character.lastName}
+                    {character.isActive && " (aktivní)"}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
       </div>
 
       <div className="grid gap-6">
