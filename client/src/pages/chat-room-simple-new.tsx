@@ -1043,51 +1043,7 @@ export default function ChatRoom() {
                 
                 {/* Right side - Character counter */}
                 <div className="flex items-center gap-2">
-                  <Button
-                    onClick={handleDiceRoll}
-                    disabled={!isConnected}
-                    variant="outline"
-                    size="sm"
-                    className="h-8 w-8 p-0"
-                    title="Hodit kostkou (1d10)"
-                  >
-                    🎲
-                  </Button>
-                  <Button
-                    onClick={handleCoinFlip}
-                    disabled={!isConnected}
-                    variant="outline"
-                    size="sm"
-                    className="h-8 w-8 p-0"
-                    title="Hodit mincí (1d2)"
-                  >
-                    🪙
-                  </Button>
-                  {selectedSpell ? (
-                    <Button
-                      onClick={() => setSelectedSpell(null)}
-                      variant="default"
-                      size="sm"
-                      className="h-8 px-2 text-xs"
-                      title="Zrušit vybrané kouzlo"
-                    >
-                      <Wand2 className="h-3 w-3 mr-1" />
-                      {selectedSpell.name}
-                      <X className="h-2 w-2 ml-1" />
-                    </Button>
-                  ) : (
-                    <Button
-                      onClick={() => setShowSpellDialog(true)}
-                      disabled={!isConnected || characterSpells.length === 0}
-                      variant="outline"
-                      size="sm"
-                      className="h-8 w-8 p-0"
-                      title="Vybrat kouzlo"
-                    >
-                      <Wand2 className="h-3 w-3" />
-                    </Button>
-                  )}
-                  <span className="text-xs text-muted-foreground ml-2">
+                  <span className="text-xs text-muted-foreground">
                     {messageInput.length}/5000
                   </span>
                 </div>
