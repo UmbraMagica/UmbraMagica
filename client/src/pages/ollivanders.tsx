@@ -47,7 +47,7 @@ export default function Ollivanders() {
   // Load character from localStorage (same as home page)
   useEffect(() => {
     if (userCharacters && userCharacters.length > 0) {
-      const savedCharacterId = localStorage.getItem('activeCharacterId');
+      const savedCharacterId = localStorage.getItem('selectedCharacterId');
       if (savedCharacterId) {
         const savedCharacter = userCharacters.find((char: any) => char.id === parseInt(savedCharacterId));
         if (savedCharacter && !savedCharacter.deathDate) {
@@ -56,12 +56,13 @@ export default function Ollivanders() {
         }
       }
       
-      // If no saved character, use active character
-      if (activeCharacter && !selectedCharacter) {
-        setSelectedCharacter(activeCharacter);
+      // If no saved character, use first alive character
+      const firstAliveCharacter = userCharacters.find((char: any) => !char.deathDate);
+      if (firstAliveCharacter && !selectedCharacter) {
+        setSelectedCharacter(firstAliveCharacter);
       }
     }
-  }, [userCharacters, activeCharacter]);
+  }, [userCharacters]);
 
   const mainCharacter = selectedCharacter || activeCharacter;
 
