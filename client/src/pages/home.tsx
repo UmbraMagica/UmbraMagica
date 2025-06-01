@@ -73,6 +73,8 @@ export default function Home() {
   const { data: userCharacters = [] } = useQuery({
     queryKey: ["/api/characters"],
     enabled: !!user,
+    staleTime: 0, // Always fetch fresh data
+    gcTime: 0     // Don't cache
   });
 
   // Get all characters for birthday display
@@ -81,9 +83,11 @@ export default function Home() {
     enabled: !!user,
   });
 
-  // Use the first alive character as default, or displayedCharacter if set
-  const firstAliveCharacter = userCharacters.find((char: any) => !char.deathDate);
-  const currentDisplayedCharacter = displayedCharacter || firstAliveCharacter;
+  // Find the active character from database (isActive: true)
+  const activeCharacter = Array.isArray(userCharacters) ? userCharacters.find((char: any) => char.isActive && !char.deathDate) : null;
+  // Fallback to first alive character if no active character is set
+  const firstAliveCharacter = Array.isArray(userCharacters) ? userCharacters.find((char: any) => !char.deathDate) : null;
+  const currentDisplayedCharacter = activeCharacter || firstAliveCharacter;
 
   // Load character from localStorage on component mount
   useEffect(() => {
