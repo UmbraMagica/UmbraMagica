@@ -115,10 +115,12 @@ export default function Home() {
     localStorage.setItem('activeCharacterId', character.id.toString());
   };
 
-  // Get current character's wand
+  // Get displayed character's wand (for the character currently being viewed)
   const { data: characterWand } = useQuery({
     queryKey: [`/api/characters/${currentDisplayedCharacter?.id}/wand`],
     enabled: !!currentDisplayedCharacter?.id,
+    staleTime: 0, // Always fetch fresh data
+    gcTime: 0     // Don't cache
   });
 
   // Get unread owl post count
