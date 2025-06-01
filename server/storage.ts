@@ -547,7 +547,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getMessagesByRoom(roomId: number, limit: number = 50, offset: number = 0): Promise<(Message & { character: { firstName: string; middleName?: string | null; lastName: string; avatar?: string | null } })[]> {
-    return db
+    const result = await db
       .select({
         id: messages.id,
         roomId: messages.roomId,
@@ -563,11 +563,22 @@ export class DatabaseStorage implements IStorage {
         },
       })
       .from(messages)
-      .innerJoin(characters, eq(messages.characterId, characters.id))
+      .leftJoin(characters, eq(messages.characterId, characters.id))
       .where(eq(messages.roomId, roomId))
       .orderBy(desc(messages.createdAt))
       .limit(limit)
       .offset(offset);
+    
+    // Handle narrator messages (characterId = null)
+    return result.map(row => ({
+      ...row,
+      character: row.character.firstName ? row.character : {
+        firstName: 'Vypravěč',
+        middleName: null,
+        lastName: '',
+        avatar: null
+      }
+    }));
   }
 
   async createMessage(insertMessage: InsertMessage): Promise<Message> {
