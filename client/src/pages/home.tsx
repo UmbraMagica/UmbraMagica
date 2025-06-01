@@ -763,16 +763,16 @@ export default function Home() {
                         <Circle className="h-3 w-3 mr-1 fill-current" />
                         Online
                       </Badge>
-                      {lastChatRoom && (
+                      {lastChatRoom?.room && (
                         <div className="mt-4">
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => setLocation(`/chat/room/${lastChatRoom.id}`)}
+                            onClick={() => setLocation(`/chat/room/${lastChatRoom.room.id}`)}
                             className="w-full text-xs"
                           >
                             <MessageCircle className="h-3 w-3 mr-2" />
-                            Poslední chat: {lastChatRoom.name}
+                            Poslední chat: {lastChatRoom.room.name}
                           </Button>
                         </div>
                       )}
