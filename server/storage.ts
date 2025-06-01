@@ -1397,6 +1397,51 @@ export class DatabaseStorage implements IStorage {
         name: "Hrušeň", 
         shortDescription: "Zlatavé dřevo pro šlechetné a přívětivé duše, které si zachovává svou krásu a sílu po dlouhá léta. Nikdy nebyla spojena s černou magií.",
         longDescription: "Z tohoto do zlatova zbarveného dřeva se vyrábí hůlky se skvělými magickými schopnostmi, které ze sebe vydají to nejlepší, jsou-li v rukách přívětivých, šlechetných a moudrých čarodějek a kouzelníků. Majitelé hůlek z hrušně jsou, alespoň jak jsem doposud zažil, obvykle velmi oblíbení a respektovaní. Nevím o jediném případě, kdy by byla hrušňová hůlka nalezena ve vlastnictví čarodějky či čaroděje, kteří se dali na cestu černé magie."
+      },
+      { 
+        name: "Jabloň", 
+        shortDescription: "Mocné dřevo vhodné pro ty s vysokými cíli a ideály, špatně se hodí pro černou magii. Často umožňuje mluvit s magickými tvory jejich přirozenými jazyky.",
+        longDescription: "Jabloňových hůlek se nevyrábí mnoho. Jsou mocné a nejvhodnější pro majitele s vysokými cíli a ideály, proto se toto dřevo špatně používá na černou magii. Tvrdí se, že držitele hůlky z jabloně čeká dlouhý a šťastný život a já jsem si všiml, že zákazníci s velkým osobním kouzlem najdou skvělý protějšek právě v jabloňové hůlce."
+      },
+      { 
+        name: "Jasan", 
+        shortDescription: "Hůlky z jasanu pevně přilnou ke svému majiteli a ztrácejí sílu při předání jinému. Vhodné pro tvrdohlavé, statečné, ale ne arogantní kouzelníky.",
+        longDescription: "Hůlky vyrobené z jasanu přilnou ke svému pravému mistru a neměli by se tedy darovávat nebo předávat od jejich původního majitele, protože pak ztratí svou sílu a schopnosti. Ty čarodějky a čarodějové, kteří byli vybráni jasanovou hůlkou, většinou nejsou, pokud vím, snadno odklonitelní od svých domněnek a záměrů."
+      },
+      { 
+        name: "Javor", 
+        shortDescription: "Vyhledávají je dobrodruzi a cestovatelé, kteří potřebují časté výzvy a změny prostředí. Hůlka s nimi roste a zvyšuje svou sílu.",
+        longDescription: "Již mnohokrát jsem zpozoroval, že ti, které si vybrala hůlka z javoru, jsou dobrodruzi a cestovateli od přírody. Javorové hůlky nerady zůstávají doma a mají raději trochu té ambice ve své čarodějce či kouzelníkovi, jinak jejich kouzla težknou a ztrácejí na výraznosti. Čerstvé výzvy a častá změna prostředí tuto hůlku doslova rozzařují."
+      },
+      { 
+        name: "Jedle", 
+        shortDescription: "Odolné dřevo, vyžaduje cílevědomé a rozhodné majitele. V rukou nerozhodných se stává slabou.",
+        longDescription: "Můj vznešený dědeček, Gerbold Ollivander, vždycky říkal hůlkám z tohoto dřeva \"hůlka přeživších,\" neboť je kdysi prodal třem kouzelníkům, kteří posléze prošli smrtelným nebezpečím bez zkřiveného vlásku. Jedlové hůlky se obzvláště hodí na přeměňování a rády si vybírají vlastníky s cílevědomým, rozhodným, a někdy i poněkud zastrašujícím chováním."
+      },
+      { 
+        name: "Jeřáb", 
+        shortDescription: "Výborné pro ochranná kouzla a jasnou mysl, odmítá temnou magii. Hodí se pro čaroděje se šlechetným srdcem.",
+        longDescription: "Dřevo z jeřábu bylo vždy pro výrobu hůlek velmi oblíbené, neboť má pověst dřeva mnohem více ochranného než kterékoliv jiné. Ze svých zkušeností vím, že toto dřevo je schopno učinit všechny druhy ochranných kouzel obzvláště silnými a špatně prolomitelnými. Říká se, že žádná čarodějka či kouzelník, kteří se dali na černou magii, nikdy neměli hůlku z jeřábu."
+      },
+      { 
+        name: "Jilm", 
+        shortDescription: "Preferuje kouzelníky s důstojností a obratností, dělá málo chyb a vytváří krásná kouzla. Často volí mudlovské rodiny.",
+        longDescription: "Nejlepšími partnery jilmových hůlek jsou kouzelníci z mudlovských rodin. Pravdou je, že jilmové hůlky upřednostňují kouzelníky s jistým vzezřením, obratností v magii a určitou přirozenou důstojností. Ze svých zkušeností znám jilm jako dřevo, jež dělá nejméně chyb a hloupých omylů a vyčarovává ta nejkrásnější kouzla a zaříkadla."
+      },
+      { 
+        name: "Kaštan", 
+        shortDescription: "Mění charakter podle jádra, hodí se pro bylinkáře, krotitele tvorů a letce. Kombinace s jádrem z jednorožce přitahuje ty, kdo se věnují právu.",
+        longDescription: "Toto je nejzajímavější, mnohotvářné dřevo, jehož charakter velmi závisí na jádru hůlky. Hůlky z kaštanu jsou nejvíce přitahovány čarodějkami a čaroději, kteří jsou dobří krotitelé magických zvířat, těmi, kteří jsou zběhlí v bylinkářství, a těmi kdož jsou letci od přírody. Tři nejúspěšnější hlavy Starostolce vlastnily kaštanovou hůlku s jádrem z jednorožce."
+      },
+      { 
+        name: "Lípa stříbřitá", 
+        shortDescription: "Atraktivní dřevo oblíbené u jasnovidců a zručných nitrozpytníků, dodává prestiž.",
+        longDescription: "Toto neobvyklé a velmi atraktivní dřevo bylo ve středověku velmi oblíbené u jasnovidců a zručných nitrozpytníků, z toho důvodu, že to byla hůlka prestiže. Kde je lípa stříbřitá, tam je i čest. Výjimečné je, že většina majitelů stříbrných lip velmi rychle vyvinula schopnost jasnovidectví."
+      },
+      { 
+        name: "Líska", 
+        shortDescription: "Citlivá hůlka, která reaguje na emoce majitele, může ale také absorbovat negativní energii. Má schopnost hledat podzemní vodu.",
+        longDescription: "Lísková hůlka je tak citlivá na emoce svého majitele, že často vadne, pokud je někdo předat jiné osobě, i když jen na krátkou dobu. Má také unikátní schopnost absorbovat negativní energii a může být použita k detekci podzemní vody. Líska je obzvláště dobrá na překonávání vlastní povahy majitele."
       }
     ];
 
