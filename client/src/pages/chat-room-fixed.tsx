@@ -257,12 +257,12 @@ export default function ChatRoomFixed() {
               messages.map((msg) => (
                 <div key={msg.id} className="flex gap-3">
                   <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
-                    {msg.character.firstName[0]}
+                    {msg.character?.firstName?.[0] || '?'}
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
                       <span className="font-medium text-sm">
-                        {msg.character.firstName} {msg.character.lastName}
+                        {msg.character?.firstName || 'Unknown'} {msg.character?.lastName || ''}
                       </span>
                       <span className="text-xs text-muted-foreground">
                         {new Date(msg.createdAt).toLocaleTimeString()}
