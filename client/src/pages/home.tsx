@@ -745,7 +745,7 @@ export default function Home() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => setLocation("/character-edit")}
+                      onClick={() => setLocation("/character/edit")}
                       className="text-muted-foreground hover:text-foreground"
                       disabled={!currentDisplayedCharacter?.id}
                     >
@@ -824,7 +824,7 @@ export default function Home() {
                             e.stopPropagation();
                             // First set the character as selected in localStorage
                             localStorage.setItem('selectedCharacterId', character.id.toString());
-                            setLocation("/character-edit");
+                            setLocation("/character/edit");
                           }}
                           className="text-muted-foreground hover:text-foreground ml-2"
                         >
