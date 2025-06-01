@@ -47,15 +47,34 @@ export default function CharacterEditFixedNav() {
   const [, setLocation] = useLocation();
   const queryClient = useQueryClient();
 
+  // Check if we're in admin context based on URL
+  const currentPath = window.location.pathname;
+  const isAdminContext = currentPath.includes('/admin');
+  const isAdmin = user?.role === 'admin' && isAdminContext;
+
+  // Get character ID from URL if in admin context
+  const urlCharacterId = isAdminContext ? 
+    parseInt(currentPath.split('/').pop() || '0') : null;
+
   // Fetch user's characters
   const { data: userCharacters = [] } = useQuery({
     queryKey: ['/api/characters'],
-    enabled: !!user,
+    enabled: !!user && !isAdminContext,
+  });
+
+  // Fetch all characters for admin
+  const { data: allCharacters = [] } = useQuery({
+    queryKey: ['/api/characters/all'],
+    enabled: !!user && isAdminContext,
   });
   
-  // Always use selected character from localStorage, ignore URL
   const getSelectedCharacter = () => {
-    // Try to get selected character from localStorage first
+    if (isAdminContext && urlCharacterId) {
+      // In admin context, use character from URL
+      return (allCharacters as any[])?.find((c: any) => c.id === urlCharacterId);
+    }
+    
+    // In user context, use selected character from localStorage
     const selectedCharacterId = localStorage.getItem('selectedCharacterId');
     if (selectedCharacterId && userCharacters) {
       const selectedChar = (userCharacters as any[])?.find((c: any) => c.id === parseInt(selectedCharacterId));
@@ -68,11 +87,6 @@ export default function CharacterEditFixedNav() {
 
   const primaryCharacter = getSelectedCharacter();
   const characterId = primaryCharacter?.id;
-
-  // Check if we're in admin context based on URL
-  const currentPath = window.location.pathname;
-  const isAdminContext = currentPath.includes('/admin');
-  const isAdmin = user?.role === 'admin' && isAdminContext;
 
   // User form for editing limited fields
   const userForm = useForm<UserEditForm>({

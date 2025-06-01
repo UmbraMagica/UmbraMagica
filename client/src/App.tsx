@@ -75,6 +75,7 @@ function Router() {
           <Route path="/admin/spells" component={AdminSpells} />
           <Route path="/admin/spells/character/:characterId" component={AdminCharacterSpells} />
           <Route path="/admin/wand-components" component={AdminWandComponents} />
+          <Route path="/admin/characters/:characterId" component={CharacterEditFixedNav} />
           <Route path="/home" component={Home} />
           <Route path="/character/edit" component={CharacterEditFixedNav} />
           <Route path="/character-edit/:characterId" component={CharacterEditFixedNav} />
