@@ -201,19 +201,12 @@ export default function ChatRoom() {
     allUserCharacters: allUserCharacters.map(c => ({ id: c.id, name: c.firstName + ' ' + c.lastName, deathDate: c.deathDate }))
   });
   
-  // Wait for character initialization if none is selected but characters are available
+  // For users who need a character but none is selected, use the first available one immediately
   if (needsCharacter && userCharacters.length > 0 && !chatCharacter) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <h2 className="text-xl font-semibold mb-2">Načítání postavy...</h2>
-          <p className="text-muted-foreground">Inicializuji chatovací postavu.</p>
-          <p className="text-xs text-muted-foreground mt-2">
-            Debug: {userCharacters.length} postav dostupných, useEffect by měl nastavit první
-          </p>
-        </div>
-      </div>
-    );
+    // Set the character immediately instead of waiting for useEffect
+    const firstCharacter = userCharacters[0];
+    setChatCharacter(firstCharacter);
+    console.log('Force setting chat character to:', firstCharacter.firstName, firstCharacter.lastName);
   }
   
   // If user needs a character but has none available
