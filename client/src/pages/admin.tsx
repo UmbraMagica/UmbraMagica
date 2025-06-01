@@ -158,11 +158,17 @@ export default function Admin() {
   const { data: chatRooms = [] } = useQuery({ queryKey: ['/api/chat/rooms'] });
 
   // Stats calculations
+  // Filter out system user characters
+  const nonSystemCharacters = Array.isArray(allCharacters) ? allCharacters.filter((c: any) => {
+    const characterUser = users.find((u: any) => u.id === c.userId);
+    return characterUser?.username !== 'Systém';
+  }) : [];
+
   const stats = {
-    totalUsers: Array.isArray(users) ? users.length : 0,
-    adminUsers: Array.isArray(users) ? users.filter((u: any) => u.role === 'admin').length : 0,
-    activeCharacters: Array.isArray(allCharacters) ? allCharacters.filter((c: any) => !c.deathDate).length : 0,
-    deadCharacters: Array.isArray(allCharacters) ? allCharacters.filter((c: any) => c.deathDate).length : 0,
+    totalUsers: Array.isArray(users) ? users.filter((u: any) => u.username !== 'Systém').length : 0,
+    adminUsers: Array.isArray(users) ? users.filter((u: any) => u.role === 'admin' && u.username !== 'Systém').length : 0,
+    activeCharacters: nonSystemCharacters.filter((c: any) => !c.deathDate).length,
+    deadCharacters: nonSystemCharacters.filter((c: any) => c.deathDate).length,
     onlineNow: (onlineUsersData as any)?.count || 0,
     pendingRequests: (Array.isArray(characterRequests) ? characterRequests.length : 0) + (Array.isArray(housingRequests) ? housingRequests.length : 0),
   };
@@ -1267,7 +1273,7 @@ export default function Admin() {
             {!isLiveCharactersCollapsed && (
               <CardContent>
                 <div className="space-y-3 max-h-96 overflow-y-auto">
-                  {Array.isArray(allCharacters) && allCharacters
+                  {nonSystemCharacters
                     .filter((character: any) => !character.deathDate)
                     .map((character: any) => (
                     <div key={character.id} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
@@ -1324,7 +1330,7 @@ export default function Admin() {
                       </div>
                     </div>
                   ))}
-                  {Array.isArray(allCharacters) && allCharacters.filter((c: any) => !c.deathDate).length === 0 && (
+                  {nonSystemCharacters.filter((c: any) => !c.deathDate).length === 0 && (
                     <div className="text-center text-muted-foreground py-8">
                       Žádné živé postavy
                     </div>
@@ -2012,7 +2018,7 @@ export default function Admin() {
             {!isCemeteryCollapsed && (
               <CardContent>
                 <div className="space-y-3 max-h-96 overflow-y-auto">
-                  {Array.isArray(allCharacters) && allCharacters
+                  {nonSystemCharacters
                     .filter((character: any) => character.deathDate)
                     .map((character: any) => (
                     <div key={character.id} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg border-l-4 border-red-500">
@@ -2038,7 +2044,7 @@ export default function Admin() {
                       </Badge>
                     </div>
                   ))}
-                  {Array.isArray(allCharacters) && allCharacters.filter((c: any) => c.deathDate).length === 0 && (
+                  {nonSystemCharacters.filter((c: any) => c.deathDate).length === 0 && (
                     <div className="text-center text-muted-foreground py-8">
                       Hřbitov je prázdný
                     </div>
