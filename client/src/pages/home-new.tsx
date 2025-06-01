@@ -169,11 +169,11 @@ export default function Home() {
             {/* Logo */}
             <div className="text-xl font-bold text-accent">RPG Realm</div>
             
-            {/* Desktop Navigation */}
-            <div className="hidden sm:flex items-center space-x-4">
+            {/* Desktop Navigation - always visible */}
+            <div className="flex items-center space-x-4">
               <Button variant="ghost" className="text-foreground hover:text-accent" onClick={() => setLocation('/')}>
                 <HomeIcon className="mr-2 h-4 w-4" />
-                Domov
+                <span className="hidden md:inline">Domov</span>
               </Button>
               <Button variant="ghost" className="text-foreground hover:text-accent" onClick={() => {
                 if (currentDisplayedCharacter) {
@@ -183,19 +183,19 @@ export default function Home() {
                 }
               }}>
                 <User className="mr-2 h-4 w-4" />
-                Moje postava
+                <span className="hidden md:inline">Moje postava</span>
               </Button>
               <Button variant="ghost" className="text-foreground hover:text-accent" onClick={() => window.location.href = '/settings'}>
                 <Settings className="mr-2 h-4 w-4" />
-                Nastavení
+                <span className="hidden md:inline">Nastavení</span>
               </Button>
               {user?.role === 'admin' && (
                 <Button variant="ghost" className="text-amber-400 hover:text-amber-300" onClick={() => window.location.href = '/admin'}>
                   <Crown className="mr-2 h-4 w-4" />
-                  Administrace
+                  <span className="hidden md:inline">Admin</span>
                 </Button>
               )}
-              <div className="text-sm text-muted-foreground">{user?.username}</div>
+              <div className="hidden md:block text-sm text-muted-foreground">{user?.username}</div>
               <Button 
                 variant="ghost" 
                 size="sm" 
@@ -205,58 +205,8 @@ export default function Home() {
                 <LogOut className="h-4 w-4" />
               </Button>
             </div>
-
-            {/* Mobile menu button */}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="sm:hidden text-foreground hover:text-accent"
-            >
-              {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-            </Button>
           </div>
         </div>
-        
-        {/* Mobile menu dropdown */}
-        {mobileMenuOpen && (
-          <div className="sm:hidden border-t border-border bg-card">
-            <div className="px-4 py-2 space-y-1">
-              <Button variant="ghost" className="w-full justify-start text-foreground hover:text-accent" onClick={() => {setLocation('/'); setMobileMenuOpen(false);}}>
-                <HomeIcon className="mr-2 h-4 w-4" />
-                Domov
-              </Button>
-              <Button variant="ghost" className="w-full justify-start text-foreground hover:text-accent" onClick={() => {
-                if (currentDisplayedCharacter) {
-                  setLocation(`/characters/${currentDisplayedCharacter.id}`);
-                } else {
-                  window.location.href = '/character/edit';
-                }
-                setMobileMenuOpen(false);
-              }}>
-                <User className="mr-2 h-4 w-4" />
-                Moje postava
-              </Button>
-              <Button variant="ghost" className="w-full justify-start text-foreground hover:text-accent" onClick={() => {window.location.href = '/settings'; setMobileMenuOpen(false);}}>
-                <Settings className="mr-2 h-4 w-4" />
-                Nastavení
-              </Button>
-              {user?.role === 'admin' && (
-                <Button variant="ghost" className="w-full justify-start text-amber-400 hover:text-amber-300" onClick={() => {window.location.href = '/admin'; setMobileMenuOpen(false);}}>
-                  <Crown className="mr-2 h-4 w-4" />
-                  Administrace
-                </Button>
-              )}
-              <div className="border-t border-border pt-2">
-                <div className="px-3 py-2 text-sm text-muted-foreground">{user?.username}</div>
-                <Button variant="ghost" className="w-full justify-start text-muted-foreground hover:text-destructive" onClick={() => {handleLogout(); setMobileMenuOpen(false);}}>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Odhlásit se
-                </Button>
-              </div>
-            </div>
-          </div>
-        )}
       </nav>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
