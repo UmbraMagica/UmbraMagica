@@ -1497,6 +1497,21 @@ export class DatabaseStorage implements IStorage {
         name: "Vavřín", 
         shortDescription: "Nezná lenost; věrná hůlka, která dokáže sama sebe bránit a ztrestat zloděje nečekaným bleskem.",
         longDescription: "Vavřín je dřevo, které nezná lenost ani pasivitu. Je to věrná hůlka, která dokáže sama sebe bránit a je schopna ztrestat zloděje nebo nehodného majitele nečekaným bleskem. Vybírá si aktivní a cílevědomé kouzelníky, kteří sdílejí jeho odpor k nečinnosti a lenosti."
+      },
+      { 
+        name: "Vinná réva", 
+        shortDescription: "Vinné hůlky si vybírají majitele s hlubokou vnitřní podstatou a představivostí. Jsou citlivé a reagují už při prvním kontaktu – ideální pro ty, kdo hledají smysl a tajemství v magii.",
+        longDescription: "Vinné hůlky si vybírají majitele s hlubokou vnitřní podstatou a bohatou představivostí. Jsou mimořádně citlivé a reagují na svého budoucího majitele už při prvním kontaktu. Ideální jsou pro ty kouzelníky, kdo hledají hlubší smysl a tajemství v magii. Věrné jsou pouze těm, kteří nejsou povrchní a dokáží ocenit složitost magického umění."
+      },
+      { 
+        name: "Vlašský ořech", 
+        shortDescription: "Ořechové hůlky jsou výzvou i darem pro chytré a inovativní kouzelníky. Požadují inteligenci a odhodlání, ale v rukou správného majitele jsou všestranné a smrtící.",
+        longDescription: "Ořechové hůlky představují jak výzvu, tak dar pro chytré a inovativní kouzelníky. Požadují značnou inteligenci a neochvějné odhodlání od svého majitele, ale v rukou správného čaroděje jsou mimořádně všestranné a potenciálně smrtící. Jejich věrnost musí být tvrdě získána, ale jakmile se vytvoří spojení, je nezlomná."
+      },
+      { 
+        name: "Vrba", 
+        shortDescription: "Vrba volí nejisté, ale nadějné kouzelníky, kteří se nebojí růstu. Její hůlky vynikají v léčivých a neverbálních kouzlech, reagují na skryté potenciály a podněcují rychlost.",
+        longDescription: "Vrba si často vybírá nejisté, ale nadějné kouzelníky, kteří se nebojí osobního růstu a změny. Její hůlky vynikají v léčivých a neverbálních kouzlech, mají schopnost reagovat na skryté potenciály svého majitele a dokáží podnítit rychlost reakcí i v nejtěžších chvílích. Vrba podporuje ty, kdo jsou ochotni se učit a vyvíjet."
       }
     ];
 
