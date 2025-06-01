@@ -26,14 +26,19 @@ export default function Ollivanders() {
     description: ""
   });
 
-  // Get current user and main character
+  // Get current user and characters
   const { data: user } = useQuery({
     queryKey: ['/api/auth/user']
   });
 
-  const { data: mainCharacter } = useQuery({
-    queryKey: ['/api/characters/main']
+  const { data: allCharacters = [] } = useQuery({
+    queryKey: ['/api/characters'],
+    enabled: !!user
   });
+
+  // Get main character from user's alive characters
+  const userCharacters = allCharacters.filter((char: any) => !char.deathDate && !char.isSystem);
+  const mainCharacter = userCharacters[0]; // Use first alive character
 
   // Get character's current wand
   const { data: characterWand, isLoading: wandLoading } = useQuery<Wand | null>({
