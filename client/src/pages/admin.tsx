@@ -1504,7 +1504,7 @@ export default function Admin() {
                                       {character.firstName} {character.middleName ? `${character.middleName} ` : ''}{character.lastName}
                                     </p>
                                     <p className="text-xs text-muted-foreground">
-                                      {character.deathDate ? 'Mrtvá postava' : 'Živá postava'}
+                                      {user.username === 'Systém' ? 'Systém' : character.deathDate ? 'Mrtvá postava' : 'Živá postava'}
                                       {character.school && ` • ${character.school}`}
                                     </p>
                                   </div>
