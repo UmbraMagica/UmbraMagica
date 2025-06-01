@@ -63,12 +63,13 @@ export interface IStorage {
   getUserByEmail(email: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   updateUserRole(id: number, role: string): Promise<User | undefined>;
+  updateUserNarratorPermission(id: number, canNarrate: boolean): Promise<User | undefined>;
   getAllUsers(): Promise<User[]>;
   banUser(id: number, banReason: string): Promise<void>;
   resetUserPassword(id: number, hashedPassword: string): Promise<void>;
   updateUserPassword(id: number, hashedPassword: string): Promise<void>;
   updateUserEmail(id: number, email: string): Promise<void>;
-  updateUserSettings(id: number, settings: { characterOrder?: string; highlightWords?: string; highlightColor?: string }): Promise<void>;
+  updateUserSettings(id: number, settings: { characterOrder?: string; highlightWords?: string; highlightColor?: string; narratorColor?: string }): Promise<void>;
   
   // Character operations
   getCharacter(id: number): Promise<Character | undefined>;
@@ -230,6 +231,15 @@ export class DatabaseStorage implements IStorage {
     const [user] = await db
       .update(users)
       .set({ role, updatedAt: new Date() })
+      .where(eq(users.id, id))
+      .returning();
+    return user;
+  }
+
+  async updateUserNarratorPermission(id: number, canNarrate: boolean): Promise<User | undefined> {
+    const [user] = await db
+      .update(users)
+      .set({ canNarrate, updatedAt: new Date() })
       .where(eq(users.id, id))
       .returning();
     return user;

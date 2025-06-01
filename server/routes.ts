@@ -263,6 +263,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Update narrator color
+  app.post("/api/user/narrator-color", requireAuth, async (req: any, res) => {
+    try {
+      const { narratorColor } = req.body;
+      
+      if (!narratorColor || typeof narratorColor !== 'string') {
+        return res.status(400).json({ message: "Narrator color is required" });
+      }
+      
+      const validColors = ['yellow', 'red', 'blue', 'green', 'pink', 'purple'];
+      if (!validColors.includes(narratorColor)) {
+        return res.status(400).json({ message: "Invalid narrator color" });
+      }
+      
+      await storage.updateUserSettings(req.session.userId, {
+        narratorColor: narratorColor
+      });
+
+      res.json({ message: "Narrator color updated successfully" });
+    } catch (error) {
+      console.error("Error updating narrator color:", error);
+      res.status(500).json({ message: "Failed to update narrator color" });
+    }
+  });
+
   // Change password endpoint
   app.post("/api/auth/change-password", requireAuth, async (req: any, res) => {
     try {
@@ -459,6 +484,62 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error updating user role:", error);
       res.status(500).json({ message: "Failed to update user role" });
+    }
+  });
+
+  app.patch("/api/admin/users/:id/role", requireAdmin, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { role } = req.body;
+      
+      if (!["user", "admin"].includes(role)) {
+        return res.status(400).json({ message: "Invalid role" });
+      }
+
+      const user = await storage.updateUserRole(parseInt(id), role);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Log admin activity
+      await storage.logAdminActivity({
+        adminId: req.session.userId!,
+        action: "user_role_change",
+        details: `Changed role of user ${user.username} to ${role}`
+      });
+
+      res.json({ message: "Role updated successfully", user });
+    } catch (error) {
+      console.error("Error updating user role:", error);
+      res.status(500).json({ message: "Failed to update user role" });
+    }
+  });
+
+  app.patch("/api/admin/users/:id/narrator", requireAdmin, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { canNarrate } = req.body;
+      
+      if (typeof canNarrate !== 'boolean') {
+        return res.status(400).json({ message: "canNarrate must be a boolean" });
+      }
+
+      const user = await storage.updateUserNarratorPermission(parseInt(id), canNarrate);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Log admin activity
+      await storage.logAdminActivity({
+        adminId: req.session.userId!,
+        action: "narrator_permission_change",
+        details: `${canNarrate ? 'Granted' : 'Revoked'} narrator permission for user ${user.username}`
+      });
+
+      res.json({ message: "Narrator permission updated successfully", user });
+    } catch (error) {
+      console.error("Error updating narrator permission:", error);
+      res.status(500).json({ message: "Failed to update narrator permission" });
     }
   });
 
