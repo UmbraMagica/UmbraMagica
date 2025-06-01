@@ -279,7 +279,15 @@ export default function AdminWandComponents() {
                   <div key={index} className="p-4 bg-muted/30 rounded-lg">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <h3 className="font-semibold">{wood.name}</h3>
+                        <div className="flex items-center gap-2">
+                          <h3 className="font-semibold">{wood.name}</h3>
+                          {wood.availableForRandom !== false && (
+                            <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Náhodný výběr</span>
+                          )}
+                          {wood.availableForRandom === false && (
+                            <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">Zakázáno</span>
+                          )}
+                        </div>
                         <p className="text-sm text-muted-foreground mt-1 font-medium">{wood.shortDescription}</p>
                         <p className="text-xs text-muted-foreground mt-2">{wood.longDescription}</p>
                       </div>
@@ -317,6 +325,16 @@ export default function AdminWandComponents() {
                                   onChange={(e) => setEditingWood(prev => ({ ...(prev || wood), longDescription: e.target.value }))}
                                   rows={4}
                                 />
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                <input
+                                  type="checkbox"
+                                  id={`wood-random-${index}`}
+                                  defaultChecked={wood.availableForRandom !== false}
+                                  onChange={(e) => setEditingWood(prev => ({ ...(prev || wood), availableForRandom: e.target.checked }))}
+                                  className="rounded"
+                                />
+                                <Label htmlFor={`wood-random-${index}`}>Dostupné pro náhodný výběr</Label>
                               </div>
                               <Button 
                                 onClick={() => updateWood(index, editingWood || wood)}

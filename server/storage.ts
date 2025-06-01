@@ -1263,11 +1263,23 @@ export class DatabaseStorage implements IStorage {
     // Get components from the main method to ensure consistency
     const allComponents = await this.getAllWandComponents();
     
-    // Generate random selections
-    const randomCore = allComponents.cores[Math.floor(Math.random() * allComponents.cores.length)];
-    const randomWood = allComponents.woods[Math.floor(Math.random() * allComponents.woods.length)];
-    const randomLength = allComponents.lengths[Math.floor(Math.random() * Math.min(allComponents.lengths.length, 6))]; // Limit to first 6 (up to 12")
-    const randomFlexibility = allComponents.flexibilities[Math.floor(Math.random() * allComponents.flexibilities.length)];
+    // Filter components that are available for random selection
+    const availableWoods = allComponents.woods.filter(wood => wood.availableForRandom !== false);
+    const availableCores = allComponents.cores.filter(core => core.availableForRandom !== false);
+    const availableLengths = allComponents.lengths.filter(length => length.availableForRandom !== false);
+    const availableFlexibilities = allComponents.flexibilities.filter(flex => flex.availableForRandom !== false);
+    
+    // Fallback to all components if none are available for random selection
+    const woodsToUse = availableWoods.length > 0 ? availableWoods : allComponents.woods;
+    const coresToUse = availableCores.length > 0 ? availableCores : allComponents.cores;
+    const lengthsToUse = availableLengths.length > 0 ? availableLengths : allComponents.lengths;
+    const flexibilitiesToUse = availableFlexibilities.length > 0 ? availableFlexibilities : allComponents.flexibilities;
+    
+    // Generate random selections from available components
+    const randomCore = coresToUse[Math.floor(Math.random() * coresToUse.length)];
+    const randomWood = woodsToUse[Math.floor(Math.random() * woodsToUse.length)];
+    const randomLength = lengthsToUse[Math.floor(Math.random() * Math.min(lengthsToUse.length, 6))]; // Limit to first 6 (up to 12")
+    const randomFlexibility = flexibilitiesToUse[Math.floor(Math.random() * flexibilitiesToUse.length)];
 
     const description = `Hůlka z ${randomWood.name.toLowerCase()}, ${randomLength.name} dlouhá, ${randomFlexibility.name.toLowerCase()}, s jádrem ${randomCore.name.toLowerCase()}. Vybrána Ollivanderem osobně pro svého nového majitele.`;
 
