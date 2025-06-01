@@ -219,7 +219,8 @@ export default function Home() {
                   onValueChange={(value) => {
                     const selectedChar = userCharacters.find((char: any) => char.id === parseInt(value));
                     if (selectedChar) {
-                      setCurrentDisplayedCharacter(selectedChar);
+                      setDisplayedCharacter(selectedChar);
+                      localStorage.setItem('activeCharacterId', selectedChar.id.toString());
                     }
                   }}
                 >
