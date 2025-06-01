@@ -49,11 +49,11 @@ export default function CharacterProfile() {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => setLocation('/')}
+            onClick={() => setLocation(user?.role === 'admin' ? '/admin' : '/')}
             className="flex items-center gap-2"
           >
             <ArrowLeft className="h-4 w-4" />
-            Zpět na hlavní stránku
+            {user?.role === 'admin' ? 'Zpět do administrace' : 'Zpět na hlavní stránku'}
           </Button>
         </div>
         <div className="text-center">Načítání profilu postavy...</div>
@@ -68,11 +68,11 @@ export default function CharacterProfile() {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => setLocation('/')}
+            onClick={() => setLocation(user?.role === 'admin' ? '/admin' : '/')}
             className="flex items-center gap-2"
           >
             <ArrowLeft className="h-4 w-4" />
-            Zpět na hlavní stránku
+            {user?.role === 'admin' ? 'Zpět do administrace' : 'Zpět na hlavní stránku'}
           </Button>
         </div>
         <div className="text-center">
@@ -106,23 +106,12 @@ export default function CharacterProfile() {
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => setLocation('/')}
+          onClick={() => setLocation(user?.role === 'admin' ? '/admin' : '/')}
           className="flex items-center gap-2"
         >
           <ArrowLeft className="h-4 w-4" />
-          Zpět na hlavní stránku
+          {user?.role === 'admin' ? 'Zpět do administrace' : 'Zpět na hlavní stránku'}
         </Button>
-        {user?.role === 'admin' && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setLocation('/admin')}
-            className="flex items-center gap-2 text-amber-400 hover:text-amber-300"
-          >
-            <Home className="h-4 w-4" />
-            Zpět do administrace
-          </Button>
-        )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
