@@ -298,7 +298,7 @@ export default function OwlPost() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {userCharacters.filter((char: any) => !char.deathDate).map((character: any) => (
+                  {userCharacters.filter((char: any) => !char.deathDate && !char.isSystem).map((character: any) => (
                     <SelectItem key={character.id} value={character.id.toString()}>
                       {character.firstName} {character.lastName}
                     </SelectItem>

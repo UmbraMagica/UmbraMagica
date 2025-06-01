@@ -229,7 +229,7 @@ export default function Home() {
             </Card>
 
             {/* My Characters in RPG Section */}
-            {userCharacters.length > 0 && (
+            {userCharacters.filter((char: any) => !char.isSystem).length > 0 && (
               <Card className="bg-card border-border">
                 <CardContent className="p-6">
                   <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center">
@@ -238,6 +238,7 @@ export default function Home() {
                   </h3>
                   <div className="space-y-2">
                     {userCharacters
+                      .filter((char: any) => !char.isSystem)
                       .sort((a: any, b: any) => {
                         if (mainCharacter?.id === a.id) return -1;
                         if (mainCharacter?.id === b.id) return 1;
@@ -561,7 +562,7 @@ export default function Home() {
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-muted-foreground">Aktivní postavy</span>
-                    <span className="font-medium text-foreground">{userCharacters.length}</span>
+                    <span className="font-medium text-foreground">{userCharacters.filter((char: any) => !char.isSystem).length}</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-muted-foreground">Online nyní</span>

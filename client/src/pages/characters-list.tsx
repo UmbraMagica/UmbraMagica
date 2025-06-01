@@ -118,7 +118,7 @@ export default function CharactersList() {
                 </div>
                 <div className="flex items-center gap-2">
                   <Badge variant="secondary" className="text-xs">
-                    Aktivní postava
+                    {character.isSystem ? 'Systémová postava' : 'Aktivní postava'}
                   </Badge>
                 </div>
               </div>
