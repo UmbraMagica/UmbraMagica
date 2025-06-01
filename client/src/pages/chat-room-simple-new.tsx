@@ -102,22 +102,27 @@ export default function ChatRoom() {
   
   const currentRoomId = roomId ? parseInt(roomId) : null;
 
-  // Safety check for user data
-  if (!user) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <h2 className="text-xl font-semibold mb-2">Přihlášení vyžadováno</h2>
-          <p className="text-muted-foreground">Pro přístup do chatu se musíte přihlásit.</p>
-        </div>
-      </div>
-    );
-  }
-
+  // All hooks must be at the top level - before any conditional returns
+  
   // Fetch user's characters for switching (only alive characters)
   const { data: allUserCharacters = [] } = useQuery<any[]>({
     queryKey: ["/api/characters"],
     enabled: !!user,
+  });
+
+  // Fetch current room info
+  const { data: rooms = [], isLoading: roomsLoading } = useQuery<ChatRoom[]>({
+    queryKey: ["/api/chat/rooms"],
+  });
+
+  // Fetch messages
+  const { data: messages = [], isLoading: messagesLoading } = useQuery<ChatMessage[]>({
+    queryKey: ["/api/chat/rooms", currentRoomId, "messages"],
+    queryFn: () =>
+      fetch(`/api/chat/rooms/${currentRoomId}/messages`).then(res => res.json()),
+    enabled: !!currentRoomId,
+    refetchInterval: 5000,
+    staleTime: 0, // Always consider data stale
   });
 
   // Filter only alive characters (not in cemetery) and exclude system characters
@@ -138,10 +143,15 @@ export default function ChatRoom() {
     });
   })();
 
-  // We don't need to fetch main character for chat - we use the first available character instead
-
   // Current character for chat - NEVER change automatically, only when user explicitly chooses
   const currentCharacter = chatCharacter;
+  const currentRoom = rooms.find(room => room.id === currentRoomId);
+
+  // Fetch character's spells
+  const { data: characterSpells = [] } = useQuery<any[]>({
+    queryKey: [`/api/characters/${currentCharacter?.id}/spells`],
+    enabled: !!currentCharacter?.id,
+  });
 
   // Initialize chat character when entering chat room
   useEffect(() => {
@@ -154,11 +164,29 @@ export default function ChatRoom() {
     }
   }, [userCharacters, chatCharacter]);
 
-  // Fetch character's spells
-  const { data: characterSpells = [] } = useQuery<any[]>({
-    queryKey: [`/api/characters/${currentCharacter?.id}/spells`],
-    enabled: !!currentCharacter?.id,
-  });
+  // Clear local messages when room changes
+  useEffect(() => {
+    if (currentRoomId) {
+      setLocalMessages([]);
+      // Force refetch of messages for the new room
+      queryClient.invalidateQueries({ 
+        queryKey: ["/api/chat/rooms", currentRoomId, "messages"],
+        exact: true 
+      });
+    }
+  }, [currentRoomId, queryClient]);
+
+  // Safety check for user data
+  if (!user) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold mb-2">Přihlášení vyžadováno</h2>
+          <p className="text-muted-foreground">Pro přístup do chatu se musíte přihlásit.</p>
+        </div>
+      </div>
+    );
+  }
   
   // Check if user needs a character (non-admin users need a character)
   const needsCharacter = user?.role !== 'admin';
@@ -205,34 +233,7 @@ export default function ChatRoom() {
     );
   }
 
-  // Fetch current room info
-  const { data: rooms = [], isLoading: roomsLoading } = useQuery<ChatRoom[]>({
-    queryKey: ["/api/chat/rooms"],
-  });
-
-  const currentRoom = rooms.find(room => room.id === currentRoomId);
-
-  // Fetch messages
-  const { data: messages = [], isLoading: messagesLoading } = useQuery<ChatMessage[]>({
-    queryKey: ["/api/chat/rooms", currentRoomId, "messages"],
-    queryFn: () =>
-      fetch(`/api/chat/rooms/${currentRoomId}/messages`).then(res => res.json()),
-    enabled: !!currentRoomId,
-    refetchInterval: 5000,
-    staleTime: 0, // Always consider data stale
-  });
-
-  // Clear local messages when room changes
-  useEffect(() => {
-    if (currentRoomId) {
-      setLocalMessages([]);
-      // Force refetch of messages for the new room
-      queryClient.invalidateQueries({ 
-        queryKey: ["/api/chat/rooms", currentRoomId, "messages"],
-        exact: true 
-      });
-    }
-  }, [currentRoomId, queryClient]);
+  // Hooks already moved to top of component
 
   // Update local messages when server messages change
   useEffect(() => {
