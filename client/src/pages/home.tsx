@@ -123,6 +123,12 @@ export default function Home() {
     refetchInterval: 30000, // Refresh every 30 seconds
   });
 
+  // Get character's last used chat room
+  const { data: lastChatRoom } = useQuery({
+    queryKey: [`/api/characters/${currentDisplayedCharacter?.id}/last-chat`],
+    enabled: !!currentDisplayedCharacter?.id,
+  });
+
   const characterAge = currentDisplayedCharacter ? calculateGameAge(currentDisplayedCharacter.birthDate) : 0;
 
   const handleLogout = async () => {
@@ -757,6 +763,19 @@ export default function Home() {
                         <Circle className="h-3 w-3 mr-1 fill-current" />
                         Online
                       </Badge>
+                      {lastChatRoom && (
+                        <div className="mt-4">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setLocation(`/chat/room/${lastChatRoom.id}`)}
+                            className="w-full text-xs"
+                          >
+                            <MessageCircle className="h-3 w-3 mr-2" />
+                            Poslední chat: {lastChatRoom.name}
+                          </Button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </CardContent>
