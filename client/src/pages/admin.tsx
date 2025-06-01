@@ -246,6 +246,26 @@ export default function Admin() {
     },
   });
 
+  const updateNarratorMutation = useMutation({
+    mutationFn: async ({ userId, canNarrate }: { userId: number; canNarrate: boolean }) => {
+      return apiRequest("PATCH", `/api/admin/users/${userId}/narrator`, { canNarrate });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Úspěch",
+        description: "Právo vypravěče bylo změněno",
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/users'] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Chyba",
+        description: error.message || "Nepodařilo se změnit právo vypravěče",
+        variant: "destructive",
+      });
+    },
+  });
+
   const banUserMutation = useMutation({
     mutationFn: async ({ userId, banReason }: { userId: number; banReason: string }) => {
       return apiRequest("POST", `/api/admin/users/${userId}/ban`, { reason: banReason });
@@ -620,6 +640,11 @@ export default function Admin() {
   const toggleUserRole = (userId: number, currentRole: string) => {
     const newRole = currentRole === 'admin' ? 'user' : 'admin';
     updateRoleMutation.mutate({ userId, role: newRole });
+  };
+
+  const toggleNarratorPermission = (userId: number, currentCanNarrate: boolean) => {
+    const newCanNarrate = !currentCanNarrate;
+    updateNarratorMutation.mutate({ userId, canNarrate: newCanNarrate });
   };
 
   const handleBanUser = (userId: number, username: string) => {
@@ -1237,6 +1262,16 @@ export default function Admin() {
                             title="Změnit roli"
                           >
                             <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => toggleNarratorPermission(user.id, user.canNarrate)}
+                            disabled={updateNarratorMutation.isPending}
+                            className={user.canNarrate ? "text-purple-400 hover:text-purple-300" : "text-muted-foreground hover:text-purple-400"}
+                            title={user.canNarrate ? "Odebrat právo vypravěče" : "Přidělit právo vypravěče"}
+                          >
+                            <span className="text-xs font-bold">V</span>
                           </Button>
                           <Button
                             variant="ghost"

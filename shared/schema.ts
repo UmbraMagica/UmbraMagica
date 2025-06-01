@@ -41,6 +41,8 @@ export const users = pgTable("users", {
   characterOrder: text("character_order"), // JSON array of character IDs in preferred order
   highlightWords: text("highlight_words"), // comma-separated words to highlight
   highlightColor: varchar("highlight_color", { length: 20 }).default("yellow"), // color for highlighting
+  canNarrate: boolean("can_narrate").default(false).notNull(), // může používat vypravěče
+  narratorColor: varchar("narrator_color", { length: 20 }).default("yellow"), // barva textu vypravěče
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
@@ -109,7 +111,7 @@ export const messages = pgTable("messages", {
   roomId: integer("room_id").references(() => chatRooms.id).notNull(),
   characterId: integer("character_id").references(() => characters.id), // nullable for admin messages
   content: text("content").notNull(),
-  messageType: varchar("message_type", { length: 20 }).default("message").notNull(), // message, action, system, dice_roll, coin_flip
+  messageType: varchar("message_type", { length: 20 }).default("message").notNull(), // message, action, system, dice_roll, coin_flip, narrator
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
