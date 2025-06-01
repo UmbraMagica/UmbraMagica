@@ -423,6 +423,34 @@ export class DatabaseStorage implements IStorage {
     return bcrypt.compare(password, room.password);
   }
 
+  async updateChatCategorySortOrder(id: number, sortOrder: number): Promise<ChatCategory | undefined> {
+    try {
+      const [updated] = await db
+        .update(chatCategories)
+        .set({ sortOrder })
+        .where(eq(chatCategories.id, id))
+        .returning();
+      return updated;
+    } catch (error) {
+      console.error('Error updating chat category sort order:', error);
+      return undefined;
+    }
+  }
+
+  async updateChatRoomSortOrder(id: number, sortOrder: number): Promise<ChatRoom | undefined> {
+    try {
+      const [updated] = await db
+        .update(chatRooms)
+        .set({ sortOrder })
+        .where(eq(chatRooms.id, id))
+        .returning();
+      return updated;
+    } catch (error) {
+      console.error('Error updating chat room sort order:', error);
+      return undefined;
+    }
+  }
+
   async getChatCategory(id: number): Promise<ChatCategory | undefined> {
     const [category] = await db.select().from(chatCategories).where(eq(chatCategories.id, id));
     return category;

@@ -26,7 +26,6 @@ import {
   Shield,
   Plus,
   Edit,
-  ArrowUp,
   Book,
   BookOpen,
   Eye,
@@ -41,7 +40,9 @@ import {
   Trash2,
   Cog,
   Wand2,
-  Activity
+  Activity,
+  ArrowUp,
+  ArrowDown
 } from "lucide-react";
 
 interface AdminUser {
@@ -611,6 +612,125 @@ export default function Admin() {
       });
     },
   });
+
+  const updateCategorySortOrderMutation = useMutation({
+    mutationFn: async ({ id, sortOrder }: { id: number; sortOrder: number }) => {
+      return apiRequest("PUT", `/api/admin/chat-categories/${id}/sort-order`, { sortOrder });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Úspěch",
+        description: "Pořadí kategorie bylo změněno",
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/chat-categories'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/chat/categories'] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Chyba",
+        description: error.message || "Nepodařilo se změnit pořadí kategorie",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const updateRoomSortOrderMutation = useMutation({
+    mutationFn: async ({ id, sortOrder }: { id: number; sortOrder: number }) => {
+      return apiRequest("PUT", `/api/admin/chat-rooms/${id}/sort-order`, { sortOrder });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Úspěch",
+        description: "Pořadí místnosti bylo změněno",
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/chat/rooms'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/chat/categories'] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Chyba",
+        description: error.message || "Nepodařilo se změnit pořadí místnosti",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Helper functions for sorting
+  const moveCategoryUp = (categoryId: number) => {
+    const categories = chatCategories || [];
+    const currentIndex = categories.findIndex((c: any) => c.id === categoryId);
+    if (currentIndex > 0) {
+      const category = categories[currentIndex];
+      const previousCategory = categories[currentIndex - 1];
+      
+      // Swap sort orders
+      updateCategorySortOrderMutation.mutate({ 
+        id: category.id, 
+        sortOrder: previousCategory.sortOrder 
+      });
+      updateCategorySortOrderMutation.mutate({ 
+        id: previousCategory.id, 
+        sortOrder: category.sortOrder 
+      });
+    }
+  };
+
+  const moveCategoryDown = (categoryId: number) => {
+    const categories = chatCategories || [];
+    const currentIndex = categories.findIndex((c: any) => c.id === categoryId);
+    if (currentIndex < categories.length - 1) {
+      const category = categories[currentIndex];
+      const nextCategory = categories[currentIndex + 1];
+      
+      // Swap sort orders
+      updateCategorySortOrderMutation.mutate({ 
+        id: category.id, 
+        sortOrder: nextCategory.sortOrder 
+      });
+      updateCategorySortOrderMutation.mutate({ 
+        id: nextCategory.id, 
+        sortOrder: category.sortOrder 
+      });
+    }
+  };
+
+  const moveRoomUp = (roomId: number) => {
+    const rooms = chatRooms || [];
+    const currentIndex = rooms.findIndex((r: any) => r.id === roomId);
+    if (currentIndex > 0) {
+      const room = rooms[currentIndex];
+      const previousRoom = rooms[currentIndex - 1];
+      
+      // Swap sort orders
+      updateRoomSortOrderMutation.mutate({ 
+        id: room.id, 
+        sortOrder: previousRoom.sortOrder 
+      });
+      updateRoomSortOrderMutation.mutate({ 
+        id: previousRoom.id, 
+        sortOrder: room.sortOrder 
+      });
+    }
+  };
+
+  const moveRoomDown = (roomId: number) => {
+    const rooms = chatRooms || [];
+    const currentIndex = rooms.findIndex((r: any) => r.id === roomId);
+    if (currentIndex < rooms.length - 1) {
+      const room = rooms[currentIndex];
+      const nextRoom = rooms[currentIndex + 1];
+      
+      // Swap sort orders
+      updateRoomSortOrderMutation.mutate({ 
+        id: room.id, 
+        sortOrder: nextRoom.sortOrder 
+      });
+      updateRoomSortOrderMutation.mutate({ 
+        id: nextRoom.id, 
+        sortOrder: room.sortOrder 
+      });
+    }
+  };
 
   const adjustInfluenceMutation = useMutation({
     mutationFn: async ({ side, points, reason }: { side: string; points: number; reason: string }) => {
@@ -2017,7 +2137,27 @@ export default function Admin() {
                                   ID: {category.id} • Pořadí: {category.sortOrder}
                                 </p>
                               </div>
-                              <div className="flex items-center gap-2">
+                              <div className="flex items-center gap-1">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => moveCategoryUp(category.id)}
+                                  disabled={chatCategories?.findIndex((c: any) => c.id === category.id) === 0}
+                                  className="text-blue-400 hover:text-blue-300 disabled:opacity-30"
+                                  title="Posunout nahoru"
+                                >
+                                  <ArrowUp className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => moveCategoryDown(category.id)}
+                                  disabled={chatCategories?.findIndex((c: any) => c.id === category.id) === (chatCategories?.length || 0) - 1}
+                                  className="text-blue-400 hover:text-blue-300 disabled:opacity-30"
+                                  title="Posunout dolů"
+                                >
+                                  <ArrowDown className="h-4 w-4" />
+                                </Button>
                                 <Button
                                   variant="ghost"
                                   size="sm"
