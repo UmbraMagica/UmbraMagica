@@ -159,10 +159,11 @@ export default function ChatRoom() {
       // Use first available character
       const initialCharacter = userCharacters[0];
       if (initialCharacter) {
+        console.log('Setting initial chat character:', initialCharacter.firstName, initialCharacter.lastName);
         setChatCharacter(initialCharacter);
       }
     }
-  }, [userCharacters, chatCharacter]);
+  }, [userCharacters]);
 
   // Clear local messages when room changes
   useEffect(() => {
