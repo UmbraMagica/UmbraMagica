@@ -589,7 +589,7 @@ export default function Ollivanders() {
                   <p><strong>🔥 Pero fénixe:</strong> Nejrřídší, největší kouzla</p>
                   
                   <div className="font-medium text-blue-600 dark:text-blue-400 mt-2">Méně ušlechtilé:</div>
-                  <p><strong>🕷️ Střevo akromantuly:</strong> Nestabilní, ale mocné</p>
+                  <p><strong>🕷️ Střevo akromantuly:</strong> Nestabilní, ale mocné <span className="text-orange-600 dark:text-orange-400">[Ruční pouze]</span></p>
                   <p><strong>🐍 Kožešina kappa:</strong> Vodní magie</p>
                   <p><strong>🌙 Prach z rohu jednorožce:</strong> Léčivé vlastnosti</p>
                   <p><strong>🗲 Kormidlo bouře:</strong> Ovládání počasí</p>
@@ -597,7 +597,7 @@ export default function Ollivanders() {
                   <p><strong>🌿 Srst z srdce stvoření:</strong> Přírodnická magie</p>
                   
                   <div className="font-medium text-gray-600 dark:text-gray-400 mt-2">Nejméně ušlechtilé:</div>
-                  <p><strong>🐺 Tesák vlkodlaka:</strong> Brutální a agresivní magie</p>
+                  <p><strong>🐺 Tesák vlkodlaka:</strong> Brutální a agresivní magie <span className="text-orange-600 dark:text-orange-400">[Ruční pouze]</span></p>
                   <p>...a dalších 12 vzácných jader</p>
                 </div>
               </div>
@@ -611,9 +611,9 @@ export default function Ollivanders() {
                   <p><strong>7"-8":</strong> Kompaktní, diskrétní</p>
                   <p><strong>9"-10":</strong> Vyvážené, univerzální</p>
                   <p><strong>11"-12":</strong> Standardní, spolehlivé</p>
-                  <p><strong>13"-14":</strong> Pro specializace</p>
-                  <p><strong>15"-16":</strong> Raritní, mocné</p>
-                  <p><strong>16"+:</strong> Výjimečné osobnosti</p>
+                  <p><strong>13"-14":</strong> Pro specializace <span className="text-orange-600 dark:text-orange-400">[Ruční pouze]</span></p>
+                  <p><strong>15"-16":</strong> Raritní, mocné <span className="text-orange-600 dark:text-orange-400">[Ruční pouze]</span></p>
+                  <p><strong>16"+:</strong> Výjimečné osobnosti <span className="text-orange-600 dark:text-orange-400">[Ruční pouze]</span></p>
                 </div>
               </div>
 
@@ -621,12 +621,12 @@ export default function Ollivanders() {
               <div>
                 <h4 className="font-medium mb-2 text-indigo-600 dark:text-indigo-400">🌊 Ohebnost (11 stupňů)</h4>
                 <div className="text-xs space-y-1">
-                  <p><strong>Nezlomná → Velmi nepoddajná:</strong> Tvrdohlavci</p>
+                  <p><strong>Nezlomná → Velmi nepoddajná:</strong> Tvrdohlavci <span className="text-orange-600 dark:text-orange-400">[Ruční pouze]</span></p>
                   <p><strong>Nepoddajná → Mírně nepoddajná:</strong> Disciplinovaní</p>
                   <p><strong>Pevná → Tvrdá:</strong> Stabilní čarodějové</p>
                   <p><strong>Ohebná → Pružná:</strong> Adaptabilní</p>
-                  <p><strong>Velmi pružná → Výjimečně poddajná:</strong> Experimentátoři</p>
-                  <p><strong>Vrbovitá:</strong> Nejjemnější dotek</p>
+                  <p><strong>Velmi pružná → Výjimečně poddajná:</strong> Experimentátoři <span className="text-orange-600 dark:text-orange-400">[Ruční pouze]</span></p>
+                  <p><strong>Vrbovitá:</strong> Nejjemnější dotek <span className="text-orange-600 dark:text-orange-400">[Ruční pouze]</span></p>
                 </div>
               </div>
             </div>
@@ -635,7 +635,7 @@ export default function Ollivanders() {
               <p className="text-xs text-amber-800 dark:text-amber-200">
                 <strong>💡 Tip:</strong> Pan Ollivander má v zásobě celkem <strong>38 druhů dřeva</strong>, <strong>23 typů jader</strong>, 
                 <strong>10 délek</strong> a <strong>11 stupňů ohebnosti</strong> - to je přes <strong>95 000 možných kombinací</strong> hůlek! 
-                Každá hůlka je jedinečná a vybírá si svého majitele.
+                Komponenty označené <span className="text-orange-600 dark:text-orange-400 font-medium">[Ruční pouze]</span> nejsou dostupné v náhodném výběru.
               </p>
             </div>
           </CardContent>
