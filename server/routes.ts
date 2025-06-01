@@ -151,9 +151,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const characters = await storage.getCharactersByUserId(user.id);
       
-      console.log(`User ${user.username} - canNarrate from DB:`, user.canNarrate, typeof user.canNarrate);
-      
-      const userData = {
+      res.json({
         id: user.id,
         username: user.username,
         email: user.email,
@@ -171,11 +169,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         highlightColor: user.highlightColor || 'yellow',
         canNarrate: user.canNarrate || false,
         narratorColor: user.narratorColor || 'yellow'
-      };
-      
-      console.log(`User ${user.username} - final canNarrate:`, userData.canNarrate, typeof userData.canNarrate);
-      
-      res.json(userData);
+      });
     } catch (error) {
       console.error("Error fetching user:", error);
       res.status(500).json({ message: "Failed to fetch user" });

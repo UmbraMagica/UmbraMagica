@@ -1431,6 +1431,13 @@ export default function Admin() {
                         }>
                           {user.role.toUpperCase()}
                         </Badge>
+                        {/* Vizuální indikátor vypravěčských oprávnění */}
+                        {user.canNarrate && user.role !== 'admin' && (
+                          <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/30">
+                            <span className="text-xs font-bold mr-1">V</span>
+                            VYPRAVĚČ
+                          </Badge>
+                        )}
                         <div className="flex gap-1">
                           <Button
                             variant="ghost"
