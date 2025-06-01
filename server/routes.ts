@@ -1494,6 +1494,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get character's last chat room
+  app.get("/api/characters/:id/last-chat", requireAuth, async (req, res) => {
+    try {
+      const characterId = parseInt(req.params.id);
+      const userId = req.session.userId!;
+      
+      // Verify character belongs to user
+      const character = await storage.getCharacter(characterId);
+      if (!character || character.userId !== userId) {
+        return res.status(404).json({ message: "Character not found" });
+      }
+      
+      // Get last message by this character
+      const lastMessage = await storage.getLastMessageByCharacter(characterId);
+      if (!lastMessage) {
+        return res.json({ room: null, lastActivity: null });
+      }
+      
+      // Get room details
+      const room = await storage.getChatRoom(lastMessage.roomId);
+      if (!room) {
+        return res.json({ room: null, lastActivity: null });
+      }
+      
+      res.json({
+        room: {
+          id: room.id,
+          name: room.name,
+          description: room.description
+        },
+        lastActivity: lastMessage.createdAt
+      });
+    } catch (error) {
+      console.error("Error fetching character's last chat:", error);
+      res.status(500).json({ message: "Failed to fetch last chat" });
+    }
+  });
+
   // Get wand components for selection
   app.get("/api/wand-components", requireAuth, async (req, res) => {
     try {

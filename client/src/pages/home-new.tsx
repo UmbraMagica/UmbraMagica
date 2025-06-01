@@ -30,7 +30,8 @@ import {
   Newspaper,
   Sparkles,
   Menu,
-  X
+  X,
+  Clock
 } from "lucide-react";
 import { GameDate } from "@/components/GameDate";
 import { calculateGameAge } from "@/lib/gameDate";
@@ -43,6 +44,71 @@ interface OnlineCharacter {
   lastName: string;
   location: string;
   avatar?: string | null;
+}
+
+// Character Card component for displaying characters with last chat info
+function CharacterCard({ character, mainCharacter }: { character: any; mainCharacter: any }) {
+  const [, setLocation] = useLocation();
+  
+  // Fetch last chat for this character
+  const { data: lastChat } = useQuery({
+    queryKey: [`/api/characters/${character.id}/last-chat`],
+    enabled: !!character.id,
+  });
+
+  const formatLastActivity = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
+    
+    if (diffMinutes < 60) {
+      return `před ${diffMinutes} min`;
+    } else if (diffMinutes < 1440) {
+      const hours = Math.floor(diffMinutes / 60);
+      return `před ${hours} h`;
+    } else {
+      const days = Math.floor(diffMinutes / 1440);
+      return `před ${days} dny`;
+    }
+  };
+
+  return (
+    <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30">
+      <div className="flex items-center space-x-3">
+        <CharacterAvatar character={character} size="sm" />
+        <div>
+          <p className="font-medium text-foreground text-sm">
+            {character.firstName} {character.lastName}
+          </p>
+          <p className="text-xs text-muted-foreground">
+            {calculateGameAge(character.birthDate)} let
+          </p>
+          {lastChat?.room && (
+            <div className="flex items-center space-x-1 mt-1">
+              <Clock className="h-3 w-3 text-muted-foreground" />
+              <button
+                onClick={() => setLocation(`/chat?room=${lastChat.room.id}`)}
+                className="text-xs text-blue-400 hover:text-blue-300 underline"
+              >
+                {lastChat.room.name}
+              </button>
+              <span className="text-xs text-muted-foreground">
+                {formatLastActivity(lastChat.lastActivity)}
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
+      {mainCharacter?.id === character.id && (
+        <div className="flex items-center space-x-1">
+          <span className="text-yellow-500">👑</span>
+          <Badge className="bg-accent/20 text-accent text-xs">
+            Primární
+          </Badge>
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default function Home() {
@@ -301,7 +367,7 @@ export default function Home() {
                     <User className="text-accent mr-3 h-5 w-5" />
                     Moje postavy
                   </h3>
-                  <div className="space-y-2">
+                  <div className="space-y-3">
                     {userCharacters
                       .filter((char: any) => !char.isSystem)
                       .sort((a: any, b: any) => {
@@ -310,31 +376,8 @@ export default function Home() {
                         return a.firstName.localeCompare(b.firstName, 'cs');
                       })
                       .map((character: any) => (
-                      <div 
-                        key={character.id} 
-                        className="flex items-center justify-between p-3 rounded-lg bg-muted/30"
-                      >
-                        <div className="flex items-center space-x-3">
-                          <CharacterAvatar character={character} size="sm" />
-                          <div>
-                            <p className="font-medium text-foreground text-sm">
-                              {character.firstName} {character.lastName}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              {calculateGameAge(character.birthDate)} let
-                            </p>
-                          </div>
-                        </div>
-                        {mainCharacter?.id === character.id && (
-                          <div className="flex items-center space-x-1">
-                            <span className="text-yellow-500">👑</span>
-                            <Badge className="bg-accent/20 text-accent text-xs">
-                              Primární
-                            </Badge>
-                          </div>
-                        )}
-                      </div>
-                    ))}
+                        <CharacterCard key={character.id} character={character} mainCharacter={mainCharacter} />
+                      ))}
                   </div>
                   <div className="mt-4 pt-4 border-t border-border">
                     <Button

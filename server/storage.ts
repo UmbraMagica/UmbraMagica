@@ -122,6 +122,7 @@ export interface IStorage {
   getArchiveDates(roomId: number): Promise<string[]>;
   getArchiveDatesWithCounts(roomId: number): Promise<{ date: string; count: number }[]>;
   getArchivedMessagesByDate(roomId: number, archiveDate: string, limit?: number, offset?: number): Promise<ArchivedMessage[]>;
+  getLastMessageByCharacter(characterId: number): Promise<Message | undefined>;
   
   // Character request operations
   createCharacterRequest(request: InsertCharacterRequest): Promise<CharacterRequest>;
@@ -659,6 +660,17 @@ export class DatabaseStorage implements IStorage {
       .orderBy(desc(archivedMessages.originalCreatedAt))
       .limit(limit)
       .offset(offset);
+  }
+
+  async getLastMessageByCharacter(characterId: number): Promise<Message | undefined> {
+    const [message] = await db
+      .select()
+      .from(messages)
+      .where(eq(messages.characterId, characterId))
+      .orderBy(desc(messages.createdAt))
+      .limit(1);
+    
+    return message;
   }
 
   // Character request operations
