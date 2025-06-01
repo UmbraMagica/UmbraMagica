@@ -1402,7 +1402,6 @@ export default function ChatRoom() {
           </div>
         </DialogContent>
       </Dialog>
-      </div>
     </div>
   );
 }
