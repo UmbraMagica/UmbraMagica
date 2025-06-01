@@ -128,6 +128,10 @@ export default function Admin() {
   const [newCategoryName, setNewCategoryName] = useState("");
   const [newCategoryDescription, setNewCategoryDescription] = useState("");
   const [newCategoryParentId, setNewCategoryParentId] = useState<number | null>(null);
+  
+  // Hierarchical expansion state
+  const [expandedCategories, setExpandedCategories] = useState<Set<number>>(new Set());
+  const [expandedAreas, setExpandedAreas] = useState<Set<number>>(new Set());
   const [newRoomName, setNewRoomName] = useState("");
   const [newRoomDescription, setNewRoomDescription] = useState("");
   const [newRoomLongDescription, setNewRoomLongDescription] = useState("");
@@ -654,6 +658,31 @@ export default function Admin() {
       });
     },
   });
+
+  // Helper functions for hierarchical expansion
+  const toggleCategoryExpansion = (categoryId: number) => {
+    setExpandedCategories(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(categoryId)) {
+        newSet.delete(categoryId);
+      } else {
+        newSet.add(categoryId);
+      }
+      return newSet;
+    });
+  };
+
+  const toggleAreaExpansion = (areaId: number) => {
+    setExpandedAreas(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(areaId)) {
+        newSet.delete(areaId);
+      } else {
+        newSet.add(areaId);
+      }
+      return newSet;
+    });
+  };
 
   // Helper functions for sorting
   const moveCategoryUp = (categoryId: number) => {
@@ -2102,11 +2131,11 @@ export default function Admin() {
                     </Button>
                   </div>
 
-                  {/* Existing Categories Management */}
+                  {/* Hierarchical Categories Management */}
                   <div className="space-y-4">
                     <div className="flex items-center justify-between cursor-pointer" onClick={() => setIsExistingCategoriesCollapsed(!isExistingCategoriesCollapsed)}>
                       <h3 className="text-lg font-medium flex items-center">
-                        Správa existujících kategorií
+                        Hierarchická správa kategorií a místností
                         {isExistingCategoriesCollapsed ? (
                           <ChevronDown className="ml-2 h-4 w-4" />
                         ) : (
@@ -2117,204 +2146,297 @@ export default function Admin() {
                     
                     {!isExistingCategoriesCollapsed && (
                       <div className="border rounded-lg">
-                        <div className="p-4 space-y-3 max-h-64 overflow-y-auto">
-                          {Array.isArray(chatCategories) && chatCategories.length > 0 ? (
-                          chatCategories.map((category: any) => (
-                            <div key={category.id} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
-                              <div className="flex-1">
-                                <div className="flex items-center gap-2">
-                                  <h4 className="font-medium text-foreground">
-                                    {category.parentId ? "📍" : "🌍"} {category.name}
-                                  </h4>
-                                  <Badge variant={category.parentId ? "secondary" : "default"} className="text-xs">
-                                    {category.parentId ? "Oblast" : "Kategorie"}
-                                  </Badge>
-                                </div>
-                                {category.description && (
-                                  <p className="text-sm text-muted-foreground mt-1">{category.description}</p>
-                                )}
-                                <p className="text-xs text-muted-foreground">
-                                  ID: {category.id} • Pořadí: {category.sortOrder}
-                                </p>
-                              </div>
-                              <div className="flex items-center gap-1">
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => moveCategoryUp(category.id)}
-                                  disabled={chatCategories?.findIndex((c: any) => c.id === category.id) === 0}
-                                  className="text-blue-400 hover:text-blue-300 disabled:opacity-30"
-                                  title="Posunout nahoru"
-                                >
-                                  <ArrowUp className="h-4 w-4" />
-                                </Button>
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => moveCategoryDown(category.id)}
-                                  disabled={chatCategories?.findIndex((c: any) => c.id === category.id) === (chatCategories?.length || 0) - 1}
-                                  className="text-blue-400 hover:text-blue-300 disabled:opacity-30"
-                                  title="Posunout dolů"
-                                >
-                                  <ArrowDown className="h-4 w-4" />
-                                </Button>
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => {
-                                    setEditingCategory(category);
-                                    setEditCategoryName(category.name);
-                                    setEditCategoryDescription(category.description || "");
-                                    setEditCategoryParentId(category.parentId);
-                                  }}
-                                  className="text-yellow-400 hover:text-yellow-300"
-                                  title="Upravit kategorii"
-                                >
-                                  <Edit className="h-4 w-4" />
-                                </Button>
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => {
-                                    if (confirm(`Opravdu chcete smazat kategorii "${category.name}"? Tato akce je nevratná.`)) {
-                                      deleteCategoryMutation.mutate(category.id);
-                                    }
-                                  }}
-                                  className="text-red-400 hover:text-red-300"
-                                  title="Smazat kategorii"
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
-                              </div>
-                            </div>
-                          ))
-                        ) : (
-                          <div className="text-center text-muted-foreground py-8">
-                            Žádné kategorie
-                          </div>
-                        )}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Existing Rooms Management */}
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between cursor-pointer" onClick={() => setIsExistingRoomsCollapsed(!isExistingRoomsCollapsed)}>
-                      <h3 className="text-lg font-medium flex items-center">
-                        Správa existujících místností
-                        {isExistingRoomsCollapsed ? (
-                          <ChevronDown className="ml-2 h-4 w-4" />
-                        ) : (
-                          <ChevronUp className="ml-2 h-4 w-4" />
-                        )}
-                      </h3>
-                      <Button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setLocation('/admin/archive');
-                        }}
-                        variant="outline"
-                        size="sm"
-                        className="flex items-center gap-2"
-                      >
-                        <Archive className="h-4 w-4" />
-                        Archiv zpráv
-                      </Button>
-                    </div>
-                    
-                    {!isExistingRoomsCollapsed && (
-                      <div className="border rounded-lg">
                         <div className="p-4 space-y-3 max-h-96 overflow-y-auto">
-                          {Array.isArray(chatRooms) && chatRooms.length > 0 ? (
-                            chatRooms.map((room: any) => (
-                              <div key={room.id} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
-                                <div className="flex-1">
-                                  <div className="flex items-center gap-2">
-                                    <h4 className="font-medium text-foreground">{room.name}</h4>
-                                    <Badge variant={room.isPublic ? "default" : "secondary"} className="text-xs">
-                                      {room.isPublic ? "Veřejná" : "Privátní"}
-                                    </Badge>
+                          {Array.isArray(chatCategories) && chatCategories.length > 0 ? (
+                            // Show only main categories (parentId === null)
+                            chatCategories
+                              .filter((category: any) => category.parentId === null)
+                              .map((mainCategory: any) => (
+                                <div key={mainCategory.id} className="space-y-2">
+                                  {/* Main Category */}
+                                  <div className="flex items-center justify-between p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+                                    <div className="flex items-center gap-2 flex-1">
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => toggleCategoryExpansion(mainCategory.id)}
+                                        className="p-1 h-6 w-6"
+                                      >
+                                        {expandedCategories.has(mainCategory.id) ? (
+                                          <ChevronDown className="h-4 w-4" />
+                                        ) : (
+                                          <ChevronRight className="h-4 w-4" />
+                                        )}
+                                      </Button>
+                                      <div className="flex-1">
+                                        <div className="flex items-center gap-2">
+                                          <h4 className="font-medium text-foreground">
+                                            🌍 {mainCategory.name}
+                                          </h4>
+                                          <Badge variant="default" className="text-xs">
+                                            Hlavní kategorie
+                                          </Badge>
+                                        </div>
+                                        {mainCategory.description && (
+                                          <p className="text-sm text-muted-foreground mt-1">{mainCategory.description}</p>
+                                        )}
+                                        <p className="text-xs text-muted-foreground">
+                                          ID: {mainCategory.id} • Pořadí: {mainCategory.sortOrder}
+                                        </p>
+                                      </div>
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => moveCategoryUp(mainCategory.id)}
+                                        disabled={chatCategories?.filter((c: any) => c.parentId === null).findIndex((c: any) => c.id === mainCategory.id) === 0}
+                                        className="text-blue-400 hover:text-blue-300 disabled:opacity-30"
+                                        title="Posunout nahoru"
+                                      >
+                                        <ArrowUp className="h-4 w-4" />
+                                      </Button>
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => moveCategoryDown(mainCategory.id)}
+                                        disabled={chatCategories?.filter((c: any) => c.parentId === null).findIndex((c: any) => c.id === mainCategory.id) === (chatCategories?.filter((c: any) => c.parentId === null).length || 0) - 1}
+                                        className="text-blue-400 hover:text-blue-300 disabled:opacity-30"
+                                        title="Posunout dolů"
+                                      >
+                                        <ArrowDown className="h-4 w-4" />
+                                      </Button>
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => {
+                                          setEditingCategory(mainCategory);
+                                          setEditCategoryName(mainCategory.name);
+                                          setEditCategoryDescription(mainCategory.description || "");
+                                          setEditCategoryParentId(mainCategory.parentId);
+                                        }}
+                                        className="text-yellow-400 hover:text-yellow-300"
+                                        title="Upravit kategorii"
+                                      >
+                                        <Edit className="h-4 w-4" />
+                                      </Button>
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => {
+                                          if (confirm(`Opravdu chcete smazat kategorii "${mainCategory.name}"? Tato akce je nevratná.`)) {
+                                            deleteCategoryMutation.mutate(mainCategory.id);
+                                          }
+                                        }}
+                                        className="text-red-400 hover:text-red-300"
+                                        title="Smazat kategorii"
+                                      >
+                                        <Trash2 className="h-4 w-4" />
+                                      </Button>
+                                    </div>
                                   </div>
-                                  {room.description && (
-                                    <p className="text-sm text-muted-foreground mt-1">{room.description}</p>
+
+                                  {/* Areas (sub-categories) - show when main category is expanded */}
+                                  {expandedCategories.has(mainCategory.id) && (
+                                    <div className="ml-6 space-y-2">
+                                      {chatCategories
+                                        .filter((area: any) => area.parentId === mainCategory.id)
+                                        .map((area: any) => (
+                                          <div key={area.id} className="space-y-2">
+                                            {/* Area */}
+                                            <div className="flex items-center justify-between p-3 bg-purple-500/10 border border-purple-500/20 rounded-lg">
+                                              <div className="flex items-center gap-2 flex-1">
+                                                <Button
+                                                  variant="ghost"
+                                                  size="sm"
+                                                  onClick={() => toggleAreaExpansion(area.id)}
+                                                  className="p-1 h-6 w-6"
+                                                >
+                                                  {expandedAreas.has(area.id) ? (
+                                                    <ChevronDown className="h-4 w-4" />
+                                                  ) : (
+                                                    <ChevronRight className="h-4 w-4" />
+                                                  )}
+                                                </Button>
+                                                <div className="flex-1">
+                                                  <div className="flex items-center gap-2">
+                                                    <h5 className="font-medium text-foreground">
+                                                      📍 {area.name}
+                                                    </h5>
+                                                    <Badge variant="secondary" className="text-xs">
+                                                      Oblast
+                                                    </Badge>
+                                                  </div>
+                                                  {area.description && (
+                                                    <p className="text-sm text-muted-foreground mt-1">{area.description}</p>
+                                                  )}
+                                                  <p className="text-xs text-muted-foreground">
+                                                    ID: {area.id} • Pořadí: {area.sortOrder}
+                                                  </p>
+                                                </div>
+                                              </div>
+                                              <div className="flex items-center gap-1">
+                                                <Button
+                                                  variant="ghost"
+                                                  size="sm"
+                                                  onClick={() => moveCategoryUp(area.id)}
+                                                  disabled={chatCategories?.filter((c: any) => c.parentId === mainCategory.id).findIndex((c: any) => c.id === area.id) === 0}
+                                                  className="text-blue-400 hover:text-blue-300 disabled:opacity-30"
+                                                  title="Posunout nahoru"
+                                                >
+                                                  <ArrowUp className="h-4 w-4" />
+                                                </Button>
+                                                <Button
+                                                  variant="ghost"
+                                                  size="sm"
+                                                  onClick={() => moveCategoryDown(area.id)}
+                                                  disabled={chatCategories?.filter((c: any) => c.parentId === mainCategory.id).findIndex((c: any) => c.id === area.id) === (chatCategories?.filter((c: any) => c.parentId === mainCategory.id).length || 0) - 1}
+                                                  className="text-blue-400 hover:text-blue-300 disabled:opacity-30"
+                                                  title="Posunout dolů"
+                                                >
+                                                  <ArrowDown className="h-4 w-4" />
+                                                </Button>
+                                                <Button
+                                                  variant="ghost"
+                                                  size="sm"
+                                                  onClick={() => {
+                                                    setEditingCategory(area);
+                                                    setEditCategoryName(area.name);
+                                                    setEditCategoryDescription(area.description || "");
+                                                    setEditCategoryParentId(area.parentId);
+                                                  }}
+                                                  className="text-yellow-400 hover:text-yellow-300"
+                                                  title="Upravit oblast"
+                                                >
+                                                  <Edit className="h-4 w-4" />
+                                                </Button>
+                                                <Button
+                                                  variant="ghost"
+                                                  size="sm"
+                                                  onClick={() => {
+                                                    if (confirm(`Opravdu chcete smazat oblast "${area.name}"? Tato akce je nevratná.`)) {
+                                                      deleteCategoryMutation.mutate(area.id);
+                                                    }
+                                                  }}
+                                                  className="text-red-400 hover:text-red-300"
+                                                  title="Smazat oblast"
+                                                >
+                                                  <Trash2 className="h-4 w-4" />
+                                                </Button>
+                                              </div>
+                                            </div>
+
+                                            {/* Rooms - show when area is expanded */}
+                                            {expandedAreas.has(area.id) && (
+                                              <div className="ml-6 space-y-1">
+                                                {chatRooms
+                                                  ?.filter((room: any) => room.categoryId === area.id)
+                                                  .map((room: any) => (
+                                                    <div key={room.id} className="flex items-center justify-between p-2 bg-green-500/10 border border-green-500/20 rounded-lg">
+                                                      <div className="flex-1">
+                                                        <div className="flex items-center gap-2">
+                                                          <h6 className="font-medium text-foreground text-sm">
+                                                            🏠 {room.name}
+                                                          </h6>
+                                                          <Badge variant="outline" className="text-xs">
+                                                            Místnost
+                                                          </Badge>
+                                                          {!room.isPublic && (
+                                                            <Badge variant="destructive" className="text-xs">
+                                                              Soukromá
+                                                            </Badge>
+                                                          )}
+                                                        </div>
+                                                        {room.description && (
+                                                          <p className="text-xs text-muted-foreground mt-1">{room.description}</p>
+                                                        )}
+                                                        <p className="text-xs text-muted-foreground">
+                                                          ID: {room.id} • Pořadí: {room.sortOrder}
+                                                        </p>
+                                                      </div>
+                                                      <div className="flex items-center gap-1">
+                                                        <Button
+                                                          variant="ghost"
+                                                          size="sm"
+                                                          onClick={() => moveRoomUp(room.id)}
+                                                          disabled={chatRooms?.filter((r: any) => r.categoryId === area.id).findIndex((r: any) => r.id === room.id) === 0}
+                                                          className="text-blue-400 hover:text-blue-300 disabled:opacity-30"
+                                                          title="Posunout nahoru"
+                                                        >
+                                                          <ArrowUp className="h-3 w-3" />
+                                                        </Button>
+                                                        <Button
+                                                          variant="ghost"
+                                                          size="sm"
+                                                          onClick={() => moveRoomDown(room.id)}
+                                                          disabled={chatRooms?.filter((r: any) => r.categoryId === area.id).findIndex((r: any) => r.id === room.id) === (chatRooms?.filter((r: any) => r.categoryId === area.id).length || 0) - 1}
+                                                          className="text-blue-400 hover:text-blue-300 disabled:opacity-30"
+                                                          title="Posunout dolů"
+                                                        >
+                                                          <ArrowDown className="h-3 w-3" />
+                                                        </Button>
+                                                        <Button
+                                                          variant="ghost"
+                                                          size="sm"
+                                                          onClick={() => {
+                                                            setEditingRoom(room);
+                                                            setEditRoomName(room.name);
+                                                            setEditRoomDescription(room.description || "");
+                                                            setEditRoomLongDescription(room.longDescription || "");
+                                                            setEditRoomCategoryId(room.categoryId);
+                                                            setEditRoomIsPublic(room.isPublic);
+                                                            setEditRoomPassword("");
+                                                          }}
+                                                          className="text-yellow-400 hover:text-yellow-300"
+                                                          title="Upravit místnost"
+                                                        >
+                                                          <Edit className="h-3 w-3" />
+                                                        </Button>
+                                                        <Button
+                                                          variant="ghost"
+                                                          size="sm"
+                                                          onClick={() => {
+                                                            if (confirm(`Opravdu chcete smazat místnost "${room.name}"? Tato akce je nevratná.`)) {
+                                                              deleteRoomMutation.mutate(room.id);
+                                                            }
+                                                          }}
+                                                          className="text-red-400 hover:text-red-300"
+                                                          title="Smazat místnost"
+                                                        >
+                                                          <Trash2 className="h-3 w-3" />
+                                                        </Button>
+                                                      </div>
+                                                    </div>
+                                                  ))}
+                                                {!chatRooms?.some((room: any) => room.categoryId === area.id) && (
+                                                  <div className="text-center text-muted-foreground py-4 text-sm">
+                                                    Žádné místnosti v této oblasti
+                                                  </div>
+                                                )}
+                                              </div>
+                                            )}
+                                          </div>
+                                        ))}
+                                      {!chatCategories.some((cat: any) => cat.parentId === mainCategory.id) && (
+                                        <div className="text-center text-muted-foreground py-4 text-sm">
+                                          Žádné oblasti v této kategorii
+                                        </div>
+                                      )}
+                                    </div>
                                   )}
-                                  <p className="text-xs text-muted-foreground">
-                                    ID: {room.id} • Vytvořeno: {new Date(room.createdAt).toLocaleDateString('cs-CZ')}
-                                  </p>
                                 </div>
-                                <div className="flex items-center gap-1">
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => moveRoomUp(room.id)}
-                                    disabled={chatRooms?.findIndex((r: any) => r.id === room.id) === 0}
-                                    className="text-blue-400 hover:text-blue-300 disabled:opacity-30"
-                                    title="Posunout nahoru"
-                                  >
-                                    <ArrowUp className="h-4 w-4" />
-                                  </Button>
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => moveRoomDown(room.id)}
-                                    disabled={chatRooms?.findIndex((r: any) => r.id === room.id) === (chatRooms?.length || 0) - 1}
-                                    className="text-blue-400 hover:text-blue-300 disabled:opacity-30"
-                                    title="Posunout dolů"
-                                  >
-                                    <ArrowDown className="h-4 w-4" />
-                                  </Button>
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => window.open(`/chat/room/${room.id}`, '_blank')}
-                                    className="text-green-400 hover:text-green-300"
-                                    title="Otevřít chat"
-                                  >
-                                    <Eye className="h-4 w-4" />
-                                  </Button>
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => {
-                                      setEditingRoom(room);
-                                      setEditRoomName(room.name);
-                                      setEditRoomDescription(room.description || "");
-                                      setEditRoomLongDescription(room.longDescription || "");
-                                      setEditRoomCategoryId(room.categoryId);
-                                      setEditRoomPassword("");
-                                      setEditRoomIsPublic(room.isPublic);
-                                    }}
-                                    className="text-yellow-400 hover:text-yellow-300"
-                                    title="Upravit místnost"
-                                  >
-                                    <Edit className="h-4 w-4" />
-                                  </Button>
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => {
-                                      if (confirm(`Opravdu chcete smazat místnost "${room.name}"? Tato akce je nevratná a smaže všechny zprávy v místnosti.`)) {
-                                        deleteRoomMutation.mutate(room.id);
-                                      }
-                                    }}
-                                    className="text-red-400 hover:text-red-300"
-                                    title="Smazat místnost"
-                                  >
-                                    <Trash2 className="h-4 w-4" />
-                                  </Button>
-                                </div>
-                              </div>
-                            ))
+                              ))
                           ) : (
                             <div className="text-center text-muted-foreground py-8">
-                              Žádné místnosti
+                              Žádné kategorie
                             </div>
                           )}
                         </div>
                       </div>
                     )}
                   </div>
+
+
                 </div>
               </CardContent>
             )}
