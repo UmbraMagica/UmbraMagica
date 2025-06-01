@@ -182,6 +182,13 @@ export default function OwlPost() {
       return response.json();
     },
     onSuccess: () => {
+      // Invalidate specific queries for current character
+      if (activeCharacter?.id) {
+        queryClient.invalidateQueries({ queryKey: [`/api/owl-post/inbox/${activeCharacter.id}`] });
+        queryClient.invalidateQueries({ queryKey: [`/api/owl-post/unread-count/${activeCharacter.id}`] });
+        queryClient.invalidateQueries({ queryKey: ["/api/owl-post/unread-total"] });
+      }
+      // Also invalidate general queries for backward compatibility
       queryClient.invalidateQueries({ queryKey: ["/api/owl-post/inbox"] });
       queryClient.invalidateQueries({ queryKey: ["/api/owl-post/unread-count"] });
     },
