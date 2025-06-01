@@ -68,7 +68,7 @@ export interface IStorage {
   resetUserPassword(id: number, hashedPassword: string): Promise<void>;
   updateUserPassword(id: number, hashedPassword: string): Promise<void>;
   updateUserEmail(id: number, email: string): Promise<void>;
-  updateUserSettings(id: number, settings: { characterOrder?: string; highlightWords?: string }): Promise<void>;
+  updateUserSettings(id: number, settings: { characterOrder?: string; highlightWords?: string; highlightColor?: string }): Promise<void>;
   
   // Character operations
   getCharacter(id: number): Promise<Character | undefined>;
@@ -266,7 +266,7 @@ export class DatabaseStorage implements IStorage {
       .where(eq(users.id, id));
   }
 
-  async updateUserSettings(id: number, settings: { characterOrder?: string; highlightWords?: string }): Promise<void> {
+  async updateUserSettings(id: number, settings: { characterOrder?: string; highlightWords?: string; highlightColor?: string }): Promise<void> {
     await db.update(users)
       .set({ 
         ...settings,

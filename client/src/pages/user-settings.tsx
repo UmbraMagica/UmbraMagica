@@ -145,8 +145,11 @@ export default function UserSettings() {
 
   // Highlight words mutation
   const updateHighlightWordsMutation = useMutation({
-    mutationFn: (words: string) => 
-      apiRequest("POST", "/api/user/highlight-words", { highlightWords: words }),
+    mutationFn: (data: { words: string; color: string }) => 
+      apiRequest("POST", "/api/user/highlight-words", { 
+        highlightWords: data.words,
+        highlightColor: data.color 
+      }),
     onSuccess: () => {
       toast({
         title: "Zvýrazňovaná slova uložena",
@@ -1605,7 +1608,7 @@ export default function UserSettings() {
                   </div>
 
                   <Button 
-                    onClick={() => updateHighlightWordsMutation.mutate(highlightWords)}
+                    onClick={() => updateHighlightWordsMutation.mutate({ words: highlightWords, color: highlightColor })}
                     disabled={updateHighlightWordsMutation.isPending}
                     className="w-full"
                   >

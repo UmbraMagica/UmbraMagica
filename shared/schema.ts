@@ -39,7 +39,8 @@ export const users = pgTable("users", {
   banReason: text("ban_reason"),
   bannedAt: timestamp("banned_at"),
   characterOrder: text("character_order"), // JSON array of character IDs in preferred order
-  highlightWords: text("highlight_words"), // JSON object: {words: string[], color: string}
+  highlightWords: text("highlight_words"), // comma-separated words to highlight
+  highlightColor: varchar("highlight_color", { length: 20 }).default("yellow"), // color for highlighting
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
