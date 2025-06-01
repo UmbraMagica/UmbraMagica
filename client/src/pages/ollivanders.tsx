@@ -601,30 +601,54 @@ export default function Ollivanders() {
                 <h4 className="font-medium mb-2 text-red-600 dark:text-red-400">🔥 Jádra hůlek (23 druhů)</h4>
                 <div className="text-xs space-y-1">
                   <div className="font-medium text-green-600 dark:text-green-400">Nejvznešenější:</div>
-                  <p><strong>🐉 Blána z dračího srdce:</strong> Nejsilnější pro bojová kouzla</p>
-                  <p><strong>🦄 Vlas z hřívy jednorožce:</strong> Nejvěrnější, léčivá kouzla</p>
-                  <p><strong>🔥 Pero fénixe:</strong> Nejrřídší, největší kouzla</p>
+                  {wandComponents?.cores?.filter((core: any) => ['🐉 Blána z dračího srdce', '🦄 Vlas z hřívy jednorožce', '🔥 Pero fénixe'].includes(core.name)).map((core: any) => (
+                    <p key={core.name}>
+                      <strong>{core.name}:</strong> {core.description}
+                      {core.availableForRandom === false && (
+                        <span className="text-orange-600 dark:text-orange-400 font-medium"> [Ruční pouze]</span>
+                      )}
+                    </p>
+                  ))}
                   
                   <div className="font-medium text-blue-600 dark:text-blue-400 mt-2">Rostlinná jádra:</div>
-                  <p><strong>🌱 Kořen mandragory:</strong> Spojení se zemí a životní silou</p>
-                  <p><strong>🌸 Květ Asfodelu:</strong> Vztah ke smrti a přechodu</p>
-                  <p><strong>🍃 List měsíční kapradiny:</strong> Iluze a neviditelnost</p>
+                  {wandComponents?.cores?.filter((core: any) => core.category === 'Rostlinné').map((core: any) => (
+                    <p key={core.name}>
+                      <strong>{core.name}:</strong> {core.description}
+                      {core.availableForRandom === false && (
+                        <span className="text-orange-600 dark:text-orange-400 font-medium"> [Ruční pouze]</span>
+                      )}
+                    </p>
+                  ))}
                   
                   <div className="font-medium text-purple-600 dark:text-purple-400 mt-2">Tvorové:</div>
-                  <p><strong>🐺 Zub vlkodlaka:</strong> Útočná kouzla a transformace</p>
-                  <p><strong>🕷️ Jed z akromantule:</strong> Subtilní jedovatá magie</p>
-                  <p><strong>🐍 Hadí jazyk:</strong> Hadomluvy a temná zaklínadla</p>
-                  <p><strong>🦉 Opeření stínového hippogryfa:</strong> Kouzla spánku a vizí</p>
+                  {wandComponents?.cores?.filter((core: any) => core.category === 'Tvorové').map((core: any) => (
+                    <p key={core.name}>
+                      <strong>{core.name}:</strong> {core.description}
+                      {core.availableForRandom === false && (
+                        <span className="text-orange-600 dark:text-orange-400 font-medium"> [Ruční pouze]</span>
+                      )}
+                    </p>
+                  ))}
                   
                   <div className="font-medium text-indigo-600 dark:text-indigo-400 mt-2">Elementární:</div>
-                  <p><strong>🪨 Dračí kámen:</strong> Vztah k oběti a krvi</p>
-                  <p><strong>🖤 Obsidián s runovým leptem:</strong> Magie štítů a ochrany</p>
-                  <p><strong>🔮 Měsíční kámen:</strong> Ženská magie a věštění</p>
-                  <p><strong>⚡ Rudý jantar s duší hmyzího krále:</strong> Experimentální magie</p>
+                  {wandComponents?.cores?.filter((core: any) => core.category === 'Elementární').map((core: any) => (
+                    <p key={core.name}>
+                      <strong>{core.name}:</strong> {core.description}
+                      {core.availableForRandom === false && (
+                        <span className="text-orange-600 dark:text-orange-400 font-medium"> [Ruční pouze]</span>
+                      )}
+                    </p>
+                  ))}
                   
                   <div className="font-medium text-gray-600 dark:text-gray-400 mt-2">Méně ušlechtilé:</div>
-                  <p><strong>🧝‍♀️ Vlas víly:</strong> Krásné, ale nestálé</p>
-                  <p><strong>🦴 Nehet ďasovce:</strong> Brutální primitivní magie</p>
+                  {wandComponents?.cores?.filter((core: any) => core.category === 'Méně ušlechtilé').map((core: any) => (
+                    <p key={core.name}>
+                      <strong>{core.name}:</strong> {core.description}
+                      {core.availableForRandom === false && (
+                        <span className="text-orange-600 dark:text-orange-400 font-medium"> [Ruční pouze]</span>
+                      )}
+                    </p>
+                  ))}
                 </div>
               </div>
             </div>
@@ -634,15 +658,14 @@ export default function Ollivanders() {
               <div>
                 <h4 className="font-medium mb-2 text-purple-600 dark:text-purple-400">📏 Délky hůlek (10 velikostí)</h4>
                 <div className="text-xs grid grid-cols-2 gap-1">
-                  <p><strong>7":</strong> Kratší, diskrétní</p>
-                  <p><strong>8":</strong> Kompaktní, rychlé reakce</p>
-                  <p><strong>9":</strong> Vyvážená kratší délka</p>
-                  <p><strong>10":</strong> Klasická délka</p>
-                  <p><strong>11":</strong> Univerzální volba</p>
-                  <p><strong>12":</strong> Standardní délka</p>
-                  <p><strong>13":</strong> Neobyčejný potenciál</p>
-                  <p><strong>14":</strong> Formální, velkolepá</p>
-                  <p><strong>15":</strong> Rarita, silné zaměření</p>
+                  {wandComponents?.lengths?.map((length: any) => (
+                    <p key={length.name}>
+                      <strong>{length.name}:</strong> {length.description.split('.')[0]}
+                      {length.availableForRandom === false && (
+                        <span className="text-orange-600 dark:text-orange-400 font-medium"> [Ruční pouze]</span>
+                      )}
+                    </p>
+                  ))}
                 </div>
               </div>
 
@@ -650,16 +673,14 @@ export default function Ollivanders() {
               <div>
                 <h4 className="font-medium mb-2 text-indigo-600 dark:text-indigo-400">🌊 Ohebnost (11 stupňů)</h4>
                 <div className="text-xs space-y-1">
-                  <p><strong>Nezlomná:</strong> Nekompromisní povaha</p>
-                  <p><strong>Velmi nepoddajná:</strong> Rozhodní majitelé</p>
-                  <p><strong>Nepoddajná:</strong> Stabilní čarodějové</p>
-                  <p><strong>Mírně nepoddajná:</strong> Metodičtí čarodějové</p>
-                  <p><strong>Pevná:</strong> Vyvážená stabilita</p>
-                  <p><strong>Tvrdá:</strong> Tradiční magie</p>
-                  <p><strong>Ohebná:</strong> Kreativní adaptabilita</p>
-                  <p><strong>Pružná:</strong> Experimentální přístupy</p>
-                  <p><strong>Velmi pružná:</strong> Proměnlivá povaha</p>
-                  <p><strong>Výjimečně poddajná:</strong> Nejjemnější pohyby</p>
+                  {wandComponents?.flexibilities?.map((flexibility: any) => (
+                    <p key={flexibility.name}>
+                      <strong>{flexibility.name}:</strong> {flexibility.description.split('.')[0]}
+                      {flexibility.availableForRandom === false && (
+                        <span className="text-orange-600 dark:text-orange-400 font-medium"> [Ruční pouze]</span>
+                      )}
+                    </p>
+                  ))}
                 </div>
               </div>
             </div>
