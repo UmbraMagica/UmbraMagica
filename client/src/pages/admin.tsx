@@ -266,6 +266,8 @@ export default function Admin() {
         description: "Právo vypravěče bylo změněno",
       });
       queryClient.invalidateQueries({ queryKey: ['/api/users'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/auth/user'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/activity-log'] });
     },
     onError: (error: any) => {
       toast({
