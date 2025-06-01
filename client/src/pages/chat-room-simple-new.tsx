@@ -105,7 +105,7 @@ export default function ChatRoom() {
   // All hooks must be at the top level - before any conditional returns
   
   // Fetch user's characters for switching (only alive characters)
-  const { data: allUserCharacters = [] } = useQuery<any[]>({
+  const { data: allUserCharacters = [], isLoading: charactersLoading } = useQuery<any[]>({
     queryKey: ["/api/characters"],
     enabled: !!user,
   });
@@ -336,6 +336,18 @@ export default function ChatRoom() {
     console.log('Temporarily using character for render:', tempCharacter.firstName, tempCharacter.lastName);
   }
   
+  // Show loading while characters are being fetched
+  if (needsCharacter && charactersLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold mb-2">Načítání postav...</h2>
+          <p className="text-muted-foreground">Prosím počkejte.</p>
+        </div>
+      </div>
+    );
+  }
+
   // If user needs a character but has none available
   if (needsCharacter && userCharacters.length === 0) {
     return (
