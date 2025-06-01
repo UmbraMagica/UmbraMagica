@@ -486,6 +486,7 @@ export default function Admin() {
       setNewCategoryDescription("");
       setNewCategoryParentId(null);
       queryClient.invalidateQueries({ queryKey: ['/api/admin/chat-categories'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/chat/categories'] });
     },
     onError: (error: any) => {
       toast({
@@ -512,6 +513,7 @@ export default function Admin() {
       setNewRoomPassword("");
       setNewRoomIsPublic(true);
       queryClient.invalidateQueries({ queryKey: ['/api/admin/chat-categories'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/chat/categories'] });
     },
     onError: (error: any) => {
       toast({
@@ -533,6 +535,7 @@ export default function Admin() {
       });
       setEditingCategory(null);
       queryClient.invalidateQueries({ queryKey: ['/api/admin/chat-categories'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/chat/categories'] });
     },
     onError: (error: any) => {
       toast({
@@ -553,6 +556,7 @@ export default function Admin() {
         description: "Kategorie byla smazána",
       });
       queryClient.invalidateQueries({ queryKey: ['/api/admin/chat-categories'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/chat/categories'] });
     },
     onError: (error: any) => {
       toast({
