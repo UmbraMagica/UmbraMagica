@@ -64,7 +64,10 @@ function renderMessageWithHighlight(content: string, highlightWords?: string, hi
   let highlightedContent = content;
   
   words.forEach(word => {
-    const regex = new RegExp(`(${word})`, 'gi');
+    // Escape special regex characters
+    const escapedWord = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    // Use word boundaries to match whole words only, case insensitive
+    const regex = new RegExp(`\\b(${escapedWord})\\b`, 'gi');
     highlightedContent = highlightedContent.replace(regex, `<span class="px-1 rounded ${colorClass}">$1</span>`);
   });
 
