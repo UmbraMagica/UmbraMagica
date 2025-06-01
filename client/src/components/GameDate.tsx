@@ -21,3 +21,11 @@ export function GameDate() {
     </Card>
   );
 }
+
+// Helper function to get game date in ISO format
+export function getCurrentGameDate(): string {
+  const currentDate = new Date();
+  const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+  const day = currentDate.getDate().toString().padStart(2, '0');
+  return `1926-${month}-${day}`;
+}

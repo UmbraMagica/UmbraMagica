@@ -35,9 +35,10 @@ import {
   Menu,
   X
 } from "lucide-react";
-import { GameDate } from "@/components/GameDate";
+import { GameDate, getCurrentGameDate } from "@/components/GameDate";
 import { calculateGameAge } from "@/lib/gameDate";
 import { CharacterAvatar } from "@/components/CharacterAvatar";
+import { MoonPhase } from "@/components/MoonPhase";
 
 interface OnlineCharacter {
   id: number;
@@ -487,8 +488,11 @@ export default function Home() {
 
           {/* Center Column - Main Content */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Game Date */}
-            <GameDate />
+            {/* Game Date and Moon Phase */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <GameDate />
+              <MoonPhase gameDate={getCurrentGameDate()} />
+            </div>
 
 
             {/* Influence Bar */}
