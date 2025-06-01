@@ -53,21 +53,21 @@ function renderMessageWithHighlight(content: string, highlightWords?: string, hi
   }
 
   const colorClass = {
-    'yellow': 'bg-yellow-200 text-yellow-900',
-    'purple': 'bg-purple-200 text-purple-900',
-    'blue': 'bg-blue-200 text-blue-900',
-    'green': 'bg-green-200 text-green-900',
-    'red': 'bg-red-200 text-red-900',
-    'pink': 'bg-pink-200 text-pink-900'
-  }[highlightColor || 'yellow'] || 'bg-yellow-200 text-yellow-900';
+    'yellow': 'bg-yellow-200 text-yellow-900 dark:bg-yellow-600 dark:text-yellow-100',
+    'purple': 'bg-purple-200 text-purple-900 dark:bg-purple-600 dark:text-purple-100',
+    'blue': 'bg-blue-200 text-blue-900 dark:bg-blue-600 dark:text-blue-100',
+    'green': 'bg-green-200 text-green-900 dark:bg-green-600 dark:text-green-100',
+    'red': 'bg-red-200 text-red-900 dark:bg-red-600 dark:text-red-100',
+    'pink': 'bg-pink-200 text-pink-900 dark:bg-pink-600 dark:text-pink-100'
+  }[highlightColor || 'yellow'] || 'bg-yellow-200 text-yellow-900 dark:bg-yellow-600 dark:text-yellow-100';
 
   let highlightedContent = content;
   
   words.forEach(word => {
     // Escape special regex characters
     const escapedWord = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    // Use word boundaries to match whole words only, case insensitive
-    const regex = new RegExp(`\\b(${escapedWord})\\b`, 'gi');
+    // Remove word boundaries - search anywhere in text like Ctrl+F, case insensitive
+    const regex = new RegExp(`(${escapedWord})`, 'gi');
     highlightedContent = highlightedContent.replace(regex, `<span class="px-1 rounded ${colorClass}">$1</span>`);
   });
 
