@@ -1215,6 +1215,17 @@ export default function Admin() {
                           {user.role.toUpperCase()}
                         </Badge>
                         <div className="flex gap-1">
+                          {user.characters && user.characters.length > 0 && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => setLocation(`/characters/${user.characters[0].id}`)}
+                              className="text-green-400 hover:text-green-300"
+                              title="Zobrazit postavy uživatele"
+                            >
+                              <Eye className="h-4 w-4" />
+                            </Button>
+                          )}
                           <Button
                             variant="ghost"
                             size="sm"
