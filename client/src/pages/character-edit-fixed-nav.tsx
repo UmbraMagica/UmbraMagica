@@ -51,11 +51,16 @@ export default function CharacterEditFixedNav() {
   const pathParts = window.location.pathname.split('/');
   const characterIdFromUrl = pathParts[pathParts.length - 1] !== 'edit' ? pathParts[pathParts.length - 1] : null;
 
-  // Fetch main character if no ID provided
-  const { data: primaryCharacter } = useQuery({
-    queryKey: characterIdFromUrl ? ['/api/characters', characterIdFromUrl] : ['/api/characters/main'],
+  // Fetch user's characters
+  const { data: userCharacters = [] } = useQuery({
+    queryKey: ['/api/characters'],
     enabled: !!user,
   });
+  
+  // Get primary character (first alive character if no ID provided)
+  const primaryCharacter = characterIdFromUrl 
+    ? (userCharacters as any[])?.find((c: any) => c.id === parseInt(characterIdFromUrl))
+    : (userCharacters as any[])?.find((c: any) => !c.deathDate) || (userCharacters as any[])?.[0];
 
   const characterId = characterIdFromUrl || primaryCharacter?.id;
 
@@ -137,7 +142,6 @@ export default function CharacterEditFixedNav() {
         description: "Změny byly úspěšně uloženy.",
       });
       queryClient.invalidateQueries({ queryKey: ['/api/characters'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/characters/main'] });
       if (characterId) {
         queryClient.invalidateQueries({ queryKey: ['/api/characters', characterId.toString()] });
       }
