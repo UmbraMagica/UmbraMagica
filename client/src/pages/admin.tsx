@@ -1282,16 +1282,22 @@ export default function Admin() {
                           >
                             <Edit className="h-4 w-4" />
                           </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => toggleNarratorPermission(user.id, user.canNarrate, user.role)}
-                            disabled={updateNarratorMutation.isPending}
-                            className={user.canNarrate ? "text-purple-400 hover:text-purple-300" : "text-muted-foreground hover:text-purple-400"}
-                            title={user.canNarrate ? "Odebrat právo vypravěče" : "Přidělit právo vypravěče"}
-                          >
-                            <span className="text-xs font-bold">V</span>
-                          </Button>
+                          {user.role === 'admin' ? (
+                            <div className="px-2 py-1 rounded text-xs bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200">
+                              Admin
+                            </div>
+                          ) : (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => toggleNarratorPermission(user.id, user.canNarrate, user.role)}
+                              disabled={updateNarratorMutation.isPending}
+                              className={user.canNarrate ? "text-purple-400 hover:text-purple-300" : "text-muted-foreground hover:text-purple-400"}
+                              title={user.canNarrate ? "Odebrat právo vypravěče" : "Přidělit právo vypravěče"}
+                            >
+                              <span className="text-xs font-bold">V</span>
+                            </Button>
+                          )}
                           <Button
                             variant="ghost"
                             size="sm"
