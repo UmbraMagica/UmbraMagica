@@ -150,7 +150,10 @@ export default function UserSettings() {
         highlightWords: data.words,
         highlightColor: data.color 
       }),
-    onSuccess: () => {
+    onSuccess: (data, variables) => {
+      // Update local state immediately
+      setHighlightWords(variables.words);
+      setHighlightColor(variables.color);
       // Invalidate user data to refresh the cache
       queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
       toast({
