@@ -238,6 +238,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { highlightWords, highlightColor } = req.body;
       
+      console.log("Highlight words update request:", { highlightWords, highlightColor, userId: req.session.userId });
+      
       if (typeof highlightWords !== 'string') {
         return res.status(400).json({ message: "Invalid highlight words format" });
       }
@@ -249,6 +251,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (highlightColor && typeof highlightColor === 'string') {
         updateData.highlightColor = highlightColor;
       }
+      
+      console.log("Update data being saved:", updateData);
       
       await storage.updateUserSettings(req.session.userId, updateData);
 
