@@ -183,8 +183,17 @@ export default function Home() {
                 )}
               </div>
 
-              {/* Mobile Hamburger Menu */}
-              <div className="md:hidden">
+              {/* Mobile Home Icon and Hamburger Menu */}
+              <div className="md:hidden flex items-center space-x-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleHomeClick}
+                  aria-label="Domov"
+                  title="Domov"
+                >
+                  <HomeIcon className="h-5 w-5" />
+                </Button>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -252,17 +261,6 @@ export default function Home() {
         {isMenuOpen && (
           <div className="md:hidden bg-card border-t border-border">
             <div className="max-w-7xl mx-auto px-4 py-4 space-y-2">
-              <Button 
-                variant="ghost" 
-                className="w-full justify-start text-foreground hover:text-accent" 
-                onClick={() => {
-                  setLocation('/');
-                  setIsMenuOpen(false);
-                }}
-              >
-                <HomeIcon className="mr-2 h-4 w-4" />
-                Domov
-              </Button>
               <Button 
                 variant="ghost" 
                 className="w-full justify-start text-foreground hover:text-accent" 
