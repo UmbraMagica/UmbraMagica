@@ -1365,13 +1365,38 @@ export class DatabaseStorage implements IStorage {
       },
       { 
         name: "Černý ořech", 
-        shortDescription: "Velmi vnímavé dřevo vyžadující čisté svědomí",
+        shortDescription: "Velmi vnímavé dřevo, které vyžaduje čaroděje s čistým svědomím a silnou intuicí. Ztrácí sílu, pokud je jeho vlastník neupřímný sám k sobě.",
         longDescription: "Hůlky vyrobené z černého ořechu hledají pána s dobrými instinkty a velkým porozuměním. Má jednu vyslovenou výstřednost, a to že je neobvykle vnímavé vůči vnitřnímu konfliktu, přičemž velmi poklesne jeho síla, pokud se jeho vlastník pokusí o jakýkoliv sebeklam. Nalezne-li upřímného, sebevědomého majitele, stane se z ní jedna z nejvěrnějších a nejpůsobivějších hůlek."
       },
       { 
         name: "Červený dub", 
-        shortDescription: "Ideální partner pro rychlé reakce",
+        shortDescription: "Hůlka rychlých reakcí a bystré mysli, ideální pro kouzelníky se sklony k soubojům a originalitě. Vyžaduje hbitého a přizpůsobivého majitele.",
         longDescription: "O červeném dubu často uslyšíte laickou povídačku, že je spolehlivou známkou horké povahy svého majitele. Ve skutečnosti je ideálním partnerem pro hůlku z červeného dubu ten, kdož oplývá neobvykle rychlými reakcemi, což z ní činí perfektní hůlku pro kouzelnické souboje. Mistr hůlky z červeného dubu má rychlé pohyby, je bystrý a přizpůsobivý."
+      },
+      { 
+        name: "Dřín", 
+        shortDescription: "Zlomyslné a hravé dřevo, vhodné pro čaroděje se smyslem pro humor a důvtip. Odmítá neverbální kouzla a je velmi hlučné.",
+        longDescription: "Dřín je jeden z mých osobních favoritů, navíc jsem zjistil, že vybírání vlastníka hůlkou z dřínu je vždy velmi zábavné. Dřínové hůlky jsou nepředvídatelné a zlomyslné; mají hravou povahu a hledají partnery, kteří mají smysl pro humor a vzrušení. Zajímavou vlastností hůlek z dřínu je, že odmítají provádět neverbální kouzla a jsou často spíše hlučné."
+      },
+      { 
+        name: "Eben", 
+        shortDescription: "Temné a mocné dřevo pro silné individuality, které se drží svých přesvědčení. Výborné pro přeměňování a bojovou magii.",
+        longDescription: "Toto temně černé dřevo má působivý vzhled i reputaci, neb se velmi hodí ke všem typům bojové magie a také k přeměňování. Eben nalézá zalíbení v těch, kdo mají odvahu být sami sebou. Nejlepším protějškem ebenové hůlky je ten, kdo se pevně drží svých přesvědčení nehledě na okolní tlak, a kdo se jen tak neodkloní od svých záměrů."
+      },
+      { 
+        name: "Habr", 
+        shortDescription: "Věrná hůlka pro čaroděje s jedinou vášní nebo vizí, které se zcela oddají. Rychle přebírá morálku i styl svého majitele.",
+        longDescription: "Habrové hůlky si za své životní partnery vybírají talentované čarodějky a čaroděje s jedinou, čirou vášní, kterou by někteří mohli nazvat obsesí (ačkoliv já dávám přednost označení 'vize'), která bude v podstatě vždy naplněna. Habrové hůlky se rychleji než většina ostatních hůlek sžije s majitelovým stylem kouzlení a získá tak vlastní osobnost."
+      },
+      { 
+        name: "Hloh", 
+        shortDescription: "Silné a rozporuplné dřevo, vhodné jak pro léčení, tak pro kletby. Vyžaduje zkušeného čaroděje, jinak může být nebezpečné.",
+        longDescription: "Hůlky z hlohu bývají velmi vhodné na léčivou magii, ale také jsou vynikající na kletby, a většinou jsem zpozoroval, že si rády vybírají čarodějky a čaroděje složité povahy nebo alespoň ty procházející obdobím vnitřního zmatku. Je složité stát se mistrem hlohové hůlky, a vždycky bych si pořádně rozmyslel, zda ji dát do rukou čarodějce či kouzelníkovi s prokázaným nadáním."
+      },
+      { 
+        name: "Hrušeň", 
+        shortDescription: "Zlatavé dřevo pro šlechetné a přívětivé duše, které si zachovává svou krásu a sílu po dlouhá léta. Nikdy nebyla spojena s černou magií.",
+        longDescription: "Z tohoto do zlatova zbarveného dřeva se vyrábí hůlky se skvělými magickými schopnostmi, které ze sebe vydají to nejlepší, jsou-li v rukách přívětivých, šlechetných a moudrých čarodějek a kouzelníků. Majitelé hůlek z hrušně jsou, alespoň jak jsem doposud zažil, obvykle velmi oblíbení a respektovaní. Nevím o jediném případě, kdy by byla hrušňová hůlka nalezena ve vlastnictví čarodějky či čaroděje, kteří se dali na cestu černé magie."
       }
     ];
 
