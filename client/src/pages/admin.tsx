@@ -1282,11 +1282,7 @@ export default function Admin() {
                           >
                             <Edit className="h-4 w-4" />
                           </Button>
-                          {user.role === 'admin' ? (
-                            <span className="text-xs text-muted-foreground">
-                              Admin
-                            </span>
-                          ) : (
+                          {user.role !== 'admin' && (
                             <Button
                               variant="ghost"
                               size="sm"

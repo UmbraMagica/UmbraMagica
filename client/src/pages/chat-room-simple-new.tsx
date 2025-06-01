@@ -437,7 +437,7 @@ export default function ChatRoom() {
           roomId: currentRoomId,
           characterId: currentCharacter?.id,
           content: messageInput.trim(),
-          messageType: 'text'
+          messageType: isNarratorMode ? 'narrator' : 'text'
         };
         await apiRequest("POST", "/api/chat/messages", messageData);
         setMessageInput("");
@@ -1146,19 +1146,19 @@ export default function ChatRoom() {
                       <div className="w-3 h-3 rounded-full flex items-center justify-center mr-1"
                            style={{
                              backgroundColor: isNarratorMode ? 'white' : (
-                               user.narratorColor === 'yellow' ? '#fbbf24' :
-                               user.narratorColor === 'red' ? '#ef4444' :
-                               user.narratorColor === 'blue' ? '#3b82f6' :
-                               user.narratorColor === 'green' ? '#10b981' :
-                               user.narratorColor === 'pink' ? '#ec4899' :
+                               user?.narratorColor === 'yellow' ? '#fbbf24' :
+                               user?.narratorColor === 'red' ? '#ef4444' :
+                               user?.narratorColor === 'blue' ? '#3b82f6' :
+                               user?.narratorColor === 'green' ? '#10b981' :
+                               user?.narratorColor === 'pink' ? '#ec4899' :
                                '#8b5cf6'
                              ),
                              color: isNarratorMode ? (
-                               user.narratorColor === 'yellow' ? '#fbbf24' :
-                               user.narratorColor === 'red' ? '#ef4444' :
-                               user.narratorColor === 'blue' ? '#3b82f6' :
-                               user.narratorColor === 'green' ? '#10b981' :
-                               user.narratorColor === 'pink' ? '#ec4899' :
+                               user?.narratorColor === 'yellow' ? '#fbbf24' :
+                               user?.narratorColor === 'red' ? '#ef4444' :
+                               user?.narratorColor === 'blue' ? '#3b82f6' :
+                               user?.narratorColor === 'green' ? '#10b981' :
+                               user?.narratorColor === 'pink' ? '#ec4899' :
                                '#8b5cf6'
                              ) : 'white'
                            }}>
