@@ -79,7 +79,7 @@ function renderMessageWithHighlight(content: string, highlightWords?: string, hi
         default: return 'bg-yellow-200 text-yellow-900';
       }
     })();
-    highlightedContent = highlightedContent.replace(regex, `<span class="px-1 rounded ${colorClass}">$1</span>`);
+    highlightedContent = highlightedContent.replace(regex, `<span class="${colorClass}">$1</span>`);
   });
 
   return <span dangerouslySetInnerHTML={{ __html: highlightedContent }} />;
@@ -140,6 +140,14 @@ export default function ChatRoom() {
   const { data: characterSpells = [] } = useQuery<any[]>({
     queryKey: [`/api/characters/${chatCharacter?.id || 0}/spells`],
     enabled: !!chatCharacter?.id && !!user,
+  });
+
+  // Fetch online characters in current room
+  const { data: roomPresenceData = [] } = useQuery<any[]>({
+    queryKey: [`/api/chat/rooms/${currentRoomId}/presence`],
+    enabled: !!currentRoomId,
+    refetchInterval: 10000, // Refresh every 10 seconds
+    staleTime: 0,
   });
 
   // ALL useEffect hooks must be here at the top level
@@ -1084,7 +1092,7 @@ export default function ChatRoom() {
         {/* Panel Content */}
         <div className="flex-1 p-4 overflow-y-auto space-y-4">
           {/* Room Presence */}
-          <RoomPresence roomId={currentRoomId!} onlineCharacters={presentCharacters} />
+          <RoomPresence roomId={currentRoomId!} onlineCharacters={roomPresenceData} />
           
           {/* Room Description */}
           {(currentRoom.longDescription || user?.role === 'admin') && (
