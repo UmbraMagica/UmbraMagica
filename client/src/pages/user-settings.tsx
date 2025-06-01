@@ -129,6 +129,8 @@ export default function UserSettings() {
     mutationFn: (order: number[]) => 
       apiRequest("POST", "/api/user/character-order", { characterOrder: order }),
     onSuccess: () => {
+      // Invalidate user data to reflect changes
+      queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
       toast({
         title: "Pořadí postav uloženo",
         description: "Vaše nastavení pořadí postav bylo úspěšně uloženo",
