@@ -277,7 +277,7 @@ export class DatabaseStorage implements IStorage {
       .where(eq(users.id, id));
   }
 
-  async updateUserSettings(id: number, settings: { characterOrder?: string; highlightWords?: string; highlightColor?: string }): Promise<void> {
+  async updateUserSettings(id: number, settings: { characterOrder?: string; highlightWords?: string; highlightColor?: string; narratorColor?: string }): Promise<void> {
     await db.update(users)
       .set({ 
         ...settings,

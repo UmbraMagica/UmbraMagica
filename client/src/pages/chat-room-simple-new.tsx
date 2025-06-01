@@ -1134,8 +1134,8 @@ export default function ChatRoom() {
                     </Button>
                   )}
                   
-                  {/* Narrator mode button - only show if user has narrator permissions */}
-                  {user?.canNarrate && (
+                  {/* Narrator mode button - only show if user has narrator permissions or is admin */}
+                  {(user?.canNarrate || user?.role === 'admin') && (
                     <Button
                       onClick={() => setIsNarratorMode(!isNarratorMode)}
                       variant={isNarratorMode ? "default" : "outline"}

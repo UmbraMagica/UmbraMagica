@@ -1673,7 +1673,7 @@ export default function UserSettings() {
           </Card>
 
           {/* Narrator Settings */}
-          {user?.canNarrate && (
+          {(user?.canNarrate || user?.role === 'admin') && (
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">

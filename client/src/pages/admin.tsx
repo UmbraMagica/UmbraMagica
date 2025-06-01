@@ -1283,9 +1283,9 @@ export default function Admin() {
                             <Edit className="h-4 w-4" />
                           </Button>
                           {user.role === 'admin' ? (
-                            <div className="px-2 py-1 rounded text-xs bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200">
+                            <span className="text-xs text-muted-foreground">
                               Admin
-                            </div>
+                            </span>
                           ) : (
                             <Button
                               variant="ghost"
