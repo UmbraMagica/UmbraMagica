@@ -214,13 +214,31 @@ export default function UserSettings() {
   // Filter only alive characters (not in cemetery)
   const userCharacters = allUserCharacters.filter((char: any) => !char.deathDate);
 
+  // Initialize user settings from user data
+  useEffect(() => {
+    if (user) {
+      // Initialize highlight words
+      if (user.highlightWords) {
+        setHighlightWords(user.highlightWords);
+      }
+      
+      // Initialize character order
+      if (user.characterOrder && userCharacters.length > 0) {
+        setCharacterOrder(user.characterOrder);
+      } else if (userCharacters && userCharacters.length > 0 && characterOrder.length === 0) {
+        const initialOrder = userCharacters.map((char: any) => char.id);
+        setCharacterOrder(initialOrder);
+      }
+    }
+  }, [user, userCharacters]);
+
   // Initialize character order when userCharacters is loaded
   useEffect(() => {
-    if (userCharacters && userCharacters.length > 0 && characterOrder.length === 0) {
+    if (userCharacters && userCharacters.length > 0 && characterOrder.length === 0 && !user?.characterOrder) {
       const initialOrder = userCharacters.map((char: any) => char.id);
       setCharacterOrder(initialOrder);
     }
-  }, [userCharacters, characterOrder.length]);
+  }, [userCharacters, characterOrder.length, user?.characterOrder]);
 
 
   // Create character request mutation

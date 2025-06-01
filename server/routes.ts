@@ -165,14 +165,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             return null;
           }
         })() : null,
-        highlightWords: user.highlightWords ? (() => {
-          try {
-            return JSON.parse(user.highlightWords);
-          } catch (e) {
-            console.error("Invalid highlightWords JSON:", user.highlightWords);
-            return null;
-          }
-        })() : null
+        highlightWords: user.highlightWords || ''
       });
     } catch (error) {
       console.error("Error fetching user:", error);

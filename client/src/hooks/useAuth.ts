@@ -8,6 +8,8 @@ interface User {
   email: string;
   role: string;
   characters: Character[];
+  characterOrder?: number[];
+  highlightWords?: string;
 }
 
 interface Character {
