@@ -65,6 +65,13 @@ export default function Ollivanders() {
     });
   };
 
+  // Refresh cache when selected character changes
+  useEffect(() => {
+    if (selectedCharacter) {
+      queryClient.invalidateQueries({ queryKey: [`/api/characters/${selectedCharacter.id}/wand`] });
+    }
+  }, [selectedCharacter, queryClient]);
+
   // Auto-refresh when component mounts to ensure fresh data
   useEffect(() => {
     refreshData();
