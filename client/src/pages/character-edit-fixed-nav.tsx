@@ -47,24 +47,15 @@ export default function CharacterEditFixedNav() {
   const [, setLocation] = useLocation();
   const queryClient = useQueryClient();
 
-  // Get character ID from URL path parameters
-  const pathParts = window.location.pathname.split('/');
-  const characterIdFromUrl = pathParts[pathParts.length - 1] !== 'edit' ? pathParts[pathParts.length - 1] : null;
-
   // Fetch user's characters
   const { data: userCharacters = [] } = useQuery({
     queryKey: ['/api/characters'],
     enabled: !!user,
   });
   
-  // Get selected character from localStorage first, then fallback to URL or first alive character
+  // Always use selected character from localStorage, ignore URL
   const getSelectedCharacter = () => {
-    if (characterIdFromUrl) {
-      // If URL has character ID, use that
-      return (userCharacters as any[])?.find((c: any) => c.id === parseInt(characterIdFromUrl));
-    }
-    
-    // Try to get selected character from localStorage
+    // Try to get selected character from localStorage first
     const selectedCharacterId = localStorage.getItem('selectedCharacterId');
     if (selectedCharacterId && userCharacters) {
       const selectedChar = (userCharacters as any[])?.find((c: any) => c.id === parseInt(selectedCharacterId));
@@ -76,7 +67,7 @@ export default function CharacterEditFixedNav() {
   };
 
   const primaryCharacter = getSelectedCharacter();
-  const characterId = characterIdFromUrl || primaryCharacter?.id;
+  const characterId = primaryCharacter?.id;
 
   const isAdmin = user?.role === 'admin';
 
