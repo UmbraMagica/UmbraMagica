@@ -874,7 +874,13 @@ export default function ChatRoom() {
                 {isNarratorMessage ? (
                   <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
                        style={{
-                         backgroundColor: '#8b5cf6' // Default purple for narrator
+                         backgroundColor: 
+                           user?.narratorColor === 'yellow' ? '#fbbf24' :
+                           user?.narratorColor === 'red' ? '#ef4444' :
+                           user?.narratorColor === 'blue' ? '#3b82f6' :
+                           user?.narratorColor === 'green' ? '#10b981' :
+                           user?.narratorColor === 'pink' ? '#ec4899' :
+                           '#8b5cf6' // Default purple for narrator
                        }}>
                     <span className="text-xs font-bold text-white">V</span>
                   </div>
@@ -886,7 +892,15 @@ export default function ChatRoom() {
                   <div className="flex items-baseline gap-2 mb-1">
                     {isNarratorMessage ? (
                       <span className="font-medium text-sm italic"
-                            style={{ color: '#8b5cf6' }}>
+                            style={{ 
+                              color: 
+                                user?.narratorColor === 'yellow' ? '#fbbf24' :
+                                user?.narratorColor === 'red' ? '#ef4444' :
+                                user?.narratorColor === 'blue' ? '#3b82f6' :
+                                user?.narratorColor === 'green' ? '#10b981' :
+                                user?.narratorColor === 'pink' ? '#ec4899' :
+                                '#8b5cf6'
+                            }}>
                         Vypravěč
                       </span>
                     ) : (
@@ -1001,8 +1015,18 @@ export default function ChatRoom() {
                   whiteSpace: 'pre-wrap',
                   maxWidth: '100%',
                   ...(isNarratorMessage && {
-                    backgroundColor: 'rgba(139, 92, 246, 0.1)',
-                    borderLeftColor: '#8b5cf6'
+                    backgroundColor: user?.narratorColor === 'yellow' ? 'rgba(251, 191, 36, 0.1)' :
+                                   user?.narratorColor === 'red' ? 'rgba(239, 68, 68, 0.1)' :
+                                   user?.narratorColor === 'blue' ? 'rgba(59, 130, 246, 0.1)' :
+                                   user?.narratorColor === 'green' ? 'rgba(16, 185, 129, 0.1)' :
+                                   user?.narratorColor === 'pink' ? 'rgba(236, 72, 153, 0.1)' :
+                                   'rgba(139, 92, 246, 0.1)',
+                    borderLeftColor: user?.narratorColor === 'yellow' ? '#fbbf24' :
+                                   user?.narratorColor === 'red' ? '#ef4444' :
+                                   user?.narratorColor === 'blue' ? '#3b82f6' :
+                                   user?.narratorColor === 'green' ? '#10b981' :
+                                   user?.narratorColor === 'pink' ? '#ec4899' :
+                                   '#8b5cf6'
                   })
                 }}>
                   {renderMessageWithHighlight(message.content, user?.highlightWords, user?.highlightColor)}
