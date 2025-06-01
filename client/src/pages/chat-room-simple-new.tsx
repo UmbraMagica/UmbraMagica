@@ -201,12 +201,11 @@ export default function ChatRoom() {
     allUserCharacters: allUserCharacters.map(c => ({ id: c.id, name: c.firstName + ' ' + c.lastName, deathDate: c.deathDate }))
   });
   
-  // For users who need a character but none is selected, use the first available one immediately
+  // For users who need a character, ensure one is always set
   if (needsCharacter && userCharacters.length > 0 && !chatCharacter) {
-    // Set the character immediately instead of waiting for useEffect
-    const firstCharacter = userCharacters[0];
-    setChatCharacter(firstCharacter);
-    console.log('Force setting chat character to:', firstCharacter.firstName, firstCharacter.lastName);
+    // Use first character directly for rendering, useEffect will set it properly
+    const tempCharacter = userCharacters[0];
+    console.log('Temporarily using character for render:', tempCharacter.firstName, tempCharacter.lastName);
   }
   
   // If user needs a character but has none available
