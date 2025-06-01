@@ -41,16 +41,28 @@ export default function Ollivanders() {
 
   // Get user's alive characters and find the active one
   const userCharacters = Array.isArray(allCharacters) ? allCharacters.filter((char: any) => !char.deathDate && !char.isSystem) : [];
-  // Use selected character or fallback to active character
   const activeCharacter = userCharacters.find((char: any) => char.isActive);
-  const mainCharacter = selectedCharacter || activeCharacter;
-
-  // Set default selected character to active character on first load
+  
+  // Load character from localStorage (same as home page)
   useEffect(() => {
-    if (activeCharacter && !selectedCharacter) {
-      setSelectedCharacter(activeCharacter);
+    if (userCharacters && userCharacters.length > 0) {
+      const savedCharacterId = localStorage.getItem('activeCharacterId');
+      if (savedCharacterId) {
+        const savedCharacter = userCharacters.find((char: any) => char.id === parseInt(savedCharacterId));
+        if (savedCharacter && !savedCharacter.deathDate) {
+          setSelectedCharacter(savedCharacter);
+          return;
+        }
+      }
+      
+      // If no saved character, use active character
+      if (activeCharacter && !selectedCharacter) {
+        setSelectedCharacter(activeCharacter);
+      }
     }
-  }, [activeCharacter, selectedCharacter]);
+  }, [userCharacters, activeCharacter]);
+
+  const mainCharacter = selectedCharacter || activeCharacter;
 
   // Function to refresh cache
   const refreshData = () => {
