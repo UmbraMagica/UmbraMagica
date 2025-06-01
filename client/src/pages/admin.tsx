@@ -1285,7 +1285,7 @@ export default function Admin() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => toggleNarratorPermission(user.id, user.canNarrate)}
+                            onClick={() => toggleNarratorPermission(user.id, user.canNarrate, user.role)}
                             disabled={updateNarratorMutation.isPending}
                             className={user.canNarrate ? "text-purple-400 hover:text-purple-300" : "text-muted-foreground hover:text-purple-400"}
                             title={user.canNarrate ? "Odebrat právo vypravěče" : "Přidělit právo vypravěče"}

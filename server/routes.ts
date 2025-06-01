@@ -518,7 +518,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.patch("/api/admin/users/:id/narrator", requireAdmin, async (req, res) => {
     try {
       const { id } = req.params;
-      const { canNarrate } = req.body;
+      const { canNarrate, reason } = req.body;
       
       if (typeof canNarrate !== 'boolean') {
         return res.status(400).json({ message: "canNarrate must be a boolean" });
@@ -529,11 +529,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "User not found" });
       }
 
-      // Log admin activity
+      // Log admin activity with reason if provided
+      const details = canNarrate 
+        ? `Granted narrator permission for user ${user.username}`
+        : `Revoked narrator permission for user ${user.username}${reason ? ` - Reason: ${reason}` : ''}`;
+        
       await storage.logAdminActivity({
         adminId: req.session.userId!,
         action: "narrator_permission_change",
-        details: `${canNarrate ? 'Granted' : 'Revoked'} narrator permission for user ${user.username}`
+        details
       });
 
       res.json({ message: "Narrator permission updated successfully", user });
