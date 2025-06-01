@@ -891,25 +891,23 @@ export default function ChatRoom() {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Message Input */}
-        <div className="flex-none border-t bg-card p-4">
-          {/* Character Selection */}
+        {/* Message Input - Compact Design */}
+        <div className="flex-none border-t bg-card p-3">
+          {/* Character Selection - Compact horizontal layout */}
           {userCharacters.length > 1 && (
-            <div className="mb-4 p-3 bg-muted/30 rounded-lg border">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-foreground">Vyberte postavu:</span>
-              </div>
-              <div className="flex flex-wrap gap-2">
+            <div className="mb-2 flex items-center gap-2 text-xs">
+              <span className="text-muted-foreground whitespace-nowrap">Postava:</span>
+              <div className="flex gap-1 overflow-x-auto">
                 {userCharacters.map((character: any) => (
                   <Button
                     key={character.id}
                     variant={chatCharacter?.id === character.id ? "default" : "outline"}
                     size="sm"
                     onClick={() => setChatCharacter(character)}
-                    className="flex items-center gap-2"
+                    className="h-7 px-2 text-xs whitespace-nowrap"
                   >
-                    <div className="w-4 h-4 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center">
-                      <span className="text-primary-foreground text-xs">
+                    <div className="w-3 h-3 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center mr-1">
+                      <span className="text-primary-foreground text-[10px]">
                         {character.firstName[0]}{character.lastName[0]}
                       </span>
                     </div>
@@ -920,31 +918,29 @@ export default function ChatRoom() {
             </div>
           )}
           
-          {/* Current Character Display */}
+          {/* Current Character Display - Compact */}
           {currentCharacter && (
-            <div className="mb-4 p-3 bg-muted/30 rounded-lg border">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-foreground">Píšete jako:</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <div className="w-6 h-6 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center">
-                  <span className="text-primary-foreground text-xs">
+            <div className="mb-2 flex items-center gap-2 text-xs">
+              <span className="text-muted-foreground">Píšete jako:</span>
+              <div className="flex items-center gap-1">
+                <div className="w-4 h-4 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center">
+                  <span className="text-primary-foreground text-[10px]">
                     {currentCharacter.firstName[0]}{currentCharacter.lastName[0]}
                   </span>
                 </div>
-                <span className="text-sm font-medium">{currentCharacter.firstName} {currentCharacter.lastName}</span>
+                <span className="font-medium">{currentCharacter.firstName} {currentCharacter.lastName}</span>
               </div>
             </div>
           )}
           
-          <div className="flex items-end gap-3">
-            {currentCharacter && <CharacterAvatar character={currentCharacter} size="md" />}
-            <div className="flex-1 space-y-2">
+          {/* Message Input Area - Compact */}
+          <div className="flex gap-2">
+            <div className="flex-1">
               <Input
                 value={messageInput}
                 onChange={(e) => setMessageInput(e.target.value)}
                 placeholder="Napište zprávu..."
-                className="resize-none"
+                className="text-sm h-9"
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey) {
                     e.preventDefault();
@@ -953,62 +949,65 @@ export default function ChatRoom() {
                 }}
                 maxLength={5000}
               />
-              <div className="flex items-center justify-between gap-2 mb-2">
-                <div className="flex gap-2">
+              {/* Action buttons and counter - Compact row */}
+              <div className="flex items-center justify-between mt-1">
+                <div className="flex gap-1">
                   <Button
                     onClick={handleDiceRoll}
                     disabled={!isConnected}
                     variant="outline"
                     size="sm"
+                    className="h-7 px-2 text-xs"
                     title="Hodit kostkou (1d10)"
                   >
-                    🎲 Kostka
+                    🎲
                   </Button>
                   <Button
                     onClick={handleCoinFlip}
                     disabled={!isConnected}
                     variant="outline"
                     size="sm"
+                    className="h-7 px-2 text-xs"
                     title="Hodit mincí (1d2)"
                   >
-                    🪙 Mince
+                    🪙
                   </Button>
                   {selectedSpell ? (
-                    <div className="flex items-center gap-1">
-                      <Button
-                        onClick={() => setSelectedSpell(null)}
-                        variant="default"
-                        size="sm"
-                        title="Zrušit vybrané kouzlo"
-                      >
-                        <Wand2 className="h-4 w-4 mr-1" />
-                        {selectedSpell.name}
-                        <X className="h-3 w-3 ml-1" />
-                      </Button>
-                    </div>
+                    <Button
+                      onClick={() => setSelectedSpell(null)}
+                      variant="default"
+                      size="sm"
+                      className="h-7 px-2 text-xs"
+                      title="Zrušit vybrané kouzlo"
+                    >
+                      <Wand2 className="h-3 w-3 mr-1" />
+                      {selectedSpell.name}
+                      <X className="h-2 w-2 ml-1" />
+                    </Button>
                   ) : (
                     <Button
                       onClick={() => setShowSpellDialog(true)}
                       disabled={!isConnected || characterSpells.length === 0}
                       variant="outline"
                       size="sm"
+                      className="h-7 px-2 text-xs"
                       title="Vybrat kouzlo"
                     >
-                      <Wand2 className="h-4 w-4 mr-1" />
-                      Kouzlo
+                      <Wand2 className="h-3 w-3" />
                     </Button>
                   )}
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-[10px] text-muted-foreground">
                     {messageInput.length}/5000
                   </span>
                   <Button
                     onClick={handleSendMessage}
                     disabled={!isConnected || (!messageInput.trim() && !selectedSpell) || messageInput.length > 5000}
                     size="sm"
+                    className="h-7 px-3 text-xs"
                   >
-                    {selectedSpell ? "Seslat kouzlo" : "Odeslat"}
+                    {selectedSpell ? "Seslat" : "Odeslat"}
                   </Button>
                 </div>
               </div>
