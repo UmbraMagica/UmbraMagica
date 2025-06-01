@@ -68,7 +68,7 @@ function renderMessageWithHighlight(content: string, highlightWords?: string, hi
     const escapedWord = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     // Remove word boundaries - search anywhere in text like Ctrl+F, case insensitive
     const regex = new RegExp(`(${escapedWord})`, 'gi');
-    highlightedContent = highlightedContent.replace(regex, `<span class="px-1 rounded ${colorClass}">$1</span>`);
+    highlightedContent = highlightedContent.replace(regex, `<span class="inline ${colorClass}" style="padding: 1px 2px; border-radius: 2px; box-decoration-break: clone;">$1</span>`);
   });
 
   return <span dangerouslySetInnerHTML={{ __html: highlightedContent }} />;
