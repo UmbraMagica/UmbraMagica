@@ -303,29 +303,7 @@ export default function ChatRoom() {
 
 
 
-  // Initialize chat character when entering chat room
-  useEffect(() => {
-    if (!chatCharacter && userCharacters.length > 0) {
-      // Use first available character
-      const initialCharacter = userCharacters[0];
-      if (initialCharacter) {
-        console.log('Setting initial chat character:', initialCharacter.firstName, initialCharacter.lastName);
-        setChatCharacter(initialCharacter);
-      }
-    }
-  }, [userCharacters, chatCharacter]);
 
-  // Clear local messages when room changes
-  useEffect(() => {
-    if (currentRoomId) {
-      setLocalMessages([]);
-      // Force refetch of messages for the new room
-      queryClient.invalidateQueries({ 
-        queryKey: ["/api/chat/rooms", currentRoomId, "messages"],
-        exact: true 
-      });
-    }
-  }, [currentRoomId, queryClient]);
 
   // Safety check for user data
   if (!user) {
@@ -377,82 +355,6 @@ export default function ChatRoom() {
   }
 
   // Hooks already moved to top of component
-
-  // Update local messages when server messages change
-  useEffect(() => {
-    if (Array.isArray(messages)) {
-      if (messages.length > 0) {
-        console.log("Messages data:", messages);
-        console.log("Messages loading:", messagesLoading);
-        console.log("Current room ID:", currentRoomId);
-        
-        // Sort messages by creation date (newest first for display)
-        const sortedMessages = [...messages].sort(
-          (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
-        setLocalMessages(sortedMessages);
-      } else if (!messagesLoading) {
-        // Clear local messages if no messages are returned
-        setLocalMessages([]);
-      }
-    }
-  }, [messages, messagesLoading, currentRoomId]);
-
-  // WebSocket connection
-  useEffect(() => {
-    if (!currentRoomId || !user) return;
-
-    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-    const wsUrl = `${protocol}//${window.location.host}/ws`;
-    const socket = new WebSocket(wsUrl);
-
-    socket.onopen = () => {
-      console.log("WebSocket připojen");
-      setIsConnected(true);
-      
-      // First authenticate with user and character info
-      socket.send(JSON.stringify({
-        type: 'authenticate',
-        sessionId: 'session',
-        userId: user.id,
-        characterId: currentCharacter?.id
-      }));
-    };
-
-    socket.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      
-      if (data.type === 'message' && data.roomId === currentRoomId) {
-        setLocalMessages(prev => [data.message, ...prev]);
-      } else if (data.type === 'authenticated') {
-        // After authentication, join the room
-        socket.send(JSON.stringify({
-          type: 'join_room',
-          roomId: currentRoomId
-        }));
-      } else if (data.type === 'room_joined' && data.characters) {
-        setPresentCharacters(data.characters);
-      } else if (data.type === 'presence_update' && data.characters) {
-        setPresentCharacters(data.characters);
-      }
-    };
-
-    socket.onclose = () => {
-      console.log("WebSocket odpojen");
-      setIsConnected(false);
-    };
-
-    socket.onerror = (error) => {
-      console.error("WebSocket chyba:", error);
-      setIsConnected(false);
-    };
-
-    setWs(socket);
-
-    return () => {
-      socket.close();
-    };
-  }, [currentRoomId, user]);
 
   const handleSendMessage = async () => {
     if (!currentRoomId) return;
