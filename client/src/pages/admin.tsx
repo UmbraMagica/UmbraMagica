@@ -496,7 +496,7 @@ export default function Admin() {
       });
       setNewCategoryName("");
       setNewCategoryDescription("");
-      setNewCategoryParentId(null);
+      // Nezresetujeme newCategoryParentId, aby uživatel mohl pokračovat v tvorbě ve stejné kategorii
       queryClient.invalidateQueries({ queryKey: ['/api/admin/chat-categories'] });
       queryClient.invalidateQueries({ queryKey: ['/api/chat/categories'] });
     },
