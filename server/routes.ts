@@ -157,8 +157,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
         email: user.email,
         role: user.role,
         characters,
-        characterOrder: user.characterOrder ? JSON.parse(user.characterOrder) : null,
-        highlightWords: user.highlightWords ? JSON.parse(user.highlightWords) : null
+        characterOrder: user.characterOrder ? (() => {
+          try {
+            return JSON.parse(user.characterOrder);
+          } catch (e) {
+            console.error("Invalid characterOrder JSON:", user.characterOrder);
+            return null;
+          }
+        })() : null,
+        highlightWords: user.highlightWords ? (() => {
+          try {
+            return JSON.parse(user.highlightWords);
+          } catch (e) {
+            console.error("Invalid highlightWords JSON:", user.highlightWords);
+            return null;
+          }
+        })() : null
       });
     } catch (error) {
       console.error("Error fetching user:", error);

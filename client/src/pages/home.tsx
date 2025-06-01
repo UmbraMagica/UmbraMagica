@@ -410,6 +410,24 @@ export default function Home() {
             {/* Game Date */}
             <GameDate />
 
+            {/* Daily Fortune */}
+            <Card className="bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 border-purple-200 dark:border-purple-700">
+              <CardContent className="p-6">
+                <h3 className="text-xl font-semibold text-foreground mb-4 flex items-center">
+                  <div className="text-2xl mr-3">🔮</div>
+                  Denní věštba od Sybilly Trelawneyové
+                </h3>
+                <div className="bg-white/50 dark:bg-black/20 rounded-lg p-4 border border-purple-200 dark:border-purple-600">
+                  <p className="text-foreground italic leading-relaxed">
+                    "Ó, čarodějničky a čarodějové! Hvězdy mi dnes šeptají... Vidím, že někdo z vás dnes najde zapomenutou ponožku pod postelí a bude z toho mít větší radost než z objevu nového kouzla. Mercury je v retrogradě, což znamená, že vaše hůlky budou dnes obzvlášť vrtošivé - nevynechejte ranní rozcvičku s jednoduchou Lumos! A pozor! Někdo z vás dnes omylem použije zubní pastu místo krému na obličej. Mystické síly říkají: 'Dnes je dobrý den na to, abyste si uvařili čaj a předstírali, že rozumíte lidem.' Pamatujte: když vám dnes někdo nabídne podivný zelený nápoj, raději se zeptejte, co to je, než abyste to pili!"
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-3 text-right">
+                    - Profesor Sybilla Trelawneyová, Věštkyně a Učitelka věštectví
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Influence Bar */}
             <Card className="bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 border-slate-200 dark:border-slate-700">
               <CardContent className="p-6">
