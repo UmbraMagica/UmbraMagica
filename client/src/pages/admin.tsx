@@ -42,7 +42,8 @@ import {
   Wand2,
   Activity,
   ArrowUp,
-  ArrowDown
+  ArrowDown,
+  ChevronRight
 } from "lucide-react";
 
 interface AdminUser {
