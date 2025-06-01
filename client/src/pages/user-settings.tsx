@@ -234,24 +234,24 @@ export default function UserSettings() {
       if (user.highlightColor) {
         setHighlightColor(user.highlightColor);
       }
-      
-      // Initialize character order
-      if (user.characterOrder && userCharacters.length > 0) {
-        setCharacterOrder(user.characterOrder);
-      } else if (userCharacters && userCharacters.length > 0 && characterOrder.length === 0) {
-        const initialOrder = userCharacters.map((char: any) => char.id);
-        setCharacterOrder(initialOrder);
-      }
     }
-  }, [user, userCharacters]);
+  }, [user]);
 
   // Initialize character order when userCharacters is loaded
   useEffect(() => {
-    if (userCharacters && userCharacters.length > 0 && characterOrder.length === 0 && !user?.characterOrder) {
-      const initialOrder = userCharacters.map((char: any) => char.id);
-      setCharacterOrder(initialOrder);
+    if (userCharacters && userCharacters.length > 0) {
+      if (user?.characterOrder && Array.isArray(user.characterOrder) && user.characterOrder.length > 0) {
+        // Use saved order from user preferences
+        console.log('Setting character order from user preferences:', user.characterOrder);
+        setCharacterOrder(user.characterOrder);
+      } else {
+        // Create initial order from current characters
+        const initialOrder = userCharacters.map((char: any) => char.id);
+        console.log('Creating initial character order:', initialOrder);
+        setCharacterOrder(initialOrder);
+      }
     }
-  }, [userCharacters, characterOrder.length, user?.characterOrder]);
+  }, [userCharacters, user?.characterOrder]);
 
 
   // Create character request mutation
@@ -1501,6 +1501,8 @@ export default function UserSettings() {
                                 const newOrder = [...characterOrder];
                                 [newOrder[index], newOrder[index - 1]] = [newOrder[index - 1], newOrder[index]];
                                 setCharacterOrder(newOrder);
+                                // Auto-save immediately
+                                updateCharacterOrderMutation.mutate(newOrder);
                               }}
                             >
                               ↑
@@ -1513,6 +1515,8 @@ export default function UserSettings() {
                                 const newOrder = [...characterOrder];
                                 [newOrder[index], newOrder[index + 1]] = [newOrder[index + 1], newOrder[index]];
                                 setCharacterOrder(newOrder);
+                                // Auto-save immediately
+                                updateCharacterOrderMutation.mutate(newOrder);
                               }}
                             >
                               ↓

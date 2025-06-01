@@ -47,7 +47,7 @@ export default function Home() {
   const { user, logout } = useAuth();
   const { toast } = useToast();
   const [, setLocation] = useLocation();
-  const [displayedCharacter, setDisplayedCharacter] = useState<any>(null);
+
 
   const { data: onlineCharacters = [] } = useQuery<OnlineCharacter[]>({
     queryKey: ["/api/characters/online"],
@@ -64,7 +64,7 @@ export default function Home() {
     enabled: !!user,
   });
 
-  const currentDisplayedCharacter = displayedCharacter || mainCharacter;
+  const currentDisplayedCharacter = mainCharacter;
   const characterAge = currentDisplayedCharacter ? calculateGameAge(currentDisplayedCharacter.birthDate) : 0;
 
   const handleLogout = async () => {
