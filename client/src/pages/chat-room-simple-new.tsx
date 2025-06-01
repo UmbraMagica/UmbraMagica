@@ -68,18 +68,18 @@ function renderMessageWithHighlight(content: string, highlightWords?: string, hi
     const escapedWord = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     // Remove word boundaries - search anywhere in text like Ctrl+F, case insensitive
     const regex = new RegExp(`(${escapedWord})`, 'gi');
-    const style = (() => {
+    const colorClass = (() => {
       switch (highlightColor || 'yellow') {
-        case 'yellow': return 'background-color: rgba(254, 240, 138, 0.6); color: rgb(133, 77, 14);';
-        case 'purple': return 'background-color: rgba(196, 181, 253, 0.6); color: rgb(88, 28, 135);';
-        case 'blue': return 'background-color: rgba(147, 197, 253, 0.6); color: rgb(30, 58, 138);';
-        case 'green': return 'background-color: rgba(134, 239, 172, 0.6); color: rgb(20, 83, 45);';
-        case 'red': return 'background-color: rgba(252, 165, 165, 0.6); color: rgb(153, 27, 27);';
-        case 'pink': return 'background-color: rgba(244, 164, 252, 0.6); color: rgb(131, 24, 67);';
-        default: return 'background-color: rgba(254, 240, 138, 0.6); color: rgb(133, 77, 14);';
+        case 'yellow': return 'bg-yellow-200 text-yellow-900 dark:bg-yellow-700 dark:text-yellow-100';
+        case 'purple': return 'bg-purple-200 text-purple-900 dark:bg-purple-700 dark:text-purple-100';
+        case 'blue': return 'bg-blue-200 text-blue-900 dark:bg-blue-700 dark:text-blue-100';
+        case 'green': return 'bg-green-200 text-green-900 dark:bg-green-700 dark:text-green-100';
+        case 'red': return 'bg-red-200 text-red-900 dark:bg-red-700 dark:text-red-100';
+        case 'pink': return 'bg-pink-200 text-pink-900 dark:bg-pink-700 dark:text-pink-100';
+        default: return 'bg-yellow-200 text-yellow-900 dark:bg-yellow-700 dark:text-yellow-100';
       }
     })();
-    highlightedContent = highlightedContent.replace(regex, `<span class="inline" style="padding: 1px 3px; border-radius: 3px; box-decoration-break: clone; ${style}">$1</span>`);
+    highlightedContent = highlightedContent.replace(regex, `<span class="px-1 rounded ${colorClass}">$1</span>`);
   });
 
   return <span dangerouslySetInnerHTML={{ __html: highlightedContent }} />;
