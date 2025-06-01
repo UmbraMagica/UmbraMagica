@@ -2,8 +2,9 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
-import { registrationSchema, loginSchema, insertCharacterSchema, insertMessageSchema, characterEditSchema, characterAdminEditSchema, characterRequestSchema, chatRooms, spellSchema, insertSpellSchema, insertCharacterSpellSchema, insertChatCategorySchema, insertChatRoomSchema, insertHousingRequestSchema, insertOwlPostMessageSchema } from "@shared/schema";
+import { registrationSchema, loginSchema, insertCharacterSchema, insertMessageSchema, characterEditSchema, characterAdminEditSchema, characterRequestSchema, chatRooms, spellSchema, insertSpellSchema, insertCharacterSpellSchema, insertChatCategorySchema, insertChatRoomSchema, insertHousingRequestSchema, insertOwlPostMessageSchema, housingRequests } from "@shared/schema";
 import { db } from "./db";
+import { eq } from "drizzle-orm";
 import { z } from "zod";
 import session from "express-session";
 import connectPg from "connect-pg-simple";
@@ -3401,6 +3402,75 @@ Správa ubytování`
     } catch (error) {
       console.error('Error fetching total unread count:', error);
       res.status(500).json({ message: 'Failed to fetch total unread count' });
+    }
+  });
+
+  // Admin housing request endpoints
+  app.post("/api/admin/housing-requests/:requestId/approve", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const requestId = parseInt(req.params.requestId);
+      const { assignedAddress, reviewNote } = req.body;
+      
+      if (!assignedAddress) {
+        return res.status(400).json({ message: "Assigned address is required" });
+      }
+      
+      const approvedRequest = await storage.approveHousingRequest(
+        requestId,
+        req.session.userId!,
+        assignedAddress,
+        reviewNote
+      );
+      
+      res.json(approvedRequest);
+    } catch (error) {
+      console.error("Error approving housing request:", error);
+      res.status(500).json({ message: "Failed to approve housing request" });
+    }
+  });
+
+  app.post("/api/admin/housing-requests/:requestId/reject", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const requestId = parseInt(req.params.requestId);
+      const { reviewNote } = req.body;
+      
+      if (!reviewNote) {
+        return res.status(400).json({ message: "Review note is required for rejection" });
+      }
+      
+      const rejectedRequest = await storage.rejectHousingRequest(
+        requestId,
+        req.session.userId!,
+        reviewNote
+      );
+      
+      res.json(rejectedRequest);
+    } catch (error) {
+      console.error("Error rejecting housing request:", error);
+      res.status(500).json({ message: "Failed to reject housing request" });
+    }
+  });
+
+  app.post("/api/admin/housing-requests/:requestId/return", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const requestId = parseInt(req.params.requestId);
+      const { reviewNote } = req.body;
+      
+      if (!reviewNote) {
+        return res.status(400).json({ message: "Review note is required for returning request" });
+      }
+      
+      // Return request uses rejection but with different message
+      const request = await storage.rejectHousingRequest(
+        requestId,
+        req.session.userId!,
+        reviewNote
+      );
+      
+      res.json(request);
+    } catch (error) {
+      console.error("Error returning housing request:", error);
+      res.status(500).json({ message: "Failed to return housing request" });
     }
   });
 
