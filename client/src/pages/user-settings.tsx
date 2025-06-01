@@ -1492,9 +1492,7 @@ export default function UserSettings() {
                               variant="outline"
                               size="sm"
                               disabled={index === 0}
-                              onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
+                              onClick={() => {
                                 const newOrder = [...characterOrder];
                                 [newOrder[index], newOrder[index - 1]] = [newOrder[index - 1], newOrder[index]];
                                 setCharacterOrder(newOrder);
@@ -1506,9 +1504,7 @@ export default function UserSettings() {
                               variant="outline"
                               size="sm"
                               disabled={index === characterOrder.length - 1}
-                              onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
+                              onClick={() => {
                                 const newOrder = [...characterOrder];
                                 [newOrder[index], newOrder[index + 1]] = [newOrder[index + 1], newOrder[index]];
                                 setCharacterOrder(newOrder);

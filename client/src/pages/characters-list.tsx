@@ -19,6 +19,7 @@ interface Character {
   lastName: string;
   birthDate: string;
   isActive: boolean;
+  isSystem?: boolean;
   avatar?: string | null;
   user: {
     username: string;
@@ -64,7 +65,7 @@ export default function CharactersList() {
     );
   }
 
-  const activeCharacters = characters.filter(char => char.isActive);
+  const activeCharacters = characters.filter(char => char.isActive && !char.isSystem);
 
   return (
     <div className="container mx-auto p-6">

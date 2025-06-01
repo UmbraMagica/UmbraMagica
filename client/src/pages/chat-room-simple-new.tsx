@@ -117,8 +117,8 @@ export default function ChatRoom() {
     enabled: !!user,
   });
 
-  // Filter only alive characters (not in cemetery)
-  const filteredCharacters = allUserCharacters.filter((char: any) => !char.deathDate);
+  // Filter only alive characters (not in cemetery) and exclude system characters
+  const filteredCharacters = allUserCharacters.filter((char: any) => !char.deathDate && !char.isSystem);
   
   // Sort characters according to user's preferred order
   const userCharacters = (() => {
@@ -144,10 +144,11 @@ export default function ChatRoom() {
   // Current character for chat (use chat-specific character if set, otherwise main character)
   const currentCharacter = chatCharacter || ((mainCharacter && !mainCharacter.deathDate) ? mainCharacter : userCharacters[0]);
 
-  // Initialize chat character to main character when data loads
+  // Initialize chat character to main character only on first load
   useEffect(() => {
-    if (mainCharacter && !chatCharacter) {
+    if (mainCharacter && !chatCharacter && !sessionStorage.getItem('chatCharacterInitialized')) {
       setChatCharacter(mainCharacter);
+      sessionStorage.setItem('chatCharacterInitialized', 'true');
     }
   }, [mainCharacter, chatCharacter]);
 
