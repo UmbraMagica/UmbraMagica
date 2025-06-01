@@ -393,7 +393,7 @@ export default function Ollivanders() {
                               <SelectItem key={wood.name} value={wood.name}>
                                 <div className="w-full max-w-xs">
                                   <div className="font-medium">{wood.name}</div>
-                                  <div className="text-xs text-muted-foreground whitespace-normal break-words">{wood.description}</div>
+                                  <div className="text-xs text-muted-foreground whitespace-normal break-words">{wood.shortDescription}</div>
                                 </div>
                               </SelectItem>
                             ))}

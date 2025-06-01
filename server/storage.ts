@@ -180,14 +180,14 @@ export interface IStorage {
   deleteWand(wandId: number): Promise<boolean>;
   generateRandomWand(characterId: number): Promise<Wand>;
   getAllWandComponents(): Promise<{
-    woods: { name: string; description: string }[];
+    woods: { name: string; shortDescription: string; longDescription: string }[];
     cores: { name: string; category: string; description: string }[];
     lengths: { name: string; description: string }[];
     flexibilities: { name: string; description: string }[];
   }>;
   migrateExistingWandsToInventory(): Promise<number>;
   updateWandComponents(components: {
-    woods: { name: string; description: string }[];
+    woods: { name: string; shortDescription: string; longDescription: string }[];
     cores: { name: string; category: string; description: string }[];
     lengths: { name: string; description: string }[];
     flexibilities: { name: string; description: string }[];
@@ -1326,40 +1326,53 @@ export class DatabaseStorage implements IStorage {
       { 
         name: "Akácie", 
         shortDescription: "Vzácná a temperamentní hůlka pro neobyčejně nadané kouzelníky",
-        longDescription: "Vzácná a temperamentní hůlka pro neobyčejně nadané kouzelníky; odmítá spolupracovat s kýmkoliv jiným než se svým pravým majitelem."
+        longDescription: "Velmi neobvyklé hůlkové dřevo, z něhož pochází hůlky tak trochu lstivé a úskočné, které často odmítnou spolupracovat s kýmkoliv jiným než se svým majitelem a které jsou nejlepší a nejúčinnější v rukou těch nejnadanějších. Tato citlivost je činí obtížně přiřaditelnými. Pokud najde dobrého majitele, akáciová hůlka může poskytnout hodně energie, avšak nebývá takto často využívána kvůli zvláštnosti jejího temperamentu."
       },
-      { name: "Anglický dub", description: "Příjemná hůlka pro dobrý kouzelník, vytrvalý obránce práva, spravedlnosti a morálky." },
-      { name: "Borovice", description: "Hůlka nezávislých a originálních jedinců s dlouhověkostí v osudu; výborně reaguje na neverbální magii." },
-      { name: "Buk", description: "Elegantní a náročná hůlka pro moudré, tolerantní a zkušené čaroděje, kteří v ní probudí její výjimečnou jemnost a umění." },
-      { name: "Cedr", description: "Silná a loajální hůlka pro důvtipné a bystré osobnosti s pevným morálním kompasem – nebezpečné, když jde o ochranu jejich blízkých." },
-      { name: "Cesmína", description: "Vzácná a ochranářská hůlka pro vznětlivé jedince na duchovní cestě; její skutečná síla září ve výjimečném spojení s jádrem." },
-      { name: "Cypřiš", description: "Šlechetná hůlka pro statečné a obětavé duše, které se nebojí čelit temnotě – často spojená s hrdinskou smrtí." },
-      { name: "Černý bez", description: "Tajuplná a mimořádně mocná hůlka určená pouze výjimečným kouzelníkům s osudovým posláním – odmítá sloužit komukoliv slabšímu." },
-      { name: "Černý ořech", description: "Velmi vnímavé dřevo, které vyžaduje čaroděje s čistým svědomím a silnou intuicí. Ztrácí sílu, pokud je jeho vlastník neupřímný sám k sobě." },
-      { name: "Červený dub", description: "Hůlka rychlých reakcí a bystré mysli, ideální pro kouzelníky se sklony k soubojům a originalitě. Vyžaduje hbitého a přizpůsobivého majitele." },
-      { name: "Dřín", description: "Zlomyslné a hravé dřevo, vhodné pro čaroděje se smyslem pro humor a důvtip. Odmítá neverbální kouzla a je velmi hlučné." },
-      { name: "Eben", description: "Temné a mocné dřevo pro silné individuality, které se drží svých přesvědčení. Výborné pro přeměňování a bojovou magii." },
-      { name: "Habr", description: "Věrná hůlka pro čaroděje s jedinou vášní nebo vizí, které se zcela oddají. Rychle přebírá morálku i styl svého majitele." },
-      { name: "Hloh", description: "Silné a rozporuplné dřevo, vhodné jak pro léčení, tak pro kletby. Vyžaduje zkušeného čaroděje, jinak může být nebezpečné." },
-      { name: "Hrušeň", description: "Zlatavé dřevo pro šlechetné a přívětivé duše, které si zachovává svou krásu a sílu po dlouhá léta. Nikdy nebyla spojena s černou magií." },
-      { name: "Jabloň", description: "Láska a harmonie. Ideální pro kouzla spojená s emocemi a vztahy." },
-      { name: "Jasan", description: "Spojení světů. Výborné pro věštby a komunikaci s duchy." },
-      { name: "Javor", description: "Rovnováha a stabilita. Univerzální dřevo vhodné pro mnoho typů kouzel." },
-      { name: "Jedle", description: "Věčný život a regenerace. Specializace na léčivá a omlazující kouzla." },
-      { name: "Jeřáb", description: "Ochrana před zlem. Tradiční ochranné dřevo proti temným silám." },
-      { name: "Jilm", description: "Dignita a síla charakteru. Vybírá si čaroděje s pevnými zásadami." },
-      { name: "Kaštan", description: "Spravedlnost a pravda. Oblíbené u soudců a vyšetřovatelů." },
-      { name: "Lípa stříbřitá", description: "Komunikace a výmluvnost. Ideální pro čaroděje pracující s lidmi." },
-      { name: "Líska", description: "Moudrost a divokost. Spojení s přírodní magií a starými znalostmi." },
-      { name: "Modřín", description: "Odvaha a noví začátky. Podporuje průkopnické čaroděje." },
-      { name: "Ořech", description: "Inteligence a inovace. Vybírá si vynálezce a teoretiky magie." },
-      { name: "Růže", description: "Láska a krása. Ideální pro esteticky založené čaroděje." },
-      { name: "Smrk", description: "Odolnost a přežití. Spolehlivé v náročných podmínkách." },
-      { name: "Tis", description: "Smrt a znovuzrození. Mocné dřevo s vazbou na cykly života a smrti." },
-      { name: "Topol", description: "Komunikace a výměna energií. Usnadňuje spojení mezi čaroději." },
-      { name: "Třešeň", description: "Krása a elegance. Ideální pro umělecky založené čaroděje." },
-      { name: "Vrba", description: "Flexibilita a přizpůsobivost. Ohebné jako mysl svého majitele." },
-      { name: "Vinná réva", description: "Radost a oslava. Podporuje pozitivní magii a společenská kouzla." }
+      { 
+        name: "Anglický dub", 
+        shortDescription: "Příjemná hůlka pro dobrý kouzelník",
+        longDescription: "To jsou hůlky vhodné v časech dobrých i zlých, a jsou věrnými přáteli kouzelníků, kteří si je zaslouží. Hůlky z anglického dubu požadují po svých partnerech sílu, odvahu a věrnost. Méně známý je fakt, že majitelé těchto hůlek mívají silnou intuici a často jsou přitahováni přírodní magií obklopující tvory i rostliny."
+      },
+      { 
+        name: "Borovice", 
+        shortDescription: "Hůlka nezávislých a originálních jedinců",
+        longDescription: "Hůlka vyrobená z rovnovláknitého dřeva borovice si vždy vybírá ty, kdož jsou nezávislí a samostatní, a bývají považováni za osamělé, zvláštní a možná i tajemné. Borovicové hůlky chtějí být používány kreativně, a na rozdíl od mnohých se bez protestů podvolí novým metodám a zaklínadlům. Mnoho hůlkařů tvrdí, že borovicové hůlky vyhledávají majitele předurčené se dožít vysokého věku."
+      },
+      { 
+        name: "Buk", 
+        shortDescription: "Elegantní a náročná hůlka pro moudré čaroděje",
+        longDescription: "Správný protějšek bukové hůlky bude, pokud mladý, tak na svůj věk moudřejší, pokud dospělý, pak bohatý v porozumění a zkušenostech. Bukové hůlky velmi málo slouží omezeným a netolerantním. Pokud však buková hůlka najde toho správného majitele, je schopná jemnosti a umění, které lze velmi zřídka nalézt u jakéhokoliv jiného dřeva."
+      },
+      { 
+        name: "Cedr", 
+        shortDescription: "Silná a loajální hůlka pro důvtipné osobnosti",
+        longDescription: "Cedrová hůlka najde dokonalý domov právě tam, kde je důvtip a postřeh. Čarodějka nebo čaroděj, kteří byli vybráni hůlkou z cedru, v sobě mají potenciál být nebezpečnými protivníky, což často bývá nepříjemným překvapením pro ty, kteří je lehkomyslně vyzvali k souboji."
+      },
+      { 
+        name: "Cesmína", 
+        shortDescription: "Vzácná ochranářská hůlka pro vznětlivé jedince",
+        longDescription: "Cesmína je jedním z vzácnějších hůlkových dřev; jakožto odjakživa považována za ochranářskou, cesmínová hůlka nejraději pracuje s těmi, co bývají vznětliví a mohou potřebovat pomoc při přemáhání hněvu. Zároveň si však vybírají i ty, kteří jsou namočeni v nějakém nebezpečném a často duchovním hledání."
+      },
+      { 
+        name: "Cypřiš", 
+        shortDescription: "Šlechetná hůlka spojená s urozeností",
+        longDescription: "Cypřišové hůlky jsou spojovány s urozeností. Hůlky z cypřiše nalézají své partnery v statečných, troufalých a sebeobětavých – v těch, kdo se nebojí čelit stínům v myslích svých i ostatních."
+      },
+      { 
+        name: "Černý bez", 
+        shortDescription: "Nejneobvyklejší hůlkové dřevo s velmi silnou magií",
+        longDescription: "Je to snad nejneobvyklejší hůlkové dřevo, navíc se o něm říká, že přináší smůlu, a hůlky z něho vyrobené lze velmi těžko ovládnout. Má v sobě velmi silnou magii, ale odmítá zůstat s kýmkoliv, kdo není ve své společnosti nadřazený. Pouze pozoruhodní a výjimeční čarodějové si dokáží bezovou hůlku udržet po delší dobu."
+      },
+      { 
+        name: "Černý ořech", 
+        shortDescription: "Velmi vnímavé dřevo vyžadující čisté svědomí",
+        longDescription: "Hůlky vyrobené z černého ořechu hledají pána s dobrými instinkty a velkým porozuměním. Má jednu vyslovenou výstřednost, a to že je neobvykle vnímavé vůči vnitřnímu konfliktu, přičemž velmi poklesne jeho síla, pokud se jeho vlastník pokusí o jakýkoliv sebeklam. Nalezne-li upřímného, sebevědomého majitele, stane se z ní jedna z nejvěrnějších a nejpůsobivějších hůlek."
+      },
+      { 
+        name: "Červený dub", 
+        shortDescription: "Ideální partner pro rychlé reakce",
+        longDescription: "O červeném dubu často uslyšíte laickou povídačku, že je spolehlivou známkou horké povahy svého majitele. Ve skutečnosti je ideálním partnerem pro hůlku z červeného dubu ten, kdož oplývá neobvykle rychlými reakcemi, což z ní činí perfektní hůlku pro kouzelnické souboje. Mistr hůlky z červeného dubu má rychlé pohyby, je bystrý a přizpůsobivý."
+      }
     ];
 
     const cores = [
