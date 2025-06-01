@@ -125,15 +125,164 @@ export default function ChatRoom() {
     staleTime: 0, // Always consider data stale
   });
 
-  // Filter only alive characters (not in cemetery) and exclude system characters
-  const filteredCharacters = allUserCharacters.filter((char: any) => {
-    const isAlive = !char.deathDate;
-    const isNotSystem = !char.isSystem;
-    console.log(`Character ${char.firstName} ${char.lastName}: alive=${isAlive}, notSystem=${isNotSystem}, deathDate=${char.deathDate}, isSystem=${char.isSystem}`);
-    return isAlive && isNotSystem;
+  // Fetch character's spells - ALWAYS called, enabled conditionally
+  const { data: characterSpells = [] } = useQuery<any[]>({
+    queryKey: [`/api/characters/${chatCharacter?.id || 0}/spells`],
+    enabled: !!chatCharacter?.id && !!user,
   });
+
+  // ALL useEffect hooks must be here at the top level
   
-  // Sort characters according to user's preferred order
+  // Initialize chat character when entering chat room
+  useEffect(() => {
+    // Filter only alive characters (not in cemetery) and exclude system characters
+    const filteredCharacters = allUserCharacters.filter((char: any) => {
+      const isAlive = !char.deathDate;
+      const isNotSystem = !char.isSystem;
+      return isAlive && isNotSystem;
+    });
+    
+    // Sort characters according to user's preferred order
+    const userCharacters = (() => {
+      if (!user?.characterOrder || !Array.isArray(user.characterOrder)) {
+        return filteredCharacters;
+      }
+      
+      const orderMap = new Map(user.characterOrder.map((id, index) => [id, index]));
+      
+      return [...filteredCharacters].sort((a, b) => {
+        const orderA = orderMap.get(a.id) ?? 999;
+        const orderB = orderMap.get(b.id) ?? 999;
+        return orderA - orderB;
+      });
+    })();
+
+    if (!chatCharacter && userCharacters.length > 0) {
+      // Use first available character
+      const initialCharacter = userCharacters[0];
+      if (initialCharacter) {
+        console.log('Setting initial chat character:', initialCharacter.firstName, initialCharacter.lastName);
+        setChatCharacter(initialCharacter);
+      }
+    }
+  }, [allUserCharacters, chatCharacter, user]);
+
+  // Clear local messages when room changes
+  useEffect(() => {
+    if (currentRoomId) {
+      setLocalMessages([]);
+      // Force refetch of messages for the new room
+      queryClient.invalidateQueries({ 
+        queryKey: ["/api/chat/rooms", currentRoomId, "messages"],
+        exact: true 
+      });
+    }
+  }, [currentRoomId, queryClient]);
+
+  // Update local messages when server messages change
+  useEffect(() => {
+    if (Array.isArray(messages)) {
+      if (messages.length > 0) {
+        console.log("Messages data:", messages);
+        console.log("Messages loading:", messagesLoading);
+        console.log("Current room ID:", currentRoomId);
+        
+        // Sort messages by creation date (newest first for display)
+        const sortedMessages = [...messages].sort(
+          (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+        setLocalMessages(sortedMessages);
+      } else if (!messagesLoading) {
+        // Clear local messages if no messages are returned
+        setLocalMessages([]);
+      }
+    }
+  }, [messages, messagesLoading, currentRoomId]);
+
+  // WebSocket connection setup
+  useEffect(() => {
+    if (!currentRoomId || !user) return;
+
+    const token = localStorage.getItem('ws-token') || Math.random().toString(36).substring(7);
+    localStorage.setItem('ws-token', token);
+
+    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+    const wsUrl = `${protocol}//${window.location.host}/ws?token=${token}`;
+    
+    console.log("Setting up WebSocket connection to:", wsUrl);
+    
+    const newWs = new WebSocket(wsUrl);
+    
+    newWs.onopen = () => {
+      console.log("WebSocket connected");
+      setIsConnected(true);
+      setWs(newWs);
+      
+      // Join the room
+      newWs.send(JSON.stringify({
+        type: 'join-room',
+        roomId: currentRoomId,
+        character: chatCharacter ? {
+          id: chatCharacter.id,
+          firstName: chatCharacter.firstName,
+          middleName: chatCharacter.middleName,
+          lastName: chatCharacter.lastName
+        } : null
+      }));
+    };
+
+    newWs.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        console.log("WebSocket message received:", data);
+        
+        if (data.type === 'new-message') {
+          setLocalMessages(prev => {
+            const messageExists = prev.some(msg => msg.id === data.message.id);
+            if (!messageExists) {
+              return [data.message, ...prev].sort(
+                (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+              );
+            }
+            return prev;
+          });
+        } else if (data.type === 'room-update') {
+          queryClient.invalidateQueries({ queryKey: ["/api/chat/rooms"] });
+        } else if (data.type === 'character-presence') {
+          setPresentCharacters(data.characters || []);
+        }
+      } catch (error) {
+        console.error("Error parsing WebSocket message:", error);
+      }
+    };
+
+    newWs.onclose = () => {
+      console.log("WebSocket disconnected");
+      setIsConnected(false);
+      setWs(null);
+    };
+
+    newWs.onerror = (error) => {
+      console.error("WebSocket error:", error);
+      setIsConnected(false);
+    };
+
+    return () => {
+      if (newWs.readyState === WebSocket.OPEN) {
+        newWs.close();
+      }
+    };
+  }, [currentRoomId, user, chatCharacter, queryClient]);
+
+  // Scroll to bottom when messages change
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [localMessages]);
+
+  // Filter and sort characters - moved to useEffect above
+  const filteredCharacters = allUserCharacters.filter((char: any) => !char.deathDate && !char.isSystem);
   const userCharacters = (() => {
     if (!user?.characterOrder || !Array.isArray(user.characterOrder)) {
       return filteredCharacters;
@@ -152,11 +301,7 @@ export default function ChatRoom() {
   const currentCharacter = chatCharacter;
   const currentRoom = rooms.find(room => room.id === currentRoomId);
 
-  // Fetch character's spells
-  const { data: characterSpells = [] } = useQuery<any[]>({
-    queryKey: [`/api/characters/${currentCharacter?.id}/spells`],
-    enabled: !!currentCharacter?.id,
-  });
+
 
   // Initialize chat character when entering chat room
   useEffect(() => {
