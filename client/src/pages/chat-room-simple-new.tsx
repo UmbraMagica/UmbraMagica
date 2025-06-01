@@ -201,16 +201,14 @@ export default function ChatRoom() {
     allUserCharacters: allUserCharacters.map(c => ({ id: c.id, name: c.firstName + ' ' + c.lastName, deathDate: c.deathDate }))
   });
   
-  // If characters are available but none is selected yet, wait for initialization
+  // Automatically set first character if none is selected
   if (needsCharacter && userCharacters.length > 0 && !chatCharacter) {
+    setChatCharacter(userCharacters[0]);
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <h2 className="text-xl font-semibold mb-2">Načítání postavy...</h2>
           <p className="text-muted-foreground">Inicializuji chatovací postavu.</p>
-          <p className="text-xs text-muted-foreground mt-2">
-            Dostupné postavy: {userCharacters.length}, Role: {user?.role}
-          </p>
         </div>
       </div>
     );
