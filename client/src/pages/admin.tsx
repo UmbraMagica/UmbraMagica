@@ -117,6 +117,7 @@ export default function Admin() {
   });
   const [showInviteCodes, setShowInviteCodes] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
+  const [isHousingManagementCollapsed, setIsHousingManagementCollapsed] = useState(false);
 
   // Chat management state
   const [newCategoryName, setNewCategoryName] = useState("");
@@ -1412,12 +1413,12 @@ export default function Admin() {
 
 
 
-          {/* Uživatelské žádosti */}
+          {/* Žádosti o nové postavy */}
           <Card>
             <CardHeader className="cursor-pointer" onClick={() => setIsCharacterRequestsCollapsed(!isCharacterRequestsCollapsed)}>
               <CardTitle className="text-xl font-semibold text-foreground flex items-center">
                 <UserPlus className="text-blue-400 mr-3 h-5 w-5" />
-                Uživatelské žádosti ({(Array.isArray(characterRequests) ? characterRequests.length : 0) + (Array.isArray(housingRequests) ? housingRequests.length : 0)})
+                Žádosti o nové postavy ({Array.isArray(characterRequests) ? characterRequests.length : 0})
                 {isCharacterRequestsCollapsed ? (
                   <ChevronDown className="ml-auto h-4 w-4" />
                 ) : (
@@ -1474,201 +1475,260 @@ export default function Admin() {
                     </div>
                   ))}
                   
-                  {/* Housing Requests */}
-                  {Array.isArray(housingRequests) && housingRequests.map((request: any) => (
-                    <div key={`house-${request.id}`} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg border-l-4 border-l-green-500">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center">
-                          <Home className="text-white h-5 w-5" />
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <p className="font-medium text-foreground">
-                              {request.character?.firstName} {request.character?.middleName ? `${request.character.middleName} ` : ''}{request.character?.lastName}
-                            </p>
-                            <Badge variant="outline" className="text-xs border-green-500 text-green-600">Bydlení</Badge>
-                          </div>
-                          <p className="text-sm text-muted-foreground">
-                            {request.user?.username} • {request.requestType === 'dormitory' ? 'Ubytovna' : request.requestType === 'shared' ? 'Sdílené bydlení' : request.requestType === 'apartment' ? 'Byt' : request.requestType === 'house' ? 'Dům' : request.requestType === 'mansion' ? 'Sídlo/Vila' : 'Vlastní bydlení'}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            Místo: {request.location} • Požádáno: {new Date(request.createdAt).toLocaleDateString('cs-CZ')}
-                          </p>
-                          {(request.housingName || request.size) && (
-                            <p className="text-xs text-muted-foreground">
-                              {request.housingName && `Název: ${request.housingName}`}
-                              {request.housingName && request.size && ' • '}
-                              {request.size && `Velikost: ${request.size}`}
-                            </p>
-                          )}
-                          {request.description && (
-                            <p className="text-xs text-muted-foreground line-clamp-2">
-                              Popis: {request.description}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => {
-                            setExpandedHousingRequest(request.id);
-                            setHousingFormData({ assignedAddress: '', reviewNote: '', action: 'approve' });
-                          }}
-                          disabled={approveHousingMutation.isPending}
-                          className="text-green-400 hover:text-green-300"
-                        >
-                          Schválit
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => {
-                            setExpandedHousingRequest(request.id);
-                            setHousingFormData({ assignedAddress: '', reviewNote: '', action: 'return' });
-                          }}
-                          disabled={rejectHousingMutation.isPending}
-                          className="text-orange-400 hover:text-orange-300"
-                        >
-                          Vrátit
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => {
-                            setExpandedHousingRequest(request.id);
-                            setHousingFormData({ assignedAddress: '', reviewNote: '', action: 'reject' });
-                          }}
-                          disabled={denyHousingMutation.isPending}
-                          className="text-red-400 hover:text-red-300"
-                        >
-                          Zamítnout
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                  
-                  {Array.isArray(characterRequests) && characterRequests.length === 0 && 
-                   Array.isArray(housingRequests) && housingRequests.length === 0 && (
+                  {Array.isArray(characterRequests) && characterRequests.length === 0 && (
                     <div className="text-center text-muted-foreground py-8">
-                      Žádné čekající žádosti
+                      Žádné čekající žádosti o postavy
                     </div>
                   )}
 
-                  {/* Housing Request Form */}
-                  {expandedHousingRequest && (
-                    <div className="mt-6 p-4 border rounded-lg bg-muted/20">
-                      <h3 className="text-lg font-medium mb-4">
-                        {housingFormData.action === 'approve' && 'Schválit žádost o bydlení'}
-                        {housingFormData.action === 'return' && 'Vrátit žádost k úpravě'}
-                        {housingFormData.action === 'reject' && 'Zamítnout žádost o bydlení'}
-                      </h3>
-                      <div className="space-y-4">
-                        {housingFormData.action === 'approve' && (
-                          <div>
-                            <Label htmlFor="assignedAddress">Přidělená adresa *</Label>
-                            <Input
-                              id="assignedAddress"
-                              value={housingFormData.assignedAddress}
-                              onChange={(e) => setHousingFormData(prev => ({ ...prev, assignedAddress: e.target.value }))}
-                              placeholder="Např. Grimmauld Place 12, Londýn"
-                              required
-                            />
+
+                </div>
+              </CardContent>
+            )}
+          </Card>
+
+          {/* Správa ubytování */}
+          <Card>
+            <CardHeader className="cursor-pointer" onClick={() => setIsHousingManagementCollapsed(!isHousingManagementCollapsed)}>
+              <CardTitle className="text-xl font-semibold text-foreground flex items-center">
+                <Home className="text-green-400 mr-3 h-5 w-5" />
+                Správa ubytování ({Array.isArray(housingRequests) ? housingRequests.length : 0} žádostí)
+                {isHousingManagementCollapsed ? (
+                  <ChevronDown className="ml-auto h-4 w-4" />
+                ) : (
+                  <ChevronUp className="ml-auto h-4 w-4" />
+                )}
+              </CardTitle>
+            </CardHeader>
+
+            {!isHousingManagementCollapsed && (
+              <CardContent>
+                <div className="space-y-3 max-h-96 overflow-y-auto">
+                  {Array.isArray(housingRequests) && housingRequests.map((request: any) => (
+                    <div key={request.id} className="p-4 bg-muted/30 rounded-lg border-l-4 border-l-green-500">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center">
+                            <Home className="text-white h-5 w-5" />
                           </div>
-                        )}
-                        <div>
-                          <Label htmlFor="reviewNote">
-                            {housingFormData.action === 'approve' && 'Poznámka (volitelná)'}
-                            {housingFormData.action === 'return' && 'Důvod vrácení *'}
-                            {housingFormData.action === 'reject' && 'Důvod zamítnutí *'}
-                          </Label>
-                          <Textarea
-                            id="reviewNote"
-                            value={housingFormData.reviewNote}
-                            onChange={(e) => setHousingFormData(prev => ({ ...prev, reviewNote: e.target.value }))}
-                            placeholder={
-                              housingFormData.action === 'approve' 
-                                ? "Volitelná poznámka pro žadatele"
-                                : "Vysvětlete důvod zamítnutí/vrácení"
-                            }
-                            required={housingFormData.action !== 'approve'}
-                            rows={3}
-                          />
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <p className="font-medium text-foreground">
+                                {request.character?.firstName} {request.character?.middleName ? `${request.character.middleName} ` : ''}{request.character?.lastName}
+                              </p>
+                              <Badge variant="outline" className={`text-xs ${
+                                request.requestType === 'dormitory' ? 'border-purple-500 text-purple-400' :
+                                request.requestType === 'shared' ? 'border-blue-500 text-blue-400' :
+                                request.requestType === 'apartment' ? 'border-green-500 text-green-400' :
+                                request.requestType === 'house' ? 'border-yellow-500 text-yellow-400' :
+                                request.requestType === 'mansion' ? 'border-orange-500 text-orange-400' :
+                                'border-gray-500 text-gray-400'
+                              }`}>
+                                {request.requestType === 'dormitory' ? 'Ubytovna' : 
+                                 request.requestType === 'shared' ? 'Sdílené' : 
+                                 request.requestType === 'apartment' ? 'Byt' : 
+                                 request.requestType === 'house' ? 'Dům' : 
+                                 request.requestType === 'mansion' ? 'Sídlo' : 'Vlastní'}
+                              </Badge>
+                            </div>
+                            <p className="text-sm text-muted-foreground">
+                              Uživatel: {request.user?.username} • Místo: {request.location}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              Požádáno: {new Date(request.createdAt).toLocaleDateString('cs-CZ', { 
+                                day: '2-digit', 
+                                month: '2-digit', 
+                                year: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              })}
+                            </p>
+                            {(request.housingName || request.size) && (
+                              <p className="text-xs text-muted-foreground">
+                                {request.housingName && `Název: ${request.housingName}`}
+                                {request.housingName && request.size && ' • '}
+                                {request.size && `Velikost: ${request.size}`}
+                              </p>
+                            )}
+                            {request.description && (
+                              <p className="text-xs text-muted-foreground line-clamp-2 mt-1">
+                                Popis: {request.description}
+                              </p>
+                            )}
+                          </div>
                         </div>
-                        <div className="flex justify-end space-x-2">
+                        <div className="flex items-center space-x-2">
                           <Button
                             variant="outline"
+                            size="sm"
                             onClick={() => {
-                              setExpandedHousingRequest(null);
-                              setHousingFormData({ assignedAddress: '', reviewNote: '', action: '' });
+                              setExpandedHousingRequest(request.id);
+                              setHousingFormData({ assignedAddress: '', reviewNote: '', action: 'approve' });
                             }}
+                            disabled={approveHousingMutation.isPending}
+                            className="text-green-400 hover:text-green-300"
+                            title="Schválit žádost o bydlení"
                           >
-                            Zrušit
+                            Schválit
                           </Button>
                           <Button
+                            variant="outline"
+                            size="sm"
                             onClick={() => {
-                              if (housingFormData.action === 'approve') {
-                                if (!housingFormData.assignedAddress) {
-                                  toast({
-                                    title: "Chyba",
-                                    description: "Přidělená adresa je povinná",
-                                    variant: "destructive",
-                                  });
-                                  return;
-                                }
-                                approveHousingMutation.mutate({
-                                  requestId: expandedHousingRequest,
-                                  assignedAddress: housingFormData.assignedAddress,
-                                  reviewNote: housingFormData.reviewNote
-                                });
-                              } else if (housingFormData.action === 'return') {
-                                if (!housingFormData.reviewNote) {
-                                  toast({
-                                    title: "Chyba",
-                                    description: "Důvod vrácení je povinný",
-                                    variant: "destructive",
-                                  });
-                                  return;
-                                }
-                                rejectHousingMutation.mutate({
-                                  requestId: expandedHousingRequest,
-                                  reviewNote: housingFormData.reviewNote
-                                });
-                              } else if (housingFormData.action === 'reject') {
-                                if (!housingFormData.reviewNote) {
-                                  toast({
-                                    title: "Chyba",
-                                    description: "Důvod zamítnutí je povinný",
-                                    variant: "destructive",
-                                  });
-                                  return;
-                                }
-                                denyHousingMutation.mutate({
-                                  requestId: expandedHousingRequest,
-                                  reviewNote: housingFormData.reviewNote
-                                });
-                              }
+                              setExpandedHousingRequest(request.id);
+                              setHousingFormData({ assignedAddress: '', reviewNote: '', action: 'return' });
                             }}
-                            disabled={
-                              approveHousingMutation.isPending || 
-                              rejectHousingMutation.isPending || 
-                              denyHousingMutation.isPending
-                            }
-                            className={
-                              housingFormData.action === 'approve' 
-                                ? "bg-green-600 hover:bg-green-700"
-                                : housingFormData.action === 'return'
-                                ? "bg-orange-600 hover:bg-orange-700"
-                                : "bg-red-600 hover:bg-red-700"
-                            }
+                            disabled={rejectHousingMutation.isPending}
+                            className="text-orange-400 hover:text-orange-300"
+                            title="Vrátit žádost k úpravě"
                           >
-                            {housingFormData.action === 'approve' && 'Schválit'}
-                            {housingFormData.action === 'return' && 'Vrátit'}
-                            {housingFormData.action === 'reject' && 'Zamítnout'}
+                            Vrátit
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              setExpandedHousingRequest(request.id);
+                              setHousingFormData({ assignedAddress: '', reviewNote: '', action: 'reject' });
+                            }}
+                            disabled={denyHousingMutation.isPending}
+                            className="text-red-400 hover:text-red-300"
+                            title="Zamítnout žádost o bydlení"
+                          >
+                            Zamítnout
                           </Button>
                         </div>
                       </div>
+
+                      {/* Expandable Housing Request Form */}
+                      {expandedHousingRequest === request.id && (
+                        <div className="mt-4 p-4 border rounded-lg bg-muted/20">
+                          <h3 className="text-lg font-medium mb-4">
+                            {housingFormData.action === 'approve' && 'Schválit žádost o bydlení'}
+                            {housingFormData.action === 'return' && 'Vrátit žádost k úpravě'}
+                            {housingFormData.action === 'reject' && 'Zamítnout žádost o bydlení'}
+                          </h3>
+                          <div className="space-y-4">
+                            {housingFormData.action === 'approve' && (
+                              <div>
+                                <Label htmlFor="assignedAddress">Přidělená adresa *</Label>
+                                <Input
+                                  id="assignedAddress"
+                                  value={housingFormData.assignedAddress}
+                                  onChange={(e) => setHousingFormData(prev => ({ ...prev, assignedAddress: e.target.value }))}
+                                  placeholder={
+                                    request.requestType === 'dormitory' ? 'Např. Bradavice - Pokoj 42A' :
+                                    request.requestType === 'apartment' ? 'Např. Grimmauld Place 12, Londýn' :
+                                    request.requestType === 'house' ? 'Např. Godrikův důl 4' :
+                                    request.requestType === 'mansion' ? 'Např. Malfoy Manor, Wiltshire' :
+                                    'Např. adresa bydlení'
+                                  }
+                                  required
+                                />
+                              </div>
+                            )}
+                            <div>
+                              <Label htmlFor="reviewNote">
+                                {housingFormData.action === 'approve' && 'Poznámka (volitelná)'}
+                                {housingFormData.action === 'return' && 'Důvod vrácení *'}
+                                {housingFormData.action === 'reject' && 'Důvod zamítnutí *'}
+                              </Label>
+                              <Textarea
+                                id="reviewNote"
+                                value={housingFormData.reviewNote}
+                                onChange={(e) => setHousingFormData(prev => ({ ...prev, reviewNote: e.target.value }))}
+                                placeholder={
+                                  housingFormData.action === 'approve' 
+                                    ? "Volitelná poznámka pro žadatele (bude odeslána sovou)"
+                                    : "Vysvětlete důvod zamítnutí/vrácení (bude odesláno sovou)"
+                                }
+                                required={housingFormData.action !== 'approve'}
+                                rows={3}
+                              />
+                            </div>
+                            <div className="flex justify-end space-x-2">
+                              <Button
+                                variant="outline"
+                                onClick={() => {
+                                  setExpandedHousingRequest(null);
+                                  setHousingFormData({ assignedAddress: '', reviewNote: '', action: '' });
+                                }}
+                              >
+                                Zrušit
+                              </Button>
+                              <Button
+                                onClick={() => {
+                                  if (housingFormData.action === 'approve') {
+                                    if (!housingFormData.assignedAddress) {
+                                      toast({
+                                        title: "Chyba",
+                                        description: "Přidělená adresa je povinná",
+                                        variant: "destructive",
+                                      });
+                                      return;
+                                    }
+                                    approveHousingMutation.mutate({
+                                      requestId: expandedHousingRequest,
+                                      assignedAddress: housingFormData.assignedAddress,
+                                      reviewNote: housingFormData.reviewNote
+                                    });
+                                  } else if (housingFormData.action === 'return') {
+                                    if (!housingFormData.reviewNote) {
+                                      toast({
+                                        title: "Chyba",
+                                        description: "Důvod vrácení je povinný",
+                                        variant: "destructive",
+                                      });
+                                      return;
+                                    }
+                                    rejectHousingMutation.mutate({
+                                      requestId: expandedHousingRequest,
+                                      reviewNote: housingFormData.reviewNote
+                                    });
+                                  } else if (housingFormData.action === 'reject') {
+                                    if (!housingFormData.reviewNote) {
+                                      toast({
+                                        title: "Chyba",
+                                        description: "Důvod zamítnutí je povinný",
+                                        variant: "destructive",
+                                      });
+                                      return;
+                                    }
+                                    denyHousingMutation.mutate({
+                                      requestId: expandedHousingRequest,
+                                      reviewNote: housingFormData.reviewNote
+                                    });
+                                  }
+                                }}
+                                disabled={
+                                  approveHousingMutation.isPending || 
+                                  rejectHousingMutation.isPending || 
+                                  denyHousingMutation.isPending
+                                }
+                                className={
+                                  housingFormData.action === 'approve' 
+                                    ? "bg-green-600 hover:bg-green-700"
+                                    : housingFormData.action === 'return'
+                                    ? "bg-orange-600 hover:bg-orange-700"
+                                    : "bg-red-600 hover:bg-red-700"
+                                }
+                              >
+                                {housingFormData.action === 'approve' && 'Schválit a odeslat sovu'}
+                                {housingFormData.action === 'return' && 'Vrátit a odeslat sovu'}
+                                {housingFormData.action === 'reject' && 'Zamítnout a odeslat sovu'}
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                  
+                  {Array.isArray(housingRequests) && housingRequests.length === 0 && (
+                    <div className="text-center text-muted-foreground py-8">
+                      <Home className="h-12 w-12 mx-auto mb-3 text-muted-foreground/50" />
+                      <p>Žádné čekající žádosti o bydlení</p>
+                      <p className="text-sm mt-1">Všechny ubytovací žádosti byly vyřízeny</p>
                     </div>
                   )}
                 </div>
