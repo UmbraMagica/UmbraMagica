@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Wand2, Sparkles, ArrowLeft, Eye, EyeOff, Settings, Shuffle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
+import { CharacterAvatar } from "@/components/CharacterAvatar";
 import type { Wand } from "@shared/schema";
 
 export default function Ollivanders() {
@@ -230,31 +231,16 @@ export default function Ollivanders() {
           </h1>
         </div>
         
-        {/* Character Selector */}
-        {userCharacters.length > 1 && (
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">Postava:</span>
-            <Select 
-              value={selectedCharacter?.id?.toString() || activeCharacter?.id?.toString() || ""} 
-              onValueChange={(value) => {
-                const character = userCharacters.find((char: any) => char.id === parseInt(value));
-                if (character) {
-                  setSelectedCharacter(character);
-                }
-              }}
-            >
-              <SelectTrigger className="w-48">
-                <SelectValue placeholder="Vyberte postavu" />
-              </SelectTrigger>
-              <SelectContent>
-                {userCharacters.map((character: any) => (
-                  <SelectItem key={character.id} value={character.id.toString()}>
-                    {character.firstName} {character.lastName}
-                    {character.isActive && " (aktivní)"}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+        {/* Character Info - shows currently selected character from main navbar */}
+        {mainCharacter && (
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <span>Postava:</span>
+            <div className="flex items-center gap-2">
+              <CharacterAvatar character={mainCharacter} size="sm" />
+              <span className="font-medium text-foreground">
+                {mainCharacter.firstName} {mainCharacter.lastName}
+              </span>
+            </div>
           </div>
         )}
       </div>
