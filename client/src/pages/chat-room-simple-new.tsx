@@ -150,13 +150,13 @@ export default function ChatRoom() {
   // Initialize chat character when entering chat room
   useEffect(() => {
     if (!chatCharacter && userCharacters.length > 0) {
-      // Use main character if available and alive, otherwise first available character
-      const initialCharacter = (mainCharacter && !mainCharacter.deathDate) ? mainCharacter : userCharacters[0];
+      // Use first available character
+      const initialCharacter = userCharacters[0];
       if (initialCharacter) {
         setChatCharacter(initialCharacter);
       }
     }
-  }, [userCharacters, mainCharacter, chatCharacter]);
+  }, [userCharacters, chatCharacter]);
 
   // Fetch character's spells
   const { data: characterSpells = [] } = useQuery<any[]>({
