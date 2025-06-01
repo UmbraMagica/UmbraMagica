@@ -745,7 +745,7 @@ export default function Home() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => setLocation(`/character/${currentDisplayedCharacter?.id}/edit`)}
+                      onClick={() => setLocation(`/characters/${currentDisplayedCharacter?.id}/edit`)}
                       className="text-muted-foreground hover:text-foreground"
                       disabled={!currentDisplayedCharacter?.id}
                     >
