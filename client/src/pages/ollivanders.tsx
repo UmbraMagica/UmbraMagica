@@ -37,8 +37,11 @@ export default function Ollivanders() {
   });
 
   // Get user's alive characters and find the active one
-  const userCharacters = allCharacters.filter((char: any) => !char.deathDate && !char.isSystem);
+  const userCharacters = Array.isArray(allCharacters) ? allCharacters.filter((char: any) => !char.deathDate && !char.isSystem) : [];
   const mainCharacter = userCharacters.find((char: any) => char.isActive) || userCharacters[0];
+
+  console.log('Ollivanders - User characters:', userCharacters);
+  console.log('Ollivanders - Main character:', mainCharacter);
 
   // Get character's current wand
   const { data: characterWand, isLoading: wandLoading } = useQuery<Wand | null>({
