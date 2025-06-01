@@ -1666,6 +1666,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get character's wand
+  app.get("/api/characters/:id/wand", requireAuth, async (req, res) => {
+    try {
+      const characterId = parseInt(req.params.id);
+      
+      // Verify character belongs to user or user is admin
+      const character = await storage.getCharacter(characterId);
+      if (!character || (character.userId !== req.session.userId! && req.session.userRole !== 'admin')) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+
+      const wand = await storage.getCharacterWand(characterId);
+      res.json(wand || null);
+    } catch (error) {
+      console.error("Error fetching character's wand:", error);
+      res.status(500).json({ message: "Failed to fetch character's wand" });
+    }
+  });
+
   // Get wand components for selection
   app.get("/api/wand-components", requireAuth, async (req, res) => {
     try {
