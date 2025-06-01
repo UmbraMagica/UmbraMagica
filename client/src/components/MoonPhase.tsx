@@ -39,8 +39,20 @@ export function MoonPhase({ gameDate }: MoonPhaseProps) {
     "1926-12-05"
   ];
 
-  function calculateMoonPhase(currentDate: string): { phase: string; description: string; icon: JSX.Element } {
+  // Rovnodennosti a slunovraty v roce 1926
+  const seasonalEvents1926 = [
+    { date: "1926-03-21", name: "Jarní rovnodennost", emoji: "🌱" },
+    { date: "1926-06-21", name: "Letní slunovrat", emoji: "☀️" },
+    { date: "1926-09-23", name: "Podzimní rovnodennost", emoji: "🍂" },
+    { date: "1926-12-22", name: "Zimní slunovrat", emoji: "❄️" }
+  ];
+
+  function calculateMoonPhase(currentDate: string): { phase: string; description: string; icon: JSX.Element; seasonalEvent?: { name: string; emoji: string } } {
     const current = new Date(currentDate);
+    
+    // Zkontroluj, zda není rovnodennost nebo slunovrat
+    const currentDateString = currentDate;
+    const seasonalEvent = seasonalEvents1926.find(event => event.date === currentDateString);
     
     // Najdi nejbližší úplněk a nov
     let closestFullMoon = null;
@@ -74,13 +86,15 @@ export function MoonPhase({ gameDate }: MoonPhaseProps) {
       return {
         phase: "Úplněk",
         description: "Měsíc je v úplňku",
-        icon: <Circle className="h-6 w-6 fill-yellow-300 text-yellow-300" />
+        icon: <Circle className="h-6 w-6 fill-yellow-300 text-yellow-300" />,
+        seasonalEvent
       };
     } else if (daysDiffNewMoon === 0) {
       return {
         phase: "Nov",
         description: "Měsíc je v novu",
-        icon: <Circle className="h-6 w-6 text-gray-600" />
+        icon: <Circle className="h-6 w-6 text-gray-600" />,
+        seasonalEvent
       };
     } else if (daysDiffFullMoon < daysDiffNewMoon) {
       // Blíže k úplňku
@@ -95,7 +109,8 @@ export function MoonPhase({ gameDate }: MoonPhaseProps) {
               <div className="absolute inset-0 overflow-hidden rounded-full">
                 <div className="h-6 w-3 bg-yellow-300 rounded-l-full"></div>
               </div>
-            </div>
+            </div>,
+            seasonalEvent
           };
         } else {
           return {
@@ -106,7 +121,8 @@ export function MoonPhase({ gameDate }: MoonPhaseProps) {
               <div className="absolute inset-0 overflow-hidden rounded-full">
                 <div className="h-6 w-1 bg-yellow-300 rounded-l-full ml-1"></div>
               </div>
-            </div>
+            </div>,
+            seasonalEvent
           };
         }
       } else {
@@ -120,7 +136,8 @@ export function MoonPhase({ gameDate }: MoonPhaseProps) {
               <div className="absolute inset-0 overflow-hidden rounded-full">
                 <div className="h-6 w-3 bg-yellow-300 rounded-r-full ml-3"></div>
               </div>
-            </div>
+            </div>,
+            seasonalEvent
           };
         } else {
           return {
@@ -131,7 +148,8 @@ export function MoonPhase({ gameDate }: MoonPhaseProps) {
               <div className="absolute inset-0 overflow-hidden rounded-full">
                 <div className="h-6 w-1 bg-yellow-300 rounded-r-full ml-5"></div>
               </div>
-            </div>
+            </div>,
+            seasonalEvent
           };
         }
       }
@@ -147,7 +165,8 @@ export function MoonPhase({ gameDate }: MoonPhaseProps) {
             <div className="absolute inset-0 overflow-hidden rounded-full">
               <div className="h-6 w-1 bg-yellow-300 rounded-r-full ml-5"></div>
             </div>
-          </div>
+          </div>,
+          seasonalEvent
         };
       } else {
         // Po novu (dorůstající)
@@ -159,7 +178,8 @@ export function MoonPhase({ gameDate }: MoonPhaseProps) {
             <div className="absolute inset-0 overflow-hidden rounded-full">
               <div className="h-6 w-1 bg-yellow-300 rounded-l-full ml-1"></div>
             </div>
-          </div>
+          </div>,
+          seasonalEvent
         };
       }
     }
