@@ -1284,20 +1284,20 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllWandComponents(): Promise<{
-    woods: { name: string; shortDescription: string; longDescription: string }[];
-    cores: { name: string; category: string; description: string }[];
-    lengths: { name: string; description: string }[];
-    flexibilities: { name: string; description: string }[];
+    woods: { name: string; shortDescription: string; longDescription: string; availableForRandom?: boolean }[];
+    cores: { name: string; category: string; description: string; availableForRandom?: boolean }[];
+    lengths: { name: string; description: string; availableForRandom?: boolean }[];
+    flexibilities: { name: string; description: string; availableForRandom?: boolean }[];
   }> {
     // Try to load from database first
     try {
       const [configRow] = await db.select().from(configuration).where(eq(configuration.key, 'wand_components'));
       if (configRow && configRow.value) {
         this.storedWandComponents = configRow.value as {
-          woods: { name: string; shortDescription: string; longDescription: string }[];
-          cores: { name: string; category: string; description: string }[];
-          lengths: { name: string; description: string }[];
-          flexibilities: { name: string; description: string }[];
+          woods: { name: string; shortDescription: string; longDescription: string; availableForRandom?: boolean }[];
+          cores: { name: string; category: string; description: string; availableForRandom?: boolean }[];
+          lengths: { name: string; description: string; availableForRandom?: boolean }[];
+          flexibilities: { name: string; description: string; availableForRandom?: boolean }[];
         };
         return this.storedWandComponents;
       }
@@ -1325,10 +1325,10 @@ export class DatabaseStorage implements IStorage {
   }
 
   private getDefaultWandComponents(): {
-    woods: { name: string; shortDescription: string; longDescription: string }[];
-    cores: { name: string; category: string; description: string }[];
-    lengths: { name: string; description: string }[];
-    flexibilities: { name: string; description: string }[];
+    woods: { name: string; shortDescription: string; longDescription: string; availableForRandom?: boolean }[];
+    cores: { name: string; category: string; description: string; availableForRandom?: boolean }[];
+    lengths: { name: string; description: string; availableForRandom?: boolean }[];
+    flexibilities: { name: string; description: string; availableForRandom?: boolean }[];
   } {
     const woods = [
       { 
@@ -1629,10 +1629,10 @@ export class DatabaseStorage implements IStorage {
   } | null = null;
 
   async updateWandComponents(components: {
-    woods: { name: string; shortDescription: string; longDescription: string }[];
-    cores: { name: string; category: string; description: string }[];
-    lengths: { name: string; description: string }[];
-    flexibilities: { name: string; description: string }[];
+    woods: { name: string; shortDescription: string; longDescription: string; availableForRandom?: boolean }[];
+    cores: { name: string; category: string; description: string; availableForRandom?: boolean }[];
+    lengths: { name: string; description: string; availableForRandom?: boolean }[];
+    flexibilities: { name: string; description: string; availableForRandom?: boolean }[];
   }): Promise<void> {
     try {
       // Store components in database
