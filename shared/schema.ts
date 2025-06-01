@@ -240,6 +240,7 @@ export const spells = pgTable("spells", {
   category: varchar("category", { length: 50 }).notNull(), // "Kouzelné formule", "Bojová kouzla", atd.
   type: varchar("type", { length: 50 }).notNull(), // "Základní", "Pokročilé", "Mistrské"
   targetType: varchar("target_type", { length: 20 }).default("self").notNull(), // "self", "other", "object", "both"
+  isDefault: boolean("is_default").default(false).notNull(), // Automatically assigned to new characters
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

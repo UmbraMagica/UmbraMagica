@@ -363,15 +363,7 @@ export default function Registration() {
                   </p>
                 </div>
 
-                <div className="bg-muted/20 rounded-lg p-4 border border-border/50">
-                  <h4 className="text-sm font-medium text-accent mb-2">
-                    <User className="inline h-4 w-4 mr-2" />
-                    Budoucí rozšíření
-                  </h4>
-                  <p className="text-xs text-muted-foreground">
-                    Profilový obrázek a další vlastnosti postavy budou přidány v budoucích verzích.
-                  </p>
-                </div>
+
 
                 <div className="flex space-x-3">
                   <Button

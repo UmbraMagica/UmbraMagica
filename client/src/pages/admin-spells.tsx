@@ -22,7 +22,8 @@ export default function AdminSpells() {
     effect: "",
     category: "",
     type: "",
-    targetType: "self" as "self" | "other" | "object" | "both"
+    targetType: "self" as "self" | "other" | "object" | "both",
+    isDefault: false
   });
 
   // Filters and search
@@ -177,7 +178,8 @@ export default function AdminSpells() {
       effect: "",
       category: "",
       type: "",
-      targetType: "self"
+      targetType: "self",
+      isDefault: false
     });
   };
 

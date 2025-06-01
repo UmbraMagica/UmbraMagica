@@ -68,6 +68,7 @@ export function useAuth() {
     onSuccess: (data) => {
       queryClient.setQueryData(["/api/auth/user"], data);
       queryClient.invalidateQueries();
+      setLocation("/");
     },
   });
 
