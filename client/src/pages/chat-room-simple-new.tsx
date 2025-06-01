@@ -126,7 +126,12 @@ export default function ChatRoom() {
   });
 
   // Filter only alive characters (not in cemetery) and exclude system characters
-  const filteredCharacters = allUserCharacters.filter((char: any) => !char.deathDate && !char.isSystem);
+  const filteredCharacters = allUserCharacters.filter((char: any) => {
+    const isAlive = !char.deathDate;
+    const isNotSystem = !char.isSystem;
+    console.log(`Character ${char.firstName} ${char.lastName}: alive=${isAlive}, notSystem=${isNotSystem}, deathDate=${char.deathDate}, isSystem=${char.isSystem}`);
+    return isAlive && isNotSystem;
+  });
   
   // Sort characters according to user's preferred order
   const userCharacters = (() => {
