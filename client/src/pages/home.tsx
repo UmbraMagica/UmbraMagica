@@ -51,9 +51,17 @@ interface OnlineCharacter {
 export default function Home() {
   const { user, logout } = useAuth();
   const { toast } = useToast();
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
   const [displayedCharacter, setDisplayedCharacter] = useState<any>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const handleHomeClick = () => {
+    if (location === '/') {
+      window.location.reload();
+    } else {
+      setLocation('/');
+    }
+  };
 
   const { data: onlineCharacters = [] } = useQuery<OnlineCharacter[]>({
     queryKey: ["/api/characters/online"],
@@ -145,7 +153,7 @@ export default function Home() {
               
               {/* Desktop Navigation */}
               <div className="hidden md:flex items-center space-x-2">
-                <Button variant="ghost" className="text-foreground hover:text-accent" onClick={() => setLocation('/')}>
+                <Button variant="ghost" className="text-foreground hover:text-accent" onClick={handleHomeClick}>
                   <HomeIcon className="mr-2 h-4 w-4" />
                   Domov
                 </Button>
