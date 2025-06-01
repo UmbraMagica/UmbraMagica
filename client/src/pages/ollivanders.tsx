@@ -320,9 +320,9 @@ export default function Ollivanders() {
                           <SelectContent>
                             {wandComponents.woods?.map((wood: any) => (
                               <SelectItem key={wood.name} value={wood.name}>
-                                <div>
+                                <div className="w-full max-w-xs">
                                   <div className="font-medium">{wood.name}</div>
-                                  <div className="text-xs text-muted-foreground">{wood.description}</div>
+                                  <div className="text-xs text-muted-foreground whitespace-normal break-words">{wood.description}</div>
                                 </div>
                               </SelectItem>
                             ))}
@@ -340,9 +340,9 @@ export default function Ollivanders() {
                           <SelectContent>
                             {wandComponents.cores?.map((core: any) => (
                               <SelectItem key={core.name} value={core.name}>
-                                <div className="flex flex-col">
-                                  <span>{core.name}</span>
-                                  <div className="text-xs text-muted-foreground whitespace-pre-line">
+                                <div className="w-full max-w-xs">
+                                  <div className="font-medium">{core.name}</div>
+                                  <div className="text-xs text-muted-foreground whitespace-normal break-words">
                                     <span className="font-medium">{core.category}</span>
                                     <br />
                                     {core.description}
@@ -364,10 +364,10 @@ export default function Ollivanders() {
                           <SelectContent>
                             {wandComponents.lengths?.map((length: any) => (
                               <SelectItem key={typeof length === 'string' ? length : length.name} value={typeof length === 'string' ? length : length.name}>
-                                <div className="flex flex-col">
-                                  <span>{typeof length === 'string' ? length : length.name}</span>
+                                <div className="w-full max-w-xs">
+                                  <div className="font-medium">{typeof length === 'string' ? length : length.name}</div>
                                   {typeof length === 'object' && length.description && (
-                                    <span className="text-xs text-muted-foreground">{length.description}</span>
+                                    <div className="text-xs text-muted-foreground whitespace-normal break-words">{length.description}</div>
                                   )}
                                 </div>
                               </SelectItem>
@@ -386,10 +386,10 @@ export default function Ollivanders() {
                           <SelectContent>
                             {wandComponents.flexibilities?.map((flexibility: any) => (
                               <SelectItem key={typeof flexibility === 'string' ? flexibility : flexibility.name} value={typeof flexibility === 'string' ? flexibility : flexibility.name}>
-                                <div className="flex flex-col">
-                                  <span>{typeof flexibility === 'string' ? flexibility : flexibility.name}</span>
+                                <div className="w-full max-w-xs">
+                                  <div className="font-medium">{typeof flexibility === 'string' ? flexibility : flexibility.name}</div>
                                   {typeof flexibility === 'object' && flexibility.description && (
-                                    <span className="text-xs text-muted-foreground">{flexibility.description}</span>
+                                    <div className="text-xs text-muted-foreground whitespace-normal break-words">{flexibility.description}</div>
                                   )}
                                 </div>
                               </SelectItem>
