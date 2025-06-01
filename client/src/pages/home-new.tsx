@@ -101,7 +101,7 @@ export default function Home() {
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-4">
               <div className="text-xl font-bold text-accent">RPG Realm</div>
-              <div className="hidden sm:flex items-center space-x-2">
+              <div className="hidden md:flex items-center space-x-2">
                 <Button variant="ghost" className="text-foreground hover:text-accent" onClick={() => setLocation('/')}>
                   <HomeIcon className="mr-2 h-4 w-4" />
                   Domov
@@ -130,7 +130,7 @@ export default function Home() {
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <div className="hidden sm:flex items-center space-x-4">
+              <div className="hidden md:flex items-center space-x-4">
                 <div className="text-sm text-muted-foreground">{user?.username}</div>
                 {user?.role === 'admin' && (
                   <div className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-amber-500/20 text-amber-400">
@@ -152,7 +152,7 @@ export default function Home() {
               </div>
               
               {/* Mobile menu button */}
-              <div className="sm:hidden">
+              <div className="md:hidden">
                 <Button
                   variant="ghost"
                   size="sm"
@@ -168,7 +168,7 @@ export default function Home() {
         
         {/* Mobile menu dropdown */}
         {mobileMenuOpen && (
-          <div className="sm:hidden border-t border-border bg-card">
+          <div className="md:hidden border-t border-border bg-card">
             <div className="px-4 py-2 space-y-1">
               <Button variant="ghost" className="w-full justify-start text-foreground hover:text-accent" onClick={() => {setLocation('/'); setMobileMenuOpen(false);}}>
                 <HomeIcon className="mr-2 h-4 w-4" />

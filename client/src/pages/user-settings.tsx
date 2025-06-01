@@ -243,14 +243,19 @@ export default function UserSettings() {
   useEffect(() => {
     if (userCharacters && userCharacters.length > 0) {
       if (user?.characterOrder && Array.isArray(user.characterOrder) && user.characterOrder.length > 0) {
-        // Use saved order from user preferences
-        console.log('Setting character order from user preferences:', user.characterOrder);
-        setCharacterOrder(user.characterOrder);
+        // Use saved order from user preferences - only if different from current state
+        const newOrder = user.characterOrder;
+        if (JSON.stringify(newOrder) !== JSON.stringify(characterOrder)) {
+          console.log('Setting character order from user preferences:', newOrder);
+          setCharacterOrder(newOrder);
+        }
       } else {
         // Create initial order from current characters
         const initialOrder = userCharacters.map((char: any) => char.id);
-        console.log('Creating initial character order:', initialOrder);
-        setCharacterOrder(initialOrder);
+        if (JSON.stringify(initialOrder) !== JSON.stringify(characterOrder)) {
+          console.log('Creating initial character order:', initialOrder);
+          setCharacterOrder(initialOrder);
+        }
       }
     }
   }, [userCharacters, user?.characterOrder]);
