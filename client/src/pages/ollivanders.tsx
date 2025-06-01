@@ -668,8 +668,8 @@ export default function Ollivanders() {
 
             <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 p-3 rounded-lg">
               <p className="text-xs text-amber-800 dark:text-amber-200">
-                <strong>💡 Tip:</strong> Pan Ollivander má v zásobě celkem <strong>38 druhů dřeva</strong>, <strong>23 typů jader</strong>, 
-                <strong>10 délek</strong> a <strong>11 stupňů ohebnosti</strong> - to je přes <strong>95 000 možných kombinací</strong> hůlek! 
+                <strong>💡 Tip:</strong> Pan Ollivander má v zásobě celkem <strong>38 druhů dřeva</strong>, <strong>16 typů jader</strong>, 
+                <strong>9 délek</strong> a <strong>10 stupňů ohebnosti</strong> - to je přes <strong>54 000 možných kombinací</strong> hůlek! 
                 Komponenty označené <span className="text-orange-600 dark:text-orange-400 font-medium">[Ruční pouze]</span> nejsou dostupné v náhodném výběru.
               </p>
             </div>
