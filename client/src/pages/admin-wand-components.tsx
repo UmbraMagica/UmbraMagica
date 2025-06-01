@@ -401,7 +401,15 @@ export default function AdminWandComponents() {
                   <div key={index} className="p-4 bg-muted/30 rounded-lg">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <h3 className="font-semibold">{core.name}</h3>
+                        <div className="flex items-center gap-2">
+                          <h3 className="font-semibold">{core.name}</h3>
+                          {core.availableForRandom !== false && (
+                            <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Náhodný výběr</span>
+                          )}
+                          {core.availableForRandom === false && (
+                            <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">Zakázáno</span>
+                          )}
+                        </div>
                         <p className="text-sm text-muted-foreground mb-2">{core.category}</p>
                         <p className="text-sm whitespace-pre-line">{core.description}</p>
                       </div>
@@ -438,6 +446,16 @@ export default function AdminWandComponents() {
                                   onChange={(e) => setEditingCore({ ...core, description: e.target.value })}
                                   rows={4}
                                 />
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                <input
+                                  type="checkbox"
+                                  id={`core-random-${index}`}
+                                  defaultChecked={core.availableForRandom !== false}
+                                  onChange={(e) => setEditingCore({ ...core, availableForRandom: e.target.checked })}
+                                  className="rounded"
+                                />
+                                <Label htmlFor={`core-random-${index}`}>Dostupné pro náhodný výběr</Label>
                               </div>
                               <Button 
                                 onClick={() => updateCore(index, editingCore || core)}
@@ -519,6 +537,20 @@ export default function AdminWandComponents() {
                             placeholder="Popis vlastností této délky..."
                           />
                         </div>
+                        <div className="flex items-center space-x-2">
+                          <input
+                            type="checkbox"
+                            id={`length-random-${index}`}
+                            defaultChecked={typeof length === 'object' ? length.availableForRandom !== false : true}
+                            onChange={(e) => updateLength(index, { 
+                              name: editingLengthName || (typeof length === 'string' ? length : length.name), 
+                              description: editingLengthDescription || (typeof length === 'object' ? length.description : ''),
+                              availableForRandom: e.target.checked
+                            })}
+                            className="rounded"
+                          />
+                          <Label htmlFor={`length-random-${index}`}>Dostupné pro náhodný výběr</Label>
+                        </div>
                         <div className="flex gap-2">
                           <Button
                             onClick={() => {
@@ -546,7 +578,15 @@ export default function AdminWandComponents() {
                     ) : (
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
-                          <h3 className="font-semibold">{typeof length === 'string' ? length : length.name}</h3>
+                          <div className="flex items-center gap-2">
+                            <h3 className="font-semibold">{typeof length === 'string' ? length : length.name}</h3>
+                            {(typeof length === 'string' || length.availableForRandom !== false) && (
+                              <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Náhodný výběr</span>
+                            )}
+                            {typeof length === 'object' && length.availableForRandom === false && (
+                              <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">Zakázáno</span>
+                            )}
+                          </div>
                           {typeof length === 'object' && length.description && (
                             <p className="text-sm text-muted-foreground mt-1 whitespace-pre-line">{length.description}</p>
                           )}
@@ -634,6 +674,20 @@ export default function AdminWandComponents() {
                             placeholder="Popis vlastností této ohebnosti..."
                           />
                         </div>
+                        <div className="flex items-center space-x-2">
+                          <input
+                            type="checkbox"
+                            id={`flex-random-${index}`}
+                            defaultChecked={typeof flex === 'object' ? flex.availableForRandom !== false : true}
+                            onChange={(e) => updateFlex(index, { 
+                              name: editingFlexName || (typeof flex === 'string' ? flex : flex.name), 
+                              description: editingFlexDescription || (typeof flex === 'object' ? flex.description : ''),
+                              availableForRandom: e.target.checked
+                            })}
+                            className="rounded"
+                          />
+                          <Label htmlFor={`flex-random-${index}`}>Dostupné pro náhodný výběr</Label>
+                        </div>
                         <div className="flex gap-2">
                           <Button
                             onClick={() => {
@@ -661,7 +715,15 @@ export default function AdminWandComponents() {
                     ) : (
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
-                          <h3 className="font-semibold">{typeof flex === 'string' ? flex : flex.name}</h3>
+                          <div className="flex items-center gap-2">
+                            <h3 className="font-semibold">{typeof flex === 'string' ? flex : flex.name}</h3>
+                            {(typeof flex === 'string' || flex.availableForRandom !== false) && (
+                              <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Náhodný výběr</span>
+                            )}
+                            {typeof flex === 'object' && flex.availableForRandom === false && (
+                              <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">Zakázáno</span>
+                            )}
+                          </div>
                           {typeof flex === 'object' && flex.description && (
                             <p className="text-sm text-muted-foreground mt-1 whitespace-pre-line">{flex.description}</p>
                           )}
