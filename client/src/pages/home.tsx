@@ -92,7 +92,7 @@ export default function Home() {
   // Load character from localStorage on component mount
   useEffect(() => {
     if (userCharacters && Array.isArray(userCharacters) && userCharacters.length > 0) {
-      const savedCharacterId = localStorage.getItem('activeCharacterId');
+      const savedCharacterId = localStorage.getItem('selectedCharacterId');
       if (savedCharacterId) {
         const savedCharacter = userCharacters.find((char: any) => char.id === parseInt(savedCharacterId));
         if (savedCharacter && !savedCharacter.deathDate) {
@@ -104,7 +104,7 @@ export default function Home() {
       // If no saved character or character is dead, use first alive character
       if (firstAliveCharacter && !displayedCharacter) {
         setDisplayedCharacter(firstAliveCharacter);
-        localStorage.setItem('activeCharacterId', firstAliveCharacter.id.toString());
+        localStorage.setItem('selectedCharacterId', firstAliveCharacter.id.toString());
       }
     }
   }, [userCharacters, firstAliveCharacter]);
@@ -112,7 +112,7 @@ export default function Home() {
   // Function to change the displayed character
   const setCurrentDisplayedCharacter = (character: any) => {
     setDisplayedCharacter(character);
-    localStorage.setItem('activeCharacterId', character.id.toString());
+    localStorage.setItem('selectedCharacterId', character.id.toString());
   };
 
   // Get displayed character's wand (for the character currently being viewed)
