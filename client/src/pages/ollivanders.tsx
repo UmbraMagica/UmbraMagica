@@ -339,6 +339,15 @@ export default function Ollivanders() {
                 Můžete nechat výběr na něm, nebo si pečlivě vybrat jednotlivé komponenty sami.
               </p>
               
+              <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 p-4 rounded-lg">
+                <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">ℹ️ Informace o výběru komponent</h4>
+                <div className="text-sm text-blue-800 dark:text-blue-200 space-y-1">
+                  <p>• <strong>Náhodný výběr:</strong> Ollivander vybírá pouze z komponent povolených administrátory</p>
+                  <p>• <strong>Ruční výběr:</strong> Můžete si vybrat z všech dostupných komponent</p>
+                  <p>• <strong>Štítek "Ruční pouze":</strong> Tyto komponenty nejsou dostupné v náhodném výběru</p>
+                </div>
+              </div>
+              
               <div className="bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-800 p-4 rounded-lg">
                 <p className="text-yellow-800 dark:text-yellow-200 text-sm">
                   ⚠️ Bez hůlky nemůžete sesílat kouzla v chatech!
@@ -392,7 +401,12 @@ export default function Ollivanders() {
                             {wandComponents.woods?.map((wood: any) => (
                               <SelectItem key={wood.name} value={wood.name}>
                                 <div className="w-full max-w-xs">
-                                  <div className="font-medium">{wood.name}</div>
+                                  <div className="flex items-center gap-2">
+                                    <span className="font-medium">{wood.name}</span>
+                                    {wood.availableForRandom === false && (
+                                      <span className="text-xs bg-amber-100 text-amber-800 px-1 py-0.5 rounded">Ruční pouze</span>
+                                    )}
+                                  </div>
                                   <div className="text-xs text-muted-foreground whitespace-normal break-words">{wood.shortDescription}</div>
                                 </div>
                               </SelectItem>
@@ -412,7 +426,12 @@ export default function Ollivanders() {
                             {wandComponents.cores?.map((core: any) => (
                               <SelectItem key={core.name} value={core.name}>
                                 <div className="w-full max-w-xs">
-                                  <div className="font-medium">{core.name}</div>
+                                  <div className="flex items-center gap-2">
+                                    <span className="font-medium">{core.name}</span>
+                                    {core.availableForRandom === false && (
+                                      <span className="text-xs bg-amber-100 text-amber-800 px-1 py-0.5 rounded">Ruční pouze</span>
+                                    )}
+                                  </div>
                                   <div className="text-xs text-muted-foreground whitespace-normal break-words">
                                     <span className="font-medium">{core.category}</span>
                                     <br />
@@ -436,7 +455,12 @@ export default function Ollivanders() {
                             {wandComponents.lengths?.map((length: any) => (
                               <SelectItem key={typeof length === 'string' ? length : length.name} value={typeof length === 'string' ? length : length.name}>
                                 <div className="w-full max-w-xs">
-                                  <div className="font-medium">{typeof length === 'string' ? length : length.name}</div>
+                                  <div className="flex items-center gap-2">
+                                    <span className="font-medium">{typeof length === 'string' ? length : length.name}</span>
+                                    {typeof length === 'object' && length.availableForRandom === false && (
+                                      <span className="text-xs bg-amber-100 text-amber-800 px-1 py-0.5 rounded">Ruční pouze</span>
+                                    )}
+                                  </div>
                                   {typeof length === 'object' && length.description && (
                                     <div className="text-xs text-muted-foreground whitespace-normal break-words">{length.description}</div>
                                   )}
@@ -458,7 +482,12 @@ export default function Ollivanders() {
                             {wandComponents.flexibilities?.map((flexibility: any) => (
                               <SelectItem key={typeof flexibility === 'string' ? flexibility : flexibility.name} value={typeof flexibility === 'string' ? flexibility : flexibility.name}>
                                 <div className="w-full max-w-xs">
-                                  <div className="font-medium">{typeof flexibility === 'string' ? flexibility : flexibility.name}</div>
+                                  <div className="flex items-center gap-2">
+                                    <span className="font-medium">{typeof flexibility === 'string' ? flexibility : flexibility.name}</span>
+                                    {typeof flexibility === 'object' && flexibility.availableForRandom === false && (
+                                      <span className="text-xs bg-amber-100 text-amber-800 px-1 py-0.5 rounded">Ruční pouze</span>
+                                    )}
+                                  </div>
                                   {typeof flexibility === 'object' && flexibility.description && (
                                     <div className="text-xs text-muted-foreground whitespace-normal break-words">{flexibility.description}</div>
                                   )}
