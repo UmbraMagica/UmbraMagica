@@ -1261,6 +1261,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/characters", requireAuth, async (req, res) => {
     try {
       const characters = await storage.getCharactersByUserId(req.session.userId!);
+      console.log("API /api/characters - User ID:", req.session.userId);
+      console.log("API /api/characters - Characters returned:", characters.map(c => ({ id: c.id, firstName: c.firstName, lastName: c.lastName, isActive: c.isActive })));
       res.json(characters);
     } catch (error) {
       console.error("Error fetching user characters:", error);
