@@ -452,7 +452,7 @@ export default function AdminWandComponents() {
                                   type="checkbox"
                                   id={`core-random-${index}`}
                                   defaultChecked={core.availableForRandom !== false}
-                                  onChange={(e) => setEditingCore({ ...core, availableForRandom: e.target.checked })}
+                                  onChange={(e) => setEditingCore(prev => ({ ...(prev || core), availableForRandom: e.target.checked }))}
                                   className="rounded"
                                 />
                                 <Label htmlFor={`core-random-${index}`}>Dostupné pro náhodný výběr</Label>
