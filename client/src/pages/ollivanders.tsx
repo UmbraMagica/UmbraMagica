@@ -38,7 +38,8 @@ export default function Ollivanders() {
 
   // Get user's alive characters and find the active one
   const userCharacters = Array.isArray(allCharacters) ? allCharacters.filter((char: any) => !char.deathDate && !char.isSystem) : [];
-  const mainCharacter = userCharacters.find((char: any) => char.isActive) || userCharacters[0];
+  // Always prioritize the active character, don't fall back to first character if no active one
+  const mainCharacter = userCharacters.find((char: any) => char.isActive);
 
   console.log('Ollivanders - User characters:', userCharacters);
   console.log('Ollivanders - Main character:', mainCharacter);
@@ -48,7 +49,7 @@ export default function Ollivanders() {
     queryKey: [`/api/characters/${mainCharacter?.id}/wand`],
     enabled: !!mainCharacter?.id,
     staleTime: 0, // Force fresh data
-    cacheTime: 0  // Don't cache
+    gcTime: 0     // Don't cache (TanStack Query v5)
   });
 
   console.log('Ollivanders - Character wand query key:', `/api/characters/${mainCharacter?.id}/wand`);
