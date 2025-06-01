@@ -96,6 +96,7 @@ export default function ChatRoom() {
   const [showSpellDialog, setShowSpellDialog] = useState(false);
   const [selectedSpell, setSelectedSpell] = useState<any>(null);
   const [chatCharacter, setChatCharacter] = useState<any>(null);
+  const [isCharacterInitialized, setIsCharacterInitialized] = useState(false);
   
   const currentRoomId = roomId ? parseInt(roomId) : null;
 
@@ -146,11 +147,11 @@ export default function ChatRoom() {
 
   // Initialize chat character to main character only on first load
   useEffect(() => {
-    if (mainCharacter && !chatCharacter && !sessionStorage.getItem('chatCharacterInitialized')) {
+    if (mainCharacter && !chatCharacter && !isCharacterInitialized) {
       setChatCharacter(mainCharacter);
-      sessionStorage.setItem('chatCharacterInitialized', 'true');
+      setIsCharacterInitialized(true);
     }
-  }, [mainCharacter, chatCharacter]);
+  }, [mainCharacter, chatCharacter, isCharacterInitialized]);
 
   // Fetch character's spells
   const { data: characterSpells = [] } = useQuery<any[]>({
