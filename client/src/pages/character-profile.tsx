@@ -72,11 +72,11 @@ export default function CharacterProfile() {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => setLocation(user?.role === 'admin' ? '/admin' : '/')}
+            onClick={() => setLocation(fromPage === 'admin' ? '/admin' : '/')}
             className="flex items-center gap-2"
           >
             <ArrowLeft className="h-4 w-4" />
-            {user?.role === 'admin' ? 'Zpět do administrace' : 'Zpět na hlavní stránku'}
+            {fromPage === 'admin' ? 'Zpět do administrace' : 'Zpět na hlavní stránku'}
           </Button>
         </div>
         <div className="text-center">
@@ -110,11 +110,11 @@ export default function CharacterProfile() {
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => setLocation(user?.role === 'admin' ? '/admin' : '/')}
+          onClick={() => setLocation(fromPage === 'admin' ? '/admin' : '/')}
           className="flex items-center gap-2"
         >
           <ArrowLeft className="h-4 w-4" />
-          {user?.role === 'admin' ? 'Zpět do administrace' : 'Zpět na hlavní stránku'}
+          {fromPage === 'admin' ? 'Zpět do administrace' : 'Zpět na hlavní stránku'}
         </Button>
       </div>
 
