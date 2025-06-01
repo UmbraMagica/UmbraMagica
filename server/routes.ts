@@ -1459,10 +1459,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Narrator permissions required" });
       }
 
-      // Create narrator message with special character ID (0 for narrator)
+      // Create narrator message with null character ID for narrator messages
       const narratorMessage = await storage.createMessage({
         roomId: parseInt(roomId),
-        characterId: 0, // Special ID for narrator messages
+        characterId: null, // null for narrator messages
         content: content.trim(),
         messageType: 'narrator',
       });
