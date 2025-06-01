@@ -710,16 +710,9 @@ export default function Home() {
                       .map((character: any) => (
                       <div 
                         key={character.id} 
-                        className={`flex items-center justify-between p-3 rounded-lg transition-colors hover:bg-muted/50 ${
-                          (displayedCharacter?.id === character.id || (!displayedCharacter && currentDisplayedCharacter?.id === character.id))
-                            ? 'bg-accent/20 border border-accent/30' 
-                            : 'bg-muted/30'
-                        }`}
+                        className="flex items-center justify-between p-3 rounded-lg bg-muted/30"
                       >
-                        <div 
-                          className="flex items-center space-x-3 flex-1 cursor-pointer"
-                          onClick={() => setDisplayedCharacter(character)}
-                        >
+                        <div className="flex items-center space-x-3 flex-1">
                           <CharacterAvatar character={character} size="sm" />
                           <div>
                             <p className="font-medium text-foreground text-sm">
@@ -729,11 +722,6 @@ export default function Home() {
                               {calculateGameAge(character.birthDate)} let
                             </p>
                           </div>
-                          {(displayedCharacter?.id === character.id || (!displayedCharacter && currentDisplayedCharacter?.id === character.id)) && (
-                            <Badge variant="secondary" className="ml-2">
-                              Aktivní
-                            </Badge>
-                          )}
                         </div>
                         <Button
                           variant="ghost"
