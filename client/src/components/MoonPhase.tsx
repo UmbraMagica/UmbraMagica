@@ -201,6 +201,16 @@ export function MoonPhase({ gameDate }: MoonPhaseProps) {
             <p className="text-xs text-muted-foreground">
               {moonData.description}
             </p>
+            {moonData.seasonalEvent && (
+              <div className="mt-2 p-2 bg-amber-50/10 border border-amber-200/20 rounded-md">
+                <div className="flex items-center gap-2">
+                  <span className="text-lg">{moonData.seasonalEvent.emoji}</span>
+                  <span className="text-xs font-medium text-amber-200">
+                    {moonData.seasonalEvent.name}
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </CardContent>
