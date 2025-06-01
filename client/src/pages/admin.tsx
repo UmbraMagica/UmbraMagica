@@ -2243,12 +2243,32 @@ export default function Admin() {
                                     ID: {room.id} • Vytvořeno: {new Date(room.createdAt).toLocaleDateString('cs-CZ')}
                                   </p>
                                 </div>
-                                <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-1">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => moveRoomUp(room.id)}
+                                    disabled={chatRooms?.findIndex((r: any) => r.id === room.id) === 0}
+                                    className="text-blue-400 hover:text-blue-300 disabled:opacity-30"
+                                    title="Posunout nahoru"
+                                  >
+                                    <ArrowUp className="h-4 w-4" />
+                                  </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => moveRoomDown(room.id)}
+                                    disabled={chatRooms?.findIndex((r: any) => r.id === room.id) === (chatRooms?.length || 0) - 1}
+                                    className="text-blue-400 hover:text-blue-300 disabled:opacity-30"
+                                    title="Posunout dolů"
+                                  >
+                                    <ArrowDown className="h-4 w-4" />
+                                  </Button>
                                   <Button
                                     variant="ghost"
                                     size="sm"
                                     onClick={() => window.open(`/chat/room/${room.id}`, '_blank')}
-                                    className="text-blue-400 hover:text-blue-300"
+                                    className="text-green-400 hover:text-green-300"
                                     title="Otevřít chat"
                                   >
                                     <Eye className="h-4 w-4" />
