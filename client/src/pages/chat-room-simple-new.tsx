@@ -909,24 +909,6 @@ export default function ChatRoom() {
             {currentCharacter && (
               <div className="relative flex-shrink-0">
                 <CharacterAvatar character={currentCharacter} size="lg" />
-                {/* Character selector dropdown for multiple characters */}
-                {userCharacters.length > 1 && (
-                  <select
-                    value={chatCharacter?.id || ''}
-                    onChange={(e) => {
-                      const selectedChar = userCharacters.find((char: any) => char.id === parseInt(e.target.value));
-                      if (selectedChar) setChatCharacter(selectedChar);
-                    }}
-                    className="absolute -bottom-1 -left-1 text-xs border rounded bg-background w-6 h-6 text-center opacity-80 hover:opacity-100"
-                    title="Změnit postavu"
-                  >
-                    {userCharacters.map((character: any) => (
-                      <option key={character.id} value={character.id}>
-                        {character.firstName[0]}{character.lastName[0]}
-                      </option>
-                    ))}
-                  </select>
-                )}
               </div>
             )}
             
