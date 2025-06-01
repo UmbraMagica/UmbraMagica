@@ -897,11 +897,17 @@ export default function ChatRoom() {
                     );
                   })()}
                 </div>
-                <p className={`text-sm break-words whitespace-pre-wrap overflow-wrap-anywhere word-break-break-all ${
+                <p className={`text-sm !break-words !whitespace-pre-wrap !overflow-wrap-anywhere !word-break-break-all max-w-full ${
                   message.character.firstName === 'Správa' && message.character.lastName === 'ubytování' 
                     ? 'text-blue-600 dark:text-blue-400' 
                     : 'text-foreground'
-                }`}>
+                }`} style={{ 
+                  wordWrap: 'break-word', 
+                  overflowWrap: 'anywhere', 
+                  wordBreak: 'break-all',
+                  whiteSpace: 'pre-wrap',
+                  maxWidth: '100%'
+                }}>
                   {renderMessageWithHighlight(message.content, user?.highlightWords, user?.highlightColor)}
                 </p>
               </div>
