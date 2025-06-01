@@ -65,7 +65,7 @@ export function RoomDescription({ description, roomName }: RoomDescriptionProps)
           <span
             key={match.index}
             className="text-accent hover:text-accent/80 cursor-pointer underline"
-            onClick={() => setLocation(`/chat/room/${targetRoom.id}`)}
+            onClick={() => window.open(`/chat/room/${targetRoom.id}`, '_blank')}
           >
             {roomName}
           </span>

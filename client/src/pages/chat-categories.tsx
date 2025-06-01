@@ -43,7 +43,7 @@ function SubCategoryCollapsible({ subCategory }: { subCategory: ChatCategory }) 
 
   const handleRoomClick = async (room: ChatRoom) => {
     if (room.isPublic) {
-      setLocation(`/chat/room/${room.id}`);
+      window.open(`/chat/room/${room.id}`, '_blank');
     } else {
       setPasswordDialog({ isOpen: true, roomId: room.id });
     }
@@ -68,7 +68,7 @@ function SubCategoryCollapsible({ subCategory }: { subCategory: ChatCategory }) 
         const roomId = passwordDialog.roomId;
         setPasswordDialog({ isOpen: false, roomId: null });
         setPassword("");
-        window.location.href = `/chat/room/${roomId}`;
+        window.open(`/chat/room/${roomId}`, '_blank');
         toast({
           title: "Úspěch",
           description: "Heslo je správné, vstupujete do místnosti",
@@ -224,7 +224,7 @@ function CategoryCard({ category }: { category: ChatCategory }) {
                 </h4>
                 <div className="grid gap-2">
                   {category.rooms.map((room) => (
-                    <Link key={room.id} href={`/chat/room/${room.id}`}>
+                    <Link key={room.id} href={`/chat/room/${room.id}`} target="_blank">
                       <Button 
                         variant="outline" 
                         className="w-full justify-start h-auto p-3"

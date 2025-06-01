@@ -2043,7 +2043,7 @@ export default function Admin() {
                                   <Button
                                     variant="ghost"
                                     size="sm"
-                                    onClick={() => setLocation(`/chat/${room.id}`)}
+                                    onClick={() => window.open(`/chat/room/${room.id}`, '_blank')}
                                     className="text-blue-400 hover:text-blue-300"
                                     title="Otevřít chat"
                                   >

@@ -766,7 +766,7 @@ export default function Home() {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => setLocation(`/chat/room/${lastChatRoom.room.id}`)}
+                            onClick={() => window.open(`/chat/room/${lastChatRoom.room.id}`, '_blank')}
                             className="w-full text-xs"
                           >
                             <MessageCircle className="h-3 w-3 mr-2" />
