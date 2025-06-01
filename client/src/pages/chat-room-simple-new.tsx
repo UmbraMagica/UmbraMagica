@@ -302,12 +302,7 @@ export default function ChatRoom() {
     };
   }, [currentRoomId, user, chatCharacter, queryClient]);
 
-  // Scroll to bottom when messages change
-  useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [localMessages]);
+  // Removed automatic scrolling - chat stays at top showing newest messages
 
   // Filter and sort characters - moved to useEffect above
   const filteredCharacters = allUserCharacters.filter((char: any) => !char.deathDate && !char.isSystem);
