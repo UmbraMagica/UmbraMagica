@@ -63,6 +63,13 @@ export default function CharacterHistory() {
     user.id === character.userId
   );
 
+  // Check if user can view the history
+  const canViewHistory = user && character && (
+    user.role === 'admin' || 
+    user.id === character.userId ||
+    character.showHistoryToOthers !== false
+  );
+
   // History update mutation
   const updateHistoryMutation = useMutation({
     mutationFn: async (data: { history: string; showHistoryToOthers: boolean }) => {
@@ -132,13 +139,18 @@ export default function CharacterHistory() {
     );
   }
 
-  if (!canEdit) {
+  if (!canViewHistory) {
     return (
       <div className="min-h-screen bg-background">
         <div className="max-w-4xl mx-auto p-6">
           <Card>
             <CardContent className="text-center py-8">
-              <p className="text-muted-foreground">Nemáte oprávnění upravovat historii této postavy.</p>
+              <p className="text-muted-foreground">
+                {canEdit ? 
+                  "Historie této postavy je skrytá před ostatními hráči." :
+                  "Nemáte oprávnění prohlížet historii této postavy."
+                }
+              </p>
               <Button
                 variant="outline"
                 onClick={() => setLocation(`/characters/${id}`)}
@@ -183,26 +195,36 @@ export default function CharacterHistory() {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="font-medium">Současná historie</h3>
-                  <Button
-                    variant="outline"
-                    onClick={() => setIsEditing(true)}
-                    className="flex items-center gap-2"
-                  >
-                    <FileText className="h-4 w-4" />
-                    Upravit historii
-                  </Button>
+                  {canEdit && (
+                    <Button
+                      variant="outline"
+                      onClick={() => setIsEditing(true)}
+                      className="flex items-center gap-2"
+                    >
+                      <FileText className="h-4 w-4" />
+                      Upravit historii
+                    </Button>
+                  )}
                 </div>
                 
-                {character.characterHistory ? (
-                  <div className="p-4 border rounded-md bg-muted/20">
-                    <div className="text-sm leading-relaxed whitespace-pre-wrap">
-                      {character.characterHistory}
+                {canViewHistory ? (
+                  character.characterHistory ? (
+                    <div className="p-4 border rounded-md bg-muted/20">
+                      <div className="text-sm leading-relaxed whitespace-pre-wrap">
+                        {character.characterHistory}
+                      </div>
                     </div>
-                  </div>
+                  ) : (
+                    <div className="p-4 border rounded-md bg-muted/20 text-center">
+                      <p className="text-muted-foreground italic">
+                        Žádná historie zatím nebyla napsána.
+                      </p>
+                    </div>
+                  )
                 ) : (
                   <div className="p-4 border rounded-md bg-muted/20 text-center">
                     <p className="text-muted-foreground italic">
-                      Žádná historie zatím nebyla napsána.
+                      Historie této postavy je skrytá před ostatními hráči.
                     </p>
                   </div>
                 )}
