@@ -16,8 +16,12 @@ export default function Landing() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("=== FRONTEND LOGIN HANDLER ===");
+    console.log("Username:", username);
+    console.log("Password:", password ? "***" : "empty");
     
     if (!username || !password) {
+      console.log("Missing credentials, showing toast");
       toast({
         title: "Chyba",
         description: "Vyplňte všechna pole",
@@ -26,13 +30,16 @@ export default function Landing() {
       return;
     }
 
+    console.log("Calling login function...");
     try {
-      await login({ username, password });
+      const result = await login({ username, password });
+      console.log("Login result:", result);
       toast({
         title: "Úspěch",
         description: "Přihlášení bylo úspěšné",
       });
     } catch (error: any) {
+      console.log("Login error:", error);
       toast({
         title: "Chyba přihlášení",
         description: error.message || "Neplatné přihlašovací údaje",
