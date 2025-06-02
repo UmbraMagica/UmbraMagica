@@ -9,10 +9,14 @@ import { useToast } from "@/hooks/use-toast";
 import { Crown, LogIn } from "lucide-react";
 
 export default function Landing() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("Casey");
+  const [password, setPassword] = useState("test123");
   const { login, isLoginPending, loginError } = useAuth();
   const { toast } = useToast();
+  
+  console.log("Landing component rendered");
+  console.log("Login function:", typeof login);
+  console.log("isLoginPending:", isLoginPending);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -101,6 +105,14 @@ export default function Landing() {
             >
               <LogIn className="mr-2 h-4 w-4" />
               {isLoginPending ? "Přihlašování..." : "Přihlásit se"}
+            </Button>
+            
+            <Button
+              type="button"
+              onClick={() => handleLogin({ preventDefault: () => {} } as any)}
+              className="rpg-button-secondary mt-2"
+            >
+              Test přihlášení (Casey/test123)
             </Button>
           </form>
 
