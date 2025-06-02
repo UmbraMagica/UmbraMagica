@@ -61,14 +61,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     console.log(`${req.method} ${req.path} - Query:`, req.query);
     next();
   });
-  // Temporarily use memory store for session to fix authentication issue
+  // Use memory store for session - simpler and more reliable
   const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
   const sessionSecret = process.env.SESSION_SECRET || 'rpg-realm-session-secret-key-fixed-2024';
   
   app.use(session({
     secret: sessionSecret,
-    resave: false,
-    saveUninitialized: false,
+    resave: true,
+    saveUninitialized: true,
     name: 'connect.sid',
     cookie: {
       httpOnly: false,
