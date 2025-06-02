@@ -4,9 +4,16 @@ import { setupVite, serveStatic, log } from "./vite";
 
 const app = express();
 
-// CORS configuration for Vercel frontend
+// CORS configuration for frontend
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'https://textroleplay.vercel.app');
+  // Allow current origin (for Replit environment)
+  const origin = req.headers.origin;
+  if (origin) {
+    res.header('Access-Control-Allow-Origin', origin);
+  } else {
+    // Fallback for same-origin requests
+    res.header('Access-Control-Allow-Origin', '*');
+  }
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
   res.header('Access-Control-Allow-Credentials', 'true');
