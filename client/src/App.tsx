@@ -31,23 +31,10 @@ import Cemetery from "@/pages/cemetery";
 import Ollivanders from "@/pages/ollivanders";
 import OwlPost from "@/pages/owl-post";
 import NotFound from "@/pages/not-found";
-import { useEffect } from "react";
-import { apiRequest } from "./lib/queryClient";
+
 
 function Router() {
   const { user, isLoading } = useAuth();
-
-  // Initialize test data on app start
-  useEffect(() => {
-    const initTestData = async () => {
-      try {
-        await apiRequest("POST", "/api/admin/init-test-data");
-      } catch (error) {
-        // Silently fail - test data might already exist
-      }
-    };
-    initTestData();
-  }, []);
 
   if (isLoading) {
     return (
