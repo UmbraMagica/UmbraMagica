@@ -2190,10 +2190,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const currentData = await storage.getInfluenceBar();
       const previousTotal = changeType === 'grindelwald' ? currentData.grindelwaldPoints : currentData.dumbledorePoints;
       
-      // Update the influence bar
-      await storage.adjustInfluence(changeType, points, req.session.userId!);
+      // Calculate new total with proper bounds (0 minimum)
+      const newTotal = Math.max(0, previousTotal + points);
       
-      const newTotal = previousTotal + points;
+      // Update the influence bar with the calculated new total
+      const newGrindelwaldPoints = changeType === 'grindelwald' ? newTotal : currentData.grindelwaldPoints;
+      const newDumbledorePoints = changeType === 'dumbledore' ? newTotal : currentData.dumbledorePoints;
+      
+      await storage.setInfluence(newGrindelwaldPoints, newDumbledorePoints, req.session.userId!);
       
       // Record the change in history using parameterized query
       await db.execute(sql`
