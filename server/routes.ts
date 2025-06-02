@@ -2126,7 +2126,58 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Removed influence bar endpoints - feature not requested by user
+  // Influence Bar endpoints
+  app.get("/api/influence-bar", async (req, res) => {
+    try {
+      const influenceData = await storage.getInfluenceBar();
+      res.json(influenceData);
+    } catch (error) {
+      console.error("Error fetching influence bar:", error);
+      res.status(500).json({ message: "Failed to fetch influence bar" });
+    }
+  });
+
+  app.get("/api/influence-history", async (req, res) => {
+    try {
+      const history = await storage.getInfluenceHistory();
+      res.json(history);
+    } catch (error) {
+      console.error("Error fetching influence history:", error);
+      res.status(500).json({ message: "Failed to fetch influence history" });
+    }
+  });
+
+  app.post("/api/admin/influence-bar/adjust", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const { side, points } = req.body;
+      
+      if (!side || typeof points !== 'number') {
+        return res.status(400).json({ message: "Side and points are required" });
+      }
+      
+      await storage.adjustInfluence(side, points, req.session.userId!);
+      res.json({ message: "Influence adjusted successfully" });
+    } catch (error) {
+      console.error("Error adjusting influence:", error);
+      res.status(500).json({ message: "Failed to adjust influence" });
+    }
+  });
+
+  app.post("/api/admin/influence-bar/set", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const { grindelwaldPoints, dumbledorePoints } = req.body;
+      
+      if (typeof grindelwaldPoints !== 'number' || typeof dumbledorePoints !== 'number') {
+        return res.status(400).json({ message: "Both point values are required" });
+      }
+      
+      await storage.setInfluence(grindelwaldPoints, dumbledorePoints, req.session.userId!);
+      res.json({ message: "Influence set successfully" });
+    } catch (error) {
+      console.error("Error setting influence:", error);
+      res.status(500).json({ message: "Failed to set influence" });
+    }
+  });
 
 
 

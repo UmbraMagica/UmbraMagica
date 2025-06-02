@@ -204,6 +204,11 @@ export interface IStorage {
     flexibilities: { name: string; description: string }[];
   }): Promise<void>;
   
+  // Influence operations
+  getInfluenceBar(): Promise<{ grindelwaldPoints: number; dumbledorePoints: number }>;
+  getInfluenceHistory(): Promise<any[]>;
+  adjustInfluence(side: 'grindelwald' | 'dumbledore', points: number, userId: number): Promise<void>;
+  setInfluence(grindelwaldPoints: number, dumbledorePoints: number, userId: number): Promise<void>;
 
 }
 
@@ -2140,6 +2145,52 @@ export class DatabaseStorage implements IStorage {
       .from(characters)
       .where(eq(characters.isActive, true))
       .orderBy(characters.firstName, characters.lastName);
+  }
+
+  // Influence operations
+  async getInfluenceBar(): Promise<{ grindelwaldPoints: number; dumbledorePoints: number }> {
+    const [result] = await db.select().from(influenceBar).limit(1);
+    return {
+      grindelwaldPoints: result?.grindelwaldPoints || 50,
+      dumbledorePoints: result?.dumbledorePoints || 50
+    };
+  }
+
+  async getInfluenceHistory(): Promise<any[]> {
+    return db.select().from(influenceHistory).orderBy(desc(influenceHistory.createdAt)).limit(50);
+  }
+
+  async adjustInfluence(side: 'grindelwald' | 'dumbledore', points: number, userId: number): Promise<void> {
+    const currentData = await this.getInfluenceBar();
+    const newGrindelwaldPoints = side === 'grindelwald' 
+      ? Math.max(0, currentData.grindelwaldPoints + points)
+      : currentData.grindelwaldPoints;
+    const newDumbledorePoints = side === 'dumbledore'
+      ? Math.max(0, currentData.dumbledorePoints + points)
+      : currentData.dumbledorePoints;
+
+    await this.setInfluence(newGrindelwaldPoints, newDumbledorePoints, userId);
+  }
+
+  async setInfluence(grindelwaldPoints: number, dumbledorePoints: number, userId: number): Promise<void> {
+    // Update influence bar
+    await db
+      .update(influenceBar)
+      .set({
+        grindelwaldPoints,
+        dumbledorePoints,
+        lastUpdated: new Date(),
+        updatedBy: userId
+      })
+      .where(eq(influenceBar.id, 1));
+
+    // Log the change in history
+    await db.insert(influenceHistory).values({
+      grindelwaldPoints,
+      dumbledorePoints,
+      changeBy: userId,
+      reason: 'Admin adjustment'
+    });
   }
 }
 
