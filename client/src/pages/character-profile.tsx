@@ -348,6 +348,15 @@ export default function CharacterProfile() {
                   variant="outline"
                   size="sm"
                   className="w-full justify-start"
+                  onClick={() => setLocation(`/characters/${character.id}/history`)}
+                >
+                  <FileText className="h-4 w-4 mr-2" />
+                  Historie postavy
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full justify-start"
                   onClick={() => setLocation('/my-spells')}
                 >
                   <Wand2 className="h-4 w-4 mr-2" />
