@@ -632,17 +632,18 @@ export default function Ollivanders() {
             <div className="grid md:grid-cols-2 gap-6 border-t pt-4">
               {/* Lengths */}
               <div>
-                <h4 className="font-medium mb-2 text-purple-600 dark:text-purple-400">📏 Délky hůlek (9 velikostí)</h4>
+                <h4 className="font-medium mb-2 text-purple-600 dark:text-purple-400">📏 Délky hůlek (10 velikostí)</h4>
                 <div className="text-xs space-y-1">
-                  <p><strong>7":</strong> Kratší hůlka pro diskrétní magii a menší čaroděje</p>
-                  <p><strong>8":</strong> Kompaktní délka ideální pro rychlé reakce</p>
-                  <p><strong>9":</strong> Vyvážená kratší délka pro jemná kouzla</p>
-                  <p><strong>10":</strong> Klasická délka s dobrým poměrem kontroly a síly</p>
-                  <p><strong>11":</strong> Vyvážená hůlka s výbornou univerzálností</p>
-                  <p><strong>12":</strong> Standardní délka pro stabilitu a spolehlivost</p>
-                  <p><strong>13":</strong> Delší hůlka s větším dosahem a silou</p>
-                  <p><strong>14":</strong> Impozantní délka pro zkušené kouzelníky</p>
-                  <p><strong>15":</strong> Neobvykle dlouhá hůlka pro velké ambice</p>
+                  <p><strong>7":</strong> Krátká, vhodná pro precizní, rychlé kouzlení. Často u velmi mladých čarodějů</p>
+                  <p><strong>8":</strong> Lehce podprůměrná, oblíbená u diskrétních, taktických kouzelníků</p>
+                  <p><strong>9":</strong> Neutrální délka, snadno ovladatelná – vhodná pro většinu uživatelů</p>
+                  <p><strong>10":</strong> Běžná délka. Vyvážená hůlka pro různorodé účely</p>
+                  <p><strong>11":</strong> Mírně delší, ideální pro čaroděje se silným charakterem nebo rozsáhlou magickou silou</p>
+                  <p><strong>12":</strong> Výrazná hůlka, častá u mágů s dominantní povahou nebo hlubokým nitrem</p>
+                  <p><strong>13":</strong> Pro ty, kteří mají neobyčejný potenciál nebo extrémní specializaci</p>
+                  <p><strong>14":</strong> Dlouhá hůlka, vhodná pro formální, velkolepou nebo rituální magii</p>
+                  <p><strong>15":</strong> Rarita – vyžaduje silné zaměření, ale odmění velkým dosahem a účinkem</p>
+                  <p><strong>16+":</strong> Neobvyklá až výstřední délka. Obvykle jen u obrů, divotvůrců nebo výjimečných osobností</p>
                 </div>
               </div>
 
@@ -676,7 +677,7 @@ export default function Ollivanders() {
                   <div>Typů jader</div>
                 </div>
                 <div className="text-center">
-                  <div className="font-bold text-lg">9</div>
+                  <div className="font-bold text-lg">10</div>
                   <div>Délek hůlek</div>
                 </div>
                 <div className="text-center">
@@ -685,7 +686,7 @@ export default function Ollivanders() {
                 </div>
               </div>
               <p className="text-xs text-amber-700 dark:text-amber-300 mt-3 text-center">
-                Celkem možných kombinací: <strong>82,764</strong> různých hůlek!
+                Celkem možných kombinací: <strong>92,016</strong> různých hůlek!
               </p>
             </div>
           </CardContent>
