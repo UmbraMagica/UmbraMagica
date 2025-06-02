@@ -518,9 +518,11 @@ export default function Home() {
                     );
                   }
 
-                  const totalPoints = influenceData.grindelwaldPoints + influenceData.dumbledorePoints;
-                  const grindelwaldPercentage = totalPoints > 0 ? (influenceData.grindelwaldPoints / totalPoints) * 100 : 50;
-                  const dumbledorePercentage = totalPoints > 0 ? (influenceData.dumbledorePoints / totalPoints) * 100 : 50;
+                  const grindelwaldPoints = influenceData?.grindelwaldPoints || 0;
+                  const dumbledorePoints = influenceData?.dumbledorePoints || 0;
+                  const totalPoints = grindelwaldPoints + dumbledorePoints;
+                  const grindelwaldPercentage = totalPoints > 0 ? (grindelwaldPoints / totalPoints) * 100 : 50;
+                  const dumbledorePercentage = totalPoints > 0 ? (dumbledorePoints / totalPoints) * 100 : 50;
 
                   return (
                     <div className="space-y-4">
@@ -528,10 +530,10 @@ export default function Home() {
                         <div className="flex items-center">
                           <div className="w-3 h-3 bg-red-600 rounded-full mr-2"></div>
                           <span className="font-medium text-red-700 dark:text-red-400">Grindelwald</span>
-                          <span className="ml-2 text-muted-foreground">({influenceData.grindelwaldPoints})</span>
+                          <span className="ml-2 text-muted-foreground">({grindelwaldPoints})</span>
                         </div>
                         <div className="flex items-center">
-                          <span className="mr-2 text-muted-foreground">({influenceData.dumbledorePoints})</span>
+                          <span className="mr-2 text-muted-foreground">({dumbledorePoints})</span>
                           <span className="font-medium text-blue-700 dark:text-blue-400">Brumbál</span>
                           <div className="w-3 h-3 bg-blue-600 rounded-full ml-2"></div>
                         </div>
@@ -562,7 +564,7 @@ export default function Home() {
                           <div className="max-h-80 overflow-y-auto">
                             {!influenceHistory ? (
                               <div className="text-center text-muted-foreground py-8">Načítání historie...</div>
-                            ) : influenceHistory.length === 0 ? (
+                            ) : !Array.isArray(influenceHistory) || influenceHistory.length === 0 ? (
                               <div className="text-center text-muted-foreground py-8">Zatím žádné změny</div>
                             ) : (
                               <div className="space-y-3">
