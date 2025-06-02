@@ -21,6 +21,7 @@ import ChatRoomSimpleTest from "@/pages/chat-room-simple-test";
 import CharacterEditFixedNav from "@/pages/character-edit-fixed-nav";
 import CharactersList from "@/pages/characters-list";
 import CharacterProfile from "@/pages/character-profile";
+import CharacterHistory from "@/pages/character-history";
 import CharacterInventory from "@/pages/character-inventory";
 import CharacterJournal from "@/pages/character-journal";
 import CharacterSpells from "@/pages/character-spells";
