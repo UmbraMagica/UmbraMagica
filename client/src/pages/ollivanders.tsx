@@ -418,7 +418,7 @@ export default function Ollivanders() {
                                   <div className="flex items-center gap-2">
                                     <span className="font-medium">{wood.name}</span>
                                     {wood.availableForRandom === false && (
-                                      <span className="text-xs bg-amber-100 text-amber-800 px-1 py-0.5 rounded">Ruční pouze</span>
+                                      <span className="text-xs bg-amber-100 text-amber-800 px-1 py-0.5 rounded">Pouze ruční výběr</span>
                                     )}
                                   </div>
                                   <div className="text-xs text-muted-foreground whitespace-normal break-words">{wood.shortDescription}</div>
@@ -443,7 +443,7 @@ export default function Ollivanders() {
                                   <div className="flex items-center gap-2">
                                     <span className="font-medium">{core.name}</span>
                                     {core.availableForRandom === false && (
-                                      <span className="text-xs bg-amber-100 text-amber-800 px-1 py-0.5 rounded">Ruční pouze</span>
+                                      <span className="text-xs bg-amber-100 text-amber-800 px-1 py-0.5 rounded">Pouze ruční výběr</span>
                                     )}
                                   </div>
                                   <div className="text-xs text-muted-foreground whitespace-normal break-words">{core.shortDescription}</div>
@@ -468,7 +468,7 @@ export default function Ollivanders() {
                                   <div className="flex items-center gap-2">
                                     <span className="font-medium">{typeof length === 'string' ? length : length.name}</span>
                                     {typeof length === 'object' && length.availableForRandom === false && (
-                                      <span className="text-xs bg-amber-100 text-amber-800 px-1 py-0.5 rounded">Ruční pouze</span>
+                                      <span className="text-xs bg-amber-100 text-amber-800 px-1 py-0.5 rounded">Pouze ruční výběr</span>
                                     )}
                                   </div>
                                   {typeof length === 'object' && length.shortDescription && (
@@ -495,7 +495,7 @@ export default function Ollivanders() {
                                   <div className="flex items-center gap-2">
                                     <span className="font-medium">{typeof flexibility === 'string' ? flexibility : flexibility.name}</span>
                                     {typeof flexibility === 'object' && flexibility.availableForRandom === false && (
-                                      <span className="text-xs bg-amber-100 text-amber-800 px-1 py-0.5 rounded">Ruční pouze</span>
+                                      <span className="text-xs bg-amber-100 text-amber-800 px-1 py-0.5 rounded">Pouze ruční výběr</span>
                                     )}
                                   </div>
                                   {typeof flexibility === 'object' && flexibility.shortDescription && (
