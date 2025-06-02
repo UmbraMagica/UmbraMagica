@@ -63,14 +63,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   // Session configuration
   const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
-  
-  // Generate secure session secret if not provided
-  const sessionSecret = process.env.SESSION_SECRET || require('crypto').randomBytes(32).toString('hex');
+  const pgStore = connectPg(session);
+  const sessionStore = new pgStore({
+    conString: process.env.DATABASE_URL,
+    createTableIfMissing: true,
+    ttl: sessionTtl,
+    tableName: "sessions",
+  });
+
+  // Use a fixed session secret for consistency across restarts
+  const sessionSecret = process.env.SESSION_SECRET || 'rpg-realm-session-secret-key-fixed-2024';
   
   app.use(session({
     secret: sessionSecret,
-    resave: true,
-    saveUninitialized: true,
+    store: sessionStore,
+    resave: false,
+    saveUninitialized: false,
     cookie: {
       httpOnly: false, // Allow client-side access for debugging
       secure: false, // Set to false for development
