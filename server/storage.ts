@@ -17,6 +17,10 @@ import {
   influenceHistory,
   housingRequests,
   owlPostMessages,
+  wandWoods,
+  wandCores,
+  wandLengths,
+  wandFlexibilities,
   type User,
   type InsertUser,
   type Character,
@@ -50,6 +54,14 @@ import {
   type InsertHousingRequest,
   type OwlPostMessage,
   type InsertOwlPostMessage,
+  type WandWood,
+  type InsertWandWood,
+  type WandCore,
+  type InsertWandCore,
+  type WandLength,
+  type InsertWandLength,
+  type WandFlexibility,
+  type InsertWandFlexibility,
   wands,
 } from "@shared/schema";
 import { db } from "./db";
@@ -1349,39 +1361,49 @@ export class DatabaseStorage implements IStorage {
     lengths: { name: string; description: string; availableForRandom?: boolean }[];
     flexibilities: { name: string; description: string; availableForRandom?: boolean }[];
   }> {
-    // Try to load from database first
     try {
-      const [configRow] = await db.select().from(configuration).where(eq(configuration.key, 'wand_components'));
-      if (configRow && configRow.value) {
-        this.storedWandComponents = configRow.value as {
-          woods: { name: string; shortDescription: string; longDescription: string; availableForRandom?: boolean }[];
-          cores: { name: string; category: string; description: string; availableForRandom?: boolean }[];
-          lengths: { name: string; description: string; availableForRandom?: boolean }[];
-          flexibilities: { name: string; description: string; availableForRandom?: boolean }[];
-        };
-        return this.storedWandComponents;
-      }
+      // Load all component data from database tables
+      const [woods, cores, lengths, flexibilities] = await Promise.all([
+        db.select().from(wandWoods),
+        db.select().from(wandCores), 
+        db.select().from(wandLengths),
+        db.select().from(wandFlexibilities)
+      ]);
+
+      return {
+        woods: woods.map(w => ({
+          name: w.name,
+          shortDescription: w.shortDescription,
+          longDescription: w.longDescription,
+          availableForRandom: w.availableForRandom
+        })),
+        cores: cores.map(c => ({
+          name: c.name,
+          category: c.category,
+          description: c.description,
+          availableForRandom: c.availableForRandom
+        })),
+        lengths: lengths.map(l => ({
+          name: l.name,
+          description: l.description,
+          availableForRandom: l.availableForRandom
+        })),
+        flexibilities: flexibilities.map(f => ({
+          name: f.name,
+          description: f.description,
+          availableForRandom: f.availableForRandom
+        }))
+      };
     } catch (error) {
       console.error("Error loading wand components from database:", error);
+      // Return empty arrays if database fails
+      return {
+        woods: [],
+        cores: [],
+        lengths: [],
+        flexibilities: []
+      };
     }
-
-    // Return stored components if they exist in memory
-    if (this.storedWandComponents) {
-      return this.storedWandComponents;
-    }
-    
-    // If no stored components, create and store default ones
-    const defaultComponents = this.getDefaultWandComponents();
-    this.storedWandComponents = defaultComponents;
-    
-    // Save to database for persistence
-    try {
-      await this.updateWandComponents(defaultComponents);
-    } catch (error) {
-      console.error("Error saving default wand components to database:", error);
-    }
-    
-    return defaultComponents;
   }
 
   private getDefaultWandComponents(): {
