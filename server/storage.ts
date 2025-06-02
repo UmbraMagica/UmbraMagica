@@ -1256,88 +1256,26 @@ export class DatabaseStorage implements IStorage {
   }
 
   async generateRandomWand(characterId: number): Promise<Wand> {
-    // Define wand components - Basic cores (most common)
-    const basicCores = [
-      "🐉 Blána z dračího srdce",
-      "🦄 Vlas z hřívy jednorožce", 
-      "🔥 Pero fénixe"
-    ];
-
-    // Rare cores from magical plants
-    const plantCores = [
-      "🌱 Kořen mandragory (sušený, očarovaný)",
-      "🌸 Květ Asfodelu (uchovaný v kouzelnické pryskyřici)",
-      "🍃 List měsíční kapradiny"
-    ];
-
-    // Very rare cores from magical creatures
-    const creatureCores = [
-      "🐺 Zub vlkodlaka",
-      "🕷️ Jed z akromantule (zakonzervovaný v vláknu)",
-      "🐍 Hadí jazyk (vzácný exemplář)",
-      "🦉 Opeření z noční můry (stínového hippogryfa)"
-    ];
-
-    // Elemental and mineral cores
-    const elementalCores = [
-      "🪨 Dračí kámen (Bloodstone)",
-      "🖤 Obsidián s runovým leptem",
-      "🔮 Měsíční kámen",
-      "⚡ Rudý jantar s duší hmyzího krále"
-    ];
-
-    // Less noble cores
-    const lesserCores = [
-      "🧝‍♀️ Vlas víly",
-      "🦴 Nehet ďasovce"
-    ];
-
-    // Weight the selection toward basic cores (80% chance)
-    const randomChance = Math.random();
-    let selectedCores;
-    
-    if (randomChance < 0.8) {
-      selectedCores = basicCores;
-    } else if (randomChance < 0.9) {
-      selectedCores = plantCores;
-    } else if (randomChance < 0.95) {
-      selectedCores = elementalCores;
-    } else if (randomChance < 0.98) {
-      selectedCores = creatureCores;
-    } else {
-      selectedCores = lesserCores;
-    }
-
-    const cores = selectedCores;
-
-    const woods = [
-      "Akácie", "Anglický dub", "Borovice", "Buk", "Cedr", "Cesmína", "Cypřiš", 
-      "Černý bez", "Černý ořech", "Červený dub", "Dřín", "Eben", "Habr", "Hloh", 
-      "Hrušeň", "Jabloň", "Jasan", "Javor", "Jedle", "Jeřáb", "Jilm", "Kaštan", 
-      "Lípa stříbřitá", "Líska", "Modřín", "Ořech", "Růže", "Smrk", "Tis", 
-      "Topol", "Třešeň", "Vrba", "Vinná réva"
-    ];
-
-    // Get components from the main method to ensure consistency
+    // Get components from the database with availability settings
     const allComponents = await this.getAllWandComponents();
     
     // Filter components that are available for random selection
-    const availableWoods = allComponents.woods.filter(wood => wood.availableForRandom !== false);
-    const availableCores = allComponents.cores.filter(core => core.availableForRandom !== false);
-    const availableLengths = allComponents.lengths.filter(length => length.availableForRandom !== false);
-    const availableFlexibilities = allComponents.flexibilities.filter(flex => flex.availableForRandom !== false);
+    const availableWoods = allComponents.woods.filter(wood => wood.availableForRandom === true);
+    const availableCores = allComponents.cores.filter(core => core.availableForRandom === true);
+    const availableLengths = allComponents.lengths.filter(length => length.availableForRandom === true);
+    const availableFlexibilities = allComponents.flexibilities.filter(flex => flex.availableForRandom === true);
     
-    // Fallback to all components if none are available for random selection
-    const woodsToUse = availableWoods.length > 0 ? availableWoods : allComponents.woods;
-    const coresToUse = availableCores.length > 0 ? availableCores : allComponents.cores;
-    const lengthsToUse = availableLengths.length > 0 ? availableLengths : allComponents.lengths;
-    const flexibilitiesToUse = availableFlexibilities.length > 0 ? availableFlexibilities : allComponents.flexibilities;
+    // Ensure we have available components for random selection
+    if (availableWoods.length === 0 || availableCores.length === 0 || 
+        availableLengths.length === 0 || availableFlexibilities.length === 0) {
+      throw new Error("Insufficient components available for random wand generation");
+    }
     
-    // Generate random selections from available components
-    const randomCore = coresToUse[Math.floor(Math.random() * coresToUse.length)];
-    const randomWood = woodsToUse[Math.floor(Math.random() * woodsToUse.length)];
-    const randomLength = lengthsToUse[Math.floor(Math.random() * lengthsToUse.length)]; // Use all available lengths
-    const randomFlexibility = flexibilitiesToUse[Math.floor(Math.random() * flexibilitiesToUse.length)];
+    // Generate random selections from available components only
+    const randomWood = availableWoods[Math.floor(Math.random() * availableWoods.length)];
+    const randomCore = availableCores[Math.floor(Math.random() * availableCores.length)];
+    const randomLength = availableLengths[Math.floor(Math.random() * availableLengths.length)];
+    const randomFlexibility = availableFlexibilities[Math.floor(Math.random() * availableFlexibilities.length)];
 
     const description = `Hůlka z ${randomWood.name.toLowerCase()}, ${randomLength.name} dlouhá, ${randomFlexibility.name.toLowerCase()}, s jádrem ${randomCore.name.toLowerCase()}. Vybrána Ollivanderem osobně pro svého nového majitele.`;
 
