@@ -44,9 +44,19 @@ export default function Landing() {
       });
     } catch (error: any) {
       console.log("Login error:", error);
+      let errorMessage = "Neplatné přihlašovací údaje";
+      
+      if (error.status === 401) {
+        errorMessage = "Nesprávné uživatelské jméno nebo heslo";
+      } else if (error.status === 500) {
+        errorMessage = "Chyba serveru, zkuste to později";
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
       toast({
-        title: "Chyba přihlášení",
-        description: error.message || "Neplatné přihlašovací údaje",
+        title: "Přihlášení selhalo",
+        description: errorMessage,
         variant: "destructive",
       });
     }
