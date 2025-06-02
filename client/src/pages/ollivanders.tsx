@@ -600,56 +600,31 @@ export default function Ollivanders() {
               {/* Cores */}
               <div>
                 <h4 className="font-medium mb-2 text-red-600 dark:text-red-400">🔥 Jádra hůlek (23 druhů)</h4>
-                <div className="text-xs space-y-1">
+                <div className="text-xs space-y-1 max-h-48 overflow-y-auto">
                   <div className="font-medium text-green-600 dark:text-green-400">Nejvznešenější:</div>
-                  {wandComponents?.cores?.filter((core) => ['🐉 Blána z dračího srdce', '🦄 Vlas z hřívy jednorožce', '🔥 Pero fénixe'].includes(core.name)).map((core) => (
-                    <p key={core.name}>
-                      <strong>{core.name}:</strong> {core.shortDescription}
-                      {core.availableForRandom === false && (
-                        <span className="text-orange-600 dark:text-orange-400 font-medium"> [Ruční pouze]</span>
-                      )}
-                    </p>
-                  ))}
+                  <p><strong>🐉 Blána z dračího srdce:</strong> Tradičníjádro, silná a temperamentní</p>
+                  <p><strong>🦄 Vlas z hřívy jednorožce:</strong> Nejvěrnější typ jádra</p>
+                  <p><strong>🔥 Pero fénixe:</strong> Nejnáročnější, ale nejsilnější jádro</p>
                   
                   <div className="font-medium text-blue-600 dark:text-blue-400 mt-2">Rostlinná jádra:</div>
-                  {wandComponents?.cores?.filter((core) => core.name.includes('🌿') || core.name.includes('🌱')).map((core) => (
-                    <p key={core.name}>
-                      <strong>{core.name}:</strong> {core.shortDescription}
-                      {core.availableForRandom === false && (
-                        <span className="text-orange-600 dark:text-orange-400 font-medium"> [Ruční pouze]</span>
-                      )}
-                    </p>
-                  ))}
+                  <p><strong>🌿 Kořen mandragory sušený:</strong> Charakteristika silně spojena s magickými rostlinami</p>
+                  <p><strong>🌱 Listí dubové kvítí:</strong> Spojeno s přírodní magií a stabilitou</p>
                   
                   <div className="font-medium text-purple-600 dark:text-purple-400 mt-2">Tvorové:</div>
-                  {wandComponents?.cores?.filter((core) => core.name.includes('🐺') || core.name.includes('🦅') || core.name.includes('🐍')).map((core) => (
-                    <p key={core.name}>
-                      <strong>{core.name}:</strong> {core.shortDescription}
-                      {core.availableForRandom === false && (
-                        <span className="text-orange-600 dark:text-orange-400 font-medium"> [Ruční pouze]</span>
-                      )}
-                    </p>
-                  ))}
+                  <p><strong>🐺 Chlupy z vlčí srsti:</strong> Divocí a nezávislí kouzelníci</p>
+                  <p><strong>🦅 Pero orla:</strong> Svobodomyslní a nezávislí</p>
+                  <p><strong>🐍 Šupina hada:</strong> Lstivé a obratné typy</p>
                   
                   <div className="font-medium text-indigo-600 dark:text-indigo-400 mt-2">Elementární:</div>
-                  {wandComponents?.cores?.filter((core) => !['🐉 Blána z dračího srdce', '🦄 Vlas z hřívy jednorožce', '🔥 Pero fénixe'].includes(core.name) && !core.name.includes('🌿') && !core.name.includes('🌱') && !core.name.includes('🐺') && !core.name.includes('🦅') && !core.name.includes('🐍')).map((core) => (
-                    <p key={core.name}>
-                      <strong>{core.name}:</strong> {core.shortDescription}
-                      {core.availableForRandom === false && (
-                        <span className="text-orange-600 dark:text-orange-400 font-medium"> [Ruční pouze]</span>
-                      )}
-                    </p>
-                  ))}
+                  <p><strong>⚡ Síla blesku:</strong> Rychlé a energické osobnosti</p>
+                  <p><strong>🌊 Kapka mořské vody:</strong> Plovoucí a adaptabilní</p>
+                  <p><strong>🌋 Popel sopky:</strong> Vášnivé a temperamentní</p>
+                  <p><strong>❄️ Krystal ledu:</strong> Chladnokrevné a racionální</p>
                   
                   <div className="font-medium text-gray-600 dark:text-gray-400 mt-2">Méně ušlechtilé:</div>
-                  {wandComponents?.cores?.filter((core) => core.name.includes('🕷️') || core.name.includes('🐀') || core.name.includes('🪱')).map((core) => (
-                    <p key={core.name}>
-                      <strong>{core.name}:</strong> {core.shortDescription}
-                      {core.availableForRandom === false && (
-                        <span className="text-orange-600 dark:text-orange-400 font-medium"> [Ruční pouze]</span>
-                      )}
-                    </p>
-                  ))}
+                  <p><strong>🕷️ Pavučina:</strong> Lstivé a vypočítavé osobnosti</p>
+                  <p><strong>🐀 Chlup krysy:</strong> Skryté a nenápadné</p>
+                  <p><strong>🪱 Slizná nitka:</strong> Pomalé ale vytrvalé osobnosti</p>
                 </div>
               </div>
             </div>
@@ -659,14 +634,16 @@ export default function Ollivanders() {
               <div>
                 <h4 className="font-medium mb-2 text-purple-600 dark:text-purple-400">📏 Délky hůlek (10 velikostí)</h4>
                 <div className="text-xs grid grid-cols-2 gap-1">
-                  {wandComponents?.lengths?.map((length: any) => (
-                    <p key={length.name}>
-                      <strong>{length.name}:</strong> {length.description.split('.')[0]}
-                      {length.availableForRandom === false && (
-                        <span className="text-orange-600 dark:text-orange-400 font-medium"> [Ruční pouze]</span>
-                      )}
-                    </p>
-                  ))}
+                  <p><strong>7":</strong> Kompaktní a diskrétní</p>
+                  <p><strong>8":</strong> Malé ale účinné</p>
+                  <p><strong>9":</strong> Přiměřené pro začátečníky</p>
+                  <p><strong>10":</strong> Standardní velikost</p>
+                  <p><strong>11":</strong> Populární volba</p>
+                  <p><strong>12":</strong> Vyvážené vlastnosti</p>
+                  <p><strong>13":</strong> Delší dosah</p>
+                  <p><strong>14":</strong> Silné kouzelnické síly</p>
+                  <p><strong>15":</strong> Neobvykle dlouhé</p>
+                  <p><strong>16":</strong> Výjimečně mocné</p>
                 </div>
               </div>
 
@@ -674,14 +651,17 @@ export default function Ollivanders() {
               <div>
                 <h4 className="font-medium mb-2 text-indigo-600 dark:text-indigo-400">🌊 Ohebnost (11 stupňů)</h4>
                 <div className="text-xs space-y-1">
-                  {wandComponents?.flexibilities?.map((flexibility: any) => (
-                    <p key={flexibility.name}>
-                      <strong>{flexibility.name}:</strong> {flexibility.description.split('.')[0]}
-                      {flexibility.availableForRandom === false && (
-                        <span className="text-orange-600 dark:text-orange-400 font-medium"> [Ruční pouze]</span>
-                      )}
-                    </p>
-                  ))}
+                  <p><strong>Neohebná:</strong> Tvrdohlavé povahy</p>
+                  <p><strong>Nepružná:</strong> Konzervativní přístupy</p>
+                  <p><strong>Tuhá:</strong> Metodické osobnosti</p>
+                  <p><strong>Pevná:</strong> Stabilní charaktery</p>
+                  <p><strong>Tvrdá:</strong> Silné vůle</p>
+                  <p><strong>Rozumně pružná:</strong> Adaptabilní</p>
+                  <p><strong>Pružná:</strong> Přizpůsobivé</p>
+                  <p><strong>Poddajná:</strong> Snadně ovlivnitelné</p>
+                  <p><strong>Velmi pružná:</strong> Mimořádně adaptabilní</p>
+                  <p><strong>Ohebná:</strong> Velmi flexibilní</p>
+                  <p><strong>Nejvíce ohebná:</strong> Extrémně přizpůsobivé</p>
                 </div>
               </div>
             </div>
