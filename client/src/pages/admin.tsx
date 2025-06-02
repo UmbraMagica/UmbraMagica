@@ -1120,7 +1120,7 @@ export default function Admin() {
                                 </div>
                               </div>
                               <div className="text-xs text-muted-foreground">
-                                {new Date(entry.createdAt).toLocaleString('cs-CZ')}
+                                {entry.createdAt ? new Date(entry.createdAt).toLocaleString('cs-CZ') : 'Neznámé datum'}
                               </div>
                             </div>
                           ))}

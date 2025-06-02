@@ -589,8 +589,8 @@ export default function Home() {
                                       </div>
                                     </div>
                                     <div className="text-xs text-muted-foreground">
-                                      <div>Admin ID: {entry.admin_id}</div>
-                                      <div>{new Date(entry.created_at).toLocaleString('cs-CZ')}</div>
+                                      <div>Admin ID: {entry.adminId}</div>
+                                      <div>{entry.createdAt ? new Date(entry.createdAt).toLocaleString('cs-CZ') : 'Neznámé datum'}</div>
                                     </div>
                                   </div>
                                 ))}
