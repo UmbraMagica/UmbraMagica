@@ -21,12 +21,17 @@ export function useAuth() {
   const queryClient = useQueryClient();
   const [, setLocation] = useLocation();
 
-  const { data: user, isLoading } = useQuery<AuthUser | null>({
+  const { data: user, isLoading, error } = useQuery<AuthUser | null>({
     queryKey: ["/api/auth/user"],
     queryFn: getQueryFn({ on401: "returnNull" }),
     retry: false,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
+
+  // Debug logging
+  console.log('useAuth - user data:', user);
+  console.log('useAuth - isLoading:', isLoading);
+  console.log('useAuth - error:', error);
 
   const loginMutation = useMutation({
     mutationFn: async (credentials: { username: string; password: string }) => {
