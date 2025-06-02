@@ -179,49 +179,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   app.post("/api/auth/login", async (req, res) => {
+    console.log("=== LOGIN REQUEST ===");
+    console.log("Request body:", req.body);
+    console.log("Session ID before:", req.sessionID);
+    console.log("Session data before:", req.session);
+    
     try {
       const { username, password } = loginSchema.parse(req.body);
+      console.log("Parsed credentials - username:", username);
       
       const user = await storage.validateUser(username, password);
+      console.log("User validation result:", user ? `User found: ${user.id}` : "No user found");
+      
       if (!user) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
 
-      // Clear any existing session data first
-      req.session.regenerate((err) => {
-        if (err) {
-          console.error("Session regeneration error:", err);
-          return res.status(500).json({ message: "Login failed" });
-        }
-        
-        req.session.userId = user.id;
-        req.session.userRole = user.role;
-        
-        // Force session save and then respond
-        req.session.save(async (saveErr) => {
-          if (saveErr) {
-            console.error("Session save error:", saveErr);
-            return res.status(500).json({ message: "Login failed" });
-          }
-          
-          console.log("Login successful - Session saved:", req.sessionID, "UserID:", user.id);
-          
-          const characters = await storage.getCharactersByUserId(user.id);
-          
-          res.json({
-            id: user.id,
-            username: user.username,
-            email: user.email,
-            role: user.role,
-            characters,
-          });
-        });
+      // Set session data directly without regeneration for testing
+      req.session.userId = user.id;
+      req.session.userRole = user.role;
+      
+      console.log("Session after setting data:", req.session);
+      console.log("Session ID after:", req.sessionID);
+      
+      const characters = await storage.getCharactersByUserId(user.id);
+      
+      res.json({
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        characters,
       });
+      
+      console.log("Login response sent successfully");
     } catch (error) {
+      console.error("Login error:", error);
       if (error instanceof z.ZodError) {
         return res.status(400).json({ message: "Invalid input", errors: error.errors });
       }
-      console.error("Login error:", error);
       res.status(500).json({ message: "Login failed" });
     }
   });
