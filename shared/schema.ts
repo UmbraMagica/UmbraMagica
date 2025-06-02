@@ -411,6 +411,41 @@ export const housingRequestsRelations = relations(housingRequests, ({ one }) => 
   }),
 }));
 
+// Wand Components tables
+export const wandWoods = pgTable("wand_woods", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 100 }).notNull().unique(),
+  shortDescription: text("short_description").notNull(),
+  longDescription: text("long_description").notNull(),
+  availableForRandom: boolean("available_for_random").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const wandCores = pgTable("wand_cores", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 100 }).notNull().unique(),
+  category: varchar("category", { length: 50 }).notNull(),
+  description: text("description").notNull(),
+  availableForRandom: boolean("available_for_random").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const wandLengths = pgTable("wand_lengths", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 50 }).notNull().unique(),
+  description: text("description").notNull(),
+  availableForRandom: boolean("available_for_random").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const wandFlexibilities = pgTable("wand_flexibilities", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 50 }).notNull().unique(),
+  description: text("description").notNull(),
+  availableForRandom: boolean("available_for_random").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 // Owl Post Messages table
 export const owlPostMessages = pgTable("owl_post_messages", {
   id: serial("id").primaryKey(),
@@ -519,6 +554,32 @@ export const insertOwlPostMessageSchema = createInsertSchema(owlPostMessages).pi
   recipientCharacterId: true,
   subject: true,
   content: true,
+});
+
+export const insertWandWoodSchema = createInsertSchema(wandWoods).pick({
+  name: true,
+  shortDescription: true,
+  longDescription: true,
+  availableForRandom: true,
+});
+
+export const insertWandCoreSchema = createInsertSchema(wandCores).pick({
+  name: true,
+  category: true,
+  description: true,
+  availableForRandom: true,
+});
+
+export const insertWandLengthSchema = createInsertSchema(wandLengths).pick({
+  name: true,
+  description: true,
+  availableForRandom: true,
+});
+
+export const insertWandFlexibilitySchema = createInsertSchema(wandFlexibilities).pick({
+  name: true,
+  description: true,
+  availableForRandom: true,
 });
 
 export const registrationSchema = z.object({
@@ -702,6 +763,14 @@ export type HousingRequest = typeof housingRequests.$inferSelect;
 export type InsertHousingRequest = typeof housingRequests.$inferInsert;
 export type OwlPostMessage = typeof owlPostMessages.$inferSelect;
 export type InsertOwlPostMessage = typeof owlPostMessages.$inferInsert;
+export type WandWood = typeof wandWoods.$inferSelect;
+export type InsertWandWood = typeof wandWoods.$inferInsert;
+export type WandCore = typeof wandCores.$inferSelect;
+export type InsertWandCore = typeof wandCores.$inferInsert;
+export type WandLength = typeof wandLengths.$inferSelect;
+export type InsertWandLength = typeof wandLengths.$inferInsert;
+export type WandFlexibility = typeof wandFlexibilities.$inferSelect;
+export type InsertWandFlexibility = typeof wandFlexibilities.$inferInsert;
 
 // Update User type to include narrator fields
 export type User = typeof users.$inferSelect;

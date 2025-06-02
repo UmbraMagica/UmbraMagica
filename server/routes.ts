@@ -79,10 +79,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     store: sessionStore,
     resave: false,
     saveUninitialized: false,
+    name: 'rpg.sid', // Custom session name
     cookie: {
       httpOnly: false, // Allow client-side access for debugging
       secure: false, // Set to false for development
-      sameSite: 'lax',
+      sameSite: 'none', // Changed for cross-origin requests
       maxAge: sessionTtl,
     },
   }));
