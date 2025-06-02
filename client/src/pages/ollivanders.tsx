@@ -471,8 +471,8 @@ export default function Ollivanders() {
                                       <span className="text-xs bg-amber-100 text-amber-800 px-1 py-0.5 rounded">Ruční pouze</span>
                                     )}
                                   </div>
-                                  {typeof length === 'object' && length.description && (
-                                    <div className="text-xs text-muted-foreground whitespace-normal break-words">{length.description}</div>
+                                  {typeof length === 'object' && length.shortDescription && (
+                                    <div className="text-xs text-muted-foreground whitespace-normal break-words">{length.shortDescription}</div>
                                   )}
                                 </div>
                               </SelectItem>
@@ -498,8 +498,8 @@ export default function Ollivanders() {
                                       <span className="text-xs bg-amber-100 text-amber-800 px-1 py-0.5 rounded">Ruční pouze</span>
                                     )}
                                   </div>
-                                  {typeof flexibility === 'object' && flexibility.description && (
-                                    <div className="text-xs text-muted-foreground whitespace-normal break-words">{flexibility.description}</div>
+                                  {typeof flexibility === 'object' && flexibility.shortDescription && (
+                                    <div className="text-xs text-muted-foreground whitespace-normal break-words">{flexibility.shortDescription}</div>
                                   )}
                                 </div>
                               </SelectItem>
