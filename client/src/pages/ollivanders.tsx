@@ -358,7 +358,7 @@ export default function Ollivanders() {
                 <div className="text-sm text-blue-800 dark:text-blue-200 space-y-1">
                   <p>• <strong>Náhodný výběr:</strong> Ollivander vybírá pouze z komponent povolených administrátory</p>
                   <p>• <strong>Ruční výběr:</strong> Můžete si vybrat z všech dostupných komponent</p>
-                  <p>• <strong>Štítek "Ruční pouze":</strong> Tyto komponenty nejsou dostupné v náhodném výběru</p>
+                  <p>• <strong>Štítek "Pouze ruční výběr":</strong> Tyto komponenty nejsou dostupné v náhodném výběru</p>
                 </div>
               </div>
               
