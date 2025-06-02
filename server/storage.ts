@@ -1720,25 +1720,53 @@ export class DatabaseStorage implements IStorage {
     flexibilities: { name: string; description: string; availableForRandom?: boolean }[];
   }): Promise<void> {
     try {
-      // Store components in database
-      await db.insert(configuration)
-        .values({
-          key: 'wand_components',
-          value: components
-        })
-        .onConflictDoUpdate({
-          target: configuration.key,
-          set: {
-            value: components,
-            updatedAt: new Date()
-          }
-        });
+      // Update each component type in their respective database tables
       
-      // Also store in memory for performance
-      this.storedWandComponents = components as any;
-      console.log("Wand components updated and stored in database:", components);
+      // Update woods
+      for (const wood of components.woods) {
+        await db.update(wandWoods)
+          .set({
+            shortDescription: wood.shortDescription,
+            longDescription: wood.longDescription,
+            availableForRandom: wood.availableForRandom !== false
+          })
+          .where(eq(wandWoods.name, wood.name));
+      }
+
+      // Update cores
+      for (const core of components.cores) {
+        await db.update(wandCores)
+          .set({
+            category: core.category,
+            description: core.description,
+            availableForRandom: core.availableForRandom !== false
+          })
+          .where(eq(wandCores.name, core.name));
+      }
+
+      // Update lengths
+      for (const length of components.lengths) {
+        await db.update(wandLengths)
+          .set({
+            description: length.description,
+            availableForRandom: length.availableForRandom !== false
+          })
+          .where(eq(wandLengths.name, length.name));
+      }
+
+      // Update flexibilities
+      for (const flexibility of components.flexibilities) {
+        await db.update(wandFlexibilities)
+          .set({
+            description: flexibility.description,
+            availableForRandom: flexibility.availableForRandom !== false
+          })
+          .where(eq(wandFlexibilities.name, flexibility.name));
+      }
+
+      console.log("Wand components updated in database tables successfully");
     } catch (error) {
-      console.error("Error storing wand components:", error);
+      console.error("Error updating wand components in database:", error);
       throw error;
     }
   }
