@@ -68,6 +68,8 @@ export const characters = pgTable("characters", {
   heightSetAt: timestamp("height_set_at"), // kdy byla výška nastavena (pro jednoráz editaci)
   schoolSetAt: timestamp("school_set_at"), // kdy byla škola nastavena (pro jednoráz editaci)
   residence: text("residence"), // bydliště postavy
+  characterHistory: text("character_history"), // historie postavy
+  showHistoryToOthers: boolean("show_history_to_others").default(true).notNull(), // viditelnost historie ostatním
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

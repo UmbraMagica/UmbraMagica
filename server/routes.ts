@@ -718,18 +718,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { history, showHistoryToOthers } = req.body;
       const userId = req.session.userId!;
       
-      // Check if the character belongs to the authenticated user
+      // Check if the character belongs to the authenticated user or user is admin
       const character = await storage.getCharacter(characterId);
       if (!character) {
         return res.status(404).json({ message: "Postava nebyla nalezena" });
       }
       
-      if (character.userId !== userId) {
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(401).json({ message: "Uživatel nenalezen" });
+      }
+      
+      if (character.userId !== userId && user.role !== 'admin') {
         return res.status(403).json({ message: "Nemáte oprávnění upravovat tuto postavu" });
       }
       
-      // Update character (removed history functionality as not requested)
+      // Update character with history data
       const updatedCharacter = await storage.updateCharacter(characterId, {
+        characterHistory: history,
+        showHistoryToOthers: showHistoryToOthers,
         updatedAt: new Date()
       });
       
