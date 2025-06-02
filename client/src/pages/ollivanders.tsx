@@ -73,8 +73,8 @@ export default function Ollivanders() {
     // Invalidate all wand queries for any character
     queryClient.invalidateQueries({ 
       predicate: (query) => {
-        return query.queryKey[0]?.toString().includes('/api/characters/') && 
-               query.queryKey[0]?.toString().includes('/wand');
+        const key = query.queryKey[0];
+        return typeof key === 'string' && key.includes('/api/characters/') && key.includes('/wand');
       }
     });
   };
@@ -103,7 +103,12 @@ export default function Ollivanders() {
   console.log('Ollivanders - Character wand data:', characterWand);
 
   // Get wand components for manual selection
-  const { data: wandComponents } = useQuery({
+  const { data: wandComponents } = useQuery<{
+    woods: Array<{ name: string; shortDescription: string; availableForRandom?: boolean }>;
+    cores: Array<{ name: string; shortDescription: string; availableForRandom?: boolean }>;
+    lengths: Array<{ name: string; shortDescription: string; availableForRandom?: boolean }>;
+    flexibilities: Array<{ name: string; shortDescription: string; availableForRandom?: boolean }>;
+  }>({
     queryKey: ['/api/wand-components']
   });
 
@@ -407,7 +412,7 @@ export default function Ollivanders() {
                             <SelectValue placeholder="Vyberte dřevo..." />
                           </SelectTrigger>
                           <SelectContent>
-                            {wandComponents.woods?.map((wood: any) => (
+                            {wandComponents?.woods?.map((wood) => (
                               <SelectItem key={wood.name} value={wood.name}>
                                 <div className="w-full max-w-xs">
                                   <div className="flex items-center gap-2">
@@ -432,7 +437,7 @@ export default function Ollivanders() {
                             <SelectValue placeholder="Vyberte jádro..." />
                           </SelectTrigger>
                           <SelectContent>
-                            {wandComponents.cores?.map((core: any) => (
+                            {wandComponents?.cores?.map((core) => (
                               <SelectItem key={core.name} value={core.name}>
                                 <div className="w-full max-w-xs">
                                   <div className="flex items-center gap-2">
@@ -441,11 +446,7 @@ export default function Ollivanders() {
                                       <span className="text-xs bg-amber-100 text-amber-800 px-1 py-0.5 rounded">Ruční pouze</span>
                                     )}
                                   </div>
-                                  <div className="text-xs text-muted-foreground whitespace-normal break-words">
-                                    <span className="font-medium">{core.category}</span>
-                                    <br />
-                                    {core.description}
-                                  </div>
+                                  <div className="text-xs text-muted-foreground whitespace-normal break-words">{core.shortDescription}</div>
                                 </div>
                               </SelectItem>
                             ))}
@@ -461,7 +462,7 @@ export default function Ollivanders() {
                             <SelectValue placeholder="Vyberte délku..." />
                           </SelectTrigger>
                           <SelectContent>
-                            {wandComponents.lengths?.map((length: any) => (
+                            {wandComponents?.lengths?.map((length) => (
                               <SelectItem key={typeof length === 'string' ? length : length.name} value={typeof length === 'string' ? length : length.name}>
                                 <div className="w-full max-w-xs">
                                   <div className="flex items-center gap-2">
@@ -488,7 +489,7 @@ export default function Ollivanders() {
                             <SelectValue placeholder="Vyberte ohebnost..." />
                           </SelectTrigger>
                           <SelectContent>
-                            {wandComponents.flexibilities?.map((flexibility: any) => (
+                            {wandComponents?.flexibilities?.map((flexibility) => (
                               <SelectItem key={typeof flexibility === 'string' ? flexibility : flexibility.name} value={typeof flexibility === 'string' ? flexibility : flexibility.name}>
                                 <div className="w-full max-w-xs">
                                   <div className="flex items-center gap-2">
