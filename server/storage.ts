@@ -13,8 +13,7 @@ import {
   characterInventory,
   characterJournal,
   configuration,
-  influenceBar,
-  influenceHistory,
+
   housingRequests,
   owlPostMessages,
   wandWoods,

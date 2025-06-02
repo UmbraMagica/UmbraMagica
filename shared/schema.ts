@@ -68,8 +68,6 @@ export const characters = pgTable("characters", {
   heightSetAt: timestamp("height_set_at"), // kdy byla výška nastavena (pro jednoráz editaci)
   schoolSetAt: timestamp("school_set_at"), // kdy byla škola nastavena (pro jednoráz editaci)
   residence: text("residence"), // bydliště postavy
-  characterHistory: text("character_history"), // historie postavy
-  showHistoryToOthers: boolean("show_history_to_others").default(true).notNull(), // viditelnost historie pro ostatní
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
@@ -331,27 +329,6 @@ export const configuration = pgTable("configuration", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-// Influence bar for tracking Grindelwald vs Dumbledore influence
-export const influenceBar = pgTable("influence_bar", {
-  id: serial("id").primaryKey(),
-  grindelwaldPoints: integer("grindelwald_points").default(0).notNull(),
-  dumbledorePoints: integer("dumbledore_points").default(0).notNull(),
-  lastUpdated: timestamp("last_updated").defaultNow().notNull(),
-  updatedBy: integer("updated_by").references(() => users.id),
-});
-
-// Influence change history table
-export const influenceHistory = pgTable("influence_history", {
-  id: serial("id").primaryKey(),
-  changeType: varchar("change_type", { length: 20 }).notNull(), // "grindelwald" or "dumbledore"
-  pointsChanged: integer("points_changed").notNull(), // Can be positive or negative
-  previousTotal: integer("previous_total").notNull(),
-  newTotal: integer("new_total").notNull(),
-  reason: text("reason").notNull(), // Admin's explanation for the change
-  adminId: integer("admin_id").references(() => users.id).notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
 // Housing requests table
 export const housingRequests = pgTable("housing_requests", {
   id: serial("id").primaryKey(),
@@ -389,13 +366,7 @@ export const characterJournalRelations = relations(characterJournal, ({ one }) =
   }),
 }));
 
-// Influence history relations
-export const influenceHistoryRelations = relations(influenceHistory, ({ one }) => ({
-  admin: one(users, {
-    fields: [influenceHistory.adminId],
-    references: [users.id],
-  }),
-}));
+
 
 // Housing requests relations
 export const housingRequestsRelations = relations(housingRequests, ({ one }) => ({
@@ -530,14 +501,7 @@ export const insertAdminActivityLogSchema = createInsertSchema(adminActivityLog)
   details: true,
 });
 
-export const insertInfluenceHistorySchema = createInsertSchema(influenceHistory).pick({
-  changeType: true,
-  pointsChanged: true,
-  previousTotal: true,
-  newTotal: true,
-  reason: true,
-  adminId: true,
-});
+
 
 export const insertHousingRequestSchema = createInsertSchema(housingRequests).pick({
   characterId: true,
@@ -726,12 +690,8 @@ export const journalEntrySchema = z.object({
   tags: z.array(z.string()).default([]),
 });
 
-export const insertInfluenceBarSchema = createInsertSchema(influenceBar).pick({
-  grindelwaldPoints: true,
-  dumbledorePoints: true,
-  updatedBy: true,
-});
-
+export type User = typeof users.$inferSelect;
+export type InsertUser = typeof users.$inferInsert;
 export type Character = typeof characters.$inferSelect;
 export type InsertCharacter = typeof characters.$inferInsert;
 export type InviteCode = typeof inviteCodes.$inferSelect;
@@ -757,10 +717,6 @@ export type JournalEntry = typeof characterJournal.$inferSelect;
 export type InsertJournalEntry = typeof characterJournal.$inferInsert;
 export type Wand = typeof wands.$inferSelect;
 export type InsertWand = typeof wands.$inferInsert;
-export type InfluenceBar = typeof influenceBar.$inferSelect;
-export type InsertInfluenceBar = typeof influenceBar.$inferInsert;
-export type InfluenceHistory = typeof influenceHistory.$inferSelect;
-export type InsertInfluenceHistory = typeof influenceHistory.$inferInsert;
 export type HousingRequest = typeof housingRequests.$inferSelect;
 export type InsertHousingRequest = typeof housingRequests.$inferInsert;
 export type OwlPostMessage = typeof owlPostMessages.$inferSelect;
