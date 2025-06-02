@@ -47,8 +47,7 @@ import {
   type InsertJournalEntry,
   type Wand,
   type InsertWand,
-  type InfluenceBar,
-  type InsertInfluenceBar,
+
   type HousingRequest,
   type InsertHousingRequest,
   type OwlPostMessage,
@@ -205,10 +204,7 @@ export interface IStorage {
     flexibilities: { name: string; description: string }[];
   }): Promise<void>;
   
-  // Influence bar operations
-  getInfluenceBar(): Promise<InfluenceBar | undefined>;
-  updateInfluenceBar(grindelwaldPoints: number, dumbledorePoints: number, updatedBy: number): Promise<InfluenceBar>;
-  adjustInfluence(side: 'grindelwald' | 'dumbledore', points: number, updatedBy: number): Promise<InfluenceBar>;
+
 }
 
 export class DatabaseStorage implements IStorage {
@@ -341,8 +337,7 @@ export class DatabaseStorage implements IStorage {
     const [character] = await db
       .update(characters)
       .set({ 
-        characterHistory: history, 
-        showHistoryToOthers: showToOthers,
+
         updatedAt: new Date() 
       })
       .where(eq(characters.id, id))
@@ -1756,111 +1751,6 @@ export class DatabaseStorage implements IStorage {
       console.error("Error storing wand components:", error);
       throw error;
     }
-  }
-
-  // Influence bar operations
-  async getInfluenceBar(): Promise<InfluenceBar | undefined> {
-    const [bar] = await db
-      .select()
-      .from(influenceBar)
-      .orderBy(desc(influenceBar.id))
-      .limit(1);
-    return bar;
-  }
-
-  async updateInfluenceBar(grindelwaldPoints: number, dumbledorePoints: number, updatedBy: number): Promise<InfluenceBar> {
-    const [bar] = await db
-      .insert(influenceBar)
-      .values({
-        grindelwaldPoints,
-        dumbledorePoints,
-        updatedBy,
-        lastUpdated: new Date()
-      })
-      .returning();
-    return bar;
-  }
-
-  async adjustInfluence(side: 'grindelwald' | 'dumbledore', points: number, updatedBy: number): Promise<InfluenceBar> {
-    const currentBar = await this.getInfluenceBar();
-    
-    let newGrindelwaldPoints = currentBar?.grindelwaldPoints || 0;
-    let newDumbledorePoints = currentBar?.dumbledorePoints || 0;
-    
-    if (side === 'grindelwald') {
-      newGrindelwaldPoints += points;
-    } else {
-      newDumbledorePoints += points;
-    }
-
-    // Ensure points don't go negative
-    newGrindelwaldPoints = Math.max(0, newGrindelwaldPoints);
-    newDumbledorePoints = Math.max(0, newDumbledorePoints);
-
-    return this.updateInfluenceBar(newGrindelwaldPoints, newDumbledorePoints, updatedBy);
-  }
-
-  // Influence operations with history tracking
-  async updateInfluenceWithHistory(
-    changeType: 'grindelwald' | 'dumbledore',
-    pointsChanged: number,
-    reason: string,
-    adminId: number
-  ): Promise<InfluenceBar> {
-    // Get current influence state
-    const [currentInfluence] = await db.select().from(influenceBar).orderBy(desc(influenceBar.id)).limit(1);
-    
-    if (!currentInfluence) {
-      throw new Error('No influence bar found');
-    }
-
-    const previousTotal = changeType === 'grindelwald' ? currentInfluence.grindelwaldPoints : currentInfluence.dumbledorePoints;
-    const newTotal = previousTotal + pointsChanged;
-
-    // Update influence bar
-    const updateData = changeType === 'grindelwald' 
-      ? { grindelwaldPoints: newTotal, lastUpdated: new Date(), updatedBy: adminId }
-      : { dumbledorePoints: newTotal, lastUpdated: new Date(), updatedBy: adminId };
-
-    const [updatedInfluence] = await db
-      .update(influenceBar)
-      .set(updateData)
-      .where(eq(influenceBar.id, currentInfluence.id))
-      .returning();
-
-    // Record the change in history
-    await db.insert(influenceHistory).values({
-      changeType,
-      pointsChanged,
-      previousTotal,
-      newTotal,
-      reason,
-      adminId,
-    });
-
-    return updatedInfluence;
-  }
-
-  async getInfluenceHistory(limit: number = 50, offset: number = 0): Promise<(typeof influenceHistory.$inferSelect & { admin: { username: string } })[]> {
-    return db
-      .select({
-        id: influenceHistory.id,
-        changeType: influenceHistory.changeType,
-        pointsChanged: influenceHistory.pointsChanged,
-        previousTotal: influenceHistory.previousTotal,
-        newTotal: influenceHistory.newTotal,
-        reason: influenceHistory.reason,
-        adminId: influenceHistory.adminId,
-        createdAt: influenceHistory.createdAt,
-        admin: {
-          username: users.username,
-        },
-      })
-      .from(influenceHistory)
-      .innerJoin(users, eq(influenceHistory.adminId, users.id))
-      .orderBy(desc(influenceHistory.createdAt))
-      .limit(limit)
-      .offset(offset);
   }
 
   // Housing request operations

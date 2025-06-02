@@ -690,8 +690,6 @@ export const journalEntrySchema = z.object({
   tags: z.array(z.string()).default([]),
 });
 
-export type User = typeof users.$inferSelect;
-export type InsertUser = typeof users.$inferInsert;
 export type Character = typeof characters.$inferSelect;
 export type InsertCharacter = typeof characters.$inferInsert;
 export type InviteCode = typeof inviteCodes.$inferSelect;
