@@ -66,13 +66,7 @@ export default function CharacterHistory() {
   // History update mutation
   const updateHistoryMutation = useMutation({
     mutationFn: async (data: { history: string; showHistoryToOthers: boolean }) => {
-      return await apiRequest(`/api/characters/${id}/history`, {
-        method: 'PUT',
-        body: JSON.stringify(data),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      return await apiRequest('PUT', `/api/characters/${id}/history`, data);
     },
     onSuccess: () => {
       toast({
