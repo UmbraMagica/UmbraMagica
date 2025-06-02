@@ -79,14 +79,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     store: sessionStore,
     resave: false,
     saveUninitialized: false,
-    name: 'rpg.sid', // Custom session name
+    name: 'connect.sid', // Use default session name
     cookie: {
       httpOnly: false, // Allow client-side access for debugging
       secure: false, // Set to false for development
-      sameSite: 'none', // Changed for cross-origin requests
+      sameSite: 'lax', // Changed back to lax for same-origin
       maxAge: sessionTtl,
+      domain: undefined, // Let browser handle domain
+      path: '/',
     },
   }));
+
+  // Debug middleware to log session and cookies
+  app.use((req: any, res: any, next: any) => {
+    if (req.url.includes('/api/auth') || req.url.includes('/api/wand-components')) {
+      console.log('Request URL:', req.url);
+      console.log('Session ID:', req.sessionID);
+      console.log('Session data:', req.session);
+      console.log('Cookies:', req.headers.cookie);
+    }
+    next();
+  });
 
   // Middleware to check authentication
   const requireAuth = (req: any, res: any, next: any) => {
