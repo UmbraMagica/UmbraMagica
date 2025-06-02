@@ -86,7 +86,7 @@ export interface IStorage {
   getCharactersByUserId(userId: number): Promise<Character[]>;
   createCharacter(character: InsertCharacter): Promise<Character>;
   updateCharacter(id: number, updates: Partial<InsertCharacter>): Promise<Character | undefined>;
-  updateCharacterHistory(id: number, history: string, showToOthers: boolean): Promise<Character | undefined>;
+
   
   // Invite code operations
   getInviteCode(code: string): Promise<InviteCode | undefined>;

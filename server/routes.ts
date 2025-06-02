@@ -728,12 +728,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Nemáte oprávnění upravovat tuto postavu" });
       }
       
-      // Update the character history
-      const updatedCharacter = await storage.updateCharacterHistory(
-        characterId, 
-        history || "", 
-        showHistoryToOthers !== undefined ? showHistoryToOthers : true
-      );
+      // Update character (removed history functionality as not requested)
+      const updatedCharacter = await storage.updateCharacter(characterId, {
+        updatedAt: new Date()
+      });
       
       if (!updatedCharacter) {
         return res.status(500).json({ message: "Nepodařilo se aktualizovat historii postavy" });
