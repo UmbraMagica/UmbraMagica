@@ -2152,7 +2152,6 @@ export class DatabaseStorage implements IStorage {
   // Influence operations
   async getInfluenceBar(): Promise<{ grindelwaldPoints: number; dumbledorePoints: number }> {
     const [result] = await db.select().from(influenceBar).orderBy(desc(influenceBar.id)).limit(1);
-    console.log('getInfluenceBar result:', result);
     return {
       grindelwaldPoints: result?.grindelwaldPoints ?? 50,
       dumbledorePoints: result?.dumbledorePoints ?? 50
@@ -2168,7 +2167,18 @@ export class DatabaseStorage implements IStorage {
         ORDER BY created_at DESC 
         LIMIT 50
       `));
-      return result.rows as any[];
+      
+      // Map database column names to camelCase for frontend
+      return result.rows.map((row: any) => ({
+        id: row.id,
+        changeType: row.change_type,
+        pointsChanged: row.points_changed,
+        previousTotal: row.previous_total,
+        newTotal: row.new_total,
+        reason: row.reason,
+        adminId: row.admin_id,
+        createdAt: row.created_at
+      }));
     } catch (error) {
       console.error('Error fetching influence history:', error);
       return [];
