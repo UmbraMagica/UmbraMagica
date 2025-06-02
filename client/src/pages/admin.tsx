@@ -170,16 +170,13 @@ export default function Admin() {
   const { data: chatRooms = [] } = useQuery({ queryKey: ['/api/chat/rooms'] });
 
   // Stats calculations
-  // Filter out system user characters
-  const nonSystemCharacters = Array.isArray(allCharacters) ? allCharacters.filter((c: any) => {
-    const characterUser = users.find((u: any) => u.id === c.userId);
-    return characterUser?.username !== 'Systém';
-  }) : [];
+  // Filter out system characters (not users)
+  const nonSystemCharacters = Array.isArray(allCharacters) ? allCharacters.filter((c: any) => !c.isSystem) : [];
 
   const stats = {
-    totalUsers: Array.isArray(users) ? users.filter((u: any) => u.username !== 'Systém').length : 0,
-    adminUsers: Array.isArray(users) ? users.filter((u: any) => u.role === 'admin' && u.username !== 'Systém').length : 0,
-    activeCharacters: nonSystemCharacters.filter((c: any) => !c.deathDate).length,
+    totalUsers: Array.isArray(users) ? users.filter((u: any) => !u.isSystem).length : 0,
+    adminUsers: Array.isArray(users) ? users.filter((u: any) => u.role === 'admin' && !u.isSystem).length : 0,
+    activeCharacters: nonSystemCharacters.filter((c: any) => !c.deathDate && c.isActive).length,
     deadCharacters: nonSystemCharacters.filter((c: any) => c.deathDate).length,
     onlineNow: (onlineUsersData as any)?.count || 0,
     pendingRequests: (Array.isArray(characterRequests) ? characterRequests.length : 0) + (Array.isArray(housingRequests) ? housingRequests.length : 0),
