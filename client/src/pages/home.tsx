@@ -70,13 +70,8 @@ export default function Home() {
     staleTime: 30000,
   });
 
-  // Get user's characters
-  const { data: userCharacters = [] } = useQuery({
-    queryKey: ["/api/characters"],
-    enabled: !!user,
-    staleTime: 0, // Always fetch fresh data
-    gcTime: 0     // Don't cache
-  });
+  // Get user's characters from the auth user object
+  const userCharacters = user?.characters || [];
 
   // Get all characters for birthday display
   const { data: allCharacters = [] } = useQuery({
