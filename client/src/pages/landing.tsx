@@ -101,18 +101,10 @@ export default function Landing() {
             <Button
               type="submit"
               disabled={isLoginPending}
-              className="rpg-button-primary"
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
             >
               <LogIn className="mr-2 h-4 w-4" />
               {isLoginPending ? "Přihlašování..." : "Přihlásit se"}
-            </Button>
-            
-            <Button
-              type="button"
-              onClick={() => handleLogin({ preventDefault: () => {} } as any)}
-              className="rpg-button-secondary mt-2"
-            >
-              Test přihlášení (Casey/test123)
             </Button>
           </form>
 
