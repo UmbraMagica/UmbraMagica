@@ -81,8 +81,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // Secure in production
-      sameSite: 'strict', // CSRF protection
+      secure: false, // Set to false for Replit environment
+      sameSite: 'lax', // Changed from strict to lax for better compatibility
       maxAge: sessionTtl,
     },
   }));
