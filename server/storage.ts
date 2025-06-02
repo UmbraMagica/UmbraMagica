@@ -2151,7 +2151,7 @@ export class DatabaseStorage implements IStorage {
 
   // Influence operations
   async getInfluenceBar(): Promise<{ grindelwaldPoints: number; dumbledorePoints: number }> {
-    const [result] = await db.select().from(influenceBar).limit(1);
+    const [result] = await db.select().from(influenceBar).orderBy(desc(influenceBar.id)).limit(1);
     return {
       grindelwaldPoints: result?.grindelwaldPoints || 50,
       dumbledorePoints: result?.dumbledorePoints || 50
@@ -2187,16 +2187,29 @@ export class DatabaseStorage implements IStorage {
   }
 
   async setInfluence(grindelwaldPoints: number, dumbledorePoints: number, userId: number): Promise<void> {
-    // Update influence bar
-    await db
-      .update(influenceBar)
-      .set({
+    // Get the current influence bar record to update
+    const [currentRecord] = await db.select().from(influenceBar).orderBy(desc(influenceBar.id)).limit(1);
+    
+    if (currentRecord) {
+      // Update the latest record
+      await db
+        .update(influenceBar)
+        .set({
+          grindelwaldPoints,
+          dumbledorePoints,
+          lastUpdated: new Date(),
+          updatedBy: userId
+        })
+        .where(eq(influenceBar.id, currentRecord.id));
+    } else {
+      // Create new record if none exists
+      await db.insert(influenceBar).values({
         grindelwaldPoints,
         dumbledorePoints,
         lastUpdated: new Date(),
         updatedBy: userId
-      })
-      .where(eq(influenceBar.id, 1));
+      });
+    }
 
     // Note: History logging is handled separately in adjust-with-history endpoint
   }
