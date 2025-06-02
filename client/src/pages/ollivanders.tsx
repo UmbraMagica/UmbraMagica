@@ -554,13 +554,46 @@ export default function Ollivanders() {
             <div className="grid md:grid-cols-2 gap-6">
               {/* Woods */}
               <div>
-                <h4 className="font-medium mb-2 text-amber-600 dark:text-amber-400">🌳 Hůlková dřeva ({wandComponents?.woods?.length || 0} druhů)</h4>
+                <h4 className="font-medium mb-2 text-amber-600 dark:text-amber-400">🌳 Hůlková dřeva (38 druhů)</h4>
                 <div className="text-xs space-y-1 max-h-48 overflow-y-auto">
-                  {wandComponents?.woods?.map((wood) => (
-                    <p key={wood.name}>
-                      <strong>{wood.name}:</strong> {wood.shortDescription}
-                    </p>
-                  ))}
+                  <p><strong>Akácie:</strong> Velmi neobvyklé, lstivé a škodolibé</p>
+                  <p><strong>Anglický dub:</strong> Síla a vytrvalost, oblíbené u aurorů</p>
+                  <p><strong>Borovice:</strong> Nezávislost a originalita</p>
+                  <p><strong>Bříza:</strong> Poslušnost vůči moudrému majiteli</p>
+                  <p><strong>Buk:</strong> Moudrost a porozumění pro učence</p>
+                  <p><strong>Cedr:</strong> Věrnost a ochrana, stabilní</p>
+                  <p><strong>Cesmína:</strong> Ochrana proti temné magii</p>
+                  <p><strong>Cypřiš:</strong> Spojení s nebezpečím a smrtí</p>
+                  <p><strong>Černý bez:</strong> Nejšťastnější s necromancií</p>
+                  <p><strong>Ebenovník:</strong> Černá magie a síla temnoty</p>
+                  <p><strong>Fíkovník:</strong> Úrodnost a pohostinnost</p>
+                  <p><strong>Habr:</strong> Tvrdé jako kámen, nepoddajné</p>
+                  <p><strong>Hloh:</strong> Komplexní a protichůdná povaha</p>
+                  <p><strong>Hruška:</strong> Láska a něžnost</p>
+                  <p><strong>Jasan:</strong> Tvrdohlavé a přilnavé ke svému majiteli</p>
+                  <p><strong>Javor:</strong> Ambiciózní a dobrodružné</p>
+                  <p><strong>Jedlovec:</strong> Průvodce duchovní cesty</p>
+                  <p><strong>Jilm:</strong> Důstojnost a magická elegance</p>
+                  <p><strong>Jírovec:</strong> Léčivé vlastnosti a ochrana</p>
+                  <p><strong>Kaštanovník:</strong> Spravedlnost a čestnost</p>
+                  <p><strong>Lípa:</strong> Hledané divákožrouty a léčiteli</p>
+                  <p><strong>Mahagon:</strong> Transfigurace a transformace</p>
+                  <p><strong>Modřín:</strong> Odvaha a sebedůvěra</p>
+                  <p><strong>Ořech:</strong> Skvělé pro transfiguraci</p>
+                  <p><strong>Ořešák:</strong> Intelekt a rozum</p>
+                  <p><strong>Osika:</strong> Překonávání strachu</p>
+                  <p><strong>Palma:</strong> Vítězství a triumf</p>
+                  <p><strong>Platan:</strong> Moudrost a vytrvalost</p>
+                  <p><strong>Rohožník:</strong> Spojení s magickou přírodou</p>
+                  <p><strong>Růže:</strong> Velmi vzácné kouzelnické dřevo</p>
+                  <p><strong>Smrk:</strong> Věčnost a stálost</p>
+                  <p><strong>Švestka:</strong> Zdraví a obnova</p>
+                  <p><strong>Tis:</strong> Síla nad životem a smrtí</p>
+                  <p><strong>Topol:</strong> Překonávání překážek</p>
+                  <p><strong>Třešeň:</strong> Vzácné dřevo s výjimečnou silou</p>
+                  <p><strong>Vrba:</strong> Intuice a emoce</p>
+                  <p><strong>Wiggentree:</strong> Ochrana a léčení</p>
+                  <p><strong>Zimostráz:</strong> Výdrž a neústupnost</p>
                 </div>
               </div>
 
