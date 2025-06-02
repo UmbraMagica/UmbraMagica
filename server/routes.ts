@@ -187,17 +187,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Invalid credentials" });
       }
 
-      req.session.userId = user.id;
-      req.session.userRole = user.role;
-      
-      const characters = await storage.getCharactersByUserId(user.id);
-      
-      res.json({
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        role: user.role,
-        characters,
+      // Clear any existing session data first
+      req.session.regenerate((err) => {
+        if (err) {
+          console.error("Session regeneration error:", err);
+          return res.status(500).json({ message: "Login failed" });
+        }
+        
+        req.session.userId = user.id;
+        req.session.userRole = user.role;
+        
+        // Force session save and then respond
+        req.session.save(async (saveErr) => {
+          if (saveErr) {
+            console.error("Session save error:", saveErr);
+            return res.status(500).json({ message: "Login failed" });
+          }
+          
+          console.log("Login successful - Session saved:", req.sessionID, "UserID:", user.id);
+          
+          const characters = await storage.getCharactersByUserId(user.id);
+          
+          res.json({
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            role: user.role,
+            characters,
+          });
+        });
       });
     } catch (error) {
       if (error instanceof z.ZodError) {
