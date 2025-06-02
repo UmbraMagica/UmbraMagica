@@ -29,7 +29,7 @@ interface Character {
   description?: string;
   avatar?: string | null;
   residence?: string;
-  history?: string;
+  characterHistory?: string;
   showHistoryToOthers?: boolean;
   user: {
     username: string;
@@ -61,7 +61,7 @@ export default function CharacterProfile() {
   // Initialize history state when character data loads
   useEffect(() => {
     if (character) {
-      setHistoryText(character.history || "");
+      setHistoryText(character.characterHistory || "");
       setShowHistoryToOthers(character.showHistoryToOthers !== false);
     }
   }, [character]);
@@ -96,7 +96,7 @@ export default function CharacterProfile() {
   };
 
   const handleCancelHistoryEdit = () => {
-    setHistoryText(character?.history || "");
+    setHistoryText(character?.characterHistory || "");
     setShowHistoryToOthers(character?.showHistoryToOthers !== false);
     setIsEditingHistory(false);
   };
@@ -305,6 +305,91 @@ export default function CharacterProfile() {
                           dangerouslySetInnerHTML={{ __html: character.description }}
                         />
                       </div>
+                    </div>
+                  </>
+                )}
+
+                {/* Character History Section */}
+                {(character.characterHistory || canEdit) && (
+                  <>
+                    <Separator />
+                    <div>
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className="font-medium">Historie postavy</h3>
+                        {canEdit && !isEditingHistory && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setIsEditingHistory(true)}
+                            className="flex items-center gap-2"
+                          >
+                            <Edit3 className="h-4 w-4" />
+                            Upravit
+                          </Button>
+                        )}
+                      </div>
+
+                      {isEditingHistory ? (
+                        <div className="space-y-4">
+                          <Textarea
+                            value={historyText}
+                            onChange={(e) => setHistoryText(e.target.value)}
+                            placeholder="Napište historii své postavy..."
+                            className="min-h-[120px]"
+                          />
+                          <div className="flex items-center space-x-2">
+                            <Checkbox
+                              id="show-history"
+                              checked={showHistoryToOthers}
+                              onCheckedChange={(checked) => setShowHistoryToOthers(!!checked)}
+                            />
+                            <label
+                              htmlFor="show-history"
+                              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                            >
+                              Zobrazit historii ostatním hráčům
+                            </label>
+                          </div>
+                          <div className="flex gap-2">
+                            <Button
+                              onClick={handleSaveHistory}
+                              disabled={updateHistoryMutation.isPending}
+                              className="flex items-center gap-2"
+                            >
+                              <Save className="h-4 w-4" />
+                              {updateHistoryMutation.isPending ? "Ukládám..." : "Uložit"}
+                            </Button>
+                            <Button
+                              variant="outline"
+                              onClick={handleCancelHistoryEdit}
+                              className="flex items-center gap-2"
+                            >
+                              <X className="h-4 w-4" />
+                              Zrušit
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="flex items-start gap-3">
+                          <FileText className="h-4 w-4 text-muted-foreground mt-0.5" />
+                          <div className="flex-1">
+                            {character.history ? (
+                              <div className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">
+                                {character.history}
+                              </div>
+                            ) : (
+                              <div className="text-sm text-muted-foreground italic">
+                                Žádná historie zatím nebyla napsána.
+                              </div>
+                            )}
+                            {character.showHistoryToOthers === false && canEdit && (
+                              <div className="mt-2 text-xs text-amber-600 dark:text-amber-400">
+                                ⚠️ Historie je skrytá před ostatními hráči
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </>
                 )}
