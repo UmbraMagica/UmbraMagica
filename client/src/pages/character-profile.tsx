@@ -31,6 +31,8 @@ interface Character {
   residence?: string;
   characterHistory?: string;
   showHistoryToOthers?: boolean;
+  height?: number;
+  weight?: number;
   user: {
     username: string;
     email: string;
@@ -373,9 +375,9 @@ export default function CharacterProfile() {
                         <div className="flex items-start gap-3">
                           <FileText className="h-4 w-4 text-muted-foreground mt-0.5" />
                           <div className="flex-1">
-                            {character.history ? (
+                            {character.characterHistory ? (
                               <div className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">
-                                {character.history}
+                                {character.characterHistory}
                               </div>
                             ) : (
                               <div className="text-sm text-muted-foreground italic">
