@@ -408,6 +408,7 @@ export const wandLengths = pgTable("wand_lengths", {
   name: varchar("name", { length: 50 }).notNull().unique(),
   description: text("description").notNull(),
   availableForRandom: boolean("available_for_random").default(true).notNull(),
+  sortOrder: integer("sort_order"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
