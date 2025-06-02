@@ -2212,6 +2212,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.post("/api/admin/influence-bar/reset", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const { type } = req.body;
+      
+      if (!type || (type !== '0:0' && type !== '50:50')) {
+        return res.status(400).json({ message: "Reset type must be '0:0' or '50:50'" });
+      }
+      
+      const currentData = await storage.getInfluenceBar();
+      const resetValues = type === '0:0' ? { grindelwald: 0, dumbledore: 0 } : { grindelwald: 50, dumbledore: 50 };
+      
+      // Set the new values
+      await storage.setInfluence(resetValues.grindelwald, resetValues.dumbledore, req.session.userId!);
+      
+      // Record both changes in history
+      const grindelwaldChange = resetValues.grindelwald - currentData.grindelwaldPoints;
+      const dumbledoreChange = resetValues.dumbledore - currentData.dumbledorePoints;
+      
+      await db.execute(sql`
+        INSERT INTO influence_history (change_type, points_changed, previous_total, new_total, reason, admin_id, created_at)
+        VALUES ('grindelwald', ${grindelwaldChange}, ${currentData.grindelwaldPoints}, ${resetValues.grindelwald}, ${'Admin reset na ' + type + ' - Grindelwald'}, ${req.session.userId}, NOW())
+      `);
+      
+      await db.execute(sql`
+        INSERT INTO influence_history (change_type, points_changed, previous_total, new_total, reason, admin_id, created_at)
+        VALUES ('dumbledore', ${dumbledoreChange}, ${currentData.dumbledorePoints}, ${resetValues.dumbledore}, ${'Admin reset na ' + type + ' - Brumbál'}, ${req.session.userId}, NOW())
+      `);
+      
+      res.json({ message: "Influence reset successfully" });
+    } catch (error) {
+      console.error("Error resetting influence:", error);
+      res.status(500).json({ message: "Failed to reset influence" });
+    }
+  });
+
 
 
 

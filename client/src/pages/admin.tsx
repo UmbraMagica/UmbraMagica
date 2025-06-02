@@ -929,37 +929,9 @@ export default function Admin() {
   };
 
   const confirmInfluenceReset = () => {
-    const resetValues = resetConfirmation.type === '0:0' 
-      ? { grindelwald: 0, dumbledore: 0 }
-      : { grindelwald: 50, dumbledore: 50 };
-
-    // Calculate changes needed and add to history
-    const currentGrindelwald = (influenceBar as any)?.grindelwaldPoints || 0;
-    const currentDumbledore = (influenceBar as any)?.dumbledorePoints || 0;
-    
-    const grindelwaldChange = resetValues.grindelwald - currentGrindelwald;
-    const dumbledoreChange = resetValues.dumbledore - currentDumbledore;
-
-    // Create promise chain for both changes (always send both for reset documentation)
-    const promises = [];
-    
-    promises.push(
-      apiRequest("POST", "/api/admin/influence-bar/adjust-with-history", {
-        changeType: "grindelwald",
-        points: grindelwaldChange,
-        reason: `Admin reset na ${resetConfirmation.type} - Grindelwald`
-      })
-    );
-    
-    promises.push(
-      apiRequest("POST", "/api/admin/influence-bar/adjust-with-history", {
-        changeType: "dumbledore", 
-        points: dumbledoreChange,
-        reason: `Admin reset na ${resetConfirmation.type} - Brumbál`
-      })
-    );
-
-    Promise.all(promises)
+    apiRequest("POST", "/api/admin/influence-bar/reset", {
+      type: resetConfirmation.type
+    })
       .then(() => {
         toast({
           title: "Úspěch",
