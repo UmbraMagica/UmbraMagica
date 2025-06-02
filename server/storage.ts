@@ -2159,14 +2159,20 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getInfluenceHistory(): Promise<any[]> {
-    // Use raw SQL since the table structure doesn't match our schema
-    const result = await db.execute(sql`
-      SELECT id, change_type, points_changed, previous_total, new_total, reason, admin_id, created_at
-      FROM influence_history 
-      ORDER BY created_at DESC 
-      LIMIT 50
-    `);
-    return result.rows;
+    try {
+      // Use raw query since table structure doesn't match schema
+      const result = await db.execute({
+        sql: `SELECT id, change_type, points_changed, previous_total, new_total, reason, admin_id, created_at
+              FROM influence_history 
+              ORDER BY created_at DESC 
+              LIMIT 50`,
+        args: []
+      });
+      return result.rows as any[];
+    } catch (error) {
+      console.error('Error fetching influence history:', error);
+      return [];
+    }
   }
 
   async adjustInfluence(side: 'grindelwald' | 'dumbledore', points: number, userId: number): Promise<void> {
