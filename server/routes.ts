@@ -3,11 +3,11 @@ import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
 import { registrationSchema, loginSchema, insertCharacterSchema, insertMessageSchema, characterEditSchema, characterAdminEditSchema, characterRequestSchema, chatRooms, spellSchema, insertSpellSchema, insertCharacterSpellSchema, insertChatCategorySchema, insertChatRoomSchema, insertHousingRequestSchema, insertOwlPostMessageSchema, housingRequests } from "@shared/schema";
-import { db } from "./db";
+import { db, pool } from "./db";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 import session from "express-session";
-import connectPg from "connect-pg-simple";
+import ConnectPgSimple from "connect-pg-simple";
 import multer from "multer";
 import sharp from "sharp";
 

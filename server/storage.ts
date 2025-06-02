@@ -88,6 +88,7 @@ export interface IStorage {
   getCharactersByUserId(userId: number): Promise<Character[]>;
   createCharacter(character: InsertCharacter): Promise<Character>;
   updateCharacter(id: number, updates: Partial<InsertCharacter>): Promise<Character | undefined>;
+  updateCharacterHistory(id: number, history: string, showToOthers: boolean): Promise<Character | undefined>;
   
   // Invite code operations
   getInviteCode(code: string): Promise<InviteCode | undefined>;
@@ -332,6 +333,19 @@ export class DatabaseStorage implements IStorage {
     const [character] = await db
       .update(characters)
       .set({ ...updates, updatedAt: new Date() })
+      .where(eq(characters.id, id))
+      .returning();
+    return character;
+  }
+
+  async updateCharacterHistory(id: number, history: string, showToOthers: boolean): Promise<Character | undefined> {
+    const [character] = await db
+      .update(characters)
+      .set({ 
+        characterHistory: history, 
+        showHistoryToOthers: showToOthers,
+        updatedAt: new Date() 
+      })
       .where(eq(characters.id, id))
       .returning();
     return character;
