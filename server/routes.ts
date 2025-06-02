@@ -63,26 +63,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   // Session configuration
   const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
-  const pgStore = connectPg(session);
-  const sessionStore = new pgStore({
-    conString: process.env.DATABASE_URL,
-    createTableIfMissing: true,
-    ttl: sessionTtl,
-    tableName: "sessions",
-  });
-
+  
   // Generate secure session secret if not provided
   const sessionSecret = process.env.SESSION_SECRET || require('crypto').randomBytes(32).toString('hex');
   
   app.use(session({
     secret: sessionSecret,
-    store: sessionStore,
-    resave: false,
-    saveUninitialized: false,
+    resave: true,
+    saveUninitialized: true,
     cookie: {
-      httpOnly: true,
-      secure: false, // Set to false for Replit environment
-      sameSite: 'lax', // Changed from strict to lax for better compatibility
+      httpOnly: false, // Allow client-side access for debugging
+      secure: false, // Set to false for development
+      sameSite: 'lax',
       maxAge: sessionTtl,
     },
   }));
