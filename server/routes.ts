@@ -4,7 +4,7 @@ import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
 import { registrationSchema, loginSchema, insertCharacterSchema, insertMessageSchema, characterEditSchema, characterAdminEditSchema, characterRequestSchema, chatRooms, spellSchema, insertSpellSchema, insertCharacterSpellSchema, insertChatCategorySchema, insertChatRoomSchema, insertHousingRequestSchema, insertOwlPostMessageSchema, housingRequests } from "@shared/schema";
 import { db, pool } from "./db";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { z } from "zod";
 import session from "express-session";
 import ConnectPgSimple from "connect-pg-simple";
@@ -2176,6 +2176,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error setting influence:", error);
       res.status(500).json({ message: "Failed to set influence" });
+    }
+  });
+
+  app.post("/api/admin/influence-bar/adjust-with-history", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const { changeType, points, reason } = req.body;
+      
+      if (!changeType || typeof points !== 'number' || !reason) {
+        return res.status(400).json({ message: "Change type, points and reason are required" });
+      }
+      
+      const currentData = await storage.getInfluenceBar();
+      const previousTotal = changeType === 'grindelwald' ? currentData.grindelwaldPoints : currentData.dumbledorePoints;
+      
+      // Update the influence bar
+      await storage.adjustInfluence(changeType, points, req.session.userId!);
+      
+      const newTotal = previousTotal + points;
+      
+      // Record the change in history using parameterized query
+      await db.execute(sql`
+        INSERT INTO influence_history (change_type, points_changed, previous_total, new_total, reason, admin_id, created_at)
+        VALUES (${changeType}, ${points}, ${previousTotal}, ${newTotal}, ${reason}, ${req.session.userId}, NOW())
+      `);
+      
+      res.json({ message: "Influence adjusted with history successfully" });
+    } catch (error) {
+      console.error("Error adjusting influence with history:", error);
+      res.status(500).json({ message: "Failed to adjust influence with history" });
     }
   });
 
