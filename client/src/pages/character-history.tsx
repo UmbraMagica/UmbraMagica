@@ -67,7 +67,7 @@ export default function CharacterHistory() {
   const canViewHistory = user && character && (
     user.role === 'admin' || 
     user.id === character.userId ||
-    character.showHistoryToOthers !== false
+    character.showHistoryToOthers === true
   );
 
   // History update mutation
