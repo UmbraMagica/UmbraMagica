@@ -65,7 +65,7 @@ import {
   wands,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, and, desc, lt, gte, count, isNotNull } from "drizzle-orm";
+import { eq, and, desc, lt, gte, count, isNotNull, sql } from "drizzle-orm";
 import bcrypt from "bcrypt";
 
 export interface IStorage {
@@ -2159,7 +2159,14 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getInfluenceHistory(): Promise<any[]> {
-    return db.select().from(influenceHistory).orderBy(desc(influenceHistory.createdAt)).limit(50);
+    // Use raw SQL since the table structure doesn't match our schema
+    const result = await db.execute(sql`
+      SELECT id, change_type, points_changed, previous_total, new_total, reason, admin_id, created_at
+      FROM influence_history 
+      ORDER BY created_at DESC 
+      LIMIT 50
+    `);
+    return result.rows;
   }
 
   async adjustInfluence(side: 'grindelwald' | 'dumbledore', points: number, userId: number): Promise<void> {
