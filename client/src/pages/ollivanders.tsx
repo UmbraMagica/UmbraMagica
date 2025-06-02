@@ -602,9 +602,9 @@ export default function Ollivanders() {
                 <h4 className="font-medium mb-2 text-red-600 dark:text-red-400">🔥 Jádra hůlek (23 druhů)</h4>
                 <div className="text-xs space-y-1">
                   <div className="font-medium text-green-600 dark:text-green-400">Nejvznešenější:</div>
-                  {wandComponents?.cores?.filter((core: any) => ['🐉 Blána z dračího srdce', '🦄 Vlas z hřívy jednorožce', '🔥 Pero fénixe'].includes(core.name)).map((core: any) => (
+                  {wandComponents?.cores?.filter((core) => ['🐉 Blána z dračího srdce', '🦄 Vlas z hřívy jednorožce', '🔥 Pero fénixe'].includes(core.name)).map((core) => (
                     <p key={core.name}>
-                      <strong>{core.name}:</strong> {core.description}
+                      <strong>{core.name}:</strong> {core.shortDescription}
                       {core.availableForRandom === false && (
                         <span className="text-orange-600 dark:text-orange-400 font-medium"> [Ruční pouze]</span>
                       )}
@@ -612,9 +612,9 @@ export default function Ollivanders() {
                   ))}
                   
                   <div className="font-medium text-blue-600 dark:text-blue-400 mt-2">Rostlinná jádra:</div>
-                  {wandComponents?.cores?.filter((core: any) => core.category === 'Rostlinné').map((core: any) => (
+                  {wandComponents?.cores?.filter((core) => core.name.includes('🌿') || core.name.includes('🌱')).map((core) => (
                     <p key={core.name}>
-                      <strong>{core.name}:</strong> {core.description}
+                      <strong>{core.name}:</strong> {core.shortDescription}
                       {core.availableForRandom === false && (
                         <span className="text-orange-600 dark:text-orange-400 font-medium"> [Ruční pouze]</span>
                       )}
@@ -622,9 +622,9 @@ export default function Ollivanders() {
                   ))}
                   
                   <div className="font-medium text-purple-600 dark:text-purple-400 mt-2">Tvorové:</div>
-                  {wandComponents?.cores?.filter((core: any) => core.category === 'Tvorové').map((core: any) => (
+                  {wandComponents?.cores?.filter((core) => core.name.includes('🐺') || core.name.includes('🦅') || core.name.includes('🐍')).map((core) => (
                     <p key={core.name}>
-                      <strong>{core.name}:</strong> {core.description}
+                      <strong>{core.name}:</strong> {core.shortDescription}
                       {core.availableForRandom === false && (
                         <span className="text-orange-600 dark:text-orange-400 font-medium"> [Ruční pouze]</span>
                       )}
@@ -632,9 +632,9 @@ export default function Ollivanders() {
                   ))}
                   
                   <div className="font-medium text-indigo-600 dark:text-indigo-400 mt-2">Elementární:</div>
-                  {wandComponents?.cores?.filter((core: any) => core.category === 'Elementární').map((core: any) => (
+                  {wandComponents?.cores?.filter((core) => !['🐉 Blána z dračího srdce', '🦄 Vlas z hřívy jednorožce', '🔥 Pero fénixe'].includes(core.name) && !core.name.includes('🌿') && !core.name.includes('🌱') && !core.name.includes('🐺') && !core.name.includes('🦅') && !core.name.includes('🐍')).map((core) => (
                     <p key={core.name}>
-                      <strong>{core.name}:</strong> {core.description}
+                      <strong>{core.name}:</strong> {core.shortDescription}
                       {core.availableForRandom === false && (
                         <span className="text-orange-600 dark:text-orange-400 font-medium"> [Ruční pouze]</span>
                       )}
@@ -642,9 +642,9 @@ export default function Ollivanders() {
                   ))}
                   
                   <div className="font-medium text-gray-600 dark:text-gray-400 mt-2">Méně ušlechtilé:</div>
-                  {wandComponents?.cores?.filter((core: any) => core.category === 'Méně ušlechtilé').map((core: any) => (
+                  {wandComponents?.cores?.filter((core) => core.name.includes('🕷️') || core.name.includes('🐀') || core.name.includes('🪱')).map((core) => (
                     <p key={core.name}>
-                      <strong>{core.name}:</strong> {core.description}
+                      <strong>{core.name}:</strong> {core.shortDescription}
                       {core.availableForRandom === false && (
                         <span className="text-orange-600 dark:text-orange-400 font-medium"> [Ruční pouze]</span>
                       )}
