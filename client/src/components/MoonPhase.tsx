@@ -39,11 +39,14 @@ export function MoonPhase({ gameDate }: MoonPhaseProps) {
     "1926-12-05"
   ];
 
-  // Rovnodennosti a slunovraty v roce 1926
+  // Astronomické události v roce 1926
   const seasonalEvents1926 = [
     { date: "1926-03-21", name: "Jarní rovnodennost", emoji: "🌱" },
     { date: "1926-06-21", name: "Letní slunovrat", emoji: "☀️" },
+    { date: "1926-08-11", name: "Slzy svatého Vavřince (Perseidy)", emoji: "🌌" },
+    { date: "1926-08-12", name: "Slzy svatého Vavřince (Perseidy)", emoji: "🌌" },
     { date: "1926-09-23", name: "Podzimní rovnodennost", emoji: "🍂" },
+    { date: "1926-10-09", name: "Výrazná meteorická aktivita", emoji: "🌠" },
     { date: "1926-12-22", name: "Zimní slunovrat", emoji: "❄️" }
   ];
 
