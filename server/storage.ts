@@ -2198,13 +2198,7 @@ export class DatabaseStorage implements IStorage {
       })
       .where(eq(influenceBar.id, 1));
 
-    // Log the change in history
-    await db.insert(influenceHistory).values({
-      grindelwaldPoints,
-      dumbledorePoints,
-      changeBy: userId,
-      reason: 'Admin adjustment'
-    });
+    // Note: History logging is handled separately in adjust-with-history endpoint
   }
 }
 
