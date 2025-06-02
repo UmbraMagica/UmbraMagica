@@ -1363,7 +1363,7 @@ export class DatabaseStorage implements IStorage {
       // Load all component data from database tables with consistent ordering
       const [woods, cores, lengths, flexibilities] = await Promise.all([
         db.select().from(wandWoods).orderBy(wandWoods.name),
-        db.select().from(wandCores).orderBy(wandCores.name), 
+        db.select().from(wandCores).orderBy(wandCores.categorySortOrder, wandCores.name), 
         db.select().from(wandLengths).orderBy(wandLengths.sortOrder),
         db.select().from(wandFlexibilities).orderBy(wandFlexibilities.name)
       ]);

@@ -400,6 +400,7 @@ export const wandCores = pgTable("wand_cores", {
   category: varchar("category", { length: 50 }).notNull(),
   description: text("description").notNull(),
   availableForRandom: boolean("available_for_random").default(true).notNull(),
+  categorySortOrder: integer("category_sort_order"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
