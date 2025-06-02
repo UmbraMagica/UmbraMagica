@@ -53,7 +53,7 @@ export default function CharacterHistory() {
   useEffect(() => {
     if (character) {
       setHistoryText(character.characterHistory || "");
-      setShowHistoryToOthers(character.showHistoryToOthers !== false);
+      setShowHistoryToOthers(character.showHistoryToOthers === true);
     }
   }, [character]);
 
