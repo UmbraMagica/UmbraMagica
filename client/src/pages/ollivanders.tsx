@@ -556,75 +556,75 @@ export default function Ollivanders() {
               <div>
                 <h4 className="font-medium mb-2 text-amber-600 dark:text-amber-400">🌳 Hůlková dřeva (38 druhů)</h4>
                 <div className="text-xs space-y-1 max-h-48 overflow-y-auto">
-                  <p><strong>Akácie:</strong> Velmi neobvyklé, lstivé a škodolibé</p>
-                  <p><strong>Anglický dub:</strong> Síla a vytrvalost, oblíbené u aurorů</p>
-                  <p><strong>Borovice:</strong> Nezávislost a originalita</p>
-                  <p><strong>Bříza:</strong> Poslušnost vůči moudrému majiteli</p>
-                  <p><strong>Buk:</strong> Moudrost a porozumění pro učence</p>
-                  <p><strong>Cedr:</strong> Věrnost a ochrana, stabilní</p>
-                  <p><strong>Cesmína:</strong> Ochrana proti temné magii</p>
-                  <p><strong>Cypřiš:</strong> Spojení s nebezpečím a smrtí</p>
-                  <p><strong>Černý bez:</strong> Nejšťastnější s necromancií</p>
-                  <p><strong>Ebenovník:</strong> Černá magie a síla temnoty</p>
-                  <p><strong>Fíkovník:</strong> Úrodnost a pohostinnost</p>
-                  <p><strong>Habr:</strong> Tvrdé jako kámen, nepoddajné</p>
-                  <p><strong>Hloh:</strong> Komplexní a protichůdná povaha</p>
-                  <p><strong>Hruška:</strong> Láska a něžnost</p>
-                  <p><strong>Jasan:</strong> Tvrdohlavé a přilnavé ke svému majiteli</p>
-                  <p><strong>Javor:</strong> Ambiciózní a dobrodružné</p>
-                  <p><strong>Jedlovec:</strong> Průvodce duchovní cesty</p>
-                  <p><strong>Jilm:</strong> Důstojnost a magická elegance</p>
-                  <p><strong>Jírovec:</strong> Léčivé vlastnosti a ochrana</p>
-                  <p><strong>Kaštanovník:</strong> Spravedlnost a čestnost</p>
-                  <p><strong>Lípa:</strong> Hledané divákožrouty a léčiteli</p>
-                  <p><strong>Mahagon:</strong> Transfigurace a transformace</p>
-                  <p><strong>Modřín:</strong> Odvaha a sebedůvěra</p>
-                  <p><strong>Ořech:</strong> Skvělé pro transfiguraci</p>
-                  <p><strong>Ořešák:</strong> Intelekt a rozum</p>
-                  <p><strong>Osika:</strong> Překonávání strachu</p>
-                  <p><strong>Palma:</strong> Vítězství a triumf</p>
-                  <p><strong>Platan:</strong> Moudrost a vytrvalost</p>
-                  <p><strong>Rohožník:</strong> Spojení s magickou přírodou</p>
-                  <p><strong>Růže:</strong> Velmi vzácné kouzelnické dřevo</p>
-                  <p><strong>Smrk:</strong> Věčnost a stálost</p>
-                  <p><strong>Švestka:</strong> Zdraví a obnova</p>
-                  <p><strong>Tis:</strong> Síla nad životem a smrtí</p>
-                  <p><strong>Topol:</strong> Překonávání překážek</p>
-                  <p><strong>Třešeň:</strong> Vzácné dřevo s výjimečnou silou</p>
-                  <p><strong>Vrba:</strong> Intuice a emoce</p>
-                  <p><strong>Wiggentree:</strong> Ochrana a léčení</p>
-                  <p><strong>Zimostráz:</strong> Výdrž a neústupnost</p>
+                  <p><strong>Akácie:</strong> Vzácná a temperamentní hůlka pro neobyčejně nadané kouzelníky</p>
+                  <p><strong>Anglický dub:</strong> Silná, věrná a intuitivní hůlka pro čaroděje s odvahou</p>
+                  <p><strong>Borovice:</strong> Nezávislá a kreativní hůlka pro dobrodružné duše</p>
+                  <p><strong>Buk:</strong> Hůlka pro ty s bohatými zkušenostmi a hlubokou moudrostí</p>
+                  <p><strong>Cedr:</strong> Věrná hůlka s pronikavým úsudkem o charakteru</p>
+                  <p><strong>Cesmína:</strong> Hůlka schopná překonat hněv a impulzivnost svého majitele</p>
+                  <p><strong>Cypřiš:</strong> Vzácná hůlka spojená s noblesou a tragédií</p>
+                  <p><strong>Černý bez:</strong> Neobvyklé dřevo plné energie s turbulentním osudem</p>
+                  <p><strong>Černý ořech:</strong> Velmi vnímavé dřevo vyžadující čistého ducha</p>
+                  <p><strong>Červený dub:</strong> Hůlka rychlých reakcí a bystré mysli</p>
+                  <p><strong>Dřín:</strong> Zlomyslné a hravé dřevo se smyslem pro humor</p>
+                  <p><strong>Eben:</strong> Temné a mocné dřevo pro silné individuality</p>
+                  <p><strong>Habr:</strong> Věrná hůlka pro čaroděje s jedinou vášní</p>
+                  <p><strong>Hloh:</strong> Silné a rozporuplné dřevo pro léčení i kletby</p>
+                  <p><strong>Hrušeň:</strong> Zlatavé dřevo pro šlechetné a přívětivé duše</p>
+                  <p><strong>Jabloň:</strong> Mocné dřevo vhodné pro ty s vysokými cíli</p>
+                  <p><strong>Jasan:</strong> Hůlky pevně přilnou ke svému majiteli</p>
+                  <p><strong>Javor:</strong> Vyhledávají dobrodruzi a cestovatelé</p>
+                  <p><strong>Jedle:</strong> Odolné dřevo vyžadující cílevědomé majitele</p>
+                  <p><strong>Jeřáb:</strong> Výborné pro ochranná kouzla a jasnou mysl</p>
+                  <p><strong>Jilm:</strong> Preferuje kouzelníky s důstojností a obratností</p>
+                  <p><strong>Kaštan:</strong> Mění charakter podle jádra, hodí se pro bylinkáře</p>
+                  <p><strong>Lípa stříbřitá:</strong> Atraktivní dřevo oblíbené u jasnovidců</p>
+                  <p><strong>Líska:</strong> Citlivá hůlka reagující na emoce majitele</p>
+                  <p><strong>Modřín:</strong> Pevné a odolné dřevo pro odvážné a věrné</p>
+                  <p><strong>Olše:</strong> Nepoddajné dřevo ideální pro nápomocné kouzelníky</p>
+                  <p><strong>Osika:</strong> Bílé a jemné dřevo pro sebevědomé duely</p>
+                  <p><strong>Sekvoj:</strong> Vzácné dřevo nepřinášející štěstí, ale mocné</p>
+                  <p><strong>Smrk:</strong> Stabilní a spolehlivé dřevo pro věrné čaroděje</p>
+                  <p><strong>Tis:</strong> Nejobtížněji spárovatelné, často zlé pověsti</p>
+                  <p><strong>Topol černý:</strong> Pružné dřevo pro konzistentní kouzelníky</p>
+                  <p><strong>Třešeň:</strong> Velmi vzácné dřevo s výjimečnými vlastnostmi</p>
+                  <p><strong>Vinná réva:</strong> Hůlky skryté povahy s překvapivými schopnostmi</p>
+                  <p><strong>Vrba:</strong> Neobyčejné léčivé schopnosti</p>
+                  <p><strong>Wiggentree:</strong> Mocné ochranné vlastnosti</p>
+                  <p><strong>Zimostráz:</strong> Výdrž a neústupnost v těžkých chvílích</p>
+                  <p><strong>Žebrácká hůl:</strong> Stará magická tradice pokory</p>
                 </div>
               </div>
 
               {/* Cores */}
               <div>
-                <h4 className="font-medium mb-2 text-red-600 dark:text-red-400">🔥 Jádra hůlek (23 druhů)</h4>
+                <h4 className="font-medium mb-2 text-red-600 dark:text-red-400">🔥 Jádra hůlek (16 druhů)</h4>
                 <div className="text-xs space-y-1 max-h-48 overflow-y-auto">
-                  <div className="font-medium text-green-600 dark:text-green-400">Nejvznešenější:</div>
-                  <p><strong>🐉 Blána z dračího srdce:</strong> Tradičníjádro, silná a temperamentní</p>
-                  <p><strong>🦄 Vlas z hřívy jednorožce:</strong> Nejvěrnější typ jádra</p>
-                  <p><strong>🔥 Pero fénixe:</strong> Nejnáročnější, ale nejsilnější jádro</p>
+                  <div className="font-medium text-green-600 dark:text-green-400">Nejvznešenější jádra:</div>
+                  <p><strong>🐉 Blána z dračího srdce:</strong> Silné a temperamentní jádro s velkou mocí</p>
+                  <p><strong>🦄 Vlas z hřívy jednorožce:</strong> Nejvěrnější a nejstabilnější typ jádra</p>
+                  <p><strong>🔥 Pero fénixe:</strong> Nejnáročnější, ale nejsilnější a nejvzácnější jádro</p>
                   
-                  <div className="font-medium text-blue-600 dark:text-blue-400 mt-2">Rostlinná jádra:</div>
-                  <p><strong>🌿 Kořen mandragory sušený:</strong> Charakteristika silně spojena s magickými rostlinami</p>
-                  <p><strong>🌱 Listí dubové kvítí:</strong> Spojeno s přírodní magií a stabilitou</p>
+                  <div className="font-medium text-blue-600 dark:text-blue-400 mt-2">Tradičníjádra:</div>
+                  <p><strong>🌙 Vlákno lunární můry:</strong> Spojené s nocní magií a intuicí</p>
+                  <p><strong>🦅 Péro Thunderbirda:</strong> Amerikanské jádro pro silné bouřné kouzla</p>
+                  <p><strong>🐍 Roh Rozpustilce:</strong> Americké jádro pro osobité čaroděje</p>
+                  <p><strong>🌿 Vlákno Bowtrucklea:</strong> Spojené s ochranou stromů a lesa</p>
                   
-                  <div className="font-medium text-purple-600 dark:text-purple-400 mt-2">Tvorové:</div>
-                  <p><strong>🐺 Chlupy z vlčí srsti:</strong> Divocí a nezávislí kouzelníci</p>
-                  <p><strong>🦅 Pero orla:</strong> Svobodomyslní a nezávislí</p>
-                  <p><strong>🐍 Šupina hada:</strong> Lstivé a obratné typy</p>
+                  <div className="font-medium text-purple-600 dark:text-purple-400 mt-2">Mořská jádra:</div>
+                  <p><strong>🌊 Vlákno Kelpie:</strong> Vodní magické jádro s přizpůsobivou povahou</p>
+                  <p><strong>🐚 Slupka mořské panny:</strong> Vzácné jádro spojené s hlubinami</p>
                   
-                  <div className="font-medium text-indigo-600 dark:text-indigo-400 mt-2">Elementární:</div>
-                  <p><strong>⚡ Síla blesku:</strong> Rychlé a energické osobnosti</p>
-                  <p><strong>🌊 Kapka mořské vody:</strong> Plovoucí a adaptabilní</p>
-                  <p><strong>🌋 Popel sopky:</strong> Vášnivé a temperamentní</p>
-                  <p><strong>❄️ Krystal ledu:</strong> Chladnokrevné a racionální</p>
+                  <div className="font-medium text-orange-600 dark:text-orange-400 mt-2">Dračí jádra:</div>
+                  <p><strong>🔥 Srdcová blána Hebridského draka:</strong> Temperamentní skotské jádro</p>
+                  <p><strong>🐲 Srdcová blána Waleského draka:</strong> Silné britské dračí jádro</p>
+                  <p><strong>⚡ Srdcová blána Rohatého draka:</strong> Maďarské jádro s bouřlivou povahou</p>
                   
-                  <div className="font-medium text-gray-600 dark:text-gray-400 mt-2">Méně ušlechtilé:</div>
-                  <p><strong>🕷️ Pavučina:</strong> Lstivé a vypočítavé osobnosti</p>
-                  <p><strong>🐀 Chlup krysy:</strong> Skryté a nenápadné</p>
-                  <p><strong>🪱 Slizná nitka:</strong> Pomalé ale vytrvalé osobnosti</p>
+                  <div className="font-medium text-gray-600 dark:text-gray-400 mt-2">Vzácná jádra:</div>
+                  <p><strong>🦄 Chlupy z ocasu jednorožce:</strong> Alternativa k vlasu z hřívy</p>
+                  <p><strong>🌟 Péro Jobertunkela:</strong> Neobvykle vzácné andělské jádro</p>
+                  <p><strong>🕊️ Péro běloskvostného ptáka:</strong> Jádro čistoty a míru</p>
+                  <p><strong>⚡ Kožené vlákno Thunderbirda:</strong> Silnější varianta Thunderbird péra</p>
                 </div>
               </div>
             </div>
@@ -632,18 +632,17 @@ export default function Ollivanders() {
             <div className="grid md:grid-cols-2 gap-6 border-t pt-4">
               {/* Lengths */}
               <div>
-                <h4 className="font-medium mb-2 text-purple-600 dark:text-purple-400">📏 Délky hůlek (10 velikostí)</h4>
-                <div className="text-xs grid grid-cols-2 gap-1">
-                  <p><strong>7":</strong> Kompaktní a diskrétní</p>
-                  <p><strong>8":</strong> Malé ale účinné</p>
-                  <p><strong>9":</strong> Přiměřené pro začátečníky</p>
-                  <p><strong>10":</strong> Standardní velikost</p>
-                  <p><strong>11":</strong> Populární volba</p>
-                  <p><strong>12":</strong> Vyvážené vlastnosti</p>
-                  <p><strong>13":</strong> Delší dosah</p>
-                  <p><strong>14":</strong> Silné kouzelnické síly</p>
-                  <p><strong>15":</strong> Neobvykle dlouhé</p>
-                  <p><strong>16":</strong> Výjimečně mocné</p>
+                <h4 className="font-medium mb-2 text-purple-600 dark:text-purple-400">📏 Délky hůlek (9 velikostí)</h4>
+                <div className="text-xs space-y-1">
+                  <p><strong>7":</strong> Kratší hůlka pro diskrétní magii a menší čaroděje</p>
+                  <p><strong>8":</strong> Kompaktní délka ideální pro rychlé reakce</p>
+                  <p><strong>9":</strong> Vyvážená kratší délka pro jemná kouzla</p>
+                  <p><strong>10":</strong> Klasická délka s dobrým poměrem kontroly a síly</p>
+                  <p><strong>11":</strong> Vyvážená hůlka s výbornou univerzálností</p>
+                  <p><strong>12":</strong> Standardní délka pro stabilitu a spolehlivost</p>
+                  <p><strong>13":</strong> Delší hůlka s větším dosahem a silou</p>
+                  <p><strong>14":</strong> Impozantní délka pro zkušené kouzelníky</p>
+                  <p><strong>15":</strong> Neobvykle dlouhá hůlka pro velké ambice</p>
                 </div>
               </div>
 
