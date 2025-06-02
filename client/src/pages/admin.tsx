@@ -940,28 +940,24 @@ export default function Admin() {
     const grindelwaldChange = resetValues.grindelwald - currentGrindelwald;
     const dumbledoreChange = resetValues.dumbledore - currentDumbledore;
 
-    // Create promise chain for both changes
+    // Create promise chain for both changes (always send both for reset documentation)
     const promises = [];
     
-    if (grindelwaldChange !== 0) {
-      promises.push(
-        apiRequest("POST", "/api/admin/influence-bar/adjust-with-history", {
-          changeType: "grindelwald",
-          points: grindelwaldChange,
-          reason: `Admin reset na ${resetConfirmation.type} - Grindelwald`
-        })
-      );
-    }
+    promises.push(
+      apiRequest("POST", "/api/admin/influence-bar/adjust-with-history", {
+        changeType: "grindelwald",
+        points: grindelwaldChange,
+        reason: `Admin reset na ${resetConfirmation.type} - Grindelwald`
+      })
+    );
     
-    if (dumbledoreChange !== 0) {
-      promises.push(
-        apiRequest("POST", "/api/admin/influence-bar/adjust-with-history", {
-          changeType: "dumbledore", 
-          points: dumbledoreChange,
-          reason: `Admin reset na ${resetConfirmation.type} - Brumbál`
-        })
-      );
-    }
+    promises.push(
+      apiRequest("POST", "/api/admin/influence-bar/adjust-with-history", {
+        changeType: "dumbledore", 
+        points: dumbledoreChange,
+        reason: `Admin reset na ${resetConfirmation.type} - Brumbál`
+      })
+    );
 
     Promise.all(promises)
       .then(() => {
