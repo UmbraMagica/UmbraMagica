@@ -648,28 +648,44 @@ export default function Ollivanders() {
 
               {/* Flexibilities */}
               <div>
-                <h4 className="font-medium mb-2 text-indigo-600 dark:text-indigo-400">🌊 Ohebnost (11 stupňů)</h4>
+                <h4 className="font-medium mb-2 text-indigo-600 dark:text-indigo-400">🌊 Ohebnost (10 stupňů)</h4>
                 <div className="text-xs space-y-1">
-                  <p><strong>Neohebná:</strong> Tvrdohlavé povahy</p>
-                  <p><strong>Nepružná:</strong> Konzervativní přístupy</p>
-                  <p><strong>Tuhá:</strong> Metodické osobnosti</p>
-                  <p><strong>Pevná:</strong> Stabilní charaktery</p>
-                  <p><strong>Tvrdá:</strong> Silné vůle</p>
-                  <p><strong>Rozumně pružná:</strong> Adaptabilní</p>
-                  <p><strong>Pružná:</strong> Přizpůsobivé</p>
-                  <p><strong>Poddajná:</strong> Snadně ovlivnitelné</p>
-                  <p><strong>Velmi pružná:</strong> Mimořádně adaptabilní</p>
-                  <p><strong>Ohebná:</strong> Velmi flexibilní</p>
-                  <p><strong>Nejvíce ohebná:</strong> Extrémně přizpůsobivé</p>
+                  <p><strong>Nezlomná:</strong> Extrémně pevná pro silnou vůli a nekompromisní povahu</p>
+                  <p><strong>Velmi nepoddajná:</strong> Tvrdá hůlka pro rozhodné majitele a přímočaré kouzla</p>
+                  <p><strong>Nepoddajná:</strong> Pevná hůlka pro stabilní a spolehlivé čaroděje</p>
+                  <p><strong>Tvrdá:</strong> Poměrně pevná s dobrou odezvou pro tradiční magii</p>
+                  <p><strong>Mírně nepoddajná:</strong> Lehce tužší pro dobrou kontrolu a metodické čaroděje</p>
+                  <p><strong>Pevná:</strong> Vyvážená ohebnost s univerzální stabilitou i flexibilitou</p>
+                  <p><strong>Ohebná:</strong> Flexibilní a přizpůsobivá pro kreativní čaroděje</p>
+                  <p><strong>Pružná:</strong> Velmi ohebná podporující inovativní a experimentální kouzla</p>
+                  <p><strong>Velmi pružná:</strong> Extrémně flexibilní pro proměnlivé povahy a improvisaci</p>
+                  <p><strong>Výjimečně poddajná:</strong> Mimořádně ohebná reagující na nejjemnější pohyby</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 p-3 rounded-lg">
-              <p className="text-xs text-amber-800 dark:text-amber-200">
-                <strong>💡 Tip:</strong> Pan Ollivander má v zásobě celkem <strong>38 druhů dřeva</strong>, <strong>16 typů jader</strong>, 
-                <strong>9 délek</strong> a <strong>10 stupňů ohebnosti</strong> - to je přes <strong>54 000 možných kombinací</strong> hůlek! 
-                Komponenty označené <span className="text-orange-600 dark:text-orange-400 font-medium">[Ruční pouze]</span> nejsou dostupné v náhodném výběru.
+            <div className="bg-amber-50 dark:bg-amber-950/20 p-4 rounded-lg border border-amber-200 dark:border-amber-800">
+              <p className="text-sm font-medium text-amber-900 dark:text-amber-100 mb-2">📊 Celkové statistiky:</p>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-amber-800 dark:text-amber-200">
+                <div className="text-center">
+                  <div className="font-bold text-lg">38</div>
+                  <div>Druhů dřev</div>
+                </div>
+                <div className="text-center">
+                  <div className="font-bold text-lg">16</div>
+                  <div>Typů jader</div>
+                </div>
+                <div className="text-center">
+                  <div className="font-bold text-lg">9</div>
+                  <div>Délek hůlek</div>
+                </div>
+                <div className="text-center">
+                  <div className="font-bold text-lg">10</div>
+                  <div>Stupňů ohebnosti</div>
+                </div>
+              </div>
+              <p className="text-xs text-amber-700 dark:text-amber-300 mt-3 text-center">
+                Celkem možných kombinací: <strong>54,720</strong> různých hůlek!
               </p>
             </div>
           </CardContent>
