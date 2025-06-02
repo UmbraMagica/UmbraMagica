@@ -104,10 +104,10 @@ export default function Ollivanders() {
 
   // Get wand components for manual selection
   const { data: wandComponents } = useQuery<{
-    woods: Array<{ name: string; shortDescription: string; availableForRandom?: boolean }>;
-    cores: Array<{ name: string; shortDescription: string; availableForRandom?: boolean }>;
-    lengths: Array<{ name: string; shortDescription: string; availableForRandom?: boolean }>;
-    flexibilities: Array<{ name: string; shortDescription: string; availableForRandom?: boolean }>;
+    woods: Array<{ name: string; shortDescription: string; longDescription: string; availableForRandom?: boolean }>;
+    cores: Array<{ name: string; category: string; description: string; availableForRandom?: boolean }>;
+    lengths: Array<{ name: string; description: string; availableForRandom?: boolean }>;
+    flexibilities: Array<{ name: string; description: string; availableForRandom?: boolean }>;
   }>({
     queryKey: ['/api/wand-components']
   });
@@ -446,7 +446,7 @@ export default function Ollivanders() {
                                       <span className="text-xs bg-amber-100 text-amber-800 px-1 py-0.5 rounded">Pouze ruční výběr</span>
                                     )}
                                   </div>
-                                  <div className="text-xs text-muted-foreground whitespace-normal break-words">{core.shortDescription}</div>
+                                  <div className="text-xs text-muted-foreground whitespace-normal break-words">{core.description}</div>
                                 </div>
                               </SelectItem>
                             ))}
@@ -471,8 +471,8 @@ export default function Ollivanders() {
                                       <span className="text-xs bg-amber-100 text-amber-800 px-1 py-0.5 rounded">Pouze ruční výběr</span>
                                     )}
                                   </div>
-                                  {typeof length === 'object' && length.shortDescription && (
-                                    <div className="text-xs text-muted-foreground whitespace-normal break-words">{length.shortDescription}</div>
+                                  {typeof length === 'object' && length.description && (
+                                    <div className="text-xs text-muted-foreground whitespace-normal break-words">{length.description}</div>
                                   )}
                                 </div>
                               </SelectItem>
@@ -498,8 +498,8 @@ export default function Ollivanders() {
                                       <span className="text-xs bg-amber-100 text-amber-800 px-1 py-0.5 rounded">Pouze ruční výběr</span>
                                     )}
                                   </div>
-                                  {typeof flexibility === 'object' && flexibility.shortDescription && (
-                                    <div className="text-xs text-muted-foreground whitespace-normal break-words">{flexibility.shortDescription}</div>
+                                  {typeof flexibility === 'object' && flexibility.description && (
+                                    <div className="text-xs text-muted-foreground whitespace-normal break-words">{flexibility.description}</div>
                                   )}
                                 </div>
                               </SelectItem>
@@ -551,144 +551,125 @@ export default function Ollivanders() {
             <CardTitle>O hůlkách</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid md:grid-cols-2 gap-6">
-              {/* Woods */}
-              <div>
-                <h4 className="font-medium mb-2 text-amber-600 dark:text-amber-400">🌳 Hůlková dřeva (38 druhů)</h4>
-                <div className="text-xs space-y-1 max-h-48 overflow-y-auto">
-                  <p><strong>Akácie:</strong> Vzácná a temperamentní hůlka pro neobyčejně nadané kouzelníky</p>
-                  <p><strong>Anglický dub:</strong> Silná, věrná a intuitivní hůlka pro čaroděje s odvahou</p>
-                  <p><strong>Borovice:</strong> Nezávislá a kreativní hůlka pro dobrodružné duše</p>
-                  <p><strong>Buk:</strong> Hůlka pro ty s bohatými zkušenostmi a hlubokou moudrostí</p>
-                  <p><strong>Cedr:</strong> Věrná hůlka s pronikavým úsudkem o charakteru</p>
-                  <p><strong>Cesmína:</strong> Hůlka schopná překonat hněv a impulzivnost svého majitele</p>
-                  <p><strong>Cypřiš:</strong> Vzácná hůlka spojená s noblesou a tragédií</p>
-                  <p><strong>Černý bez:</strong> Neobvyklé dřevo plné energie s turbulentním osudem</p>
-                  <p><strong>Černý ořech:</strong> Velmi vnímavé dřevo vyžadující čistého ducha</p>
-                  <p><strong>Červený dub:</strong> Hůlka rychlých reakcí a bystré mysli</p>
-                  <p><strong>Dřín:</strong> Zlomyslné a hravé dřevo se smyslem pro humor</p>
-                  <p><strong>Eben:</strong> Temné a mocné dřevo pro silné individuality</p>
-                  <p><strong>Habr:</strong> Věrná hůlka pro čaroděje s jedinou vášní</p>
-                  <p><strong>Hloh:</strong> Silné a rozporuplné dřevo pro léčení i kletby</p>
-                  <p><strong>Hrušeň:</strong> Zlatavé dřevo pro šlechetné a přívětivé duše</p>
-                  <p><strong>Jabloň:</strong> Mocné dřevo vhodné pro ty s vysokými cíli</p>
-                  <p><strong>Jasan:</strong> Hůlky pevně přilnou ke svému majiteli</p>
-                  <p><strong>Javor:</strong> Vyhledávají dobrodruzi a cestovatelé</p>
-                  <p><strong>Jedle:</strong> Odolné dřevo vyžadující cílevědomé majitele</p>
-                  <p><strong>Jeřáb:</strong> Výborné pro ochranná kouzla a jasnou mysl</p>
-                  <p><strong>Jilm:</strong> Preferuje kouzelníky s důstojností a obratností</p>
-                  <p><strong>Kaštan:</strong> Mění charakter podle jádra, hodí se pro bylinkáře</p>
-                  <p><strong>Lípa stříbřitá:</strong> Atraktivní dřevo oblíbené u jasnovidců</p>
-                  <p><strong>Líska:</strong> Citlivá hůlka reagující na emoce majitele</p>
-                  <p><strong>Modřín:</strong> Pevné a odolné dřevo pro odvážné a věrné</p>
-                  <p><strong>Olše:</strong> Nepoddajné dřevo ideální pro nápomocné kouzelníky</p>
-                  <p><strong>Osika:</strong> Bílé a jemné dřevo pro sebevědomé duely</p>
-                  <p><strong>Sekvoj:</strong> Vzácné dřevo nepřinášející štěstí, ale mocné</p>
-                  <p><strong>Smrk:</strong> Stabilní a spolehlivé dřevo pro věrné čaroděje</p>
-                  <p><strong>Tis:</strong> Nejobtížněji spárovatelné, často zlé pověsti</p>
-                  <p><strong>Topol černý:</strong> Pružné dřevo pro konzistentní kouzelníky</p>
-                  <p><strong>Třešeň:</strong> Velmi vzácné dřevo s výjimečnými vlastnostmi</p>
-                  <p><strong>Vinná réva:</strong> Hůlky skryté povahy s překvapivými schopnostmi</p>
-                  <p><strong>Vrba:</strong> Neobyčejné léčivé schopnosti</p>
-                  <p><strong>Wiggentree:</strong> Mocné ochranné vlastnosti</p>
-                  <p><strong>Zimostráz:</strong> Výdrž a neústupnost v těžkých chvílích</p>
-                  <p><strong>Žebrácká hůl:</strong> Stará magická tradice pokory</p>
+            {wandComponents && (
+              <div className="grid md:grid-cols-2 gap-6">
+                {/* Woods */}
+                <div>
+                  <h4 className="font-medium mb-2 text-amber-600 dark:text-amber-400">
+                    🌳 Hůlková dřeva ({wandComponents.woods?.length || 0} druhů)
+                  </h4>
+                  <div className="text-xs space-y-1 max-h-48 overflow-y-auto">
+                    {wandComponents.woods?.map((wood) => (
+                      <div key={wood.name} className="flex items-start gap-1">
+                        <p>
+                          <strong>{wood.name}:</strong> {wood.shortDescription}
+                          {wood.availableForRandom === false && (
+                            <span className="ml-1 text-xs bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200 px-1 py-0.5 rounded">
+                              Pouze ruční výběr
+                            </span>
+                          )}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Cores */}
+                <div>
+                  <h4 className="font-medium mb-2 text-red-600 dark:text-red-400">
+                    🔥 Jádra hůlek ({wandComponents.cores?.length || 0} druhů)
+                  </h4>
+                  <div className="text-xs space-y-1 max-h-48 overflow-y-auto">
+                    {wandComponents.cores?.map((core) => (
+                      <div key={core.name} className="flex items-start gap-1">
+                        <p>
+                          <strong>{core.name}:</strong> {core.description}
+                          {core.availableForRandom === false && (
+                            <span className="ml-1 text-xs bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200 px-1 py-0.5 rounded">
+                              Pouze ruční výběr
+                            </span>
+                          )}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
 
-              {/* Cores */}
-              <div>
-                <h4 className="font-medium mb-2 text-red-600 dark:text-red-400">🔥 Jádra hůlek (22 druhů)</h4>
-                <div className="text-xs space-y-1 max-h-48 overflow-y-auto">
-                  <div className="font-medium text-green-600 dark:text-green-400">Nejvznešenější jádra:</div>
-                  <p><strong>🐉 Blána z dračího srdce:</strong> Silné a temperamentní jádro s velkou mocí</p>
-                  <p><strong>🦄 Vlas z hřívy jednorožce:</strong> Nejvěrnější a nejstabilnější typ jádra</p>
-                  <p><strong>🔥 Pero fénixe:</strong> Nejnáročnější, ale nejsilnější a nejvzácnější jádro</p>
-                  
-                  <div className="font-medium text-blue-600 dark:text-blue-400 mt-2">Tradičníjádra:</div>
-                  <p><strong>🌙 Vlákno lunární můry:</strong> Spojené s nocní magií a intuicí</p>
-                  <p><strong>🦅 Péro Thunderbirda:</strong> Amerikanské jádro pro silné bouřné kouzla</p>
-                  <p><strong>🐍 Roh Rozpustilce:</strong> Americké jádro pro osobité čaroděje</p>
-                  <p><strong>🌿 Vlákno Bowtrucklea:</strong> Spojené s ochranou stromů a lesa</p>
-                  
-                  <div className="font-medium text-purple-600 dark:text-purple-400 mt-2">Mořská jádra:</div>
-                  <p><strong>🌊 Vlákno Kelpie:</strong> Vodní magické jádro s přizpůsobivou povahou</p>
-                  <p><strong>🐚 Slupka mořské panny:</strong> Vzácné jádro spojené s hlubinami</p>
-                  
-                  <div className="font-medium text-orange-600 dark:text-orange-400 mt-2">Dračí jádra:</div>
-                  <p><strong>🔥 Srdcová blána Hebridského draka:</strong> Temperamentní skotské jádro</p>
-                  <p><strong>🐲 Srdcová blána Waleského draka:</strong> Silné britské dračí jádro</p>
-                  <p><strong>⚡ Srdcová blána Rohatého draka:</strong> Maďarské jádro s bouřlivou povahou</p>
-                  
-                  <div className="font-medium text-gray-600 dark:text-gray-400 mt-2">Vzácná jádra:</div>
-                  <p><strong>🦄 Chlupy z ocasu jednorožce:</strong> Alternativa k vlasu z hřívy</p>
-                  <p><strong>🌟 Péro Jobertunkela:</strong> Neobvykle vzácné andělské jádro</p>
-                  <p><strong>🕊️ Péro běloskvostného ptáka:</strong> Jádro čistoty a míru</p>
-                  <p><strong>⚡ Kožené vlákno Thunderbirda:</strong> Silnější varianta Thunderbird péra</p>
+              <div className="grid md:grid-cols-2 gap-6 border-t pt-4">
+                {/* Lengths */}
+                <div>
+                  <h4 className="font-medium mb-2 text-purple-600 dark:text-purple-400">
+                    📏 Délky hůlek ({wandComponents.lengths?.length || 0} velikostí)
+                  </h4>
+                  <div className="text-xs space-y-1 max-h-48 overflow-y-auto">
+                    {wandComponents.lengths?.map((length) => (
+                      <div key={length.name} className="flex items-start gap-1">
+                        <p>
+                          <strong>{length.name}:</strong> {length.description}
+                          {length.availableForRandom === false && (
+                            <span className="ml-1 text-xs bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200 px-1 py-0.5 rounded">
+                              Pouze ruční výběr
+                            </span>
+                          )}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            </div>
 
-            <div className="grid md:grid-cols-2 gap-6 border-t pt-4">
-              {/* Lengths */}
-              <div>
-                <h4 className="font-medium mb-2 text-purple-600 dark:text-purple-400">📏 Délky hůlek (10 velikostí)</h4>
-                <div className="text-xs space-y-1">
-                  <p><strong>7":</strong> Krátká, vhodná pro precizní, rychlé kouzlení. Často u velmi mladých čarodějů</p>
-                  <p><strong>8":</strong> Lehce podprůměrná, oblíbená u diskrétních, taktických kouzelníků</p>
-                  <p><strong>9":</strong> Neutrální délka, snadno ovladatelná – vhodná pro většinu uživatelů</p>
-                  <p><strong>10":</strong> Běžná délka. Vyvážená hůlka pro různorodé účely</p>
-                  <p><strong>11":</strong> Mírně delší, ideální pro čaroděje se silným charakterem nebo rozsáhlou magickou silou</p>
-                  <p><strong>12":</strong> Výrazná hůlka, častá u mágů s dominantní povahou nebo hlubokým nitrem</p>
-                  <p><strong>13":</strong> Pro ty, kteří mají neobyčejný potenciál nebo extrémní specializaci</p>
-                  <p><strong>14":</strong> Dlouhá hůlka, vhodná pro formální, velkolepou nebo rituální magii</p>
-                  <p><strong>15":</strong> Rarita – vyžaduje silné zaměření, ale odmění velkým dosahem a účinkem</p>
-                  <p><strong>16+":</strong> Neobvyklá až výstřední délka. Obvykle jen u obrů, divotvůrců nebo výjimečných osobností</p>
+                {/* Flexibilities */}
+                <div>
+                  <h4 className="font-medium mb-2 text-indigo-600 dark:text-indigo-400">
+                    🌊 Ohebnost ({wandComponents.flexibilities?.length || 0} stupňů)
+                  </h4>
+                  <div className="text-xs space-y-1 max-h-48 overflow-y-auto">
+                    {wandComponents.flexibilities?.map((flexibility) => (
+                      <div key={flexibility.name} className="flex items-start gap-1">
+                        <p>
+                          <strong>{flexibility.name}:</strong> {flexibility.description}
+                          {flexibility.availableForRandom === false && (
+                            <span className="ml-1 text-xs bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200 px-1 py-0.5 rounded">
+                              Pouze ruční výběr
+                            </span>
+                          )}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
 
-              {/* Flexibilities */}
-              <div>
-                <h4 className="font-medium mb-2 text-indigo-600 dark:text-indigo-400">🌊 Ohebnost (11 stupňů)</h4>
-                <div className="text-xs space-y-1">
-                  <p><strong>Nezlomná:</strong> Extrémně pevná pro silnou vůli a nekompromisní povahu</p>
-                  <p><strong>Velmi nepoddajná:</strong> Tvrdá hůlka pro rozhodné majitele a přímočaré kouzla</p>
-                  <p><strong>Nepoddajná:</strong> Pevná hůlka pro stabilní a spolehlivé čaroděje</p>
-                  <p><strong>Tvrdá:</strong> Poměrně pevná s dobrou odezvou pro tradiční magii</p>
-                  <p><strong>Mírně nepoddajná:</strong> Lehce tužší pro dobrou kontrolu a metodické čaroděje</p>
-                  <p><strong>Pevná:</strong> Vyvážená ohebnost s univerzální stabilitou i flexibilitou</p>
-                  <p><strong>Ohebná:</strong> Flexibilní a přizpůsobivá pro kreativní čaroděje</p>
-                  <p><strong>Pružná:</strong> Velmi ohebná podporující inovativní a experimentální kouzla</p>
-                  <p><strong>Velmi pružná:</strong> Extrémně flexibilní pro proměnlivé povahy a improvisaci</p>
-                  <p><strong>Výjimečně poddajná:</strong> Mimořádně ohebná reagující na nejjemnější pohyby</p>
+              <div className="bg-amber-50 dark:bg-amber-950/20 p-4 rounded-lg border border-amber-200 dark:border-amber-800">
+                <p className="text-sm font-medium text-amber-900 dark:text-amber-100 mb-2">📊 Celkové statistiky:</p>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-amber-800 dark:text-amber-200">
+                  <div className="text-center">
+                    <div className="font-bold text-lg">{wandComponents.woods?.length || 0}</div>
+                    <div>Druhů dřev</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="font-bold text-lg">{wandComponents.cores?.length || 0}</div>
+                    <div>Typů jader</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="font-bold text-lg">{wandComponents.lengths?.length || 0}</div>
+                    <div>Délek hůlek</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="font-bold text-lg">{wandComponents.flexibilities?.length || 0}</div>
+                    <div>Stupňů ohebnosti</div>
+                  </div>
                 </div>
+                <p className="text-xs text-amber-700 dark:text-amber-300 mt-3 text-center">
+                  Celkem možných kombinací: <strong>
+                    {(wandComponents.woods?.length || 0) * 
+                     (wandComponents.cores?.length || 0) * 
+                     (wandComponents.lengths?.length || 0) * 
+                     (wandComponents.flexibilities?.length || 0)
+                    }</strong> různých hůlek!
+                </p>
               </div>
-            </div>
-
-            <div className="bg-amber-50 dark:bg-amber-950/20 p-4 rounded-lg border border-amber-200 dark:border-amber-800">
-              <p className="text-sm font-medium text-amber-900 dark:text-amber-100 mb-2">📊 Celkové statistiky:</p>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-amber-800 dark:text-amber-200">
-                <div className="text-center">
-                  <div className="font-bold text-lg">38</div>
-                  <div>Druhů dřev</div>
-                </div>
-                <div className="text-center">
-                  <div className="font-bold text-lg">22</div>
-                  <div>Typů jader</div>
-                </div>
-                <div className="text-center">
-                  <div className="font-bold text-lg">10</div>
-                  <div>Délek hůlek</div>
-                </div>
-                <div className="text-center">
-                  <div className="font-bold text-lg">11</div>
-                  <div>Stupňů ohebnosti</div>
-                </div>
-              </div>
-              <p className="text-xs text-amber-700 dark:text-amber-300 mt-3 text-center">
-                Celkem možných kombinací: <strong>92,016</strong> různých hůlek!
-              </p>
-            </div>
+            )}
           </CardContent>
         </Card>
       </div>
