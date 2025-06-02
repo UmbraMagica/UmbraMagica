@@ -1,16 +1,21 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link, useParams, useLocation } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, Calendar, User, Mail, Clock, Edit3, GraduationCap, FileText, Package, BookOpen, Wand2, Home } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
+import { ArrowLeft, Calendar, User, Mail, Clock, Edit3, GraduationCap, FileText, Package, BookOpen, Wand2, Home, Save, X } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { format } from "date-fns";
 import { cs } from "date-fns/locale";
 import { calculateGameAge } from "@/lib/gameDate";
 import { CharacterAvatar } from "@/components/CharacterAvatar";
+import { useState, useEffect } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
 
 interface Character {
   id: number;
@@ -24,6 +29,8 @@ interface Character {
   description?: string;
   avatar?: string | null;
   residence?: string;
+  history?: string;
+  showHistoryToOthers?: boolean;
   user: {
     username: string;
     email: string;
@@ -34,6 +41,13 @@ export default function CharacterProfile() {
   const { id } = useParams();
   const [, setLocation] = useLocation();
   const { user } = useAuth();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  
+  // State for history editing
+  const [isEditingHistory, setIsEditingHistory] = useState(false);
+  const [historyText, setHistoryText] = useState("");
+  const [showHistoryToOthers, setShowHistoryToOthers] = useState(true);
   
   // Get the 'from' parameter from URL to determine navigation
   const urlParams = new URLSearchParams(window.location.search);
@@ -43,6 +57,49 @@ export default function CharacterProfile() {
     queryKey: [`/api/characters/${id}`],
     enabled: !!id,
   });
+
+  // Initialize history state when character data loads
+  useEffect(() => {
+    if (character) {
+      setHistoryText(character.history || "");
+      setShowHistoryToOthers(character.showHistoryToOthers !== false);
+    }
+  }, [character]);
+
+  // History update mutation
+  const updateHistoryMutation = useMutation({
+    mutationFn: async (data: { history: string; showHistoryToOthers: boolean }) => {
+      return apiRequest(`/api/characters/${id}/history`, "PUT", data);
+    },
+    onSuccess: () => {
+      toast({
+        title: "Historie aktualizována",
+        description: "Historie postavy byla úspěšně uložena.",
+      });
+      setIsEditingHistory(false);
+      queryClient.invalidateQueries({ queryKey: [`/api/characters/${id}`] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Chyba",
+        description: error.message || "Nepodařilo se aktualizovat historii postavy.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleSaveHistory = () => {
+    updateHistoryMutation.mutate({
+      history: historyText,
+      showHistoryToOthers: showHistoryToOthers,
+    });
+  };
+
+  const handleCancelHistoryEdit = () => {
+    setHistoryText(character?.history || "");
+    setShowHistoryToOthers(character?.showHistoryToOthers !== false);
+    setIsEditingHistory(false);
+  };
 
 
 
