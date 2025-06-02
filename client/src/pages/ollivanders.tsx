@@ -598,7 +598,7 @@ export default function Ollivanders() {
 
               {/* Cores */}
               <div>
-                <h4 className="font-medium mb-2 text-red-600 dark:text-red-400">🔥 Jádra hůlek (16 druhů)</h4>
+                <h4 className="font-medium mb-2 text-red-600 dark:text-red-400">🔥 Jádra hůlek (22 druhů)</h4>
                 <div className="text-xs space-y-1 max-h-48 overflow-y-auto">
                   <div className="font-medium text-green-600 dark:text-green-400">Nejvznešenější jádra:</div>
                   <p><strong>🐉 Blána z dračího srdce:</strong> Silné a temperamentní jádro s velkou mocí</p>
@@ -648,7 +648,7 @@ export default function Ollivanders() {
 
               {/* Flexibilities */}
               <div>
-                <h4 className="font-medium mb-2 text-indigo-600 dark:text-indigo-400">🌊 Ohebnost (10 stupňů)</h4>
+                <h4 className="font-medium mb-2 text-indigo-600 dark:text-indigo-400">🌊 Ohebnost (11 stupňů)</h4>
                 <div className="text-xs space-y-1">
                   <p><strong>Nezlomná:</strong> Extrémně pevná pro silnou vůli a nekompromisní povahu</p>
                   <p><strong>Velmi nepoddajná:</strong> Tvrdá hůlka pro rozhodné majitele a přímočaré kouzla</p>
@@ -672,7 +672,7 @@ export default function Ollivanders() {
                   <div>Druhů dřev</div>
                 </div>
                 <div className="text-center">
-                  <div className="font-bold text-lg">16</div>
+                  <div className="font-bold text-lg">22</div>
                   <div>Typů jader</div>
                 </div>
                 <div className="text-center">
@@ -680,12 +680,12 @@ export default function Ollivanders() {
                   <div>Délek hůlek</div>
                 </div>
                 <div className="text-center">
-                  <div className="font-bold text-lg">10</div>
+                  <div className="font-bold text-lg">11</div>
                   <div>Stupňů ohebnosti</div>
                 </div>
               </div>
               <p className="text-xs text-amber-700 dark:text-amber-300 mt-3 text-center">
-                Celkem možných kombinací: <strong>54,720</strong> různých hůlek!
+                Celkem možných kombinací: <strong>82,764</strong> různých hůlek!
               </p>
             </div>
           </CardContent>
