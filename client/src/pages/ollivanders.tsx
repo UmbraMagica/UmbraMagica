@@ -552,123 +552,125 @@ export default function Ollivanders() {
           </CardHeader>
           <CardContent className="space-y-4">
             {wandComponents && (
-              <div className="grid md:grid-cols-2 gap-6">
-                {/* Woods */}
-                <div>
-                  <h4 className="font-medium mb-2 text-amber-600 dark:text-amber-400">
-                    🌳 Hůlková dřeva ({wandComponents.woods?.length || 0} druhů)
-                  </h4>
-                  <div className="text-xs space-y-1 max-h-48 overflow-y-auto">
-                    {wandComponents.woods?.map((wood) => (
-                      <div key={wood.name} className="flex items-start gap-1">
-                        <p>
-                          <strong>{wood.name}:</strong> {wood.shortDescription}
-                          {wood.availableForRandom === false && (
-                            <span className="ml-1 text-xs bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200 px-1 py-0.5 rounded">
-                              Pouze ruční výběr
-                            </span>
-                          )}
-                        </p>
-                      </div>
-                    ))}
+              <>
+                <div className="grid md:grid-cols-2 gap-6">
+                  {/* Woods */}
+                  <div>
+                    <h4 className="font-medium mb-2 text-amber-600 dark:text-amber-400">
+                      🌳 Hůlková dřeva ({wandComponents.woods?.length || 0} druhů)
+                    </h4>
+                    <div className="text-xs space-y-1 max-h-48 overflow-y-auto">
+                      {wandComponents.woods?.map((wood) => (
+                        <div key={wood.name} className="flex items-start gap-1">
+                          <p>
+                            <strong>{wood.name}:</strong> {wood.shortDescription}
+                            {wood.availableForRandom === false && (
+                              <span className="ml-1 text-xs bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200 px-1 py-0.5 rounded">
+                                Pouze ruční výběr
+                              </span>
+                            )}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Cores */}
+                  <div>
+                    <h4 className="font-medium mb-2 text-red-600 dark:text-red-400">
+                      🔥 Jádra hůlek ({wandComponents.cores?.length || 0} druhů)
+                    </h4>
+                    <div className="text-xs space-y-1 max-h-48 overflow-y-auto">
+                      {wandComponents.cores?.map((core) => (
+                        <div key={core.name} className="flex items-start gap-1">
+                          <p>
+                            <strong>{core.name}:</strong> {core.description}
+                            {core.availableForRandom === false && (
+                              <span className="ml-1 text-xs bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200 px-1 py-0.5 rounded">
+                                Pouze ruční výběr
+                              </span>
+                            )}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
 
-                {/* Cores */}
-                <div>
-                  <h4 className="font-medium mb-2 text-red-600 dark:text-red-400">
-                    🔥 Jádra hůlek ({wandComponents.cores?.length || 0} druhů)
-                  </h4>
-                  <div className="text-xs space-y-1 max-h-48 overflow-y-auto">
-                    {wandComponents.cores?.map((core) => (
-                      <div key={core.name} className="flex items-start gap-1">
-                        <p>
-                          <strong>{core.name}:</strong> {core.description}
-                          {core.availableForRandom === false && (
-                            <span className="ml-1 text-xs bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200 px-1 py-0.5 rounded">
-                              Pouze ruční výběr
-                            </span>
-                          )}
-                        </p>
-                      </div>
-                    ))}
+                <div className="grid md:grid-cols-2 gap-6 border-t pt-4">
+                  {/* Lengths */}
+                  <div>
+                    <h4 className="font-medium mb-2 text-purple-600 dark:text-purple-400">
+                      📏 Délky hůlek ({wandComponents.lengths?.length || 0} velikostí)
+                    </h4>
+                    <div className="text-xs space-y-1 max-h-48 overflow-y-auto">
+                      {wandComponents.lengths?.map((length) => (
+                        <div key={length.name} className="flex items-start gap-1">
+                          <p>
+                            <strong>{length.name}:</strong> {length.description}
+                            {length.availableForRandom === false && (
+                              <span className="ml-1 text-xs bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200 px-1 py-0.5 rounded">
+                                Pouze ruční výběr
+                              </span>
+                            )}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              </div>
 
-              <div className="grid md:grid-cols-2 gap-6 border-t pt-4">
-                {/* Lengths */}
-                <div>
-                  <h4 className="font-medium mb-2 text-purple-600 dark:text-purple-400">
-                    📏 Délky hůlek ({wandComponents.lengths?.length || 0} velikostí)
-                  </h4>
-                  <div className="text-xs space-y-1 max-h-48 overflow-y-auto">
-                    {wandComponents.lengths?.map((length) => (
-                      <div key={length.name} className="flex items-start gap-1">
-                        <p>
-                          <strong>{length.name}:</strong> {length.description}
-                          {length.availableForRandom === false && (
-                            <span className="ml-1 text-xs bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200 px-1 py-0.5 rounded">
-                              Pouze ruční výběr
-                            </span>
-                          )}
-                        </p>
-                      </div>
-                    ))}
+                  {/* Flexibilities */}
+                  <div>
+                    <h4 className="font-medium mb-2 text-indigo-600 dark:text-indigo-400">
+                      🌊 Ohebnost ({wandComponents.flexibilities?.length || 0} stupňů)
+                    </h4>
+                    <div className="text-xs space-y-1 max-h-48 overflow-y-auto">
+                      {wandComponents.flexibilities?.map((flexibility) => (
+                        <div key={flexibility.name} className="flex items-start gap-1">
+                          <p>
+                            <strong>{flexibility.name}:</strong> {flexibility.description}
+                            {flexibility.availableForRandom === false && (
+                              <span className="ml-1 text-xs bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200 px-1 py-0.5 rounded">
+                                Pouze ruční výběr
+                              </span>
+                            )}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
 
-                {/* Flexibilities */}
-                <div>
-                  <h4 className="font-medium mb-2 text-indigo-600 dark:text-indigo-400">
-                    🌊 Ohebnost ({wandComponents.flexibilities?.length || 0} stupňů)
-                  </h4>
-                  <div className="text-xs space-y-1 max-h-48 overflow-y-auto">
-                    {wandComponents.flexibilities?.map((flexibility) => (
-                      <div key={flexibility.name} className="flex items-start gap-1">
-                        <p>
-                          <strong>{flexibility.name}:</strong> {flexibility.description}
-                          {flexibility.availableForRandom === false && (
-                            <span className="ml-1 text-xs bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200 px-1 py-0.5 rounded">
-                              Pouze ruční výběr
-                            </span>
-                          )}
-                        </p>
-                      </div>
-                    ))}
+                <div className="bg-amber-50 dark:bg-amber-950/20 p-4 rounded-lg border border-amber-200 dark:border-amber-800">
+                  <p className="text-sm font-medium text-amber-900 dark:text-amber-100 mb-2">📊 Celkové statistiky:</p>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-amber-800 dark:text-amber-200">
+                    <div className="text-center">
+                      <div className="font-bold text-lg">{wandComponents.woods?.length || 0}</div>
+                      <div>Druhů dřev</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="font-bold text-lg">{wandComponents.cores?.length || 0}</div>
+                      <div>Typů jader</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="font-bold text-lg">{wandComponents.lengths?.length || 0}</div>
+                      <div>Délek hůlek</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="font-bold text-lg">{wandComponents.flexibilities?.length || 0}</div>
+                      <div>Stupňů ohebnosti</div>
+                    </div>
                   </div>
+                  <p className="text-xs text-amber-700 dark:text-amber-300 mt-3 text-center">
+                    Celkem možných kombinací: <strong>
+                      {(wandComponents.woods?.length || 0) * 
+                       (wandComponents.cores?.length || 0) * 
+                       (wandComponents.lengths?.length || 0) * 
+                       (wandComponents.flexibilities?.length || 0)
+                      }</strong> různých hůlek!
+                  </p>
                 </div>
-              </div>
-
-              <div className="bg-amber-50 dark:bg-amber-950/20 p-4 rounded-lg border border-amber-200 dark:border-amber-800">
-                <p className="text-sm font-medium text-amber-900 dark:text-amber-100 mb-2">📊 Celkové statistiky:</p>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-amber-800 dark:text-amber-200">
-                  <div className="text-center">
-                    <div className="font-bold text-lg">{wandComponents.woods?.length || 0}</div>
-                    <div>Druhů dřev</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="font-bold text-lg">{wandComponents.cores?.length || 0}</div>
-                    <div>Typů jader</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="font-bold text-lg">{wandComponents.lengths?.length || 0}</div>
-                    <div>Délek hůlek</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="font-bold text-lg">{wandComponents.flexibilities?.length || 0}</div>
-                    <div>Stupňů ohebnosti</div>
-                  </div>
-                </div>
-                <p className="text-xs text-amber-700 dark:text-amber-300 mt-3 text-center">
-                  Celkem možných kombinací: <strong>
-                    {(wandComponents.woods?.length || 0) * 
-                     (wandComponents.cores?.length || 0) * 
-                     (wandComponents.lengths?.length || 0) * 
-                     (wandComponents.flexibilities?.length || 0)
-                    }</strong> různých hůlek!
-                </p>
-              </div>
+              </>
             )}
           </CardContent>
         </Card>
