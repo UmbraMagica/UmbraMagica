@@ -730,6 +730,28 @@ export type InsertWandLength = typeof wandLengths.$inferInsert;
 export type WandFlexibility = typeof wandFlexibilities.$inferSelect;
 export type InsertWandFlexibility = typeof wandFlexibilities.$inferInsert;
 
+// Influence Bar tables
+export const influenceBar = pgTable("influence_bar", {
+  id: serial("id").primaryKey(),
+  grindelwaldPoints: integer("grindelwald_points").default(50).notNull(),
+  dumbledorePoints: integer("dumbledore_points").default(50).notNull(),
+  lastUpdated: timestamp("last_updated").defaultNow().notNull(),
+  updatedBy: integer("updated_by").references(() => users.id),
+});
+
+export const influenceHistory = pgTable("influence_history", {
+  id: serial("id").primaryKey(),
+  grindelwaldPoints: integer("grindelwald_points").notNull(),
+  dumbledorePoints: integer("dumbledore_points").notNull(),
+  changeBy: integer("change_by").references(() => users.id),
+  reason: text("reason"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 // Update User type to include narrator fields
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
+export type InfluenceBar = typeof influenceBar.$inferSelect;
+export type InsertInfluenceBar = typeof influenceBar.$inferInsert;
+export type InfluenceHistory = typeof influenceHistory.$inferSelect;
+export type InsertInfluenceHistory = typeof influenceHistory.$inferInsert;

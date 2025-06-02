@@ -20,6 +20,8 @@ import {
   wandCores,
   wandLengths,
   wandFlexibilities,
+  influenceBar,
+  influenceHistory,
   type User,
   type InsertUser,
   type Character,
