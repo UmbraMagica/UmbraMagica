@@ -61,18 +61,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     console.log(`${req.method} ${req.path} - Query:`, req.query);
     next();
   });
-  // Use database store for persistent sessions
+  // Use memory store for sessions
   const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
   const sessionSecret = process.env.SESSION_SECRET || 'rpg-realm-session-secret-key-fixed-2024';
   
-  const pgSession = ConnectPgSimple(session);
-  
   app.use(session({
-    store: new pgSession({
-      pool: pool,
-      tableName: 'session',
-      createTableIfMissing: true,
-    }),
     secret: sessionSecret,
     resave: false,
     saveUninitialized: false,
@@ -715,6 +708,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error updating character:", error);
       res.status(500).json({ message: "Failed to update character" });
+    }
+  });
+
+  // Update character history
+  app.put("/api/characters/:id/history", requireAuth, async (req, res) => {
+    try {
+      const characterId = parseInt(req.params.id);
+      const { history, showHistoryToOthers } = req.body;
+      const userId = req.session.userId!;
+      
+      // Check if the character belongs to the authenticated user
+      const character = await storage.getCharacter(characterId);
+      if (!character) {
+        return res.status(404).json({ message: "Postava nebyla nalezena" });
+      }
+      
+      if (character.userId !== userId) {
+        return res.status(403).json({ message: "Nemáte oprávnění upravovat tuto postavu" });
+      }
+      
+      // Update the character history
+      const updatedCharacter = await storage.updateCharacterHistory(
+        characterId, 
+        history || "", 
+        showHistoryToOthers !== undefined ? showHistoryToOthers : true
+      );
+      
+      if (!updatedCharacter) {
+        return res.status(500).json({ message: "Nepodařilo se aktualizovat historii postavy" });
+      }
+      
+      res.json({ 
+        message: "Historie postavy byla úspěšně aktualizována",
+        character: updatedCharacter 
+      });
+    } catch (error) {
+      console.error("Error updating character history:", error);
+      res.status(500).json({ message: "Nepodařilo se aktualizovat historii postavy" });
     }
   });
 
