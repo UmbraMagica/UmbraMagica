@@ -27,6 +27,12 @@ export async function apiRequest(
   url: string,
   data?: unknown | undefined,
 ): Promise<Response> {
+  console.log("=== FRONTEND API REQUEST ===");
+  console.log("Method:", method);
+  console.log("URL:", url);
+  console.log("Data:", data);
+  console.log("Full URL:", window.location.origin + url);
+  
   const res = await fetch(url, {
     method,
     headers: data ? { "Content-Type": "application/json" } : {},
@@ -34,6 +40,9 @@ export async function apiRequest(
     credentials: "include",
   });
 
+  console.log("Response status:", res.status);
+  console.log("Response headers:", Object.fromEntries(res.headers.entries()));
+  
   await throwIfResNotOk(res);
   return res;
 }
