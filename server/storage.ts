@@ -333,17 +333,7 @@ export class DatabaseStorage implements IStorage {
     return character;
   }
 
-  async updateCharacterHistory(id: number, history: string, showToOthers: boolean): Promise<Character | undefined> {
-    const [character] = await db
-      .update(characters)
-      .set({ 
 
-        updatedAt: new Date() 
-      })
-      .where(eq(characters.id, id))
-      .returning();
-    return character;
-  }
 
   async getCharacterByName(firstName: string, lastName: string): Promise<Character | undefined> {
     const [character] = await db
