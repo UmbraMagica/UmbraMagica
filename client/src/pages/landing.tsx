@@ -118,12 +118,16 @@ export default function Landing() {
             </Button>
           </form>
 
-          <div className="text-center mt-6">
+          <div className="text-center mt-6 space-y-2">
             <Link href="/registration">
               <Button variant="link" className="text-accent hover:text-secondary transition-colors duration-200">
                 Nemáte účet? Zaregistrujte se
               </Button>
             </Link>
+            
+            <div className="text-sm text-muted-foreground">
+              Zapomněli jste přihlašovací údaje? Kontaktujte administrátora.
+            </div>
           </div>
 
 
