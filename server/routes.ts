@@ -2129,6 +2129,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Influence Bar endpoints
   app.get("/api/influence-bar", async (req, res) => {
     try {
+      // Disable cache for real-time data
+      res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.set('Pragma', 'no-cache');
+      res.set('Expires', '0');
+      
       const influenceData = await storage.getInfluenceBar();
       res.json(influenceData);
     } catch (error) {
