@@ -61,14 +61,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
     console.log(`${req.method} ${req.path} - Query:`, req.query);
     next();
   });
-  // Use memory store for session - simpler and more reliable
+  // Use database store for persistent sessions
   const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
   const sessionSecret = process.env.SESSION_SECRET || 'rpg-realm-session-secret-key-fixed-2024';
   
+  const pgSession = ConnectPgSimple(session);
+  
   app.use(session({
+    store: new pgSession({
+      pool: pool,
+      tableName: 'session',
+      createTableIfMissing: true,
+    }),
     secret: sessionSecret,
-    resave: true,
-    saveUninitialized: true,
+    resave: false,
+    saveUninitialized: false,
     name: 'connect.sid',
     cookie: {
       httpOnly: false,
