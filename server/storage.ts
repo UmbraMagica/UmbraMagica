@@ -2154,8 +2154,8 @@ export class DatabaseStorage implements IStorage {
     const [result] = await db.select().from(influenceBar).orderBy(desc(influenceBar.id)).limit(1);
     console.log('getInfluenceBar result:', result);
     return {
-      grindelwaldPoints: result?.grindelwaldPoints || 50,
-      dumbledorePoints: result?.dumbledorePoints || 50
+      grindelwaldPoints: result?.grindelwaldPoints ?? 50,
+      dumbledorePoints: result?.dumbledorePoints ?? 50
     };
   }
 
