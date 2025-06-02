@@ -1,5 +1,5 @@
 import { useAuth } from "@/hooks/useAuth";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -53,13 +53,15 @@ interface OnlineCharacter {
 export default function Home() {
   const { user, logout } = useAuth();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [location, setLocation] = useLocation();
   const [displayedCharacter, setDisplayedCharacter] = useState<any>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleHomeClick = () => {
     if (location === '/') {
-      window.location.reload();
+      // Refresh data instead of reloading the page
+      queryClient.invalidateQueries();
     } else {
       setLocation('/');
     }
