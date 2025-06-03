@@ -1,0 +1,34 @@
+2d472b1 (HEAD -> main) Provide detailed instructions to help smoothly transition the platform
+e5478ad Enable seamless transfer of the game data to a different hosting provider
+1329979 Deployed your application
+4b5b03b Improve character interaction and narrative management across the platform
+eeb870d Add character history option to profile for viewing past actions
+6bff985 Make personal archives easily accessible by adding a direct link
+9a4f294 Correct the visibility setting for character history display in profiles
+665edb8 Ensure character histories are displayed only when sharing is enabled
+429cadb Control who can see character history to improve privacy settings
+8479e7f Remind users to contact administrators when login information is forgotten
+89f0271 Allow admins to edit any character and enable history visibility setting
+0554f6f Deployed your application
+7296408 Stop re-initializing the test data when the application restarts
+e6983d5 Improve display of faction influence and handle missing data gracefully
+f49f6a3 Show the correct admin identifier and provide a fallback date if missing
+cb2aabd Show the correct details for magical influence changes on the admin page
+22ef9ad Ensure the magic balance starts at the correct level for all new games
+3573cbf Ensure real-time updates for the magic influence bar across the website
+f460888 Ensure the influence bar data always reflects the most current state
+379363e Adjust starting positions to provide players with a fairer gameplay launch
+5a29992 Simplify the influence reset process through dedicated reset endpoint
+54b43a4 Ensure score resets affect both players, preventing single-player resets
+3582683 Ensure influence values are always adjusted when resetting game state
+284a3a7 Ensure influence adjustments work correctly, even when starting from scratch
+87f1ecf Stop automatically logging admin changes in the database storage
+5c97123 Show the admin's ID and update the date format for log entries
+7dd1a04 Allow admins to modify game influence and track those changes
+6fdc082 Improve retrieval of influence logs and handle potential errors gracefully
+512bd49 Improve retrieval of influence history data for administrative oversight
+f57252e Introduce dynamic system affecting character choices and world evolution
+e1a5bb3 Implement system to track and adjust the balance of power between sides
+5106816 Provide guidelines for migrating wand data to a new system
+9efaa51 Ensure essential game elements are present and functional within the system
+8f8ae65 Ensure all game components are present and functioning correctly in the databas

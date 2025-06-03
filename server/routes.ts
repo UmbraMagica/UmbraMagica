@@ -61,11 +61,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     console.log(`${req.method} ${req.path} - Query:`, req.query);
     next();
   });
-  // Use memory store for sessions
+  // Use PostgreSQL store for sessions
   const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
   const sessionSecret = process.env.SESSION_SECRET || 'rpg-realm-session-secret-key-fixed-2024';
   
+  const PgSession = ConnectPgSimple(session);
+  
   app.use(session({
+    store: new PgSession({
+      pool: pool,
+      tableName: 'session',
+      createTableIfMissing: true,
+    }),
     secret: sessionSecret,
     resave: false,
     saveUninitialized: false,
