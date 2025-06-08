@@ -46,6 +46,75 @@ const checkRateLimit = (identifier: string, maxRequests: number = 100, windowMs:
 };
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Create HTTP server
+  const httpServer = createServer(app);
+
+  // Create WebSocket server
+  const wss = new WebSocketServer({ server: httpServer });
+
+  // WebSocket connection tracking
+  const activeConnections = new Map<WebSocket, { userId?: number; characterId?: number; roomId?: number }>();
+  const roomPresence = new Map<number, Set<number>>();
+
+  // Broadcast function for WebSocket
+  const broadcastToRoom = (roomId: number, data: any) => {
+    for (const [ws, connInfo] of activeConnections.entries()) {
+      if (ws.readyState === WebSocket.OPEN && connInfo.roomId === roomId) {
+        ws.send(JSON.stringify(data));
+      }
+    }
+  };
+
+  // WebSocket connection handler
+  wss.on('connection', (ws, req) => {
+    console.log('New WebSocket connection');
+    activeConnections.set(ws, {});
+
+    ws.on('message', async (message) => {
+      try {
+        const data = JSON.parse(message.toString());
+        const connInfo = activeConnections.get(ws);
+        if (!connInfo) return;
+
+        if (data.type === 'join_room') {
+          connInfo.roomId = data.roomId;
+          connInfo.characterId = data.characterId;
+          connInfo.userId = data.userId;
+          
+          // Add to room presence
+          if (!roomPresence.has(data.roomId)) {
+            roomPresence.set(data.roomId, new Set());
+          }
+          if (data.characterId) {
+            roomPresence.get(data.roomId)!.add(data.characterId);
+          }
+        } else if (data.type === 'leave_room') {
+          if (connInfo.roomId && connInfo.characterId) {
+            const roomChars = roomPresence.get(connInfo.roomId);
+            if (roomChars) {
+              roomChars.delete(connInfo.characterId);
+            }
+          }
+          connInfo.roomId = undefined;
+          connInfo.characterId = undefined;
+        }
+      } catch (error) {
+        console.error('WebSocket message error:', error);
+      }
+    });
+
+    ws.on('close', () => {
+      const connInfo = activeConnections.get(ws);
+      if (connInfo && connInfo.roomId && connInfo.characterId) {
+        const roomChars = roomPresence.get(connInfo.roomId);
+        if (roomChars) {
+          roomChars.delete(connInfo.characterId);
+        }
+      }
+      activeConnections.delete(ws);
+    });
+  });
+
   // Rate limiting middleware
   app.use('/api/*', (req, res, next) => {
     const identifier = req.ip || 'unknown';
@@ -3208,15 +3277,6 @@ Správa ubytování`
       console.error('Error updating room sort order:', error);
       res.status(500).json({ message: 'Failed to update room sort order' });
     }
-  });
-
-  const port = Number(process.env.PORT) || 5000;
-  httpServer.listen({
-    port,
-    host: "0.0.0.0",
-    reusePort: true,
-  }, () => {
-    console.log(`serving on port ${port}`);
   });
 
   return httpServer;
