@@ -1,3 +1,6 @@
+/* Import Google Fonts first - must be at the very top */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cinzel:wght@400;500;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -23,7 +26,7 @@
   --destructive-foreground: 60 9.1% 97.8%;
   --ring: 20 14.3% 4.1%;
   --radius: 0.5rem;
-  
+
   /* RPG Theme Colors */
   --rpg-primary: 262 83% 58%; /* #7C3AED */
   --rpg-secondary: 271 91% 65%; /* #A855F7 */
@@ -106,6 +109,3 @@
     font-family: 'Cinzel', serif;
   }
 }
-
-/* Import Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cinzel:wght@400;500;600&display=swap');

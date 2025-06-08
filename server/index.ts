@@ -80,11 +80,13 @@ app.use((req, res, next) => {
 
   // Use Railway's PORT or fallback to 5000 for development
   const port = Number(process.env.PORT) || 5000;
-  server.listen({
-    port,
-    host: "0.0.0.0",
-    reusePort: true,
-  }, () => {
+  
+  // Handle server errors
+  server.on('error', (err) => {
+    console.error('Server error:', err);
+  });
+  
+  server.listen(port, "0.0.0.0", () => {
     log(`serving on port ${port}`);
   });
 })();
