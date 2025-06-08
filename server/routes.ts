@@ -2,12 +2,11 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
-import { registrationSchema, loginSchema, insertCharacterSchema, insertMessageSchema, characterEditSchema, characterAdminEditSchema, characterRequestSchema, chatRooms, spellSchema, insertSpellSchema, insertCharacterSpellSchema, insertChatCategorySchema, insertChatRoomSchema, insertHousingRequestSchema, insertOwlPostMessageSchema, housingRequests } from "@shared/schema";
+import { registrationSchema, loginSchema, insertCharacterSchema, insertMessageSchema, characterEditSchema, characterAdminEditSchema, characterRequestSchema, spellSchema, insertChatCategorySchema, insertChatRoomSchema, insertHousingRequestSchema, insertOwlPostMessageSchema } from "@shared/schema";
 import { db, pool } from "./db";
 import { eq, sql } from "drizzle-orm";
 import { z } from "zod";
 import session from "express-session";
-import ConnectPgSimple from "connect-pg-simple";
 import multer from "multer";
 import sharp from "sharp";
 
@@ -32,16 +31,16 @@ const rateLimiter = new Map<string, { count: number; resetTime: number }>();
 const checkRateLimit = (identifier: string, maxRequests: number = 100, windowMs: number = 60000) => {
   const now = Date.now();
   const userLimit = rateLimiter.get(identifier);
-  
+
   if (!userLimit || now > userLimit.resetTime) {
     rateLimiter.set(identifier, { count: 1, resetTime: now + windowMs });
     return true;
   }
-  
+
   if (userLimit.count >= maxRequests) {
     return false;
   }
-  
+
   userLimit.count++;
   return true;
 };
@@ -55,16 +54,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
     next();
   });
-  
+
   // Debug middleware for chat endpoints
   app.use('/api/chat/*', (req, res, next) => {
     console.log(`${req.method} ${req.path} - Query:`, req.query);
     next();
   });
-  // Use memory store for sessions
+
+  // Session configuration
   const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
   const sessionSecret = process.env.SESSION_SECRET || 'rpg-realm-session-secret-key-fixed-2024';
-  
+
   app.use(session({
     secret: sessionSecret,
     resave: false,
@@ -78,18 +78,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     },
   }));
 
-  // Debug middleware to log session and cookies
-  app.use((req: any, res: any, next: any) => {
-    if (req.url.includes('/api/auth') || req.url.includes('/api/wand-components')) {
-      console.log('Request URL:', req.url);
-      console.log('Session ID:', req.sessionID);
-      console.log('Session data:', req.session);
-      console.log('Cookies:', req.headers.cookie);
-    }
-    next();
-  });
-
-  // Middleware to check authentication
+  // Authentication middleware
   const requireAuth = (req: any, res: any, next: any) => {
     if (!req.session.userId) {
       return res.status(401).json({ message: "Unauthorized" });
@@ -101,12 +90,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     if (!req.session.userId) {
       return res.status(401).json({ message: "Unauthorized" });
     }
-    
+
     const user = await storage.getUser(req.session.userId);
     if (!user || user.role !== "admin") {
       return res.status(403).json({ message: "Admin access required" });
     }
-    
+
     req.user = user;
     next();
   };
@@ -130,7 +119,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/auth/check-username", async (req, res) => {
     try {
       const { username } = req.query;
-      
+
       if (!username || typeof username !== 'string') {
         return res.status(400).json({ message: "Username is required" });
       }
@@ -152,7 +141,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const characters = await storage.getCharactersByUserId(user.id);
-      
+
       res.json({
         id: user.id,
         username: user.username,
@@ -179,31 +168,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   app.post("/api/auth/login", async (req, res) => {
-    console.log("=== LOGIN REQUEST ===");
-    console.log("Request body:", req.body);
-    console.log("Session ID before:", req.sessionID);
-    console.log("Session data before:", req.session);
-    
     try {
       const { username, password } = loginSchema.parse(req.body);
-      console.log("Parsed credentials - username:", username);
-      
+
       const user = await storage.validateUser(username, password);
-      console.log("User validation result:", user ? `User found: ${user.id}` : "No user found");
-      
+
       if (!user) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
 
-      // Set session data directly without regeneration for testing
       req.session.userId = user.id;
       req.session.userRole = user.role;
-      
-      console.log("Session after setting data:", req.session);
-      console.log("Session ID after:", req.sessionID);
-      
+
       const characters = await storage.getCharactersByUserId(user.id);
-      
+
       res.json({
         id: user.id,
         username: user.username,
@@ -211,8 +189,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         role: user.role,
         characters,
       });
-      
-      console.log("Login response sent successfully");
     } catch (error) {
       console.error("Login error:", error);
       if (error instanceof z.ZodError) {
@@ -231,174 +207,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
-  // Update user character order
-  app.post("/api/user/character-order", requireAuth, async (req: any, res) => {
-    try {
-      const { characterOrder } = req.body;
-      
-      if (!Array.isArray(characterOrder)) {
-        return res.status(400).json({ message: "Character order must be an array" });
-      }
-
-      await storage.updateUserSettings(req.session.userId, {
-        characterOrder: JSON.stringify(characterOrder)
-      });
-
-      res.json({ message: "Character order updated successfully" });
-    } catch (error) {
-      console.error("Error updating character order:", error);
-      res.status(500).json({ message: "Failed to update character order" });
-    }
-  });
-
-  // Update user highlight words
-  app.post("/api/user/highlight-words", requireAuth, async (req: any, res) => {
-    try {
-      const { highlightWords, highlightColor } = req.body;
-      
-      console.log("Highlight words update request:", { highlightWords, highlightColor, userId: req.session.userId });
-      
-      if (typeof highlightWords !== 'string') {
-        return res.status(400).json({ message: "Invalid highlight words format" });
-      }
-      
-      const updateData: any = {
-        highlightWords: highlightWords
-      };
-      
-      if (highlightColor && typeof highlightColor === 'string') {
-        updateData.highlightColor = highlightColor;
-      }
-      
-      console.log("Update data being saved:", updateData);
-      
-      await storage.updateUserSettings(req.session.userId, updateData);
-
-      res.json({ message: "Highlight words updated successfully" });
-    } catch (error) {
-      console.error("Error updating highlight words:", error);
-      res.status(500).json({ message: "Failed to update highlight words" });
-    }
-  });
-
-  // Update narrator color
-  app.post("/api/user/narrator-color", requireAuth, async (req: any, res) => {
-    try {
-      const { narratorColor } = req.body;
-      
-      if (!narratorColor || typeof narratorColor !== 'string') {
-        return res.status(400).json({ message: "Narrator color is required" });
-      }
-      
-      const validColors = ['yellow', 'red', 'blue', 'green', 'pink', 'purple'];
-      if (!validColors.includes(narratorColor)) {
-        return res.status(400).json({ message: "Invalid narrator color" });
-      }
-      
-      await storage.updateUserSettings(req.session.userId, {
-        narratorColor: narratorColor
-      });
-
-      res.json({ message: "Narrator color updated successfully" });
-    } catch (error) {
-      console.error("Error updating narrator color:", error);
-      res.status(500).json({ message: "Failed to update narrator color" });
-    }
-  });
-
-  // Change password endpoint
-  app.post("/api/auth/change-password", requireAuth, async (req: any, res) => {
-    try {
-      const { currentPassword, newPassword } = req.body;
-
-      if (!currentPassword || !newPassword) {
-        return res.status(400).json({ message: "Současné heslo a nové heslo jsou povinné" });
-      }
-
-      // Validate new password strength
-      if (newPassword.length < 8) {
-        return res.status(400).json({ message: "Nové heslo musí mít alespoň 8 znaků" });
-      }
-      if (!/(?=.*[a-z])/.test(newPassword)) {
-        return res.status(400).json({ message: "Nové heslo musí obsahovat alespoň jedno malé písmeno" });
-      }
-      if (!/(?=.*[A-Z])/.test(newPassword)) {
-        return res.status(400).json({ message: "Nové heslo musí obsahovat alespoň jedno velké písmeno" });
-      }
-      if (!/(?=.*\d)/.test(newPassword)) {
-        return res.status(400).json({ message: "Nové heslo musí obsahovat alespoň jednu číslici" });
-      }
-
-      // Get current user
-      const user = await storage.getUser(req.session.userId);
-      if (!user) {
-        return res.status(404).json({ message: "Uživatel nebyl nalezen" });
-      }
-
-      // Validate current password
-      const isCurrentPasswordValid = await storage.validateUser(user.username, currentPassword);
-      if (!isCurrentPasswordValid) {
-        return res.status(401).json({ message: "Současné heslo je nesprávné" });
-      }
-
-      // Hash new password and update
-      const hashedNewPassword = await storage.hashPassword(newPassword);
-      await storage.updateUserPassword(user.id, hashedNewPassword);
-
-      res.json({ message: "Heslo bylo úspěšně změněno" });
-    } catch (error) {
-      console.error("Error changing password:", error);
-      res.status(500).json({ message: "Nepodařilo se změnit heslo" });
-    }
-  });
-
-  // Change email endpoint
-  app.post("/api/auth/change-email", requireAuth, async (req: any, res) => {
-    try {
-      const { newEmail, confirmPassword } = req.body;
-
-      if (!newEmail || !confirmPassword) {
-        return res.status(400).json({ message: "Nový email a potvrzení hesla jsou povinné" });
-      }
-
-      // Validate email format
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(newEmail)) {
-        return res.status(400).json({ message: "Neplatný formát emailu" });
-      }
-
-      // Get current user
-      const user = await storage.getUser(req.session.userId);
-      if (!user) {
-        return res.status(404).json({ message: "Uživatel nebyl nalezen" });
-      }
-
-      // Validate password
-      const isPasswordValid = await storage.validateUser(user.username, confirmPassword);
-      if (!isPasswordValid) {
-        return res.status(401).json({ message: "Heslo je nesprávné" });
-      }
-
-      // Check if email is already taken
-      const existingUser = await storage.getUserByEmail(newEmail);
-      if (existingUser && existingUser.id !== user.id) {
-        return res.status(409).json({ message: "Tento email je již používán" });
-      }
-
-      // Update email
-      await storage.updateUserEmail(user.id, newEmail);
-
-      res.json({ message: "Email byl úspěšně změněn" });
-    } catch (error) {
-      console.error("Error changing email:", error);
-      res.status(500).json({ message: "Nepodařilo se změnit email" });
-    }
-  });
-
   app.post("/api/auth/register", async (req, res) => {
     try {
       const data = registrationSchema.parse(req.body);
-      
+
       // Check if username already exists
       const existingUser = await storage.getUserByUsername(data.username);
       if (existingUser) {
@@ -457,6 +269,162 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       console.error("Registration error:", error);
       res.status(500).json({ message: "Registration failed" });
+    }
+  });
+
+  // User settings endpoints
+  app.post("/api/user/character-order", requireAuth, async (req: any, res) => {
+    try {
+      const { characterOrder } = req.body;
+
+      if (!Array.isArray(characterOrder)) {
+        return res.status(400).json({ message: "Character order must be an array" });
+      }
+
+      await storage.updateUserSettings(req.session.userId, {
+        characterOrder: JSON.stringify(characterOrder)
+      });
+
+      res.json({ message: "Character order updated successfully" });
+    } catch (error) {
+      console.error("Error updating character order:", error);
+      res.status(500).json({ message: "Failed to update character order" });
+    }
+  });
+
+  app.post("/api/user/highlight-words", requireAuth, async (req: any, res) => {
+    try {
+      const { highlightWords, highlightColor } = req.body;
+
+      if (typeof highlightWords !== 'string') {
+        return res.status(400).json({ message: "Invalid highlight words format" });
+      }
+
+      const updateData: any = {
+        highlightWords: highlightWords
+      };
+
+      if (highlightColor && typeof highlightColor === 'string') {
+        updateData.highlightColor = highlightColor;
+      }
+
+      await storage.updateUserSettings(req.session.userId, updateData);
+
+      res.json({ message: "Highlight words updated successfully" });
+    } catch (error) {
+      console.error("Error updating highlight words:", error);
+      res.status(500).json({ message: "Failed to update highlight words" });
+    }
+  });
+
+  app.post("/api/user/narrator-color", requireAuth, async (req: any, res) => {
+    try {
+      const { narratorColor } = req.body;
+
+      if (!narratorColor || typeof narratorColor !== 'string') {
+        return res.status(400).json({ message: "Narrator color is required" });
+      }
+
+      const validColors = ['yellow', 'red', 'blue', 'green', 'pink', 'purple'];
+      if (!validColors.includes(narratorColor)) {
+        return res.status(400).json({ message: "Invalid narrator color" });
+      }
+
+      await storage.updateUserSettings(req.session.userId, {
+        narratorColor: narratorColor
+      });
+
+      res.json({ message: "Narrator color updated successfully" });
+    } catch (error) {
+      console.error("Error updating narrator color:", error);
+      res.status(500).json({ message: "Failed to update narrator color" });
+    }
+  });
+
+  app.post("/api/auth/change-password", requireAuth, async (req: any, res) => {
+    try {
+      const { currentPassword, newPassword } = req.body;
+
+      if (!currentPassword || !newPassword) {
+        return res.status(400).json({ message: "Současné heslo a nové heslo jsou povinné" });
+      }
+
+      // Validate new password strength
+      if (newPassword.length < 8) {
+        return res.status(400).json({ message: "Nové heslo musí obsahovat alespoň 8 znaků" });
+      }
+      if (!/(?=.*[a-z])/.test(newPassword)) {
+        return res.status(400).json({ message: "Nové heslo musí obsahovat alespoň jedno malé písmeno" });
+      }
+      if (!/(?=.*[A-Z])/.test(newPassword)) {
+        return res.status(400).json({ message: "Nové heslo musí obsahovat alespoň jedno velké písmeno" });
+      }
+      if (!/(?=.*\d)/.test(newPassword)) {
+        return res.status(400).json({ message: "Nové heslo musí obsahovat alespoň jednu číslici" });
+      }
+
+      // Get current user
+      const user = await storage.getUser(req.session.userId);
+      if (!user) {
+        return res.status(404).json({ message: "Uživatel nebyl nalezen" });
+      }
+
+      // Validate current password
+      const isCurrentPasswordValid = await storage.validateUser(user.username, currentPassword);
+      if (!isCurrentPasswordValid) {
+        return res.status(401).json({ message: "Současné heslo je nesprávné" });
+      }
+
+      // Hash new password and update
+      const hashedNewPassword = await storage.hashPassword(newPassword);
+      await storage.updateUserPassword(user.id, hashedNewPassword);
+
+      res.json({ message: "Heslo bylo úspěšně změněno" });
+    } catch (error) {
+      console.error("Error changing password:", error);
+      res.status(500).json({ message: "Nepodařilo se změnit heslo" });
+    }
+  });
+
+  app.post("/api/auth/change-email", requireAuth, async (req: any, res) => {
+    try {
+      const { newEmail, confirmPassword } = req.body;
+
+      if (!newEmail || !confirmPassword) {
+        return res.status(400).json({ message: "Nový email a potvrzení hesla jsou povinné" });
+      }
+
+      // Validate email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(newEmail)) {
+        return res.status(400).json({ message: "Neplatný formát emailu" });
+      }
+
+      // Get current user
+      const user = await storage.getUser(req.session.userId);
+      if (!user) {
+        return res.status(404).json({ message: "Uživatel nebyl nalezen" });
+      }
+
+      // Validate password
+      const isPasswordValid = await storage.validateUser(user.username, confirmPassword);
+      if (!isPasswordValid) {
+        return res.status(401).json({ message: "Heslo je nesprávné" });
+      }
+
+      // Check if email is already taken
+      const existingUser = await storage.getUserByEmail(newEmail);
+      if (existingUser && existingUser.id !== user.id) {
+        return res.status(409).json({ message: "Tento email je již používán" });
+      }
+
+      // Update email
+      await storage.updateUserEmail(user.id, newEmail);
+
+      res.json({ message: "Email byl úspěšně změněn" });
+    } catch (error) {
+      console.error("Error changing email:", error);
+      res.status(500).json({ message: "Nepodařilo se změnit email" });
     }
   });
 
@@ -1407,6 +1375,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
 
 
+
   // Get specific character with user info
   app.get("/api/characters/:id", requireAuth, async (req, res) => {
     try {
@@ -2266,9 +2235,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
 
 
-
-
-
   // Housing request endpoints
   app.post("/api/housing-requests", requireAuth, async (req, res) => {
     try {
@@ -2398,463 +2364,12 @@ Správa ubytování`
   });
 
 
-
-  const httpServer = createServer(app);
-  
-  // WebSocket server for real-time chat
-  const wss = new WebSocketServer({ server: httpServer, path: '/ws' });
-  
-  // Store active WebSocket connections with user info
-  const activeConnections = new Map<WebSocket, { userId: number; characterId?: number; roomId?: number }>();
-  
-  // Store room presence - which characters are in which rooms
-  const roomPresence = new Map<number, Set<number>>();
-
-  // Function to broadcast message to all clients in a specific room
-  function broadcastToRoom(roomId: number, message: any) {
-    activeConnections.forEach((connInfo, ws) => {
-      if (connInfo.roomId === roomId && ws.readyState === WebSocket.OPEN) {
-        ws.send(JSON.stringify(message));
-      }
-    });
-  }
-
-  wss.on('connection', (ws, req) => {
-    console.log('New WebSocket connection');
-    
-    ws.on('message', async (data) => {
-      try {
-        const message = JSON.parse(data.toString());
-        
-        switch (message.type) {
-          case 'authenticate':
-            // Verify session and character ownership
-            if (!message.sessionId || !message.userId || !message.characterId) {
-              ws.send(JSON.stringify({ type: 'error', message: 'Missing authentication data' }));
-              return;
-            }
-            
-            // In production, verify the session ID matches the user
-            const user = await storage.getUser(message.userId);
-            if (!user) {
-              ws.send(JSON.stringify({ type: 'error', message: 'Invalid user' }));
-              return;
-            }
-            
-            const userCharacter = await storage.getCharacter(message.characterId);
-            if (!userCharacter || userCharacter.userId !== message.userId) {
-              ws.send(JSON.stringify({ type: 'error', message: 'Character access denied' }));
-              return;
-            }
-            
-            activeConnections.set(ws, { 
-              userId: message.userId, 
-              characterId: message.characterId 
-            });
-            ws.send(JSON.stringify({ type: 'authenticated', success: true }));
-            break;
-            
-          case 'join_room':
-            const connInfo = activeConnections.get(ws);
-            if (!connInfo?.characterId) {
-              ws.send(JSON.stringify({ type: 'error', message: 'Not authenticated' }));
-              return;
-            }
-            
-            const roomId = parseInt(message.roomId);
-            if (!roomId) {
-              ws.send(JSON.stringify({ type: 'error', message: 'Invalid room ID' }));
-              return;
-            }
-            
-            // Remove character from previous room
-            if (connInfo.roomId) {
-              const oldRoomCharacters = roomPresence.get(connInfo.roomId);
-              if (oldRoomCharacters) {
-                oldRoomCharacters.delete(connInfo.characterId);
-                if (oldRoomCharacters.size === 0) {
-                  roomPresence.delete(connInfo.roomId);
-                }
-                // Notify old room about character leaving
-                broadcastToRoom(connInfo.roomId, {
-                  type: 'presence_update',
-                  characters: Array.from(oldRoomCharacters)
-                });
-              }
-            }
-            
-            // Add character to new room
-            if (!roomPresence.has(roomId)) {
-              roomPresence.set(roomId, new Set());
-            }
-            roomPresence.get(roomId)!.add(connInfo.characterId);
-            connInfo.roomId = roomId;
-            
-            // Get character details for presence update
-            const characterIds = Array.from(roomPresence.get(roomId)!);
-            const characters = await Promise.all(
-              characterIds.map(async (characterId) => {
-                const character = await storage.getCharacter(characterId);
-                return character ? {
-                  id: character.id,
-                  firstName: character.firstName,
-                  middleName: character.middleName,
-                  lastName: character.lastName,
-                  fullName: `${character.firstName}${character.middleName ? ` ${character.middleName}` : ''} ${character.lastName}`
-                } : null;
-              })
-            );
-            const validCharacters = characters.filter(Boolean);
-            
-            // Notify new room about character joining
-            broadcastToRoom(roomId, {
-              type: 'presence_update',
-              characters: validCharacters
-            });
-            
-            ws.send(JSON.stringify({ 
-              type: 'room_joined', 
-              roomId,
-              characters: validCharacters
-            }));
-            break;
-            
-          case 'chat_message':
-            const connectionInfo = activeConnections.get(ws);
-            if (!connectionInfo?.characterId) {
-              ws.send(JSON.stringify({ type: 'error', message: 'Not authenticated' }));
-              return;
-            }
-
-            // Check if character is alive (not in cemetery)
-            const messageCharacterCheck = await storage.getCharacter(connectionInfo.characterId);
-            if (!messageCharacterCheck || messageCharacterCheck.deathDate) {
-              ws.send(JSON.stringify({ 
-                type: 'error', 
-                message: 'Zemřelé postavy nemohou psát zprávy. Navštivte hřbitov pro více informací.' 
-              }));
-              return;
-            }
-
-            // Validate message content
-            const validatedMessage = insertMessageSchema.parse({
-              roomId: message.roomId,
-              characterId: connectionInfo.characterId,
-              content: message.content,
-              messageType: message.messageType || 'message',
-            });
-
-            // Save message to database
-            console.log("WebSocket saving message:", validatedMessage);
-            const savedMessage = await storage.createMessage(validatedMessage);
-            console.log("WebSocket message saved:", savedMessage);
-            
-            // Get character info for broadcast
-            const messageCharacter = await storage.getCharacter(connectionInfo.characterId);
-            if (!messageCharacter) return;
-
-            // Broadcast to all connected clients
-            const broadcastMessage = {
-              type: 'new_message',
-              message: {
-                ...savedMessage,
-                character: {
-                  firstName: messageCharacter.firstName,
-                  middleName: messageCharacter.middleName,
-                  lastName: messageCharacter.lastName,
-                }
-              }
-            };
-
-            wss.clients.forEach((client) => {
-              if (client.readyState === WebSocket.OPEN) {
-                client.send(JSON.stringify(broadcastMessage));
-              }
-            });
-            break;
-            
-          case 'dice_roll':
-            const diceConnectionInfo = activeConnections.get(ws);
-            if (!diceConnectionInfo?.characterId) {
-              ws.send(JSON.stringify({ type: 'error', message: 'Not authenticated' }));
-              return;
-            }
-
-            // Generate random dice roll (1-10)
-            const diceResult = Math.floor(Math.random() * 10) + 1;
-            
-            // Get character info and check if alive
-            const diceCharacter = await storage.getCharacter(diceConnectionInfo.characterId);
-            if (!diceCharacter || diceCharacter.deathDate) {
-              ws.send(JSON.stringify({ 
-                type: 'error', 
-                message: 'Zemřelé postavy nemohou házet kostkou. Navštivte hřbitov pro více informací.' 
-              }));
-              return;
-            }
-
-            // Create message object for immediate broadcast
-            const tempDiceMessage = {
-              id: Date.now(), // Temporary ID for immediate display
-              roomId: message.roomId,
-              characterId: diceConnectionInfo.characterId,
-              content: `hodil kostkou: ${diceResult}`,
-              messageType: 'dice_roll',
-              createdAt: new Date().toISOString(),
-              character: {
-                firstName: diceCharacter.firstName,
-                middleName: diceCharacter.middleName,
-                lastName: diceCharacter.lastName,
-              }
-            };
-
-            // Broadcast immediately for fast response
-            const diceBroadcast = {
-              type: 'new_message',
-              message: tempDiceMessage
-            };
-
-            wss.clients.forEach((client) => {
-              if (client.readyState === WebSocket.OPEN) {
-                client.send(JSON.stringify(diceBroadcast));
-              }
-            });
-
-            // Save to database in background (don't wait)
-            storage.createMessage({
-              roomId: message.roomId,
-              characterId: diceConnectionInfo.characterId,
-              content: `hodil kostkou: ${diceResult}`,
-              messageType: 'dice_roll',
-            }).catch(error => console.error("Error saving dice roll:", error));
-            break;
-            
-          case 'coin_flip':
-            const coinConnectionInfo = activeConnections.get(ws);
-            if (!coinConnectionInfo?.characterId) {
-              ws.send(JSON.stringify({ type: 'error', message: 'Not authenticated' }));
-              return;
-            }
-
-            // Generate random coin flip (1 or 2)
-            const coinResult = Math.floor(Math.random() * 2) + 1;
-            const coinSide = coinResult === 1 ? "panna" : "orel";
-            
-            // Get character info and check if alive
-            const coinCharacter = await storage.getCharacter(coinConnectionInfo.characterId);
-            if (!coinCharacter || coinCharacter.deathDate) {
-              ws.send(JSON.stringify({ 
-                type: 'error', 
-                message: 'Zemřelé postavy nemohou házet mincí. Navštivte hřbitov pro více informací.' 
-              }));
-              return;
-            }
-
-            // Create message object for immediate broadcast
-            const tempCoinMessage = {
-              id: Date.now(), // Temporary ID for immediate display
-              roomId: message.roomId,
-              characterId: coinConnectionInfo.characterId,
-              content: `hodil mincí: ${coinSide}`,
-              messageType: 'coin_flip',
-              createdAt: new Date().toISOString(),
-              character: {
-                firstName: coinCharacter.firstName,
-                middleName: coinCharacter.middleName,
-                lastName: coinCharacter.lastName,
-              }
-            };
-
-            // Broadcast immediately for fast response
-            const coinBroadcast = {
-              type: 'new_message',
-              message: tempCoinMessage
-            };
-
-            wss.clients.forEach((client) => {
-              if (client.readyState === WebSocket.OPEN) {
-                client.send(JSON.stringify(coinBroadcast));
-              }
-            });
-
-            // Save to database in background (don't wait)
-            storage.createMessage({
-              roomId: message.roomId,
-              characterId: coinConnectionInfo.characterId,
-              content: `hodil mincí: ${coinSide}`,
-              messageType: 'coin_flip',
-            }).catch(error => console.error("Error saving coin flip:", error));
-            break;
-        }
-      } catch (error) {
-        console.error('WebSocket message error:', error);
-        ws.send(JSON.stringify({ type: 'error', message: 'Invalid message format' }));
-      }
-    });
-
-    ws.on('close', () => {
-      console.log('WebSocket connection closed');
-      const connInfo = activeConnections.get(ws);
-      if (connInfo?.characterId && connInfo?.roomId) {
-        // Remove character from room presence
-        const roomCharacters = roomPresence.get(connInfo.roomId);
-        if (roomCharacters) {
-          roomCharacters.delete(connInfo.characterId);
-          if (roomCharacters.size === 0) {
-            roomPresence.delete(connInfo.roomId);
-          } else {
-            // Notify room about character leaving
-            broadcastToRoom(connInfo.roomId, {
-              type: 'presence_update',
-              characters: Array.from(roomCharacters)
-            });
-          }
-        }
-      }
-      activeConnections.delete(ws);
-    });
-  });
-
-  // Initialize default chat rooms if they don't exist
-  (async () => {
-    try {
-      const testRoom = await storage.getChatRoomByName("Testovací chat");
-      if (!testRoom) {
-        await storage.createChatRoom({
-          name: "Testovací chat",
-          description: "Místnost pro testování a experimenty",
-          isPublic: true,
-        });
-        console.log("Created test chat room: Testovací chat");
-      }
-    } catch (error) {
-      console.error("Error initializing chat rooms:", error);
-    }
-  })();
-
-  // Admin: Delete ALL messages from database (complete cleanup)
-  app.delete("/api/admin/messages/all", requireAuth, requireAdmin, async (req, res) => {
-    try {
-      // Delete all messages and archived messages
-      await storage.deleteAllMessages();
-      res.json({ message: "All messages deleted successfully" });
-    } catch (error) {
-      console.error("Error deleting all messages:", error);
-      res.status(500).json({ message: "Failed to delete messages" });
-    }
-  });
-
-  // Admin: Archive messages (move to archived_messages and delete from messages)
-  app.post("/api/admin/rooms/:roomId/archive", requireAuth, requireAdmin, async (req, res) => {
-    try {
-      const roomId = parseInt(req.params.roomId);
-      const archivedCount = await storage.archiveMessages(roomId);
-      res.json({ message: `${archivedCount} messages archived successfully` });
-    } catch (error) {
-      console.error("Error archiving messages:", error);
-      res.status(500).json({ message: "Failed to archive messages" });
-    }
-  });
-
-  // Admin: Clear chat (delete only from messages, keep archived)
-  app.delete("/api/admin/rooms/:roomId/clear", requireAuth, requireAdmin, async (req, res) => {
-    try {
-      const roomId = parseInt(req.params.roomId);
-      const deletedCount = await storage.clearRoomMessages(roomId);
-      res.json({ message: `${deletedCount} messages cleared from chat` });
-    } catch (error) {
-      console.error("Error clearing room messages:", error);
-      res.status(500).json({ message: "Failed to clear messages" });
-    }
-  });
-
-  // Download chat content (for users and admins)
-  app.get("/api/rooms/:roomId/download", requireAuth, async (req, res) => {
-    try {
-      const roomId = parseInt(req.params.roomId);
-      const room = await storage.getChatRoom(roomId);
-      if (!room) {
-        return res.status(404).json({ message: "Room not found" });
-      }
-
-      // Get both current messages and archived messages
-      const currentMessages = await storage.getMessagesByRoom(roomId, 1000);
-      const archivedMessages = await storage.getArchivedMessages(roomId, 1000);
-      
-      // Combine and sort all messages by timestamp
-      const allMessages = [
-        ...currentMessages.map(msg => ({
-          content: msg.content,
-          characterName: `${msg.character.firstName}${msg.character.middleName ? ` ${msg.character.middleName}` : ''} ${msg.character.lastName}`,
-          createdAt: msg.createdAt,
-          messageType: msg.messageType
-        })),
-        ...archivedMessages.map(msg => ({
-          content: msg.content,
-          characterName: msg.characterName,
-          createdAt: msg.originalCreatedAt,
-          messageType: msg.messageType
-        }))
-      ].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
-      
-      // Format messages for download
-      const chatContent = allMessages.map(msg => {
-        const timestamp = new Date(msg.createdAt).toLocaleString('cs-CZ');
-        return `[${timestamp}] ${msg.characterName}: ${msg.content}`;
-      }).join('\n');
-
-      const filename = `chat_${room.name.replace(/[^a-zA-Z0-9]/g, '_')}_${new Date().toISOString().split('T')[0]}.txt`;
-      
-      res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-      res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
-      res.send(chatContent);
-    } catch (error) {
-      console.error("Error downloading chat:", error);
-      res.status(500).json({ message: "Failed to download chat" });
-    }
-  });
-
-  // Admin: Get archived messages
-  app.get("/api/admin/rooms/:roomId/archived", requireAuth, requireAdmin, async (req, res) => {
-    try {
-      const roomId = parseInt(req.params.roomId);
-      const limit = parseInt(req.query.limit as string) || 50;
-      const offset = parseInt(req.query.offset as string) || 0;
-      
-      const archivedMessages = await storage.getArchivedMessages(roomId, limit, offset);
-      res.json(archivedMessages);
-    } catch (error) {
-      console.error("Error fetching archived messages:", error);
-      res.status(500).json({ message: "Failed to fetch archived messages" });
-    }
-  });
-
-  // Admin: Get archive dates for a room with message counts
-  app.get("/api/admin/rooms/:roomId/archive-dates", requireAuth, requireAdmin, async (req, res) => {
-    try {
-      const roomId = parseInt(req.params.roomId);
-      const archiveDatesWithCounts = await storage.getArchiveDatesWithCounts(roomId);
-      res.json(archiveDatesWithCounts);
-    } catch (error) {
-      console.error("Error fetching archive dates:", error);
-      res.status(500).json({ message: "Failed to fetch archive dates" });
-    }
-  });
-
-  // Admin: Get archived messages by date
-  app.get("/api/admin/rooms/:roomId/archived/:date", requireAuth, requireAdmin, async (req, res) => {
-    try {
-      const roomId = parseInt(req.params.roomId);
-      const archiveDate = req.params.date;
-      const limit = parseInt(req.query.limit as string) || 50;
-      const offset = parseInt(req.query.offset as string) || 0;
-      
-      const archivedMessages = await storage.getArchivedMessagesByDate(roomId, archiveDate, limit, offset);
-      res.json(archivedMessages);
-    } catch (error) {
-      console.error("Error fetching archived messages by date:", error);
-      res.status(500).json({ message: "Failed to fetch archived messages" });
-    }
+  const characterRequestSchema = z.object({
+    firstName: z.string(),
+    middleName: z.string().optional(),
+    lastName: z.string(),
+    birthDate: z.string(),
+    description: z.string(),
   });
 
   // Character request endpoints
@@ -2925,17 +2440,6 @@ Správa ubytování`
     }
   });
 
-  // Admin: Get pending character requests
-  app.get("/api/admin/character-requests/pending", requireAuth, requireAdmin, async (req, res) => {
-    try {
-      const requests = await storage.getPendingCharacterRequests();
-      res.json(requests);
-    } catch (error) {
-      console.error("Error fetching pending character requests:", error);
-      res.status(500).json({ message: "Failed to fetch pending requests" });
-    }
-  });
-
   // Admin: Approve character request
   app.post("/api/admin/character-requests/:id/approve", requireAuth, requireAdmin, async (req, res) => {
     try {
@@ -2966,11 +2470,8 @@ Správa ubytování`
       console.error("Error rejecting character request:", error);
       res.status(500).json({ message: "Failed to reject character request" });
     }
-  });
-
-  // Multi-character operations
+  });  // Multi-character operations
   
-
 
   // Change character for a message (within 5 minutes)
   app.patch("/api/chat/messages/:id/character", requireAuth, async (req, res) => {
@@ -3707,6 +3208,15 @@ Správa ubytování`
       console.error('Error updating room sort order:', error);
       res.status(500).json({ message: 'Failed to update room sort order' });
     }
+  });
+
+  const port = Number(process.env.PORT) || 5000;
+  httpServer.listen({
+    port,
+    host: "0.0.0.0",
+    reusePort: true,
+  }, () => {
+    console.log(`serving on port ${port}`);
   });
 
   return httpServer;

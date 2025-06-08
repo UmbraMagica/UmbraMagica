@@ -41,29 +41,29 @@ export interface IStorage {
   createUser(user: InsertUser): Promise<User>;
   updateUserRole(id: number, role: string): Promise<User | undefined>;
   getAllUsers(): Promise<User[]>;
-  
+
   // Character operations
   getCharacter(id: number): Promise<Character | undefined>;
   getCharactersByUserId(userId: number): Promise<Character[]>;
   createCharacter(character: InsertCharacter): Promise<Character>;
   updateCharacter(id: number, updates: Partial<InsertCharacter>): Promise<Character | undefined>;
-  
+
   // Invite code operations
   getInviteCode(code: string): Promise<InviteCode | undefined>;
   createInviteCode(code: InsertInviteCode): Promise<InviteCode>;
   useInviteCode(code: string, userId: number): Promise<boolean>;
-  
+
   // Authentication
   validateUser(username: string, password: string): Promise<User | null>;
   hashPassword(password: string): Promise<string>;
-  
+
   // Chat category operations
   getChatCategory(id: number): Promise<ChatCategory | undefined>;
   getChatCategoryByName(name: string): Promise<ChatCategory | undefined>;
   createChatCategory(category: InsertChatCategory): Promise<ChatCategory>;
   getAllChatCategories(): Promise<ChatCategory[]>;
   getChatCategoriesWithChildren(): Promise<(ChatCategory & { children: ChatCategory[], rooms: ChatRoom[] })[]>;
-  
+
   // Chat operations
   getChatRoom(id: number): Promise<ChatRoom | undefined>;
   getChatRoomByName(name: string): Promise<ChatRoom | undefined>;
@@ -71,39 +71,39 @@ export interface IStorage {
   updateChatRoom(id: number, updates: Partial<InsertChatRoom>): Promise<ChatRoom | undefined>;
   getAllChatRooms(): Promise<ChatRoom[]>;
   getChatRoomsByCategory(categoryId: number): Promise<ChatRoom[]>;
-  
+
   // Message operations
   getMessage(id: number): Promise<Message | undefined>;
   getMessagesByRoom(roomId: number, limit?: number, offset?: number): Promise<(Message & { character: { firstName: string; middleName?: string | null; lastName: string } })[]>;
   createMessage(message: InsertMessage): Promise<Message>;
   deleteMessage(id: number): Promise<boolean>;
-  
+
   // Archive operations
   archiveMessages(roomId: number, beforeDate?: Date): Promise<number>;
   getArchivedMessages(roomId: number, limit?: number, offset?: number): Promise<ArchivedMessage[]>;
-  
+
   // Additional message operations
   deleteAllMessages(): Promise<void>;
   clearRoomMessages(roomId: number): Promise<number>;
   getArchiveDates(roomId: number): Promise<string[]>;
   getArchiveDatesWithCounts(roomId: number): Promise<{ date: string; count: number }[]>;
   getArchivedMessagesByDate(roomId: number, archiveDate: string, limit?: number, offset?: number): Promise<ArchivedMessage[]>;
-  
+
   // Character request operations
   createCharacterRequest(request: InsertCharacterRequest): Promise<CharacterRequest>;
   getCharacterRequestsByUserId(userId: number): Promise<CharacterRequest[]>;
   getPendingCharacterRequests(): Promise<(CharacterRequest & { user: { username: string; email: string } })[]>;
   approveCharacterRequest(requestId: number, adminId: number, reviewNote?: string): Promise<Character>;
   rejectCharacterRequest(requestId: number, adminId: number, reviewNote: string): Promise<CharacterRequest>;
-  
+
   // Admin activity log operations
   logAdminActivity(activity: InsertAdminActivityLog): Promise<AdminActivityLog>;
   getAdminActivityLog(limit?: number, offset?: number): Promise<(AdminActivityLog & { admin: { username: string }; targetUser?: { username: string } })[]>;
-  
+
   // Multi-character operations
   setMainCharacter(userId: number, characterId: number): Promise<void>;
   getMainCharacter(userId: number): Promise<Character | undefined>;
-  
+
   // Housing request operations
   createHousingRequest(request: InsertHousingRequest): Promise<HousingRequest>;
   getHousingRequestsByUserId(userId: number): Promise<HousingRequest[]>;
@@ -200,17 +200,17 @@ export class DatabaseStorage implements IStorage {
   async useInviteCode(code: string, userId: number): Promise<boolean> {
     const [result] = await db
       .update(inviteCodes)
-      .set({ 
-        isUsed: true, 
-        usedBy: userId, 
-        usedAt: new Date() 
+      .set({
+        isUsed: true,
+        usedBy: userId,
+        usedAt: new Date()
       })
       .where(and(
         eq(inviteCodes.code, code),
         eq(inviteCodes.isUsed, false)
       ))
       .returning();
-    
+
     return !!result;
   }
 
@@ -218,7 +218,7 @@ export class DatabaseStorage implements IStorage {
   async validateUser(username: string, password: string): Promise<User | null> {
     const user = await this.getUserByUsername(username);
     if (!user) return null;
-    
+
     const isValid = await bcrypt.compare(password, user.password);
     return isValid ? user : null;
   }
@@ -289,15 +289,15 @@ export class DatabaseStorage implements IStorage {
   async getChatCategoriesWithChildren(): Promise<(ChatCategory & { children: ChatCategory[], rooms: ChatRoom[] })[]> {
     const allCategories = await db.select().from(chatCategories).orderBy(chatCategories.sortOrder, chatCategories.name);
     const allRooms = await db.select().from(chatRooms).orderBy(chatRooms.sortOrder, chatRooms.name);
-    
+
     // Build tree structure
     const categoriesMap = new Map<number, ChatCategory & { children: ChatCategory[], rooms: ChatRoom[] }>();
-    
+
     // Initialize all categories
     allCategories.forEach(cat => {
       categoriesMap.set(cat.id, { ...cat, children: [], rooms: [] });
     });
-    
+
     // Add rooms to categories
     allRooms.forEach(room => {
       if (room.categoryId) {
@@ -307,10 +307,10 @@ export class DatabaseStorage implements IStorage {
         }
       }
     });
-    
+
     // Build parent-child relationships
     const rootCategories: (ChatCategory & { children: ChatCategory[], rooms: ChatRoom[] })[] = [];
-    
+
     allCategories.forEach(cat => {
       const categoryWithChildren = categoriesMap.get(cat.id)!;
       if (cat.parentId) {
@@ -322,7 +322,7 @@ export class DatabaseStorage implements IStorage {
         rootCategories.push(categoryWithChildren);
       }
     });
-    
+
     return rootCategories;
   }
 
@@ -353,7 +353,7 @@ export class DatabaseStorage implements IStorage {
       .orderBy(desc(messages.createdAt))
       .limit(limit)
       .offset(offset);
-    
+
     return result; // Return in descending order (newest first) for chat display
   }
 
@@ -369,7 +369,7 @@ export class DatabaseStorage implements IStorage {
 
   // Archive operations
   async archiveMessages(roomId: number, beforeDate?: Date): Promise<number> {
-    const whereCondition = beforeDate 
+    const whereCondition = beforeDate
       ? and(eq(messages.roomId, roomId), lt(messages.createdAt, beforeDate))
       : eq(messages.roomId, roomId);
 
@@ -411,7 +411,7 @@ export class DatabaseStorage implements IStorage {
 
     // Delete original messages
     const deleteResult = await db.delete(messages).where(whereCondition);
-    
+
     return deleteResult.rowCount || 0;
   }
 
@@ -444,7 +444,7 @@ export class DatabaseStorage implements IStorage {
       .from(archivedMessages)
       .where(eq(archivedMessages.roomId, roomId))
       .orderBy(desc(archivedMessages.archivedAt));
-    
+
     return dates.map(d => d.archivedAt.toISOString().split('T')[0]); // Return YYYY-MM-DD format
   }
 
@@ -459,7 +459,7 @@ export class DatabaseStorage implements IStorage {
       .where(eq(archivedMessages.roomId, roomId))
       .groupBy(archivedMessages.archivedAt)
       .orderBy(desc(archivedMessages.archivedAt));
-    
+
     return result.map(r => ({
       date: r.archivedAt.toISOString().split('T')[0],
       count: Number(r.count)
@@ -471,7 +471,7 @@ export class DatabaseStorage implements IStorage {
     const startDate = new Date(archiveDate);
     const endDate = new Date(archiveDate);
     endDate.setDate(endDate.getDate() + 1);
-    
+
     return db
       .select()
       .from(archivedMessages)
