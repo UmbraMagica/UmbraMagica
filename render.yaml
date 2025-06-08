@@ -1,0 +1,11 @@
+version: 1
+services:
+  web:
+    type: node
+    env: node
+    region: oregon
+    buildCommand: npm install
+    startCommand: npm run start
+    envVars:
+      DATABASE_URL: ${DATABASE_URL}  # Zde se ujistěte, že máte proměnné prostředí správně nastavené
+    installCommand: npm install
