@@ -7,5 +7,5 @@ services:
     buildCommand: npm install
     startCommand: npm run start
     envVars:
-      DATABASE_URL: ${DATABASE_URL}  # Zde se ujistěte, že máte proměnné prostředí správně nastavené
+      DATABASE_URL: postgresql://neondb_owner:npg_xfVv74ZstaRn@ep-icy-dew-a60o5foc.us-west-2.aws.neon.tech/neondb?sslmode=require  # Zde se ujistěte, že máte proměnné prostředí správně nastavené
     installCommand: npm install
