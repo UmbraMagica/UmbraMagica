@@ -1,10 +1,8 @@
 
 
 
-#!/usr/bin/env node
-
-const { Pool } = require('pg');
-const fs = require('fs');
+import { Pool } from 'pg';
+import fs from 'fs';
 
 async function createBackup() {
   if (!process.env.DATABASE_URL) {
