@@ -1,4 +1,4 @@
-# Text Role Play Platform
+# Umbra Magica
 
 Multiplayer text-based RPG platform with real-time chat functionality.
 

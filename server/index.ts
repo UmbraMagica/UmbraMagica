@@ -7,13 +7,24 @@ const app = express();
 
 // CORS configuration for frontend
 app.use((req, res, next) => {
-  // Allow current origin (for Replit environment)
   const origin = req.headers.origin;
-  if (origin) {
-    res.header('Access-Control-Allow-Origin', origin);
+  const allowedOrigins = [
+    'http://localhost:5173', // vývoj
+    'https://umbra-magica.cz', // produkce
+    'https://www.umbra-magica.cz',
+    // případně další domény
+  ];
+  if (process.env.NODE_ENV === 'production') {
+    if (origin && allowedOrigins.includes(origin)) {
+      res.header('Access-Control-Allow-Origin', origin);
+    }
   } else {
-    // Fallback for same-origin requests
-    res.header('Access-Control-Allow-Origin', '*');
+    // Vývoj: povol vše
+    if (origin) {
+      res.header('Access-Control-Allow-Origin', origin);
+    } else {
+      res.header('Access-Control-Allow-Origin', '*');
+    }
   }
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');

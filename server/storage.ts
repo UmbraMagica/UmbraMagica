@@ -260,8 +260,12 @@ export class DatabaseStorage implements IStorage {
     return user;
   }
 
-  async getAllUsers(): Promise<User[]> {
-    return db.select().from(users).orderBy(desc(users.createdAt));
+  async getAllUsers(includeSystem = false): Promise<User[]> {
+    const query = db.select().from(users);
+    if (!includeSystem) {
+      query.where(eq(users.isSystem, false));
+    }
+    return query;
   }
 
   async banUser(id: number, banReason: string): Promise<void> {
@@ -857,6 +861,7 @@ export class DatabaseStorage implements IStorage {
     const [character] = await db
       .insert(characters)
       .values({
+        userId: request.userId, // Oprava: přiřadit postavu správnému uživateli
         firstName: request.firstName,
         middleName: request.middleName,
         lastName: request.lastName,
@@ -1062,6 +1067,8 @@ export class DatabaseStorage implements IStorage {
   }
 
   async addSpellToCharacter(characterId: number, spellId: number): Promise<CharacterSpell> {
+    const character = await this.getCharacter(characterId);
+    if (character?.isSystem) throw new Error('Nelze přidat kouzlo systémové postavě.');
     const [characterSpell] = await db
       .insert(characterSpells)
       .values({ characterId, spellId })
@@ -1165,6 +1172,9 @@ export class DatabaseStorage implements IStorage {
   }
 
   async addInventoryItem(item: InsertInventoryItem): Promise<InventoryItem> {
+    if (!item.characterId) throw new Error('Chybí characterId');
+    const character = await this.getCharacter(item.characterId);
+    if (character?.isSystem) throw new Error('Nelze přidat item systémové postavě.');
     const [inventoryItem] = await db
       .insert(characterInventory)
       .values(item)
@@ -1239,6 +1249,9 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createWand(insertWand: InsertWand): Promise<Wand> {
+    if (!insertWand.characterId) throw new Error('Chybí characterId');
+    const character = await this.getCharacter(insertWand.characterId);
+    if (character?.isSystem) throw new Error('Nelze přidat hůlku systémové postavě.');
     const [wand] = await db
       .insert(wands)
       .values(insertWand)
@@ -2223,6 +2236,24 @@ export class DatabaseStorage implements IStorage {
     }
 
     // Note: History logging is handled separately in adjust-with-history endpoint
+  }
+
+  async assignHousingAdminToSystemUser() {
+    // Najdi postavu Správa ubytování
+    const [character] = await db.select().from(characters).where(and(eq(characters.firstName, 'Správa'), eq(characters.lastName, 'ubytování')));
+    if (character) {
+      await db.update(characters)
+        .set({ userId: 6, isSystem: true })
+        .where(eq(characters.id, character.id));
+    }
+  }
+
+  async getAllCharacters(includeSystem = false): Promise<Character[]> {
+    const query = db.select().from(characters);
+    if (!includeSystem) {
+      query.where(eq(characters.isSystem, false));
+    }
+    return query;
   }
 }
 

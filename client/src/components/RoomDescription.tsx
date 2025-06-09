@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
+import DOMPurify from 'dompurify';
 
 interface ChatRoom {
   id: number;
@@ -134,10 +135,7 @@ export function RoomDescription({ description, roomName }: RoomDescriptionProps)
             // Process markdown formatting for string parts
             const formattedText = processMarkdown(part);
             return (
-              <span
-                key={index}
-                dangerouslySetInnerHTML={{ __html: formattedText }}
-              />
+              <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(formattedText) }} />
             );
           }
           return part; // React element (link)

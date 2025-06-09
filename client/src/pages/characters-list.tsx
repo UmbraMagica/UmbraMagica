@@ -44,7 +44,8 @@ export default function CharactersList() {
     return `${character.firstName}${character.middleName ? ` ${character.middleName}` : ''} ${character.lastName}`;
   };
 
-
+  // Filtrování systémových postav
+  const visibleCharacters = isAdmin ? characters : characters.filter(char => !char.isSystem);
 
   if (isLoading) {
     return (
@@ -65,7 +66,7 @@ export default function CharactersList() {
     );
   }
 
-  const activeCharacters = characters.filter(char => char.isActive && !char.isSystem);
+  const activeCharacters = visibleCharacters.filter(char => char.isActive);
 
   return (
     <div className="container mx-auto p-6">

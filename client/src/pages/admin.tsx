@@ -236,7 +236,8 @@ export default function Admin() {
 
   const resetPasswordMutation = useMutation({
     mutationFn: async (userId: number) => {
-      return apiRequest("POST", `/api/admin/users/${userId}/reset-password`, {});
+      const res = await apiRequest("POST", `/api/admin/users/${userId}/reset-password`, {});
+      return res.json(); // Oprava: rozparsovat odpověď
     },
     onSuccess: (data: any) => {
       toast({

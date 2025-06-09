@@ -27,7 +27,7 @@ Nabyl kouzelných schopností
 
 Teď jde jíst čarodějů víc ', true);
 INSERT INTO "characters" ("id", "user_id", "first_name", "middle_name", "last_name", "birth_date", "is_active", "created_at", "updated_at", "school", "description", "death_date", "death_reason", "avatar", "height", "weight", "height_set_at", "school_set_at", "residence", "is_system", "character_history", "show_history_to_others") VALUES (20, 1, 'Bažina', '', 'Jóžová', '1900-01-01T00:00:00.000Z', true, '2025-06-08T15:44:22.859Z', '2025-06-08T15:44:22.859Z', 'Vysoká škola života ', 'To byste chtěli vědět hajzli', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, false, NULL, true);
-INSERT INTO "characters" ("id", "user_id", "first_name", "middle_name", "last_name", "birth_date", "is_active", "created_at", "updated_at", "school", "description", "death_date", "death_reason", "avatar", "height", "weight", "height_set_at", "school_set_at", "residence", "is_system", "character_history", "show_history_to_others") VALUES (19, 11, 'Správa', NULL, 'ubytování', '1900-01-01T00:00:00.000Z', true, '2025-06-08T15:42:02.411Z', '2025-06-08T15:48:22.709Z', '', 'Systémová postava pro správu ubytování', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Londýn - Ubytovna U starého Šeptáka', false, NULL, true);
+INSERT INTO "characters" ("id", "user_id", "first_name", "middle_name", "last_name", "birth_date", "is_active", "created_at", "updated_at", "school", "description", "death_date", "death_reason", "avatar", "height", "weight", "height_set_at", "school_set_at", "residence", "is_system", "character_history", "show_history_to_others") VALUES (19, 6, 'Správa', NULL, 'ubytování', '1900-01-01T00:00:00.000Z', true, '2025-06-08T15:42:02.411Z', '2025-06-08T15:48:22.709Z', '', 'Systémová postava pro správu ubytování', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Londýn - Ubytovna U starého Šeptáka', true, NULL, true);
 INSERT INTO "characters" ("id", "user_id", "first_name", "middle_name", "last_name", "birth_date", "is_active", "created_at", "updated_at", "school", "description", "death_date", "death_reason", "avatar", "height", "weight", "height_set_at", "school_set_at", "residence", "is_system", "character_history", "show_history_to_others") VALUES (15, 10, 'Shantae', '', 'Okoro', '1902-04-02T00:00:00.000Z', true, '2025-06-08T14:37:54.459Z', '2025-06-08T15:49:28.756Z', 'Uagadou', '', NULL, NULL, NULL, 160, 55, '2025-06-08T15:49:28.756Z', '2025-06-08T15:49:28.756Z', NULL, false, NULL, true);
 INSERT INTO "characters" ("id", "user_id", "first_name", "middle_name", "last_name", "birth_date", "is_active", "created_at", "updated_at", "school", "description", "death_date", "death_reason", "avatar", "height", "weight", "height_set_at", "school_set_at", "residence", "is_system", "character_history", "show_history_to_others") VALUES (8, 1, 'Mrtvý', '', 'Skřet', '1860-06-14T00:00:00.000Z', false, '2025-05-30T11:10:39.360Z', '2025-05-30T12:27:51.733Z', '', '', '2025-05-30T00:00:00.000Z', 'tester', NULL, NULL, NULL, NULL, NULL, NULL, false, NULL, true);
 INSERT INTO "characters" ("id", "user_id", "first_name", "middle_name", "last_name", "birth_date", "is_active", "created_at", "updated_at", "school", "description", "death_date", "death_reason", "avatar", "height", "weight", "height_set_at", "school_set_at", "residence", "is_system", "character_history", "show_history_to_others") VALUES (1, 1, 'Gandalf', 'the', 'Grey', '1880-01-15T00:00:00.000Z', false, '2025-05-28T14:17:30.390Z', '2025-05-31T20:27:10.463Z', 'Domácí vzdělávání', '...', NULL, NULL, NULL, 190, 80, '2025-05-31T20:27:10.463Z', '2025-05-31T20:27:10.463Z', NULL, false, NULL, true);
@@ -64,7 +64,7 @@ Bludiště chodeb a pater – od Odboru záhad, kam vstupují jen ti vyvolení, 
 
 
 V dnešních dnech je Ministerstvo nejen správním centrem, ale i místem strachu a ostražitosti. Byrokraté a bystrozoři se míjejí v temných kuloárech, informace se filtrují, jména mizí ze seznamů. Každý krok je sledován, každý šepot může být zradou.', NULL);
-INSERT INTO "chat_rooms" ("id", "name", "description", "is_public", "created_at", "category_id", "sort_order", "long_description", "password") VALUES (6, 'Černá vrána', 'Pohřební služba pro kouzelný svět', true, '2025-05-29T18:28:17.821Z', 2, 18, 'Na Příčné ulici stojí temně laděná budova. Její fasáda je natřená sytou černou barvou s matnými detaily v šedé. Okna jsou vysoká a úzká, s černými závěsy, za nimiž je vidět jen matný odraz světla svíček. Nad vchodem visí elegantní dřevěná tabule s nápisem „Černá vrána“ ve stříbrném písmu, ozdobená drobným reliéfem letící vrány. Dvoukřídlé dveře, vyřezávané z temného dřeva, jsou opatřeny mosazným klepadlem ve tvaru havraní hlavy. Před vchodem stojí dvě černé lucerny, jejichž mihotavé plamínky dodávají atmosféře tajemný nádech. Vzduch kolem budovy je naplněn lehkou vůní kadidla a na dlažbě u vchodu je vyryt symbol vrány.
+INSERT INTO "chat_rooms" ("id", "name", "description", "is_public", "created_at", "category_id", "sort_order", "long_description", "password") VALUES (6, 'Černá vrána', 'Pohřební služba pro kouzelný svět', true, '2025-05-29T18:28:17.821Z', 2, 18, 'Na Příčné ulici stojí temně laděná budova. Její fasáda je natřená sytou černou barvou s matnými detaily v šedé. Okna jsou vysoká a úzká, s černými závěsy, za nimiž je vidět jen matný odraz světla svíček. Nad vchodem visí elegantní dřevěná tabule s nápisem „Černá vrána" ve stříbrném písmu, ozdobená drobným reliéfem letící vrány. Dvoukřídlé dveře, vyřezávané z temného dřeva, jsou opatřeny mosazným klepadlem ve tvaru havraní hlavy. Před vchodem stojí dvě černé lucerny, jejichž mihotavé plamínky dodávají atmosféře tajemný nádech. Vzduch kolem budovy je naplněn lehkou vůní kadidla a na dlažbě u vchodu je vyryt symbol vrány.
 
 Jakmile zákazník vstoupí, ucítí jemnou vůni vosku, bylin a starého dřeva. Interiér je v přítmí, osvětlovaný pouze světlem svíček, které stojí na masivních kandelábrech rozestavěných po místnosti. Podlahu pokrývají tmavě šedé kamenné dlaždice, občas ozdobené složitými ornamenty v podobě vran a větví. Na levé straně místnosti je dlouhý pult, vyrobený z ebenového dřeva, na němž stojí černá pokladna a několik dekorativních krabiček. Za pultem jsou police plné katalogů, drobných pohřebních artefaktů, vzorků vyřezávaných urn ale i různých pomůcek pro média či snad komunikaci s duchy? Na pravé straně se nachází vitríny, ve kterých jsou vystaveny pohřební dekorace – od honosných pohřebních šperků až po drobné ozdobné lahvičky, do nichž se údajně mohou uchovat vzpomínky. V rohu je pohodlné křeslo s malým stolkem, kde si zákazníci mohou prohlédnout katalogy v soukromí. V zadní části místnosti jsou těžké sametové závěsy, které oddělují hlavní prostor od neveřejných částí podniku. Za pultem stojí - po domluvení schůzky - v černém hábitu Morgause Birchwood - majitelka - a mluví tlumeným, uklidňujícím hlasem. Každé gesto, každý pohyb je promyšlený a důstojný, jako by každý zákazník byl důležitou součástí rituálu. Atmosféra celého prostoru je klidná, téměř posvátná. Zdá se, že místo oplývá jakousi zvláštní magií, která vytváří dojem, že čas uvnitř plyne pomaleji než venku. Za pultem je pak vchod do zadní části obchodu, kde se nacházejí zřejmě sklady a zázemí. A také průchod do sklepa. Ten je vybaven lékařským stolem, několika světly a spoustou roztodivných nástrojů. Inu, někde se k tomu dlouhému odpočinku musí nebožtíci připravit. Nicméně, to není pro oči truchlících, jednoduše… pouze na pozvání paní majitelky. Hodně štěstí.
 ', NULL);
@@ -106,7 +106,7 @@ INSERT INTO "chat_rooms" ("id", "name", "description", "is_public", "created_at"
 
 Zasunutý do úzkého průchodu mezi dvěma polorozpadlými domy, obchod Stínové relikvie nemá vývěsní štít, jen železné dveře s vrytou lebkou a třemi očima. Uvnitř vládne šero, vzduch je hutný a voní po sušené krvi, kadidlu a prastarém pergamenu. Poličky praskají pod tíhou zakázaných předmětů – láhve s neidentifikovatelnými tekutinami, zrcadla, co šeptají ve spánku, zuby neznámých tvorů, svitky omotané lidskými vlasy i části těl v konzervačních lektvarech.
 
-Za pultem stojí hubený, vybledlý čaroděj jménem Morwen Szilas, jenž nikdy nemrká a zná cenu duše přesněji než jejího nositele. Kromě zboží nabízí i „služby“: vyvolání ducha bez souhlasu, odklon sledování Ministerstva, zakrytí magických stop, prokletí na míru – nebo ticho.
+Za pultem stojí hubený, vybledlý čaroděj jménem Morwen Szilas, jenž nikdy nemrká a zná cenu duše přesněji než jejího nositele. Kromě zboží nabízí i „služby": vyvolání ducha bez souhlasu, odklon sledování Ministerstva, zakrytí magických stop, prokletí na míru – nebo ticho.
 
 Obchod je přístupný jen těm, kteří znají správné zaklepání – a ti, co ho popletou, už většinou nikdy nezaklepou znovu.', NULL);
 INSERT INTO "chat_rooms" ("id", "name", "description", "is_public", "created_at", "category_id", "sort_order", "long_description", "password") VALUES (18, 'Pošmourná ulička', 'Temné zákoutí Obrtlé ulice', true, '2025-05-31T20:25:55.518Z', 3, 15, NULL, NULL);
@@ -139,10 +139,10 @@ INSERT INTO "chat_rooms" ("id", "name", "description", "is_public", "created_at"
 
 Skrytá v postranní uličce mezi Camdenem a Clerkenwellem, kam se z Příčné dá dojít přes nenápadnou arkádu za jedním starožitnictvím, se nachází čajovna, která už desítky let slouží jako azyl pro zasvěcené kouzelníky, cestovatele mezi světy i ty, kdo už nemají kam jít.
 
-„U Mlžné konvice“ je klidné místo s podivuhodně hlubokým tichem – tlumeným, jako by i zvuky dostaly čaj. Dřevěné stěny pohlcují slova, lucerny vrhají měkké stíny a páry čajů tančí ve vzduchu, tvoříce tváře, symboly i vzpomínky.
+„U Mlžné konvice" je klidné místo s podivuhodně hlubokým tichem – tlumeným, jako by i zvuky dostaly čaj. Dřevěné stěny pohlcují slova, lucerny vrhají měkké stíny a páry čajů tančí ve vzduchu, tvoříce tváře, symboly i vzpomínky.
 
 **Interiér**
-Čajovna má více pater než by zvenčí vypadalo – hlavní sál s kruhovým barem z tmavého dřeva, tajné zákoutí za závěsem z runového brokátu, a galerii s polštáři, kde se pije na zemi. Konvice tu nejsou jen nádobou – každá má vlastní „osobnost“, některé si šeptají, jiné zlobně pískají, pokud nedostanou správný lístek.
+Čajovna má více pater než by zvenčí vypadalo – hlavní sál s kruhovým barem z tmavého dřeva, tajné zákoutí za závěsem z runového brokátu, a galerii s polštáři, kde se pije na zemi. Konvice tu nejsou jen nádobou – každá má vlastní „osobnost", některé si šeptají, jiné zlobně pískají, pokud nedostanou správný lístek.
 
 **Majitelka**
 Madam Isadora Pynch – vypadá jako zapomenutá knihovna v lidské podobě. Vykládá z čajových usazenin, vyměňuje informace za verše a věří, že každý čaj je vzpomínka, která čeká, až se vyluhuje.
@@ -209,7 +209,7 @@ Zapečetěná křídla – místa, o nichž ví jen několik starších členů 
 — výrok bývalého bystrozora Claudiuse Moorena
 
 **Temná magie a historie**
-Azkaban nebyl vždy vězením. Legenda říká, že kdysi sloužil temnému čaroději Ekrizdovi, který si ho zvolil jako základnu pro studium smrti a duše. Opevnění bylo vystavěno na magických uzlech, díky nimž si pevnost „pamatuje“ bolest a v noci prýše sténá samotným kamenem.
+Azkaban nebyl vždy vězením. Legenda říká, že kdysi sloužil temnému čaroději Ekrizdovi, který si ho zvolil jako základnu pro studium smrti a duše. Opevnění bylo vystavěno na magických uzlech, díky nimž si pevnost „pamatuje" bolest a v noci prýše sténá samotným kamenem.
 
 *„Azkaban nežere tělo – požívá vzpomínky, sny a naděje.“*
 — anonymní nápis vyškrábaný do cely číslo 32', NULL);
@@ -243,7 +243,7 @@ Příčná ulice zůstává živá – ale pod jejím povrchem se hromadí cosi 
 [Obrtlá ulice] ', NULL);
 INSERT INTO "chat_rooms" ("id", "name", "description", "is_public", "created_at", "category_id", "sort_order", "long_description", "password") VALUES (19, 'Ubytovna U starého Šeptáka', NULL, true, '2025-05-31T21:21:05.061Z', 12, 10, 'Na první pohled jen další chátrající činžák v jedné z temnějších uliček mudlovského Londýna, ale stačí třikrát zaklepat hůlkou na rezavý zvonek a nechat se pohltit zdánlivě pevnou zdí. Uvnitř už čekají úzké, chodby, které si pamatují každé tajemství svých obyvatel a nese se jimi šepot unavených rozhovorů po nočních směnách. Kotlíky v kuchyňkách bublají pod rukama lékouzelníků a ministerských úředníků, a i když se občas něco rozletí vzduchem, většinou je to jen levitující šálek kávy či čajová konvička.
 
-Recepci tu už léta „vede“ duch Starého Šeptáka, původního majitele ubytovny, který se své role nikdy nevzdal – ani po smrti. Hrozný byrokrat za života, ještě horší po smrti. Každý nový příchozí musí vyplnit nekonečné formuláře, i když většina papírů končí nakonec poházená kolem jeho starého stolu. Neexistuje problém, který by nešel vyřešit další hromadou lejster – a pokud se opozdíš s nájemným, Starý Šepták tě bude rozhodně pronásledovat dnem i nocí. 
+Recepci tu už léta „vede" duch Starého Šeptáka, původního majitele ubytovny, který se své role nikdy nevzdal – ani po smrti. Hrozný byrokrat za života, ještě horší po smrti. Každý nový příchozí musí vyplnit nekonečné formuláře, i když většina papírů končí nakonec poházená kolem jeho starého stolu. Neexistuje problém, který by nešel vyřešit další hromadou lejster – a pokud se opozdíš s nájemným, Starý Šepták tě bude rozhodně pronásledovat dnem i nocí. 
 Tohle místo není žádný luxusní hostinec – je to útočiště pro ty, kdo nemají na lepší, zejména zaměstnance Nemocnice u svatého Munga pro kouzelnické choroby a úrazy a drobné ministerské úředníky. Stěny jsou tenké, sousedi hluční, záhadné skvrny na kobercích nikdo moc neřeší, a pokud ti přes noc nezmizelo nic cenného, můžeš to považovat za šťastný den. Ale i přes tuhle omšelou atmosféru má ubytovna své kouzlo – kdo jednou projde jejími dveřmi, zjistí, že i mezi oprýskanými zdmi se dá najít domov. Jen nezapomeň zamykat.', NULL);
 INSERT INTO "chat_rooms" ("id", "name", "description", "is_public", "created_at", "category_id", "sort_order", "long_description", "password") VALUES (37, 'Bažina', 'Sídlo/Vila Rozsáhlá bažina - Jožin Z Bažin', false, '2025-06-08T15:32:19.887Z', 13, 0, '**INFORMACE O BYDLENÍ**
 
@@ -257,7 +257,7 @@ INSERT INTO "chat_rooms" ("id", "name", "description", "is_public", "created_at"
 Chcu bidlet v bažiěn', 'jozinovabazina');
 INSERT INTO "chat_rooms" ("id", "name", "description", "is_public", "created_at", "category_id", "sort_order", "long_description", "password") VALUES (5, 'Děravý kotel', 'Slavný hostinec a vstup do kouzelného světa', true, '2025-05-29T18:28:17.768Z', 2, 12, '*„Tam, kde končí svět mudlů a začíná šeptaná magie.“*
 
-Zvenčí téměř neviditelný, Děravý kotel je ukryt mezi dvěma obchody na Charing Cross Road, nenápadný a zapomenutý těmi, kdo nemají magický cit. Zchátralá cihlová fasáda vypadá jako prázdný dům – jen lehce pokřivený vývěsní štít s nápisem „The Leaky Cauldron“ se zaleskne tomu, kdo ví, kam se dívat.
+Zvenčí téměř neviditelný, Děravý kotel je ukryt mezi dvěma obchody na Charing Cross Road, nenápadný a zapomenutý těmi, kdo nemají magický cit. Zchátralá cihlová fasáda vypadá jako prázdný dům – jen lehce pokřivený vývěsní štít s nápisem „The Leaky Cauldron" se zaleskne tomu, kdo ví, kam se dívat.
 
 Uvnitř však dýchá jiný svět. Hostinec je starý, lehce zašlý, ale stále živý – spojnice mezi mudlovským Londýnem a Příčnou ulicí.
 
@@ -268,7 +268,7 @@ Na zadním dvorku se nachází prostá omšelá kamenná zeď. Kdo však ví, kt
 [Ulice]', NULL);
 INSERT INTO "chat_rooms" ("id", "name", "description", "is_public", "created_at", "category_id", "sort_order", "long_description", "password") VALUES (22, 'Lovci pokladů', 'Hledáš prácičku? Nebo něco sháníš? Jsi na správném místě.', true, '2025-06-01T11:10:49.533Z', 2, 13, '*„Bohatství nečeká – musíš ho chytit za plášť.“*
 
-V tmavším koutě Příčné ulice, mezi obchodem s použitými knihami a vývěskou, kde se lámou letáky o záhadně zmizelých, stojí nenápadný, zdánlivě opuštěný dům s rezavou klikou ve tvaru háku. Zvenku připomíná staré skladiště, ale ti, kdo vědí, co hledat, najdou na dřevěném rámu dveří symbol runy „Fehu“ – znak štěstí, bohatství… a rizika.
+V tmavším koutě Příčné ulice, mezi obchodem s použitými knihami a vývěskou, kde se lámou letáky o záhadně zmizelých, stojí nenápadný, zdánlivě opuštěný dům s rezavou klikou ve tvaru háku. Zvenku připomíná staré skladiště, ale ti, kdo vědí, co hledat, najdou na dřevěném rámu dveří symbol runy „Fehu" – znak štěstí, bohatství… a rizika.
 
 **Interiér**
 Uvnitř se nachází haluzovitý prostor připomínající směs krčmy, kanceláře a černého trhu. Stěny zdobí mapy s vybledlými poznámkami, truhly s pečetěmi, vybledlé fotografie expedic a kusy artefaktů, které vypadají, jako by se ještě hýbaly.
@@ -281,6 +281,10 @@ Lovci pokladů nejsou spolek ani cech – jsou to kontakt, síť a příležitos
 Obchodníci je považují za špinavce, kouzelníci za zrádce i hrdiny. Ale kdo hledá něco, co nelze najít oficiální cestou, dříve nebo později zamíří sem.
 
 **Pravidla (napsaná rukou, přibitá dýkou ke zdi):**
+„Co je nalezeno, to se dělí."
+„Kdo zradí druhého Lovce, víc už se nevrátí."
+„Ministerstvo? Jen další překážka."
+„Zákon se dá obejít – pokud víš, kudy."', NULL);
 „Co je nalezeno, to se dělí.“
 „Kdo zradí druhého Lovce, víc už se nevrátí.“
 „Ministerstvo? Jen další překážka.“

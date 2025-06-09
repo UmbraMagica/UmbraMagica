@@ -9,6 +9,7 @@ import { z } from "zod";
 import session from "express-session";
 import multer from "multer";
 import sharp from "sharp";
+import pgSession from "connect-pg-simple";
 
 // Game date utility function
 const GAME_YEAR = 1926;
@@ -132,9 +133,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Session configuration
   const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
-  const sessionSecret = process.env.SESSION_SECRET || 'rpg-realm-session-secret-key-fixed-2024';
+  const sessionSecret = process.env.SESSION_SECRET || 'umbra-magica-session-secret-key-fixed-2024';
 
   app.use(session({
+    store: new (pgSession(session))({
+      conString: process.env.DATABASE_URL
+    }),
     secret: sessionSecret,
     resave: false,
     saveUninitialized: false,
@@ -955,7 +959,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const hashedPassword = await storage.hashPassword("admin123");
         const adminUser = await storage.createUser({
           username: "TesterAdmin",
-          email: "admin@rpg-realm.cz",
+          email: "admin@umbra-magica.cz",
           password: hashedPassword,
           role: "admin",
         });
@@ -976,7 +980,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const hashedPassword = await storage.hashPassword("user123");
         const regularUser = await storage.createUser({
           username: "TesterUživatel",
-          email: "user@rpg-realm.cz",
+          email: "user@umbra-magica.cz",
           password: hashedPassword,
           role: "user",
         });
@@ -2687,6 +2691,9 @@ Správa ubytování`
         return res.status(400).json({ message: "Ban reason is required" });
       }
       
+      if (typeof userId !== 'number' || isNaN(userId)) {
+        return res.status(400).json({ message: "Invalid user ID" });
+      }
       const user = await storage.getUser(userId);
       if (!user) {
         return res.status(404).json({ message: "User not found" });
@@ -2720,6 +2727,9 @@ Správa ubytování`
       const userId = parseInt(req.params.id);
       const adminId = req.session.userId!;
       
+      if (typeof userId !== 'number' || isNaN(userId)) {
+        return res.status(400).json({ message: "Invalid user ID" });
+      }
       const user = await storage.getUser(userId);
       if (!user) {
         return res.status(404).json({ message: "User not found" });
@@ -2757,6 +2767,9 @@ Správa ubytování`
       const { canNarrate, reason } = req.body;
       const adminId = req.session.userId!;
       
+      if (typeof userId !== 'number' || isNaN(userId)) {
+        return res.status(400).json({ message: "Invalid user ID" });
+      }
       const user = await storage.getUser(userId);
       if (!user) {
         return res.status(404).json({ message: "User not found" });
@@ -3276,6 +3289,16 @@ Správa ubytování`
     } catch (error) {
       console.error('Error updating room sort order:', error);
       res.status(500).json({ message: 'Failed to update room sort order' });
+    }
+  });
+
+  // TESTOVACÍ ENDPOINT PRO OVĚŘENÍ PŘIPOJENÍ K DATABÁZI
+  app.get('/api/test-db', async (req, res) => {
+    try {
+      const users = await storage.getAllUsers(true);
+      res.json({ ok: true, usersCount: users.length });
+    } catch (error) {
+      res.status(500).json({ ok: false, error: error.message });
     }
   });
 

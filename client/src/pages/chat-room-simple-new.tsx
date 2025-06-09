@@ -16,6 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { RoomDescription } from "@/components/RoomDescription";
 import { RoomPresence } from "@/components/RoomPresence";
 import { CharacterAvatar } from "@/components/CharacterAvatar";
+import DOMPurify from 'dompurify';
 
 interface ChatRoom {
   id: number;
@@ -82,7 +83,7 @@ function renderMessageWithHighlight(content: string, highlightWords?: string, hi
     highlightedContent = highlightedContent.replace(regex, `<span class="${colorClass}">$1</span>`);
   });
 
-  return <span dangerouslySetInnerHTML={{ __html: highlightedContent }} />;
+  return <span dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(highlightedContent) }} />;
 }
 
 export default function ChatRoom() {
@@ -1032,7 +1033,6 @@ export default function ChatRoom() {
                   {renderMessageWithHighlight(message.content, user?.highlightWords, user?.highlightColor)}
                 </div>
               </div>
-            </div>
             );
           })}
           <div ref={messagesEndRef} />

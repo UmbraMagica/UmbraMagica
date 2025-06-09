@@ -9,7 +9,7 @@
                 <div className="h-8 w-8 bg-gradient-to-br from-accent to-orange-600 rounded-full flex items-center justify-center mr-3">
                   <Crown className="h-4 w-4 text-white" />
                 </div>
-                <span className="text-xl fantasy-font font-bold text-accent">RPG Realm Admin</span>
+                <span className="text-xl fantasy-font font-bold text-accent">Umbra Magica Admin</span>
               </div>
               <div className="hidden md:ml-10 md:flex md:space-x-8">
                 <Button variant="ghost" className="text-accent hover:text-orange-400" onClick={() => setLocation('/')}>
@@ -71,7 +71,7 @@
           <h1 className="text-3xl fantasy-font font-bold text-accent mb-2">
             Administrátorský panel
           </h1>
-          <p className="text-muted-foreground">Správa uživatelů, postav a herního prostředí RPG Realm.</p>
+          <p className="text-muted-foreground">Správa uživatelů, postav a herního prostředí Umbra Magica.</p>
         </div>
 
         {/* Stats Overview */}

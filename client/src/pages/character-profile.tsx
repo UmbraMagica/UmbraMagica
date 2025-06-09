@@ -16,6 +16,7 @@ import { CharacterAvatar } from "@/components/CharacterAvatar";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import DOMPurify from 'dompurify';
 
 interface Character {
   id: number;
@@ -304,7 +305,7 @@ export default function CharacterProfile() {
                         <FileText className="h-4 w-4 text-muted-foreground mt-0.5" />
                         <div 
                           className="text-sm text-muted-foreground leading-relaxed prose prose-sm max-w-none"
-                          dangerouslySetInnerHTML={{ __html: character.description }}
+                          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(character.description) }}
                         />
                       </div>
                     </div>

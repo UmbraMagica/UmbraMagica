@@ -73,7 +73,7 @@ export default function Landing() {
             <div className="mx-auto h-16 w-16 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center mb-4">
               <Crown className="h-8 w-8 text-primary-foreground" />
             </div>
-            <h2 className="text-3xl fantasy-font font-bold text-accent tracking-wide">RPG Realm</h2>
+            <h2 className="text-3xl fantasy-font font-bold text-accent tracking-wide">Umbra Magica</h2>
             <p className="mt-2 text-sm text-muted-foreground">Vstupte do světa nekonečných příběhů</p>
           </div>
 

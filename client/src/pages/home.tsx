@@ -160,7 +160,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-4">
-              <div className="text-xl font-bold text-accent">RPG Realm</div>
+              <div className="text-xl font-bold text-accent">Umbra Magica</div>
               
               {/* Desktop Navigation */}
               <div className="hidden md:flex items-center space-x-2">
@@ -332,7 +332,7 @@ export default function Home() {
           <h1 className="text-4xl fantasy-font font-bold text-accent mb-4">
             Vítejte zpět, {user?.username}!
           </h1>
-          <p className="text-lg text-muted-foreground">Připravte se na další dobrodružství ve světě RPG Realm</p>
+          <p className="text-lg text-muted-foreground">Připravte se na další dobrodružství ve světě Umbra Magica</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
