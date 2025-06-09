@@ -49,8 +49,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create HTTP server
   const httpServer = createServer(app);
 
-  // Create WebSocket server
-  const wss = new WebSocketServer({ server: httpServer });
+  // Create WebSocket server with specific path to avoid Vite HMR conflict
+  const wss = new WebSocketServer({ server: httpServer, path: '/ws' });
 
   // WebSocket connection tracking
   const activeConnections = new Map<WebSocket, { userId?: number; characterId?: number; roomId?: number }>();
