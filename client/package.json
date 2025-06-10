@@ -21,6 +21,7 @@
     "wouter": "^3.7.1"
   },
   "devDependencies": {
+    "@replit/vite-plugin-runtime-error-modal": "^0.0.3",
     "@vitejs/plugin-react": "^4.5.2",
     "vite": "^6.3.5"
   }
