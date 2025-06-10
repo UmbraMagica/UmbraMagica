@@ -106,7 +106,7 @@ export default function ChatRoom() {
   // Archive messages mutation
   const archiveMessagesMutation = useMutation({
     mutationFn: async (roomId: number) => {
-      const response = await fetch(`/api/chat/rooms/${roomId}/archive`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/chat/rooms/${roomId}/archive`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -194,7 +194,7 @@ export default function ChatRoom() {
     if (!currentRoomId) return;
     
     try {
-      const response = await fetch(`/api/chat/rooms/${currentRoomId}/export`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/chat/rooms/${currentRoomId}/export`, {
         credentials: 'include',
       });
       

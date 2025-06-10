@@ -53,7 +53,7 @@ function SubCategoryCollapsible({ subCategory }: { subCategory: ChatCategory }) 
     if (!passwordDialog.roomId) return;
 
     try {
-      const response = await fetch(`/api/chat/rooms/${passwordDialog.roomId}/verify-password`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/chat/rooms/${passwordDialog.roomId}/verify-password`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -259,7 +259,7 @@ export default function ChatCategories() {
   const { data: categories, isLoading, error } = useQuery({
     queryKey: ["/api/chat/categories"],
     queryFn: async () => {
-      const response = await fetch("/api/chat/categories");
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/chat/categories`);
       if (!response.ok) {
         throw new Error("Failed to fetch chat categories");
       }
@@ -270,7 +270,7 @@ export default function ChatCategories() {
   const { data: allRooms } = useQuery({
     queryKey: ["/api/chat/rooms"],
     queryFn: async () => {
-      const response = await fetch("/api/chat/rooms");
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/chat/rooms`);
       if (!response.ok) {
         throw new Error("Failed to fetch chat rooms");
       }

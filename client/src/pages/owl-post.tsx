@@ -116,7 +116,7 @@ export default function OwlPost() {
   // Send message mutation
   const sendMessageMutation = useMutation({
     mutationFn: async (data: MessageForm & { senderCharacterId: number }) => {
-      const response = await fetch("/api/owl-post/send", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/owl-post/send`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -147,7 +147,7 @@ export default function OwlPost() {
   // Delete message mutation
   const deleteMessageMutation = useMutation({
     mutationFn: async (messageId: number) => {
-      const response = await fetch(`/api/owl-post/message/${messageId}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/owl-post/message/${messageId}`, {
         method: "DELETE",
       });
       if (!response.ok) {
@@ -170,7 +170,7 @@ export default function OwlPost() {
   // Mark as read mutation
   const markAsReadMutation = useMutation({
     mutationFn: async (messageId: number) => {
-      const response = await fetch(`/api/owl-post/mark-read/${messageId}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/owl-post/mark-read/${messageId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

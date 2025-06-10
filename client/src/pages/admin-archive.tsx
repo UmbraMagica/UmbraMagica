@@ -72,7 +72,7 @@ export default function AdminArchive() {
     if (!selectedRoomId) return;
 
     try {
-      const response = await fetch(`/api/rooms/${selectedRoomId}/download`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/rooms/${selectedRoomId}/download`, {
         credentials: "include",
       });
       

@@ -117,7 +117,7 @@ export default function Ollivanders() {
     mutationFn: async () => {
       if (!mainCharacter?.id) throw new Error("No character selected");
       
-      const response = await fetch(`/api/characters/${mainCharacter.id}/visit-ollivanders`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/characters/${mainCharacter.id}/visit-ollivanders`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' }
       });
@@ -150,7 +150,7 @@ export default function Ollivanders() {
     mutationFn: async () => {
       if (!mainCharacter?.id) throw new Error("No character selected");
       
-      const response = await fetch(`/api/characters/${mainCharacter.id}/create-custom-wand`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/characters/${mainCharacter.id}/create-custom-wand`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(customWand)

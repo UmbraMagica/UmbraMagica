@@ -74,7 +74,7 @@ export default function AdminSpells() {
 
   const initializeSpellsMutation = useMutation({
     mutationFn: async () => {
-      const response = await fetch('/api/admin/spells/initialize', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/spells/initialize`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       });
@@ -92,7 +92,7 @@ export default function AdminSpells() {
 
   const createSpellMutation = useMutation({
     mutationFn: async (spellData: typeof formData) => {
-      const response = await fetch('/api/admin/spells', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/spells`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(spellData),
@@ -113,7 +113,7 @@ export default function AdminSpells() {
 
   const updateSpellMutation = useMutation({
     mutationFn: async ({ id, data }: { id: number; data: typeof formData }) => {
-      const response = await fetch(`/api/admin/spells/${id}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/spells/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -134,7 +134,7 @@ export default function AdminSpells() {
 
   const deleteSpellMutation = useMutation({
     mutationFn: async (id: number) => {
-      const response = await fetch(`/api/admin/spells/${id}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/spells/${id}`, {
         method: 'DELETE',
       });
       if (!response.ok) throw new Error('Failed to delete spell');
@@ -151,7 +151,7 @@ export default function AdminSpells() {
 
   const bulkImportMutation = useMutation({
     mutationFn: async (spellsData: Array<{name: string, effect: string, category: string, type: string, targetType: string}>) => {
-      const response = await fetch('/api/admin/spells/bulk-import', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/spells/bulk-import`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ spells: spellsData }),

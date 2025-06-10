@@ -554,7 +554,7 @@ export default function Admin() {
                 <div className="flex gap-2">
                   <Button
                     onClick={() => {
-                      fetch('/api/admin/spells/initialize', { 
+                      fetch(`${import.meta.env.VITE_API_URL}/api/admin/spells/initialize`, { 
                         method: 'POST',
                         credentials: 'include'
                       })
@@ -615,7 +615,7 @@ export default function Admin() {
 
                   const adjustInfluence = useMutation({
                     mutationFn: async ({ side, points }: { side: 'grindelwald' | 'dumbledore', points: number }) => {
-                      const response = await fetch('/api/admin/influence-bar/adjust', {
+                      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/influence-bar/adjust`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ side, points }),
@@ -641,7 +641,7 @@ export default function Admin() {
 
                   const setInfluence = useMutation({
                     mutationFn: async ({ grindelwaldPoints, dumbledorePoints }: { grindelwaldPoints: number, dumbledorePoints: number }) => {
-                      const response = await fetch('/api/admin/influence-bar/set', {
+                      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/influence-bar/set`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ grindelwaldPoints, dumbledorePoints }),
