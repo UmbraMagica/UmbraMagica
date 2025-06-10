@@ -63,7 +63,7 @@ import {
   type WandFlexibility,
   type InsertWandFlexibility,
   wands,
-} from "@shared/schema";
+} from "../shared/schema";
 import { db } from "./db";
 import { eq, and, desc, lt, gte, count, isNotNull, sql } from "drizzle-orm";
 import bcrypt from "bcrypt";
