@@ -865,8 +865,8 @@ export default function ChatRoom() {
 
         {/* Messages */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {[
-            ...localMessages.map((message) => (
+          <>
+            {localMessages.map((message) => (
               <div key={message.id} className="flex items-start gap-3">
                 {/* Avatar - special handling for narrator messages */}
                 {(() => {
@@ -1033,9 +1033,9 @@ export default function ChatRoom() {
                   {renderMessageWithHighlight(message.content, user?.highlightWords, user?.highlightColor)}
                 </div>
               </div>
-            )),
+            ))}
             <div ref={messagesEndRef} key="messagesEnd" />
-          ]}
+          </>
         </div>
 
         {/* Message Input - Two Row Layout with Avatar on Left */}
