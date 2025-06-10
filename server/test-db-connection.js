@@ -1,4 +1,5 @@
-const { Client } = require('pg');
+import pkg from 'pg';
+const { Client } = pkg;
 
 const connectionString = process.env.DATABASE_URL;
 
