@@ -73,7 +73,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     ws.on('message', async (message) => {
       try {
-        const data = JSON.parse(message.toString());
+        const data = JSON.parse(message.toString('utf-8'));
         const connInfo = activeConnections.get(ws);
         if (!connInfo) return;
 
