@@ -22,7 +22,7 @@ import {
 import { z } from "zod";
 import { useLocation } from "wouter";
 import { useEffect } from "react";
-import { characterEditSchema, characterAdminEditSchema } from "../../../shared/schema";
+import { characterEditSchema, characterAdminEditSchema } from "@shared/types";
 
 type UserEditForm = z.infer<typeof characterEditSchema>;
 type AdminEditForm = z.infer<typeof characterAdminEditSchema>;

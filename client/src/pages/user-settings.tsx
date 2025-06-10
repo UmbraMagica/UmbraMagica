@@ -12,7 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { characterRequestSchema, insertHousingRequestSchema } from "@shared/schema";
+import { characterRequestSchema, insertHousingRequestSchema } from "@shared/types";
 import { z } from "zod";
 import { 
   User, 

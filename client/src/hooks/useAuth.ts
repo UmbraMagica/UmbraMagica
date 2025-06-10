@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest, getQueryFn } from "@/lib/queryClient";
 import { useLocation } from "wouter";
-import type { User } from "@shared/schema";
+import type { User } from "@shared/types";
 
 interface AuthUser extends User {
   characters: Character[];

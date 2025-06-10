@@ -10,7 +10,7 @@ import { Wand2, Sparkles, ArrowLeft, Eye, EyeOff, Settings, Shuffle } from "luci
 import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
 import { CharacterAvatar } from "@/components/CharacterAvatar";
-import type { Wand } from "@shared/schema";
+import type { Wand } from "@shared/types";
 
 export default function Ollivanders() {
   const [, setLocation] = useLocation();

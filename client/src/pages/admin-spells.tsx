@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Plus, Edit, Trash2, Wand2, ArrowLeft, Search, Filter, Upload, FileText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import type { Spell } from "@shared/schema";
+import type { Spell } from "@shared/types";
 import { useLocation } from "wouter";
 
 export default function AdminSpells() {
