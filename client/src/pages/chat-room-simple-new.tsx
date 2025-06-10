@@ -865,14 +865,12 @@ export default function ChatRoom() {
 
         {/* Messages */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {localMessages.map((message) => {
-            // Check if this is a narrator message
-            const isNarratorMessage = message.messageType === 'narrator' || message.characterId === 0;
-            
-            return (
-              <div key={message.id} className="flex items-start gap-3">
-                {/* Avatar - special handling for narrator messages */}
-                {isNarratorMessage ? (
+          {localMessages.map((message) => (
+            <div key={message.id} className="flex items-start gap-3">
+              {/* Avatar - special handling for narrator messages */}
+              {(() => {
+                const isNarratorMessage = message.messageType === 'narrator' || message.characterId === 0;
+                return isNarratorMessage ? (
                   <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
                        style={{
                          backgroundColor: 
@@ -887,31 +885,39 @@ export default function ChatRoom() {
                   </div>
                 ) : (
                   <CharacterAvatar character={message.character} size="sm" />
-                )}
-                
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-baseline gap-2 mb-1">
-                    {isNarratorMessage ? (
-                      <span className="font-medium text-sm italic"
-                            style={{ 
-                              color: 
-                                user?.narratorColor === 'yellow' ? '#fbbf24' :
-                                user?.narratorColor === 'red' ? '#ef4444' :
-                                user?.narratorColor === 'blue' ? '#3b82f6' :
-                                user?.narratorColor === 'green' ? '#10b981' :
-                                user?.narratorColor === 'pink' ? '#ec4899' :
-                                '#8b5cf6'
-                            }}>
-                        Vypravěč
-                      </span>
-                    ) : (
-                      <Link 
-                        href={`/characters/${message.characterId}`}
-                        className="font-medium text-sm hover:text-primary hover:underline cursor-pointer"
-                      >
-                        {message.character.firstName} {message.character.lastName}
-                      </Link>
-                    )}
+                );
+              })()}
+              
+              <div className="flex-1 min-w-0">
+                <div className="flex items-baseline gap-2 mb-1">
+                  {(() => {
+                    const isNarratorMessage = message.messageType === 'narrator' || message.characterId === 0;
+                    if (isNarratorMessage) {
+                      return (
+                        <span className="font-medium text-sm italic"
+                              style={{ 
+                                color: 
+                                  user?.narratorColor === 'yellow' ? '#fbbf24' :
+                                  user?.narratorColor === 'red' ? '#ef4444' :
+                                  user?.narratorColor === 'blue' ? '#3b82f6' :
+                                  user?.narratorColor === 'green' ? '#10b981' :
+                                  user?.narratorColor === 'pink' ? '#ec4899' :
+                                  '#8b5cf6'
+                              }}>
+                          Vypravěč
+                        </span>
+                      );
+                    } else {
+                      return (
+                        <Link 
+                          href={`/characters/${message.characterId}`}
+                          className="font-medium text-sm hover:text-primary hover:underline cursor-pointer"
+                        >
+                          {message.character.firstName} {message.character.lastName}
+                        </Link>
+                      );
+                    }
+                  })()}
                   <span className="text-xs text-muted-foreground">
                     {new Date(message.createdAt).toLocaleTimeString('cs-CZ', {
                       hour: '2-digit',
@@ -920,14 +926,13 @@ export default function ChatRoom() {
                   </span>
                   {/* Action buttons for own messages */}
                   {(() => {
+                    const isNarratorMessage = message.messageType === 'narrator' || message.characterId === 0;
                     const messageTime = new Date(message.createdAt);
                     const now = new Date();
                     const timeDiffMinutes = (now.getTime() - messageTime.getTime()) / (1000 * 60);
-                    
-                    // For narrator messages - check if user is the author and within 2 minutes
                     if (isNarratorMessage) {
                       const canDeleteNarrator = message.userId === user?.id && timeDiffMinutes <= 2;
-                      return canDeleteNarrator && (
+                      return canDeleteNarrator ? (
                         <Button
                           onClick={() => {
                             if (confirm('Opravdu chcete smazat tuto vypravěčskou zprávu?')) {
@@ -955,14 +960,12 @@ export default function ChatRoom() {
                         >
                           <X className="h-3 w-3" />
                         </Button>
-                      );
+                      ) : null;
                     }
-                    
                     // For regular character messages - show character change option
                     const isOwnMessage = userCharacters.some((char: any) => char.id === message.characterId);
                     const canChangeCharacter = isOwnMessage && timeDiffMinutes <= 5;
-                    
-                    return canChangeCharacter && userCharacters.length > 1 && (
+                    return canChangeCharacter && userCharacters.length > 1 ? (
                       <div className="ml-2">
                         <select 
                           className="text-xs bg-muted/50 border border-border rounded px-2 py-1"
@@ -998,13 +1001,12 @@ export default function ChatRoom() {
                           ))}
                         </select>
                       </div>
-                    );
+                    ) : null;
                   })()}
                 </div>
-                
                 {/* Message content with special styling for narrator messages */}
                 <div className={`text-sm !break-words !whitespace-pre-wrap !overflow-wrap-anywhere !word-break-break-all max-w-full ${
-                  isNarratorMessage ? 'italic font-medium p-3 rounded-lg border-l-4' : ''
+                  (message.messageType === 'narrator' || message.characterId === 0) ? 'italic font-medium p-3 rounded-lg border-l-4' : ''
                 } ${
                   message.character.firstName === 'Správa' && message.character.lastName === 'ubytování' 
                     ? 'text-blue-600 dark:text-blue-400' 
@@ -1015,7 +1017,7 @@ export default function ChatRoom() {
                   wordBreak: 'break-all',
                   whiteSpace: 'pre-wrap',
                   maxWidth: '100%',
-                  ...(isNarratorMessage && {
+                  ...((message.messageType === 'narrator' || message.characterId === 0) && {
                     backgroundColor: user?.narratorColor === 'yellow' ? 'rgba(251, 191, 36, 0.1)' :
                                    user?.narratorColor === 'red' ? 'rgba(239, 68, 68, 0.1)' :
                                    user?.narratorColor === 'blue' ? 'rgba(59, 130, 246, 0.1)' :
@@ -1033,8 +1035,8 @@ export default function ChatRoom() {
                   {renderMessageWithHighlight(message.content, user?.highlightWords, user?.highlightColor)}
                 </div>
               </div>
-            );
-          })}
+            </div>
+          ))}
           <div ref={messagesEndRef} />
         </div>
 
