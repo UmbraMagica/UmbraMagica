@@ -212,7 +212,6 @@ export default function Admin() {
       toast({
         title: "Chyba",
         description: error instanceof Error ? error.message : "Nepodařilo se vytvořit invitační kód",
-        description: error.message || "Nepodařilo se vytvořit zvací kód",
         variant: "destructive",
       });
     },
