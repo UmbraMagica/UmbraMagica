@@ -131,7 +131,7 @@ export default function UserSettings() {
       apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/user/character-order`, { characterOrder: order }),
     onSuccess: () => {
       // Invalidate user data to reflect changes
-      queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
+      queryClient.invalidateQueries({ queryKey: [`${import.meta.env.VITE_API_URL}/api/auth/user`] });
       toast({
         title: "Pořadí postav uloženo",
         description: "Vaše nastavení pořadí postav bylo úspěšně uloženo",
@@ -158,7 +158,7 @@ export default function UserSettings() {
       setHighlightWords(variables.words);
       setHighlightColor(variables.color);
       // Invalidate user data to refresh the cache
-      queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
+      queryClient.invalidateQueries({ queryKey: [`${import.meta.env.VITE_API_URL}/api/auth/user`] });
       toast({
         title: "Zvýrazňovaná slova uložena",
         description: "Vaše nastavení zvýrazňování slov bylo úspěšně uloženo",
@@ -183,7 +183,7 @@ export default function UserSettings() {
       // Update local state immediately
       setNarratorColor(variables.color);
       // Invalidate user data to refresh the cache
-      queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
+      queryClient.invalidateQueries({ queryKey: [`${import.meta.env.VITE_API_URL}/api/auth/user`] });
       toast({
         title: "Barva vypravěče uložena",
         description: "Vaše nastavení barvy vypravěče bylo úspěšně uloženo",
@@ -412,7 +412,7 @@ export default function UserSettings() {
       });
       setEmailForm({ newEmail: '', confirmPassword: '' });
       setShowEmailForm(false);
-      queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
+      queryClient.invalidateQueries({ queryKey: [`${import.meta.env.VITE_API_URL}/api/auth/user`] });
     },
     onError: (error: any) => {
       toast({

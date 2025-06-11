@@ -22,7 +22,7 @@ export function useAuth() {
   const [, setLocation] = useLocation();
 
   const { data: user, isLoading, error } = useQuery<AuthUser | null>({
-    queryKey: ["/api/auth/user"],
+    queryKey: [`${import.meta.env.VITE_API_URL}/api/auth/user`],
     queryFn: getQueryFn({ on401: "returnNull" }),
     retry: false,
     staleTime: 5 * 60 * 1000, // 5 minutes
@@ -36,7 +36,7 @@ export function useAuth() {
       return response.json();
     },
     onSuccess: (data) => {
-      queryClient.setQueryData(["/api/auth/user"], data);
+      queryClient.setQueryData([`${import.meta.env.VITE_API_URL}/api/auth/user`], data);
       setLocation("/");
     },
   });
@@ -46,7 +46,7 @@ export function useAuth() {
       await apiRequest("POST", "/api/auth/logout");
     },
     onSuccess: () => {
-      queryClient.setQueryData(["/api/auth/user"], null);
+      queryClient.setQueryData([`${import.meta.env.VITE_API_URL}/api/auth/user`], null);
       queryClient.removeQueries();
       setLocation("/login");
     },
@@ -68,7 +68,7 @@ export function useAuth() {
       return response.json();
     },
     onSuccess: (data) => {
-      queryClient.setQueryData(["/api/auth/user"], data);
+      queryClient.setQueryData([`${import.meta.env.VITE_API_URL}/api/auth/user`], data);
       queryClient.invalidateQueries();
       setLocation("/");
     },

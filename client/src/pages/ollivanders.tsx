@@ -30,7 +30,7 @@ export default function Ollivanders() {
 
   // Get current user and characters
   const { data: user } = useQuery({
-    queryKey: ['/api/auth/user']
+    queryKey: [`${import.meta.env.VITE_API_URL}/api/auth/user`]
   });
 
   const { data: allCharacters = [] } = useQuery({
