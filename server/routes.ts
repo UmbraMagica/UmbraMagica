@@ -1175,7 +1175,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Chat category routes
-  app.get("/api/chat/categories", requireAuth, async (req, res) => {
+  app.get("/api/chat/categories", requireAuthFlexible, async (req, res) => {
     try {
       const categories = await storage.getChatCategoriesWithChildren();
       res.json(categories);
@@ -1186,7 +1186,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Chat routes
-  app.get("/api/chat/rooms", requireAuth, async (req, res) => {
+  app.get("/api/chat/rooms", requireAuthFlexible, async (req, res) => {
     try {
       const rooms = await storage.getAllChatRooms();
       res.json(rooms);
@@ -1196,7 +1196,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/chat/rooms/:roomId/messages", requireAuth, async (req, res) => {
+  app.get("/api/chat/rooms/:roomId/messages", requireAuthFlexible, async (req, res) => {
     try {
       const roomId = parseInt(req.params.roomId);
       console.log("GET /api/chat/rooms/:roomId/messages - roomId:", roomId);
@@ -1218,7 +1218,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/chat/messages", requireAuth, async (req, res) => {
+  app.get("/api/chat/messages", requireAuthFlexible, async (req, res) => {
     try {
       const roomId = parseInt(req.query.roomId as string);
       console.log("GET /api/chat/messages - roomId:", roomId);
@@ -1242,7 +1242,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/chat/messages", requireAuth, async (req, res) => {
+  app.post("/api/chat/messages", requireAuthFlexible, async (req, res) => {
     try {
       console.log("POST /api/chat/messages - Request body:", req.body);
       const { roomId, characterId, content, messageType } = req.body;
@@ -1277,7 +1277,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/chat/rooms/:roomId/archive", requireAuth, async (req, res) => {
+  app.post("/api/chat/rooms/:roomId/archive", requireAuthFlexible, async (req, res) => {
     try {
       const roomId = parseInt(req.params.roomId);
       const beforeDate = req.body.beforeDate ? new Date(req.body.beforeDate) : undefined;
@@ -1290,7 +1290,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/chat/rooms/:roomId/export", requireAuth, async (req, res) => {
+  app.get("/api/chat/rooms/:roomId/export", requireAuthFlexible, async (req, res) => {
     try {
       const roomId = parseInt(req.params.roomId);
       const messages = await storage.getMessagesByRoom(roomId, 1000, 0);
@@ -1345,7 +1345,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get characters present in a room
-  app.get("/api/chat/rooms/:roomId/presence", requireAuth, async (req, res) => {
+  app.get("/api/chat/rooms/:roomId/presence", requireAuthFlexible, async (req, res) => {
     try {
       const roomId = parseInt(req.params.roomId);
       const characterIds = Array.from(roomPresence.get(roomId) || []);
