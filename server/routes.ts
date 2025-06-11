@@ -837,42 +837,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/characters/online", requireAuth, async (req, res) => {
+  app.get("/api/characters/online", requireAuthFlexible, async (req, res) => {
     try {
-      // Only return characters that are currently connected via WebSocket
-      const onlineCharacters: any[] = [];
-      
-      // Get characters from active WebSocket connections
-      const promises = Array.from(activeConnections.entries()).map(async ([ws, connInfo]) => {
-        if (ws.readyState === WebSocket.OPEN && connInfo.characterId) {
-          const character = await storage.getCharacter(connInfo.characterId);
-          if (character && character.isActive && !character.isSystem) {
-            // Get the room name for location
-            let location = "Lobby";
-            if (connInfo.roomId) {
-              const room = await storage.getChatRoom(connInfo.roomId);
-              location = room ? room.name : "Neznámá lokace";
-            }
-            
-            return {
-              id: character.id,
-              fullName: `${character.firstName}${character.middleName ? ` ${character.middleName}` : ''} ${character.lastName}`,
-              firstName: character.firstName,
-              lastName: character.lastName,
-              location: location,
-              roomId: connInfo.roomId,
-              avatar: character.avatar,
-            };
-          }
-        }
-        return null;
-      });
-      
-      const results = await Promise.all(promises);
-      onlineCharacters.push(...results.filter(char => char !== null));
-      
-      console.log("Returning all online characters:", onlineCharacters);
-      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      const onlineCharacters = await storage.getOnlineCharacters();
       res.json(onlineCharacters);
     } catch (error) {
       console.error("Error fetching online characters:", error);
@@ -2214,8 +2181,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Influence Bar endpoints
-  app.get("/api/influence-bar", (req, res, next) => {
-    // Disable cache completely
+  app.get("/api/influence-bar", requireAuthFlexible, (req, res, next) => {
     res.set('Cache-Control', 'no-cache, no-store, must-revalidate, proxy-revalidate');
     res.set('Pragma', 'no-cache');
     res.set('Expires', '0');
@@ -2231,7 +2197,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/influence-history", async (req, res) => {
+  app.get("/api/influence-history", requireAuthFlexible, async (req, res) => {
     try {
       const history = await storage.getInfluenceHistory();
       res.json(history);
@@ -3194,9 +3160,9 @@ Správa ubytování`
   });
 
   // Get total unread owl post count for all user characters
-  app.get("/api/owl-post/unread-total", requireAuth, async (req, res) => {
+  app.get("/api/owl-post/unread-total", requireAuthFlexible, async (req, res) => {
     try {
-      const userCharacters = await storage.getCharactersByUserId(req.session.userId!);
+      const userCharacters = await storage.getCharactersByUserId((req.session && req.session.userId) || (req.user && req.user.id));
       const aliveCharacters = userCharacters.filter(char => !char.deathDate);
       
       let totalUnread = 0;
