@@ -9,7 +9,7 @@ import multer from "multer";
 import sharp from "sharp";
 import pgSession from "connect-pg-simple";
 import jwt from 'jsonwebtoken';
-import { createClient } from '@supabase/supabase-js'
+import { supabase } from './storage';
 import type { Request } from "express";
 
 declare module 'express-serve-static-core' {
@@ -1437,6 +1437,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Upravený endpoint pro získání postav včetně jejich hůlek
+  app.get('/api/characters/all', async (req, res) => {
+    try {
+      const characters = await storage.getAllCharacters();
+
+      // Načteme hůlky pro všechny postavy
+      const charactersWithWands = await Promise.all(
+        characters.map(async (character) => {
+          const wand = await storage.getCharacterWand(character.id);
+          return {
+            ...character,
+            wand,
+          };
+        })
+      );
+
+      res.json(charactersWithWands);
+    } catch (error) {
+      console.error('Chyba při načítání postav s hůlkami:', error);
+      res.status(500).json({ message: 'Nepodařilo se načíst postavy' });
+    }
+  });
+
   // Get characters with dormitory housing for room description
   app.get("/api/characters/dormitory-residents", requireAuthFlexible, async (req, res) => {
     try {
@@ -1741,56 +1764,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error bulk importing spells:", error);
       res.status(500).json({ message: "Failed to bulk import spells" });
-    }
-  });
-
-  // Get character's wand
-  app.get("/api/characters/:id/wand", requireAuth, async (req, res) => {
-    try {
-      const characterId = parseInt(req.params.id);
-      const wand = await storage.getCharacterWand(characterId);
-      res.json(wand);
-    } catch (error) {
-      console.error("Error fetching character wand:", error);
-      res.status(500).json({ message: "Failed to fetch character wand" });
-    }
-  });
-
-  // Get character's last chat room
-  app.get("/api/characters/:id/last-chat", requireAuth, async (req, res) => {
-    try {
-      const characterId = parseInt(req.params.id);
-      const userId = req.session.userId!;
-      
-      // Verify character belongs to user
-      const character = await storage.getCharacter(characterId);
-      if (!character || character.userId !== userId) {
-        return res.status(404).json({ message: "Character not found" });
-      }
-      
-      // Get last message by this character
-      const lastMessage = await storage.getLastMessageByCharacter(characterId);
-      if (!lastMessage) {
-        return res.json({ room: null, lastActivity: null });
-      }
-      
-      // Get room details
-      const room = await storage.getChatRoom(lastMessage.roomId);
-      if (!room) {
-        return res.json({ room: null, lastActivity: null });
-      }
-      
-      res.json({
-        room: {
-          id: room.id,
-          name: room.name,
-          description: room.description
-        },
-        lastActivity: lastMessage.createdAt
-      });
-    } catch (error) {
-      console.error("Error fetching character's last chat:", error);
-      res.status(500).json({ message: "Failed to fetch last chat" });
     }
   });
 
@@ -3302,7 +3275,6 @@ Správa ubytování`
     }
   });
 
-  // Update room sort order
   app.put('/api/admin/chat-rooms/:id/sort-order', requireAdminJWT, async (req, res) => {
     try {
       const roomId = parseInt(req.params.id);
