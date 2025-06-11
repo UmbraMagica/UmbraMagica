@@ -83,6 +83,23 @@ function requireAdminJWT(req, res, next) {
   });
 }
 
+// Přidám nový middleware:
+function requireAuthFlexible(req, res, next) {
+  // Pokud je session, pokračuj
+  if (req.session && req.session.userId) return next();
+  // Pokud je JWT, pokračuj
+  const auth = req.headers.authorization;
+  if (auth && auth.startsWith('Bearer ')) {
+    const token = auth.slice(7);
+    const payload = verifyJwt(token);
+    if (payload) {
+      req.user = payload;
+      return next();
+    }
+  }
+  return res.status(401).json({ message: "Unauthorized" });
+}
+
 export async function registerRoutes(app: Express): Promise<Server> {
   // Create HTTP server
   const httpServer = createServer(app);
@@ -1397,7 +1414,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get all characters with user info (for admin/public use)
-  app.get("/api/characters/all", requireAuth, async (req, res) => {
+  app.get("/api/characters/all", requireAuthFlexible, async (req, res) => {
     try {
       const users = await storage.getAllUsers();
       const allCharacters = [];
@@ -1435,7 +1452,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get characters with dormitory housing for room description
-  app.get("/api/characters/dormitory-residents", requireAuth, async (req, res) => {
+  app.get("/api/characters/dormitory-residents", requireAuthFlexible, async (req, res) => {
     try {
       const users = await storage.getAllUsers();
       const dormitoryCharacters = [];
@@ -1471,7 +1488,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
 
   // Get specific character with user info
-  app.get("/api/characters/:id", requireAuth, async (req, res) => {
+  app.get("/api/characters/:id", requireAuthFlexible, async (req, res) => {
     try {
       const characterId = parseInt(req.params.id);
       

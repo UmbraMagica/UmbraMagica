@@ -870,8 +870,15 @@ export class DatabaseStorage implements IStorage {
   }): Promise<void>;
   
   // Influence operations
-  getInfluenceBar(): Promise<{ grindelwaldPoints: number; dumbledorePoints: number }>;
-  getInfluenceHistory(): Promise<any[]>;
+  async getInfluenceBar(): Promise<{ grindelwaldPoints: number; dumbledorePoints: number }> {
+    // TODO: Implementace podle skutečné logiky/databáze
+    return { grindelwaldPoints: 50, dumbledorePoints: 50 };
+  }
+
+  async getInfluenceHistory(): Promise<any[]> {
+    // TODO: Implementace podle skutečné logiky/databáze
+    return [];
+  }
   adjustInfluence(side: 'grindelwald' | 'dumbledore', points: number, userId: number): Promise<void>;
   setInfluence(grindelwaldPoints: number, dumbledorePoints: number, userId: number): Promise<void>;
 
