@@ -189,25 +189,29 @@ export default function Admin() {
     for (let i = 0; i < 8; i++) {
       result += characters.charAt(Math.floor(Math.random() * characters.length));
     }
+    console.log('Generated invite code:', result);
     setNewInviteCode(result);
   };
 
   // Mutations
   const createInviteCodeMutation = useMutation({
     mutationFn: async (code: string) => {
+      console.log('Creating invite code:', code);
       return apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/admin/invite-codes`, { code });
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log('Invite code created successfully:', data);
+      queryClient.invalidateQueries([`${import.meta.env.VITE_API_URL}/api/admin/invite-codes`]);
       toast({
         title: "Úspěch",
-        description: "Zvací kód byl vytvořen",
+        description: "Invitační kód byl úspěšně vytvořen",
       });
-      setNewInviteCode("");
-      queryClient.invalidateQueries({ queryKey: ['/api/admin/invite-codes'] });
     },
-    onError: (error: any) => {
+    onError: (error) => {
+      console.error('Error creating invite code:', error);
       toast({
         title: "Chyba",
+        description: error instanceof Error ? error.message : "Nepodařilo se vytvořit invitační kód",
         description: error.message || "Nepodařilo se vytvořit zvací kód",
         variant: "destructive",
       });

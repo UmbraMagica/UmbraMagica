@@ -23,7 +23,13 @@ async function throwIfResNotOk(res: Response) {
 }
 
 export function getAuthToken() {
-  return localStorage.getItem('jwt_token');
+  const token = localStorage.getItem('jwt_token');
+  if (!token) {
+    console.warn('No auth token found in localStorage');
+    return null;
+  }
+  console.log('Current auth token:', token);
+  return token;
 }
 
 export async function apiRequest(
@@ -32,15 +38,30 @@ export async function apiRequest(
   data?: unknown | undefined,
 ): Promise<Response> {
   const token = getAuthToken();
-  const headers: Record<string, string> = data ? { "Content-Type": "application/json" } : {};
-  if (token) headers["Authorization"] = `Bearer ${token}`;
+  if (!token) {
+    console.warn('Request without token:', url);
+    throw new Error('No authentication token available');
+  }
+  
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`,
+  };
+  
+  console.log('Making request to:', url, { method, headers });
+  
   const res = await fetch(url, {
     method,
     headers,
     body: data ? JSON.stringify(data) : undefined,
     credentials: "omit", // JWT nepotřebuje cookies
   });
-  await throwIfResNotOk(res);
+  
+  if (!res.ok) {
+    console.error('Request failed:', url, res.status);
+    await throwIfResNotOk(res);
+  }
+  
   return res;
 }
 

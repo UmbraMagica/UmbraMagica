@@ -9,8 +9,20 @@ import multer from "multer";
 import sharp from "sharp";
 import pgSession from "connect-pg-simple";
 import jwt from 'jsonwebtoken';
+import cors from 'cors';
 import { supabase } from './storage';
 import type { Request } from "express";
+
+// CORS configuration
+const corsOptions = {
+  origin: process.env.CORS_ORIGIN || 'https://umbramagica-1.onrender.com',
+  credentials: process.env.CORS_CREDENTIALS === 'true',
+  methods: process.env.CORS_METHODS?.split(',') || ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: process.env.CORS_HEADERS?.split(',') || ['Content-Type', 'Authorization'],
+};
+
+// Apply CORS middleware
+app.use(cors(corsOptions));
 
 declare module 'express-serve-static-core' {
   interface Request {
@@ -186,12 +198,135 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Rate limiting middleware
-  app.use('/api/*', (req, res, next) => {
-    const identifier = req.ip || 'unknown';
-    if (!checkRateLimit(identifier)) {
-      return res.status(429).json({ message: "Too many requests. Please try again later." });
+  app.use((req, res, next) => {
+    const identifier = req.ip;
+    if (!checkRateLimit(identifier, 100, 60000)) {
+      return res.status(429).json({ message: "Too many requests" });
     }
     next();
+  });
+
+  // Chat endpoints
+  app.get('/api/chat/rooms', requireAuthFlexible, async (req, res) => {
+    try {
+      const rooms = await storage.getAllChatRooms();
+      res.json(rooms);
+    } catch (error) {
+      console.error('Error fetching chat rooms:', error);
+      res.status(500).json({ message: 'Error fetching chat rooms' });
+    }
+  });
+
+  app.get('/api/chat/rooms/:roomId/messages', requireAuthFlexible, async (req, res) => {
+    try {
+      const roomId = parseInt(req.params.roomId);
+      if (!roomId) {
+        return res.status(400).json({ message: 'Invalid room ID' });
+      }
+      
+      const messages = await storage.getMessagesByRoom(roomId);
+      res.json(messages);
+    } catch (error) {
+      console.error('Error fetching messages:', error);
+      res.status(500).json({ message: 'Error fetching messages' });
+    }
+  });
+
+  app.get('/api/chat/rooms/:roomId/presence', requireAuthFlexible, async (req, res) => {
+    try {
+      const roomId = parseInt(req.params.roomId);
+      if (!roomId) {
+        return res.status(400).json({ message: 'Invalid room ID' });
+      }
+      
+      const characters = await storage.getCharactersInRoom(roomId);
+      res.json(characters);
+    } catch (error) {
+      console.error('Error fetching room presence:', error);
+      res.status(500).json({ message: 'Error fetching room presence' });
+    }
+  });
+
+  app.post('/api/chat/messages', requireAuthFlexible, async (req, res) => {
+    try {
+      const { roomId, characterId, content, messageType } = req.body;
+      if (!roomId || !characterId || !content) {
+        return res.status(400).json({ message: 'Missing required fields' });
+      }
+
+      const message = await storage.createMessage({
+        roomId,
+        characterId,
+        content,
+        messageType: messageType || 'text'
+      });
+
+      // Broadcast message to WebSocket
+      broadcastToRoom(roomId, {
+        type: 'new-message',
+        message
+      });
+
+      res.json(message);
+    } catch (error) {
+      console.error('Error creating message:', error);
+      res.status(500).json({ message: 'Error creating message' });
+    }
+  });
+
+  // Chat categories endpoints
+  app.get('/api/admin/chat-categories', requireAdminJWT, async (req, res) => {
+    try {
+      const categories = await storage.getAllChatCategories();
+      res.json(categories);
+    } catch (error) {
+      console.error('Error fetching chat categories:', error);
+      res.status(500).json({ message: 'Error fetching chat categories' });
+    }
+  });
+
+  app.post('/api/admin/chat-categories', requireAdminJWT, async (req, res) => {
+    try {
+      const { name, description } = req.body;
+      const category = await storage.createChatCategory({
+        name,
+        description
+      });
+      res.json(category);
+    } catch (error) {
+      console.error('Error creating chat category:', error);
+      res.status(500).json({ message: 'Error creating chat category' });
+    }
+  });
+
+  app.put('/api/admin/chat-categories/:categoryId', requireAdminJWT, async (req, res) => {
+    try {
+      const categoryId = parseInt(req.params.categoryId);
+      const { name, description } = req.body;
+      const category = await storage.updateChatCategory(categoryId, {
+        name,
+        description
+      });
+      res.json(category);
+    } catch (error) {
+      console.error('Error updating chat category:', error);
+      res.status(500).json({ message: 'Error updating chat category' });
+    }
+  });
+
+  app.delete('/api/admin/chat-categories/:categoryId', requireAdminJWT, async (req, res) => {
+    try {
+      const categoryId = parseInt(req.params.categoryId);
+      const success = await storage.deleteChatCategory(categoryId);
+      if (success) {
+        res.json({ message: 'Category deleted successfully' });
+      } else {
+        res.status(404).json({ message: 'Category not found' });
+      }
+    } catch (error) {
+      console.error('Error deleting chat category:', error);
+      res.status(500).json({ message: 'Error deleting chat category' });
+    }
   });
 
   // Debug middleware for chat endpoints

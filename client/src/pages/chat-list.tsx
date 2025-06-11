@@ -25,11 +25,35 @@ export default function ChatList() {
   const [editingRoom, setEditingRoom] = useState<number | null>(null);
   const [editingDescription, setEditingDescription] = useState("");
 
-  // Fetch chat rooms
-  const { data: rooms = [], isLoading, error } = useQuery<ChatRoom[]>({
-    queryKey: ["/api/chat/rooms"],
+  // Fetch chat categories and rooms
+  const { data: categories = [], isLoading: loadingCategories } = useQuery({
+    queryKey: [`${import.meta.env.VITE_API_URL}/api/admin/chat-categories`],
     enabled: !!user,
   });
+
+  const { data: rooms = [], isLoading: loadingRooms, error } = useQuery({
+    queryKey: [`${import.meta.env.VITE_API_URL}/api/chat/rooms`],
+    enabled: !!user,
+  });
+
+  // Combine rooms with their categories
+  const categorizedRooms = rooms.map(room => {
+    const category = categories.find(c => c.id === room.categoryId);
+    return {
+      ...room,
+      category: category || { name: 'Bez kategorie' }
+    };
+  });
+
+  // Group rooms by category
+  const roomsByCategory = categorizedRooms.reduce((acc, room) => {
+    const categoryKey = room.category.name || 'Bez kategorie';
+    if (!acc[categoryKey]) {
+      acc[categoryKey] = [];
+    }
+    acc[categoryKey].push(room);
+    return acc;
+  }, {} as Record<string, ChatRoom[]>);
 
   console.log("Chat rooms data:", rooms);
   console.log("Loading:", isLoading);
@@ -120,74 +144,11 @@ export default function ChatList() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        {rooms.map((room) => (
-          <Card 
-            key={room.id}
-            className="group hover:shadow-lg transition-all duration-200 cursor-pointer border-2 hover:border-primary/20"
-            onClick={() => handleRoomClick(room.id)}
-          >
-            <CardHeader className="pb-3">
-              <CardTitle className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-full bg-primary/10">
-                    <MessageCircle className="h-6 w-6 text-primary" />
-                  </div>
-                  <span className="text-xl">{room.name}</span>
-                </div>
-                <ArrowRight className="h-5 w-5 text-muted-foreground" />
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="mb-4">
-                {editingRoom === room.id ? (
-                  <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
-                    <Input
-                      value={editingDescription}
-                      onChange={(e) => setEditingDescription(e.target.value)}
-                      placeholder="Zadejte popisek místnosti"
-                      className="flex-1"
-                    />
-                    <Button
-                      size="sm"
-                      onClick={handleEditSave}
-                      disabled={updateRoomMutation.isPending}
-                    >
-                      <Save className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={handleEditCancel}
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="flex items-start justify-between">
-                    <p className="text-muted-foreground flex-1">
-                      {room.description || "Herní chatovací místnost"}
-                    </p>
-                    {isAdmin && (
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={(e) => handleEditStart(room, e)}
-                        className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity"
-                      >
-                        <Edit3 className="h-4 w-4" />
-                      </Button>
-                    )}
-                  </div>
-                )}
               </div>
-              
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Users className="h-4 w-4" />
-                  <span>Veřejná místnost</span>
-                </div>
-                
-                <Button variant="outline" size="sm">
+            </div>
+          ))}
+        </div>
+      )}
                   Vstoupit
                 </Button>
               </div>
