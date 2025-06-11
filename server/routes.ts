@@ -1401,17 +1401,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const users = await storage.getAllUsers();
       const allCharacters = [];
+      // Rozpoznání admina i při JWT autentizaci
+      const isAdmin = (req.session && req.session.userRole === 'admin') || (req.user && req.user.role === 'admin');
 
       for (const user of users) {
         // Skip system users unless requesting user is admin
-        if (user.isSystem && req.session.userRole !== 'admin') {
+        if (user.isSystem && !isAdmin) {
           continue;
         }
         
         const characters = await storage.getCharactersByUserId(user.id);
         for (const character of characters) {
           // Skip system characters unless requesting user is admin
-          if (character.isSystem && req.session.userRole !== 'admin') {
+          if (character.isSystem && !isAdmin) {
             continue;
           }
           
