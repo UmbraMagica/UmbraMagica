@@ -1,3 +1,4 @@
+import React from 'react';
 import { useParams, useLocation } from "wouter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -73,7 +74,7 @@ export default function CharacterHistory() {
   // History update mutation
   const updateHistoryMutation = useMutation({
     mutationFn: async (data: { history: string; showHistoryToOthers: boolean }) => {
-      return await apiRequest('PUT', `/api/characters/${id}/history`, data);
+      return await apiRequest('PUT', `${import.meta.env.VITE_API_URL}/api/characters/${id}/history`, data);
     },
     onSuccess: () => {
       toast({

@@ -106,7 +106,7 @@ export default function CharacterJournal() {
   // Add journal entry mutation
   const addEntryMutation = useMutation({
     mutationFn: async (data: JournalEntryForm) => {
-      const response = await apiRequest("POST", `/api/characters/${characterId}/journal`, data);
+      const response = await apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/characters/${characterId}/journal`, data);
       return response.json();
     },
     onSuccess: () => {
@@ -130,7 +130,7 @@ export default function CharacterJournal() {
   // Update journal entry mutation
   const updateEntryMutation = useMutation({
     mutationFn: async ({ entryId, data }: { entryId: number; data: Partial<JournalEntryForm> }) => {
-      const response = await apiRequest("PATCH", `/api/journal/${entryId}`, data);
+      const response = await apiRequest("PATCH", `${import.meta.env.VITE_API_URL}/api/journal/${entryId}`, data);
       return response.json();
     },
     onSuccess: () => {
@@ -154,7 +154,7 @@ export default function CharacterJournal() {
   // Delete journal entry mutation
   const deleteEntryMutation = useMutation({
     mutationFn: async (entryId: number) => {
-      const response = await apiRequest("DELETE", `/api/journal/${entryId}`);
+      const response = await apiRequest("DELETE", `${import.meta.env.VITE_API_URL}/api/journal/${entryId}`);
       return response.json();
     },
     onSuccess: () => {

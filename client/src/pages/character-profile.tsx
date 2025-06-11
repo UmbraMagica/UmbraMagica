@@ -72,7 +72,7 @@ export default function CharacterProfile() {
   // History update mutation
   const updateHistoryMutation = useMutation({
     mutationFn: async (data: { history: string; showHistoryToOthers: boolean }) => {
-      return apiRequest(`/api/characters/${id}/history`, "PUT", data);
+      return apiRequest(`${import.meta.env.VITE_API_URL}/api/characters/${id}/history`, "PUT", data);
     },
     onSuccess: () => {
       toast({

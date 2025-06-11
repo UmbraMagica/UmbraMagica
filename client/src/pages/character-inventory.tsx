@@ -102,7 +102,7 @@ export default function CharacterInventory() {
   // Add inventory item mutation
   const addItemMutation = useMutation({
     mutationFn: async (data: InventoryItemForm) => {
-      const response = await apiRequest("POST", `/api/characters/${characterId}/inventory`, data);
+      const response = await apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/characters/${characterId}/inventory`, data);
       return response.json();
     },
     onSuccess: () => {
@@ -126,7 +126,7 @@ export default function CharacterInventory() {
   // Update inventory item mutation
   const updateItemMutation = useMutation({
     mutationFn: async ({ itemId, data }: { itemId: number; data: Partial<InventoryItemForm> }) => {
-      const response = await apiRequest("PATCH", `/api/inventory/${itemId}`, data);
+      const response = await apiRequest("PATCH", `${import.meta.env.VITE_API_URL}/api/inventory/${itemId}`, data);
       return response.json();
     },
     onSuccess: () => {
@@ -150,7 +150,7 @@ export default function CharacterInventory() {
   // Delete inventory item mutation
   const deleteItemMutation = useMutation({
     mutationFn: async (itemId: number) => {
-      const response = await apiRequest("DELETE", `/api/inventory/${itemId}`);
+      const response = await apiRequest("DELETE", `${import.meta.env.VITE_API_URL}/api/inventory/${itemId}`);
       return response.json();
     },
     onSuccess: () => {

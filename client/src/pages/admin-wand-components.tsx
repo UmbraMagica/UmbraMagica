@@ -50,7 +50,7 @@ export default function AdminWandComponents() {
   // Save components mutation
   const saveComponentsMutation = useMutation({
     mutationFn: async (components: any) => {
-      const response = await apiRequest("PUT", "/api/admin/wand-components", components);
+      const response = await apiRequest("PUT", `${import.meta.env.VITE_API_URL}/api/admin/wand-components`, components);
       return response.json();
     },
     onSuccess: () => {

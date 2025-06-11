@@ -52,7 +52,7 @@ export default function ChatList() {
   // Mutation for updating room description
   const updateRoomMutation = useMutation({
     mutationFn: async ({ roomId, description }: { roomId: number; description: string }) => {
-      return apiRequest("PATCH", `/api/chat/rooms/${roomId}`, { description });
+      return apiRequest("PATCH", `${import.meta.env.VITE_API_URL}/api/chat/rooms/${roomId}`, { description });
     },
     onSuccess: () => {
       toast({

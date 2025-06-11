@@ -54,7 +54,7 @@ export default function Registration() {
     setUsernameStatus('checking');
     const timeoutId = setTimeout(async () => {
       try {
-        const response = await apiRequest("GET", `/api/auth/check-username?username=${encodeURIComponent(formData.username)}`);
+        const response = await apiRequest("GET", `${import.meta.env.VITE_API_URL}/api/auth/check-username?username=${encodeURIComponent(formData.username)}`);
         const data = await response.json();
         setUsernameStatus(data.available ? 'available' : 'taken');
       } catch (error) {

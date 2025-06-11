@@ -39,7 +39,7 @@ export default function CharacterSpells() {
   // Add spell to character
   const addSpellMutation = useMutation({
     mutationFn: async (spellId: number) => {
-      const response = await apiRequest("POST", `/api/characters/${characterId}/spells`, { spellId });
+      const response = await apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/characters/${characterId}/spells`, { spellId });
       return response.json();
     },
     onSuccess: () => {
@@ -62,7 +62,7 @@ export default function CharacterSpells() {
   // Remove spell from character
   const removeSpellMutation = useMutation({
     mutationFn: async (spellId: number) => {
-      const response = await apiRequest("DELETE", `/api/characters/${characterId}/spells/${spellId}`);
+      const response = await apiRequest("DELETE", `${import.meta.env.VITE_API_URL}/api/characters/${characterId}/spells/${spellId}`);
       return response.json();
     },
     onSuccess: () => {

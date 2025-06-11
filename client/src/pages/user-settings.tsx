@@ -108,7 +108,7 @@ export default function UserSettings() {
   // Delete housing request mutation
   const deleteHousingRequestMutation = useMutation({
     mutationFn: (requestId: number) => 
-      apiRequest("DELETE", `/api/housing-requests/${requestId}`),
+      apiRequest("DELETE", `${import.meta.env.VITE_API_URL}/api/housing-requests/${requestId}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/housing-requests/my"] });
       toast({
@@ -128,7 +128,7 @@ export default function UserSettings() {
   // Character order mutation
   const updateCharacterOrderMutation = useMutation({
     mutationFn: (order: number[]) => 
-      apiRequest("POST", "/api/user/character-order", { characterOrder: order }),
+      apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/user/character-order`, { characterOrder: order }),
     onSuccess: () => {
       // Invalidate user data to reflect changes
       queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
@@ -149,7 +149,7 @@ export default function UserSettings() {
   // Highlight words mutation
   const updateHighlightWordsMutation = useMutation({
     mutationFn: (data: { words: string; color: string }) => 
-      apiRequest("POST", "/api/user/highlight-words", { 
+      apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/user/highlight-words`, { 
         highlightWords: data.words,
         highlightColor: data.color 
       }),
@@ -176,7 +176,7 @@ export default function UserSettings() {
   // Narrator color mutation
   const updateNarratorColorMutation = useMutation({
     mutationFn: (data: { color: string }) => 
-      apiRequest("POST", "/api/user/narrator-color", { 
+      apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/user/narrator-color`, { 
         narratorColor: data.color 
       }),
     onSuccess: (data, variables) => {
@@ -295,7 +295,7 @@ export default function UserSettings() {
   // Create character request mutation
   const createRequestMutation = useMutation({
     mutationFn: async (data: CharacterRequestForm) => {
-      const response = await apiRequest("POST", "/api/character-requests", data);
+      const response = await apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/character-requests`, data);
       return response.json();
     },
     onSuccess: () => {
@@ -319,7 +319,7 @@ export default function UserSettings() {
   // Delete character request mutation
   const deleteRequestMutation = useMutation({
     mutationFn: async (requestId: number) => {
-      const response = await apiRequest("DELETE", `/api/character-requests/${requestId}`);
+      const response = await apiRequest("DELETE", `${import.meta.env.VITE_API_URL}/api/character-requests/${requestId}`);
       return response.json();
     },
     onSuccess: () => {
@@ -341,7 +341,7 @@ export default function UserSettings() {
   // Create housing request mutation
   const createHousingRequestMutation = useMutation({
     mutationFn: async (data: HousingRequestForm) => {
-      const response = await apiRequest("POST", "/api/housing-requests", data);
+      const response = await apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/housing-requests`, data);
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || "Nepodařilo se odeslat žádost o bydlení");
@@ -371,7 +371,7 @@ export default function UserSettings() {
   // Change password mutation
   const changePasswordMutation = useMutation({
     mutationFn: async (data: { currentPassword: string; newPassword: string }) => {
-      const response = await apiRequest("POST", "/api/auth/change-password", data);
+      const response = await apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/auth/change-password`, data);
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || "Nepodařilo se změnit heslo");
@@ -398,7 +398,7 @@ export default function UserSettings() {
   // Change email mutation
   const changeEmailMutation = useMutation({
     mutationFn: async (data: { newEmail: string; confirmPassword: string }) => {
-      const response = await apiRequest("POST", "/api/auth/change-email", data);
+      const response = await apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/auth/change-email`, data);
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || "Nepodařilo se změnit email");

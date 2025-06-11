@@ -88,6 +88,7 @@ function Router() {
           <Route path="/cemetery" component={Cemetery} />
           <Route path="/ollivanders" component={Ollivanders} />
           <Route path="/owl-post" component={OwlPost} />
+          <Route path="/test-backend" component={TestBackend} />
         </>
       )}
       <Route component={NotFound} />

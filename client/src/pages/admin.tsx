@@ -195,7 +195,7 @@ export default function Admin() {
   // Mutations
   const createInviteCodeMutation = useMutation({
     mutationFn: async (code: string) => {
-      return apiRequest("POST", "/api/admin/invite-codes", { code });
+      return apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/admin/invite-codes`, { code });
     },
     onSuccess: () => {
       toast({
@@ -216,7 +216,7 @@ export default function Admin() {
 
   const updateRoleMutation = useMutation({
     mutationFn: async ({ userId, role }: { userId: number; role: string }) => {
-      return apiRequest("PATCH", `/api/admin/users/${userId}/role`, { role });
+      return apiRequest("PATCH", `${import.meta.env.VITE_API_URL}/api/admin/users/${userId}/role`, { role });
     },
     onSuccess: () => {
       toast({
@@ -236,7 +236,7 @@ export default function Admin() {
 
   const resetPasswordMutation = useMutation({
     mutationFn: async (userId: number) => {
-      const res = await apiRequest("POST", `/api/admin/users/${userId}/reset-password`, {});
+      const res = await apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/admin/users/${userId}/reset-password`, {});
       return res.json(); // Oprava: rozparsovat odpověď
     },
     onSuccess: (data: any) => {
@@ -256,7 +256,7 @@ export default function Admin() {
 
   const updateNarratorMutation = useMutation({
     mutationFn: async ({ userId, canNarrate, reason }: { userId: number; canNarrate: boolean; reason?: string }) => {
-      return apiRequest("PATCH", `/api/admin/users/${userId}/narrator`, { canNarrate, reason });
+      return apiRequest("PATCH", `${import.meta.env.VITE_API_URL}/api/admin/users/${userId}/narrator`, { canNarrate, reason });
     },
     onSuccess: () => {
       toast({
@@ -278,7 +278,7 @@ export default function Admin() {
 
   const banUserMutation = useMutation({
     mutationFn: async ({ userId, banReason }: { userId: number; banReason: string }) => {
-      return apiRequest("POST", `/api/admin/users/${userId}/ban`, { reason: banReason });
+      return apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/admin/users/${userId}/ban`, { reason: banReason });
     },
     onSuccess: () => {
       toast({
@@ -301,7 +301,7 @@ export default function Admin() {
 
   const killCharacterMutation = useMutation({
     mutationFn: async ({ characterId, deathReason }: { characterId: number; deathReason: string }) => {
-      return apiRequest("POST", `/api/admin/characters/${characterId}/kill`, { deathReason });
+      return apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/admin/characters/${characterId}/kill`, { deathReason });
     },
     onSuccess: () => {
       toast({
@@ -324,7 +324,7 @@ export default function Admin() {
 
   const approveCharacterMutation = useMutation({
     mutationFn: async (requestId: number) => {
-      return apiRequest("POST", `/api/admin/character-requests/${requestId}/approve`, {});
+      return apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/admin/character-requests/${requestId}/approve`, {});
     },
     onSuccess: () => {
       toast({
@@ -345,7 +345,7 @@ export default function Admin() {
 
   const rejectCharacterMutation = useMutation({
     mutationFn: async ({ requestId, reason }: { requestId: number; reason: string }) => {
-      return apiRequest("POST", `/api/admin/character-requests/${requestId}/reject`, { reason });
+      return apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/admin/character-requests/${requestId}/reject`, { reason });
     },
     onSuccess: () => {
       toast({
@@ -374,7 +374,7 @@ export default function Admin() {
   // Housing request mutations
   const approveHousingMutation = useMutation({
     mutationFn: async ({ requestId, assignedAddress, reviewNote }: { requestId: number, assignedAddress: string, reviewNote: string }) => {
-      return apiRequest("POST", `/api/admin/housing-requests/${requestId}/approve`, { 
+      return apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/admin/housing-requests/${requestId}/approve`, { 
         assignedAddress, 
         reviewNote 
       });
@@ -399,7 +399,7 @@ export default function Admin() {
 
   const rejectHousingMutation = useMutation({
     mutationFn: async ({ requestId, reviewNote }: { requestId: number, reviewNote: string }) => {
-      return apiRequest("POST", `/api/admin/housing-requests/${requestId}/return`, { 
+      return apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/admin/housing-requests/${requestId}/return`, { 
         reviewNote 
       });
     },
@@ -423,7 +423,7 @@ export default function Admin() {
 
   const denyHousingMutation = useMutation({
     mutationFn: async ({ requestId, reviewNote }: { requestId: number, reviewNote: string }) => {
-      return apiRequest("POST", `/api/admin/housing-requests/${requestId}/reject`, { 
+      return apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/admin/housing-requests/${requestId}/reject`, { 
         reviewNote 
       });
     },
@@ -485,7 +485,7 @@ export default function Admin() {
 
   const createCategoryMutation = useMutation({
     mutationFn: async (category: any) => {
-      return apiRequest("POST", "/api/admin/chat-categories", category);
+      return apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/admin/chat-categories`, category);
     },
     onSuccess: () => {
       toast({
@@ -509,7 +509,7 @@ export default function Admin() {
 
   const createRoomMutation = useMutation({
     mutationFn: async (room: any) => {
-      return apiRequest("POST", "/api/admin/chat-rooms", room);
+      return apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/admin/chat-rooms`, room);
     },
     onSuccess: () => {
       toast({
@@ -536,7 +536,7 @@ export default function Admin() {
 
   const updateCategoryMutation = useMutation({
     mutationFn: async ({ id, updates }: { id: number; updates: any }) => {
-      return apiRequest("PUT", `/api/admin/chat-categories/${id}`, updates);
+      return apiRequest("PUT", `${import.meta.env.VITE_API_URL}/api/admin/chat-categories/${id}`, updates);
     },
     onSuccess: () => {
       toast({
@@ -558,7 +558,7 @@ export default function Admin() {
 
   const deleteCategoryMutation = useMutation({
     mutationFn: async (id: number) => {
-      return apiRequest("DELETE", `/api/admin/chat-categories/${id}`);
+      return apiRequest("DELETE", `${import.meta.env.VITE_API_URL}/api/admin/chat-categories/${id}`);
     },
     onSuccess: () => {
       toast({
@@ -579,7 +579,7 @@ export default function Admin() {
 
   const updateRoomMutation = useMutation({
     mutationFn: async ({ id, updates }: { id: number; updates: any }) => {
-      return apiRequest("PUT", `/api/admin/chat-rooms/${id}`, updates);
+      return apiRequest("PUT", `${import.meta.env.VITE_API_URL}/api/admin/chat-rooms/${id}`, updates);
     },
     onSuccess: () => {
       toast({
@@ -600,7 +600,7 @@ export default function Admin() {
 
   const deleteRoomMutation = useMutation({
     mutationFn: async (id: number) => {
-      return apiRequest("DELETE", `/api/admin/chat-rooms/${id}`);
+      return apiRequest("DELETE", `${import.meta.env.VITE_API_URL}/api/admin/chat-rooms/${id}`);
     },
     onSuccess: () => {
       toast({
@@ -620,7 +620,7 @@ export default function Admin() {
 
   const updateCategorySortOrderMutation = useMutation({
     mutationFn: async ({ id, sortOrder }: { id: number; sortOrder: number }) => {
-      return apiRequest("PUT", `/api/admin/chat-categories/${id}/sort-order`, { sortOrder });
+      return apiRequest("PUT", `${import.meta.env.VITE_API_URL}/api/admin/chat-categories/${id}/sort-order`, { sortOrder });
     },
     onSuccess: () => {
       toast({
@@ -641,7 +641,7 @@ export default function Admin() {
 
   const updateRoomSortOrderMutation = useMutation({
     mutationFn: async ({ id, sortOrder }: { id: number; sortOrder: number }) => {
-      return apiRequest("PUT", `/api/admin/chat-rooms/${id}/sort-order`, { sortOrder });
+      return apiRequest("PUT", `${import.meta.env.VITE_API_URL}/api/admin/chat-rooms/${id}/sort-order`, { sortOrder });
     },
     onSuccess: () => {
       toast({
@@ -764,7 +764,7 @@ export default function Admin() {
 
   const adjustInfluenceMutation = useMutation({
     mutationFn: async ({ side, points, reason }: { side: string; points: number; reason: string }) => {
-      return apiRequest("POST", "/api/admin/influence-bar/adjust-with-history", { 
+      return apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/admin/influence-bar/adjust-with-history`, { 
         changeType: side, 
         points, 
         reason 
@@ -930,7 +930,7 @@ export default function Admin() {
   };
 
   const confirmInfluenceReset = () => {
-    apiRequest("POST", "/api/admin/influence-bar/reset", {
+    apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/admin/influence-bar/reset`, {
       type: resetConfirmation.type
     })
       .then(() => {
