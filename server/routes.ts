@@ -864,7 +864,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Add current admin user as online (since they're making this request)
-      const currentUserId = (req.session as any).userId;
+      const currentUserId = (req.session && req.session.userId) || (req.user && req.user.id);
       if (currentUserId) {
         const currentUser = await storage.getUser(currentUserId);
         if (currentUser && !currentUser.isSystem) {
