@@ -9,6 +9,7 @@ import multer from "multer";
 import sharp from "sharp";
 import pgSession from "connect-pg-simple";
 import jwt from 'jsonwebtoken';
+import { createClient } from '@supabase/supabase-js'
 
 // Game date utility function
 const GAME_YEAR = 1926;
@@ -3316,8 +3317,20 @@ Správa ubytování`
   // TESTOVACÍ ENDPOINT PRO OVĚŘENÍ PŘIPOJENÍ K DATABÁZI
   app.get('/api/test-db', async (req, res) => {
     try {
-      const users = await storage.getAllUsers(true);
-      res.json({ ok: true, usersCount: users.length });
+      const { data, error, status, statusText } = await supabase.from('users').select('*');
+      res.json({
+        ok: !error,
+        error,
+        status,
+        statusText,
+        usersCount: data ? data.length : 0,
+        data,
+        env: {
+          SUPABASE_URL: process.env.SUPABASE_URL || 'hardcoded',
+          SUPABASE_KEY: process.env.SUPABASE_KEY ? 'set' : 'not set',
+          NODE_ENV: process.env.NODE_ENV || 'undefined',
+        }
+      });
     } catch (error) {
       res.status(500).json({ ok: false, error: error.message });
     }
