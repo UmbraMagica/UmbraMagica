@@ -37,16 +37,21 @@ export async function apiRequest(
   url: string,
   data?: unknown | undefined,
 ): Promise<Response> {
-  const token = getAuthToken();
-  if (!token) {
-    console.warn('Request without token:', url);
-    throw new Error('No authentication token available');
-  }
+  // Login endpoint nemusí mít token
+  const needsToken = !url.endsWith('/login');
   
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${token}`,
   };
+
+  if (needsToken) {
+    const token = getAuthToken();
+    if (!token) {
+      console.warn('Request without token:', url);
+      throw new Error('No authentication token available');
+    }
+    headers['Authorization'] = `Bearer ${token}`;
+  }
   
   console.log('Making request to:', url, { method, headers });
   
