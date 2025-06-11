@@ -14,6 +14,7 @@ app.use((req, res, next) => {
     'https://umbra-magica.cz', // produkce
     'https://www.umbra-magica.cz',
     'https://umbramagica-1.onrender.com', // Render frontend
+    'https://umbramagica.onrender.com', // Render backend
     // případně další domény
   ];
   if (process.env.NODE_ENV === 'production') {
@@ -94,7 +95,7 @@ app.use('/api', supabaseRoutes);
   // setting up all the other routes so the catch-all route
   // doesn't interfere with the other routes
   if (app.get("env") === "development") {
-    await setupVite(app, null);
+    await setupVite(app, undefined);
   } else {
     serveStatic(app);
   }

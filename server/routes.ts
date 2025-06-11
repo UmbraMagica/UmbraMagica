@@ -145,6 +145,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       httpOnly: true,
       secure: true,
       sameSite: 'none',
+      domain: '.onrender.com', // důležité pro cross-domain cookies na Renderu
       maxAge: sessionTtl,
     },
   }));
