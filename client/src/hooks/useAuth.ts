@@ -31,7 +31,7 @@ export function useAuth() {
 
   const loginMutation = useMutation({
     mutationFn: async (credentials: { username: string; password: string }) => {
-      const response = await apiRequest("POST", "/api/auth/login", credentials);
+      const response = await apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/auth/login`, credentials);
       const data = await response.json();
       if (data.token) {
         localStorage.setItem('jwt_token', data.token);
