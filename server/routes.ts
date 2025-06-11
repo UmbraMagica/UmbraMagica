@@ -1439,21 +1439,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const users = await storage.getAllUsers();
       const dormitoryCharacters = [];
-
+      const isAdmin = (req.session && req.session.userRole === 'admin') || (req.user && req.user.role === 'admin');
       for (const user of users) {
-        // Skip system users unless requesting user is admin
-        if (user.isSystem && req.session.userRole !== 'admin') {
+        if (user.isSystem && !isAdmin) {
           continue;
         }
-        
         const characters = await storage.getCharactersByUserId(user.id);
         for (const character of characters) {
-          // Skip system characters unless requesting user is admin
-          if (character.isSystem && req.session.userRole !== 'admin') {
+          if (character.isSystem && !isAdmin) {
             continue;
           }
-          
-          // Check if character has dormitory housing
           if (character.residence && character.residence.includes("Ubytovna U starého Šeptáka")) {
             dormitoryCharacters.push({
               id: character.id,
@@ -1465,7 +1460,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
         }
       }
-
       res.json(dormitoryCharacters);
     } catch (error) {
       console.error("Error fetching dormitory residents:", error);
