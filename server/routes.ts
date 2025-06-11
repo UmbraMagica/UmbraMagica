@@ -59,6 +59,29 @@ function verifyJwt(token) {
   }
 }
 
+function requireAuthJWT(req, res, next) {
+  const auth = req.headers.authorization;
+  if (!auth || !auth.startsWith('Bearer ')) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  const token = auth.slice(7);
+  const payload = verifyJwt(token);
+  if (!payload) {
+    return res.status(401).json({ message: "Invalid token" });
+  }
+  req.user = payload;
+  next();
+}
+
+function requireAdminJWT(req, res, next) {
+  requireAuthJWT(req, res, () => {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: "Admin access required" });
+    }
+    next();
+  });
+}
+
 export async function registerRoutes(app: Express): Promise<Server> {
   // Create HTTP server
   const httpServer = createServer(app);
@@ -503,7 +526,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // User routes
-  app.get("/api/users", requireAdmin, async (req, res) => {
+  app.get("/api/users", requireAdminJWT, async (req, res) => {
     try {
       const users = await storage.getAllUsers();
       const usersWithCharacters = await Promise.all(
@@ -527,7 +550,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch("/api/users/:id/role", requireAdmin, async (req, res) => {
+  app.patch("/api/users/:id/role", requireAdminJWT, async (req, res) => {
     try {
       const { id } = req.params;
       const { role } = req.body;
@@ -548,7 +571,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch("/api/admin/users/:id/role", requireAdmin, async (req, res) => {
+  app.patch("/api/admin/users/:id/role", requireAdminJWT, async (req, res) => {
     try {
       const { id } = req.params;
       const { role } = req.body;
@@ -576,7 +599,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch("/api/admin/users/:id/narrator", requireAdmin, async (req, res) => {
+  app.patch("/api/admin/users/:id/narrator", requireAdminJWT, async (req, res) => {
     try {
       const { id } = req.params;
       const { canNarrate, reason } = req.body;
@@ -840,7 +863,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin endpoint for online users count (including users without active WebSocket characters)
-  app.get("/api/admin/online-users", requireAuth, requireAdmin, async (req, res) => {
+  app.get("/api/admin/online-users", requireAuth, requireAdminJWT, async (req, res) => {
     try {
       // Get unique user IDs from active WebSocket connections
       const connectedUserIds = new Set<number>();
@@ -875,7 +898,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin routes
-  app.get("/api/admin/invite-codes", requireAdmin, async (req, res) => {
+  app.get("/api/admin/invite-codes", requireAdminJWT, async (req, res) => {
     try {
       const inviteCodes = await storage.getAllInviteCodes();
       res.json(inviteCodes);
@@ -885,7 +908,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/admin/invite-codes", requireAdmin, async (req, res) => {
+  app.post("/api/admin/invite-codes", requireAdminJWT, async (req, res) => {
     try {
       const { code } = req.body;
       
@@ -907,7 +930,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Update existing characters to use game year dates
-  app.post("/api/admin/update-character-dates", requireAdmin, async (req, res) => {
+  app.post("/api/admin/update-character-dates", requireAdminJWT, async (req, res) => {
     try {
       const users = await storage.getAllUsers();
       let updatedCount = 0;
@@ -1271,7 +1294,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin endpoint to update room details
-  app.patch("/api/admin/chat/rooms/:roomId", requireAuth, async (req, res) => {
+  app.patch("/api/admin/chat/rooms/:roomId", requireAuth, requireAdminJWT, async (req, res) => {
     try {
       const user = req.session.userId ? await storage.getUser(req.session.userId) : null;
       if (!user || user.role !== 'admin') {
@@ -1597,7 +1620,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Spell management endpoints
   
   // Get all spells (for admin)
-  app.get("/api/admin/spells", requireAuth, requireAdmin, async (req, res) => {
+  app.get("/api/admin/spells", requireAuth, requireAdminJWT, async (req, res) => {
     try {
       const spells = await storage.getAllSpells();
       res.json(spells);
@@ -1608,7 +1631,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Create new spell (admin only)
-  app.post("/api/admin/spells", requireAuth, requireAdmin, async (req, res) => {
+  app.post("/api/admin/spells", requireAuth, requireAdminJWT, async (req, res) => {
     try {
       const validatedData = spellSchema.parse(req.body);
       const spell = await storage.createSpell(validatedData);
@@ -1620,7 +1643,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Update spell (admin only)
-  app.put("/api/admin/spells/:id", requireAuth, requireAdmin, async (req, res) => {
+  app.put("/api/admin/spells/:id", requireAuth, requireAdminJWT, async (req, res) => {
     try {
       const spellId = parseInt(req.params.id);
       const validatedData = spellSchema.parse(req.body);
@@ -1638,7 +1661,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Delete spell (admin only)
-  app.delete("/api/admin/spells/:id", requireAuth, requireAdmin, async (req, res) => {
+  app.delete("/api/admin/spells/:id", requireAuth, requireAdminJWT, async (req, res) => {
     try {
       const spellId = parseInt(req.params.id);
       const success = await storage.deleteSpell(spellId);
@@ -1667,7 +1690,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Initialize default spells (admin only)
-  app.post("/api/admin/spells/initialize", requireAuth, requireAdmin, async (req, res) => {
+  app.post("/api/admin/spells/initialize", requireAuth, requireAdminJWT, async (req, res) => {
     try {
       await storage.initializeDefaultSpells();
       res.json({ message: "Default spells initialized and added to all characters" });
@@ -1678,7 +1701,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Bulk import spells (admin only)
-  app.post("/api/admin/spells/bulk-import", requireAuth, requireAdmin, async (req, res) => {
+  app.post("/api/admin/spells/bulk-import", requireAuth, requireAdminJWT, async (req, res) => {
     try {
       const { spells } = req.body;
       
@@ -1802,7 +1825,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Update wand components (admin only)
-  app.put("/api/admin/wand-components", requireAuth, async (req, res) => {
+  app.put("/api/admin/wand-components", requireAuth, requireAdminJWT, async (req, res) => {
     try {
       const user = await storage.getUser(req.session.userId!);
       if (!user || user.role !== 'admin') {
@@ -1824,7 +1847,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Migrate existing wands to inventory (admin only)
-  app.post("/api/admin/migrate-wands-to-inventory", requireAuth, async (req, res) => {
+  app.post("/api/admin/migrate-wands-to-inventory", requireAuth, requireAdminJWT, async (req, res) => {
     try {
       if (req.session.userRole !== 'admin') {
         return res.status(403).json({ message: "Admin access required" });
@@ -2204,7 +2227,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/admin/influence-bar/adjust", requireAuth, requireAdmin, async (req, res) => {
+  app.post("/api/admin/influence-bar/adjust", requireAuth, requireAdminJWT, async (req, res) => {
     try {
       const { side, points } = req.body;
       
@@ -2220,7 +2243,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/admin/influence-bar/set", requireAuth, requireAdmin, async (req, res) => {
+  app.post("/api/admin/influence-bar/set", requireAuth, requireAdminJWT, async (req, res) => {
     try {
       const { grindelwaldPoints, dumbledorePoints } = req.body;
       
@@ -2236,7 +2259,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/admin/influence-bar/adjust-with-history", requireAuth, requireAdmin, async (req, res) => {
+  app.post("/api/admin/influence-bar/adjust-with-history", requireAuth, requireAdminJWT, async (req, res) => {
     try {
       const { changeType, points, reason } = req.body;
       
@@ -2270,7 +2293,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/admin/influence-bar/reset", requireAuth, requireAdmin, async (req, res) => {
+  app.post("/api/admin/influence-bar/reset", requireAuth, requireAdminJWT, async (req, res) => {
     try {
       const { type } = req.body;
       
@@ -2424,7 +2447,7 @@ Správa ubytování`
     }
   });
 
-  app.get("/api/admin/housing-requests", requireAuth, requireAdmin, async (req, res) => {
+  app.get("/api/admin/housing-requests", requireAuth, requireAdminJWT, async (req, res) => {
     try {
       const requests = await storage.getPendingHousingRequests();
       res.json(requests);
@@ -2501,7 +2524,7 @@ Správa ubytování`
   });
 
   // Admin: Get pending character requests
-  app.get("/api/admin/character-requests", requireAuth, requireAdmin, async (req, res) => {
+  app.get("/api/admin/character-requests", requireAuth, requireAdminJWT, async (req, res) => {
     try {
       const requests = await storage.getPendingCharacterRequests();
       res.json(requests);
@@ -2512,7 +2535,7 @@ Správa ubytování`
   });
 
   // Admin: Approve character request
-  app.post("/api/admin/character-requests/:id/approve", requireAuth, requireAdmin, async (req, res) => {
+  app.post("/api/admin/character-requests/:id/approve", requireAuth, requireAdminJWT, async (req, res) => {
     try {
       const requestId = parseInt(req.params.id);
       const { reviewNote } = req.body;
@@ -2526,7 +2549,7 @@ Správa ubytování`
   });
 
   // Admin: Reject character request
-  app.post("/api/admin/character-requests/:id/reject", requireAuth, requireAdmin, async (req, res) => {
+  app.post("/api/admin/character-requests/:id/reject", requireAuth, requireAdminJWT, async (req, res) => {
     try {
       const requestId = parseInt(req.params.id);
       const { reviewNote } = req.body;
@@ -2596,7 +2619,7 @@ Správa ubytování`
   });
 
   // Admin activity log
-  app.get("/api/admin/activity-log", requireAuth, requireAdmin, async (req, res) => {
+  app.get("/api/admin/activity-log", requireAuth, requireAdminJWT, async (req, res) => {
     try {
       const limit = parseInt(req.query.limit as string) || 50;
       const offset = parseInt(req.query.offset as string) || 0;
@@ -2610,7 +2633,7 @@ Správa ubytování`
   });
 
   // Cemetery routes
-  app.post("/api/admin/characters/:id/kill", requireAuth, requireAdmin, async (req, res) => {
+  app.post("/api/admin/characters/:id/kill", requireAuth, requireAdminJWT, async (req, res) => {
     try {
       const characterId = parseInt(req.params.id);
       const { deathReason } = req.body;
@@ -2652,7 +2675,7 @@ Správa ubytování`
   });
 
   // Revive character (admin only)
-  app.post("/api/characters/:id/revive", requireAuth, requireAdmin, async (req, res) => {
+  app.post("/api/characters/:id/revive", requireAuth, requireAdminJWT, async (req, res) => {
     try {
       const characterId = parseInt(req.params.id);
       const adminId = req.session.userId!;
@@ -2679,7 +2702,7 @@ Správa ubytování`
   });
 
   // Admin: Ban user
-  app.post("/api/admin/users/:id/ban", requireAuth, requireAdmin, async (req, res) => {
+  app.post("/api/admin/users/:id/ban", requireAuth, requireAdminJWT, async (req, res) => {
     try {
       const userId = parseInt(req.params.id);
       const { banReason } = req.body;
@@ -2720,7 +2743,7 @@ Správa ubytování`
   });
 
   // Admin: Reset user password
-  app.post("/api/admin/users/:id/reset-password", requireAuth, requireAdmin, async (req, res) => {
+  app.post("/api/admin/users/:id/reset-password", requireAuth, requireAdminJWT, async (req, res) => {
     try {
       const userId = parseInt(req.params.id);
       const adminId = req.session.userId!;
@@ -2759,7 +2782,7 @@ Správa ubytování`
   });
 
   // Admin: Update user narrator permissions
-  app.patch("/api/admin/users/:id/narrator", requireAuth, requireAdmin, async (req, res) => {
+  app.patch("/api/admin/users/:id/narrator", requireAuth, requireAdminJWT, async (req, res) => {
     try {
       const userId = parseInt(req.params.id);
       const { canNarrate, reason } = req.body;
@@ -2792,7 +2815,7 @@ Správa ubytování`
   });
 
   // Admin chat management endpoints
-  app.get('/api/admin/chat-categories', requireAuth, requireAdmin, async (req, res) => {
+  app.get('/api/admin/chat-categories', requireAuth, requireAdminJWT, async (req, res) => {
     try {
       // Return flat list of all categories for admin management
       const categories = await storage.getAllChatCategories();
@@ -2803,7 +2826,7 @@ Správa ubytování`
     }
   });
 
-  app.post('/api/admin/chat-categories', requireAuth, requireAdmin, async (req, res) => {
+  app.post('/api/admin/chat-categories', requireAuth, requireAdminJWT, async (req, res) => {
     try {
       const categoryData = insertChatCategorySchema.parse(req.body);
       const category = await storage.createChatCategory(categoryData);
@@ -2819,7 +2842,7 @@ Správa ubytování`
     }
   });
 
-  app.put('/api/admin/chat-categories/:id', requireAuth, requireAdmin, async (req, res) => {
+  app.put('/api/admin/chat-categories/:id', requireAuth, requireAdminJWT, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const updates = insertChatCategorySchema.partial().parse(req.body);
@@ -2839,7 +2862,7 @@ Správa ubytování`
     }
   });
 
-  app.delete('/api/admin/chat-categories/:id', requireAuth, requireAdmin, async (req, res) => {
+  app.delete('/api/admin/chat-categories/:id', requireAuth, requireAdminJWT, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const category = await storage.getChatCategory(id);
@@ -2864,7 +2887,7 @@ Správa ubytování`
     }
   });
 
-  app.post('/api/admin/chat-rooms', requireAuth, requireAdmin, async (req, res) => {
+  app.post('/api/admin/chat-rooms', requireAuth, requireAdminJWT, async (req, res) => {
     try {
       const roomData = insertChatRoomSchema.parse(req.body);
       // Hash password if provided
@@ -2884,7 +2907,7 @@ Správa ubytování`
     }
   });
 
-  app.put('/api/admin/chat-rooms/:id', requireAuth, requireAdmin, async (req, res) => {
+  app.put('/api/admin/chat-rooms/:id', requireAuth, requireAdminJWT, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const updates = insertChatRoomSchema.partial().parse(req.body);
@@ -2904,7 +2927,7 @@ Správa ubytování`
     }
   });
 
-  app.delete('/api/admin/chat-rooms/:id', requireAuth, requireAdmin, async (req, res) => {
+  app.delete('/api/admin/chat-rooms/:id', requireAuth, requireAdminJWT, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const room = await storage.getChatRoom(id);
@@ -3176,7 +3199,7 @@ Správa ubytování`
   });
 
   // Admin housing request endpoints
-  app.post("/api/admin/housing-requests/:requestId/approve", requireAuth, requireAdmin, async (req, res) => {
+  app.post("/api/admin/housing-requests/:requestId/approve", requireAuth, requireAdminJWT, async (req, res) => {
     try {
       const requestId = parseInt(req.params.requestId);
       const { assignedAddress, reviewNote } = req.body;
@@ -3199,7 +3222,7 @@ Správa ubytování`
     }
   });
 
-  app.post("/api/admin/housing-requests/:requestId/reject", requireAuth, requireAdmin, async (req, res) => {
+  app.post("/api/admin/housing-requests/:requestId/reject", requireAuth, requireAdminJWT, async (req, res) => {
     try {
       const requestId = parseInt(req.params.requestId);
       const { reviewNote } = req.body;
@@ -3221,7 +3244,7 @@ Správa ubytování`
     }
   });
 
-  app.post("/api/admin/housing-requests/:requestId/return", requireAuth, requireAdmin, async (req, res) => {
+  app.post("/api/admin/housing-requests/:requestId/return", requireAuth, requireAdminJWT, async (req, res) => {
     try {
       const requestId = parseInt(req.params.requestId);
       const { reviewNote } = req.body;
@@ -3245,7 +3268,7 @@ Správa ubytování`
   });
 
   // Update category sort order
-  app.put('/api/admin/chat-categories/:id/sort-order', requireAuth, requireAdmin, async (req, res) => {
+  app.put('/api/admin/chat-categories/:id/sort-order', requireAuth, requireAdminJWT, async (req, res) => {
     try {
       const categoryId = parseInt(req.params.id);
       const { sortOrder } = req.body;
@@ -3268,7 +3291,7 @@ Správa ubytování`
   });
 
   // Update room sort order
-  app.put('/api/admin/chat-rooms/:id/sort-order', requireAuth, requireAdmin, async (req, res) => {
+  app.put('/api/admin/chat-rooms/:id/sort-order', requireAuth, requireAdminJWT, async (req, res) => {
     try {
       const roomId = parseInt(req.params.id);
       const { sortOrder } = req.body;
