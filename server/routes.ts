@@ -3,8 +3,6 @@ import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
 import { registrationSchema, loginSchema, insertCharacterSchema, insertMessageSchema, characterEditSchema, characterAdminEditSchema, characterRequestSchema, spellSchema, insertChatCategorySchema, insertChatRoomSchema, insertHousingRequestSchema, insertOwlPostMessageSchema } from "../shared/schema";
-import { db, pool } from "./db";
-import { eq, sql } from "drizzle-orm";
 import { z } from "zod";
 import session from "express-session";
 import multer from "multer";
@@ -2256,10 +2254,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       await storage.setInfluence(newGrindelwaldPoints, newDumbledorePoints, req.session.userId!);
       
       // Record the change in history using parameterized query
-      await db.execute(sql`
-        INSERT INTO influence_history (change_type, points_changed, previous_total, new_total, reason, admin_id, created_at)
-        VALUES (${changeType}, ${points}, ${previousTotal}, ${newTotal}, ${reason}, ${req.session.userId}, NOW())
-      `);
+      await storage.logAdminActivity({
+        adminId: req.session.userId!,
+        action: "influence_change",
+        details: `Changed influence for ${changeType} by ${points} points. Reason: ${reason}`
+      });
       
       res.json({ message: "Influence adjusted with history successfully" });
     } catch (error) {
@@ -2286,15 +2285,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const grindelwaldChange = resetValues.grindelwald - currentData.grindelwaldPoints;
       const dumbledoreChange = resetValues.dumbledore - currentData.dumbledorePoints;
       
-      await db.execute(sql`
-        INSERT INTO influence_history (change_type, points_changed, previous_total, new_total, reason, admin_id, created_at)
-        VALUES ('grindelwald', ${grindelwaldChange}, ${currentData.grindelwaldPoints}, ${resetValues.grindelwald}, ${'Admin reset na ' + type + ' - Grindelwald'}, ${req.session.userId}, NOW())
-      `);
-      
-      await db.execute(sql`
-        INSERT INTO influence_history (change_type, points_changed, previous_total, new_total, reason, admin_id, created_at)
-        VALUES ('dumbledore', ${dumbledoreChange}, ${currentData.dumbledorePoints}, ${resetValues.dumbledore}, ${'Admin reset na ' + type + ' - Brumbál'}, ${req.session.userId}, NOW())
-      `);
+      await storage.logAdminActivity({
+        adminId: req.session.userId!,
+        action: "influence_reset",
+        details: `Influence reset to ${type}. Grindelwald changed by ${grindelwaldChange}, Dumbledore changed by ${dumbledoreChange}`
+      });
       
       res.json({ message: "Influence reset successfully" });
     } catch (error) {
@@ -3300,20 +3295,6 @@ Správa ubytování`
     } catch (error) {
       res.status(500).json({ ok: false, error: error.message });
     }
-  });
-
-  // Testovací endpoint pro ověření spojení s backendem
-  app.get('/api/test', (req, res) => {
-    res.json({ message: 'Backend funguje!' });
-  });
-
-  // Globální error handler pro všechny neobsloužené chyby
-  app.use((err, req, res, next) => {
-    console.error('Unhandled error:', err);
-    if (res.headersSent) {
-      return next(err);
-    }
-    res.status(500).json({ message: 'Internal server error' });
   });
 
   return httpServer;

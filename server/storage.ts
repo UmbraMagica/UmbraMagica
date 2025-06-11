@@ -67,6 +67,7 @@ import {
 import { db } from "./db";
 import { eq, and, desc, lt, gte, count, isNotNull, sql } from "drizzle-orm";
 import bcrypt from "bcrypt";
+import { supabase } from './supabaseClient';
 
 export interface IStorage {
   // User operations
@@ -217,101 +218,75 @@ export interface IStorage {
 export class DatabaseStorage implements IStorage {
   // User operations
   async getUser(id: number): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.id, id));
-    return user;
+    const { data, error } = await supabase.from('users').select('*').eq('id', id).single();
+    if (error) return undefined;
+    return data;
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.username, username));
-    return user;
+    const { data, error } = await supabase.from('users').select('*').eq('username', username).single();
+    if (error) return undefined;
+    return data;
   }
 
   async getUserByEmail(email: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.email, email));
-    return user;
+    const { data, error } = await supabase.from('users').select('*').eq('email', email).single();
+    if (error) return undefined;
+    return data;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const [user] = await db
-      .insert(users)
-      .values({
-        ...insertUser,
-        updatedAt: new Date(),
-      })
-      .returning();
-    return user;
+    const { data, error } = await supabase.from('users').insert([{ ...insertUser, updatedAt: new Date() }]).select().single();
+    if (error) throw new Error(error.message);
+    return data;
   }
 
   async updateUserRole(id: number, role: string): Promise<User | undefined> {
-    const [user] = await db
-      .update(users)
-      .set({ role, updatedAt: new Date() })
-      .where(eq(users.id, id))
-      .returning();
-    return user;
+    const { data, error } = await supabase.from('users').update({ role, updatedAt: new Date() }).eq('id', id).select().single();
+    if (error) return undefined;
+    return data;
   }
 
   async updateUserNarratorPermission(id: number, canNarrate: boolean): Promise<User | undefined> {
-    const [user] = await db
-      .update(users)
-      .set({ canNarrate, updatedAt: new Date() })
-      .where(eq(users.id, id))
-      .returning();
-    return user;
+    const { data, error } = await supabase.from('users').update({ canNarrate, updatedAt: new Date() }).eq('id', id).select().single();
+    if (error) return undefined;
+    return data;
   }
 
   async getAllUsers(includeSystem = false): Promise<User[]> {
-    const query = db.select().from(users);
+    let query = supabase.from('users').select('*');
     if (!includeSystem) {
-      query.where(eq(users.isSystem, false));
+      query = query.eq('is_system', false);
     }
-    return query;
+    const { data, error } = await query;
+    if (error) return [];
+    return data || [];
   }
 
   async banUser(id: number, banReason: string): Promise<void> {
-    await db.update(users)
-      .set({ 
-        isBanned: true,
-        banReason: banReason,
-        bannedAt: new Date()
-      })
-      .where(eq(users.id, id));
+    await supabase.from('users').update({ isBanned: true, banReason, bannedAt: new Date() }).eq('id', id);
   }
 
   async resetUserPassword(id: number, hashedPassword: string): Promise<void> {
-    await db.update(users)
-      .set({ password: hashedPassword })
-      .where(eq(users.id, id));
+    await supabase.from('users').update({ password: hashedPassword }).eq('id', id);
   }
 
   async updateUserPassword(id: number, hashedPassword: string): Promise<void> {
-    await db.update(users)
-      .set({ password: hashedPassword, updatedAt: new Date() })
-      .where(eq(users.id, id));
+    await supabase.from('users').update({ password: hashedPassword, updatedAt: new Date() }).eq('id', id);
   }
 
   async updateUserEmail(id: number, email: string): Promise<void> {
-    await db.update(users)
-      .set({ email: email, updatedAt: new Date() })
-      .where(eq(users.id, id));
+    await supabase.from('users').update({ email, updatedAt: new Date() }).eq('id', id);
   }
 
   async updateUserSettings(id: number, settings: { characterOrder?: string; highlightWords?: string; highlightColor?: string; narratorColor?: string }): Promise<void> {
-    await db.update(users)
-      .set({ 
-        ...settings,
-        updatedAt: new Date() 
-      })
-      .where(eq(users.id, id));
+    await supabase.from('users').update({ ...settings, updatedAt: new Date() }).eq('id', id);
   }
 
   async updateUserNarratorPermissions(id: number, canNarrate: boolean): Promise<User | undefined> {
-    const [user] = await db
-      .update(users)
-      .set({ canNarrate, updatedAt: new Date() })
-      .where(eq(users.id, id))
-      .returning();
-    return user;
+    const { data, error } = await supabase.from('users').update({ canNarrate, updatedAt: new Date() }).eq('id', id).select().single();
+    if (error) return undefined;
+    return data;
   }
 
   // Character operations

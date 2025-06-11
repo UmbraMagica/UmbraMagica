@@ -1,11 +1,7 @@
 import express from 'express';
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from '../supabaseClient';
 
 const router = express.Router();
-
-const supabaseUrl = 'https://mzwbvzrkyjooegttklcq.supabase.co';
-const supabaseKey = process.env.SUPABASE_ANON_KEY || 'TVŮJ_ANON_PUBLIC_KEY'; // nastav správný klíč v env proměnných
-const supabase = createClient(supabaseUrl, supabaseKey);
 
 // GET /api/users
 router.get('/users', async (req, res) => {
