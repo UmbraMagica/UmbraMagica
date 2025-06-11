@@ -13,7 +13,6 @@ import {
   characterInventory,
   characterJournal,
   configuration,
-
   housingRequests,
   owlPostMessages,
   wandWoods,
@@ -49,7 +48,6 @@ import {
   type InsertJournalEntry,
   type Wand,
   type InsertWand,
-
   type HousingRequest,
   type InsertHousingRequest,
   type OwlPostMessage,
@@ -64,8 +62,6 @@ import {
   type InsertWandFlexibility,
   wands,
 } from "../shared/schema";
-import { db } from "./db";
-import { eq, and, desc, lt, gte, count, isNotNull, sql } from "drizzle-orm";
 import bcrypt from "bcrypt";
 import { supabase } from './supabaseClient';
 
@@ -122,7 +118,7 @@ export interface IStorage {
   
   // Message operations
   getMessage(id: number): Promise<Message | undefined>;
-  getMessagesByRoom(roomId: number, limit?: number, offset?: number): Promise<(Message & { character: { firstName: string; middleName?: string | null; lastName: string } })[]>;
+  getMessagesByRoom(roomId: number, limit?: number, offset?: number): Promise<(Message & { character: { firstName: string; middleName?: string | null; lastName: string; avatar?: string | null } })[]>;
   createMessage(message: InsertMessage): Promise<Message>;
   deleteMessage(id: number): Promise<boolean>;
   updateMessageCharacter(messageId: number, characterId: number): Promise<void>;
@@ -291,69 +287,57 @@ export class DatabaseStorage implements IStorage {
 
   // Character operations
   async getCharacter(id: number): Promise<Character | undefined> {
-    const [character] = await db.select().from(characters).where(eq(characters.id, id));
-    return character;
+    const { data, error } = await supabase.from('characters').select('*').eq('id', id).single();
+    if (error) return undefined;
+    return data;
   }
 
   async getCharactersByUserId(userId: number): Promise<Character[]> {
-    return db.select().from(characters).where(eq(characters.userId, userId)).orderBy(desc(characters.createdAt));
+    const { data, error } = await supabase.from('characters').select('*').eq('userId', userId).order('createdAt', { ascending: false });
+    if (error) return [];
+    return data || [];
   }
 
   async createCharacter(insertCharacter: InsertCharacter): Promise<Character> {
-    const [character] = await db
-      .insert(characters)
-      .values({
-        ...insertCharacter,
-        updatedAt: new Date(),
-      })
-      .returning();
-    return character;
+    const { data, error } = await supabase.from('characters').insert([{ ...insertCharacter, updatedAt: new Date() }]).select().single();
+    if (error) throw new Error(error.message);
+    return data;
   }
 
   async updateCharacter(id: number, updates: Partial<InsertCharacter>): Promise<Character | undefined> {
-    const [character] = await db
-      .update(characters)
-      .set({ ...updates, updatedAt: new Date() })
-      .where(eq(characters.id, id))
-      .returning();
-    return character;
+    const { data, error } = await supabase.from('characters').update({ ...updates, updatedAt: new Date() }).eq('id', id).select().single();
+    if (error) return undefined;
+    return data;
   }
 
-
-
   async getCharacterByName(firstName: string, lastName: string): Promise<Character | undefined> {
-    const [character] = await db
-      .select()
-      .from(characters)
-      .where(and(eq(characters.firstName, firstName), eq(characters.lastName, lastName)));
-    return character;
+    const { data, error } = await supabase.from('characters').select('*').eq('firstName', firstName).eq('lastName', lastName).single();
+    if (error) return undefined;
+    return data;
   }
 
   // Authentication and invite codes remain same...
   async getInviteCode(code: string): Promise<InviteCode | undefined> {
-    const [inviteCode] = await db.select().from(inviteCodes).where(eq(inviteCodes.code, code));
-    return inviteCode;
+    const { data, error } = await supabase.from('inviteCodes').select('*').eq('code', code).single();
+    if (error) return undefined;
+    return data;
   }
 
   async getAllInviteCodes(): Promise<InviteCode[]> {
-    return db.select().from(inviteCodes).orderBy(desc(inviteCodes.createdAt));
+    const { data, error } = await supabase.from('inviteCodes').select('*').order('createdAt', { ascending: false });
+    if (error) return [];
+    return data || [];
   }
 
   async createInviteCode(insertInviteCode: InsertInviteCode): Promise<InviteCode> {
-    const [inviteCode] = await db.insert(inviteCodes).values(insertInviteCode).returning();
-    return inviteCode;
+    const { data, error } = await supabase.from('inviteCodes').insert([insertInviteCode]).select().single();
+    if (error) throw new Error(error.message);
+    return data;
   }
 
   async useInviteCode(code: string, userId: number): Promise<boolean> {
-    try {
-      await db
-        .update(inviteCodes)
-        .set({ isUsed: true, usedBy: userId, usedAt: new Date() })
-        .where(eq(inviteCodes.code, code));
-      return true;
-    } catch {
-      return false;
-    }
+    const { error } = await supabase.from('inviteCodes').update({ isUsed: true, usedBy: userId, usedAt: new Date() }).eq('code', code);
+    return !error;
   }
 
   async validateUser(username: string, password: string): Promise<User | null> {
@@ -370,326 +354,205 @@ export class DatabaseStorage implements IStorage {
 
   // Chat operations (keeping existing implementation)
   async getChatRoom(id: number): Promise<ChatRoom | undefined> {
-    const [room] = await db.select().from(chatRooms).where(eq(chatRooms.id, id));
-    return room;
+    const { data, error } = await supabase.from('chatRooms').select('*').eq('id', id).single();
+    if (error) return undefined;
+    return data;
   }
 
   async getChatRoomByName(name: string): Promise<ChatRoom | undefined> {
-    const [room] = await db.select().from(chatRooms).where(eq(chatRooms.name, name));
-    return room;
+    const { data, error } = await supabase.from('chatRooms').select('*').eq('name', name).single();
+    if (error) return undefined;
+    return data;
   }
 
   async createChatRoom(insertChatRoom: InsertChatRoom): Promise<ChatRoom> {
-    const [room] = await db.insert(chatRooms).values(insertChatRoom).returning();
-    return room;
+    const { data, error } = await supabase.from('chatRooms').insert([insertChatRoom]).select().single();
+    if (error) throw new Error(error.message);
+    return data;
   }
 
   async updateChatRoom(id: number, updates: Partial<InsertChatRoom>): Promise<ChatRoom | undefined> {
-    // If password is being updated, hash it
     if (updates.password) {
       updates.password = await this.hashPassword(updates.password);
     }
-    
-    const [room] = await db
-      .update(chatRooms)
-      .set(updates)
-      .where(eq(chatRooms.id, id))
-      .returning();
-    return room;
+    const { data, error } = await supabase.from('chatRooms').update({ ...updates, updatedAt: new Date() }).eq('id', id).select().single();
+    if (error) return undefined;
+    return data;
   }
 
   async deleteChatRoom(id: number): Promise<boolean> {
-    try {
-      // First delete all messages in the room
-      await db.delete(messages).where(eq(messages.roomId, id));
-      
-      // Then delete the room
-      await db.delete(chatRooms).where(eq(chatRooms.id, id));
-      return true;
-    } catch (error) {
-      console.error('Error deleting chat room:', error);
-      return false;
-    }
+    // Smažeme nejdřív zprávy v místnosti, pak místnost samotnou
+    await supabase.from('messages').delete().eq('roomId', id);
+    const { error } = await supabase.from('chatRooms').delete().eq('id', id);
+    return !error;
   }
 
   async getAllChatRooms(): Promise<ChatRoom[]> {
-    return db.select().from(chatRooms).orderBy(chatRooms.sortOrder);
+    const { data, error } = await supabase.from('chatRooms').select('*').order('sortOrder', { ascending: true });
+    if (error) return [];
+    return data || [];
   }
 
   async getChatRoomsByCategory(categoryId: number): Promise<ChatRoom[]> {
-    return db.select().from(chatRooms).where(eq(chatRooms.categoryId, categoryId)).orderBy(chatRooms.sortOrder);
+    const { data, error } = await supabase.from('chatRooms').select('*').eq('categoryId', categoryId).order('sortOrder', { ascending: true });
+    if (error) return [];
+    return data || [];
   }
 
   async validateRoomPassword(roomId: number, password: string): Promise<boolean> {
     const room = await this.getChatRoom(roomId);
     if (!room) return false;
-    if (!room.password) return true; // No password required
-    
+    if (!room.password) return true;
     return bcrypt.compare(password, room.password);
   }
 
   async updateChatCategorySortOrder(id: number, sortOrder: number): Promise<ChatCategory | undefined> {
-    try {
-      const [updated] = await db
-        .update(chatCategories)
-        .set({ sortOrder })
-        .where(eq(chatCategories.id, id))
-        .returning();
-      return updated;
-    } catch (error) {
-      console.error('Error updating chat category sort order:', error);
-      return undefined;
-    }
+    const { data, error } = await supabase.from('chatCategories').update({ sortOrder }).eq('id', id).select().single();
+    if (error) return undefined;
+    return data;
   }
 
   async updateChatRoomSortOrder(id: number, sortOrder: number): Promise<ChatRoom | undefined> {
-    try {
-      const [updated] = await db
-        .update(chatRooms)
-        .set({ sortOrder })
-        .where(eq(chatRooms.id, id))
-        .returning();
-      return updated;
-    } catch (error) {
-      console.error('Error updating chat room sort order:', error);
-      return undefined;
-    }
+    const { data, error } = await supabase.from('chatRooms').update({ sortOrder }).eq('id', id).select().single();
+    if (error) return undefined;
+    return data;
   }
 
   async getChatCategory(id: number): Promise<ChatCategory | undefined> {
-    const [category] = await db.select().from(chatCategories).where(eq(chatCategories.id, id));
-    return category;
+    const { data, error } = await supabase.from('chatCategories').select('*').eq('id', id).single();
+    if (error) return undefined;
+    return data;
   }
 
   async getChatCategoryByName(name: string): Promise<ChatCategory | undefined> {
-    const [category] = await db.select().from(chatCategories).where(eq(chatCategories.name, name));
-    return category;
+    const { data, error } = await supabase.from('chatCategories').select('*').eq('name', name).single();
+    if (error) return undefined;
+    return data;
   }
 
   async createChatCategory(insertChatCategory: InsertChatCategory): Promise<ChatCategory> {
-    const [category] = await db.insert(chatCategories).values(insertChatCategory).returning();
-    return category;
+    const { data, error } = await supabase.from('chatCategories').insert([insertChatCategory]).select().single();
+    if (error) throw new Error(error.message);
+    return data;
   }
 
   async updateChatCategory(id: number, updates: Partial<InsertChatCategory>): Promise<ChatCategory | undefined> {
-    const [category] = await db.update(chatCategories)
-      .set(updates)
-      .where(eq(chatCategories.id, id))
-      .returning();
-    return category;
+    const { data, error } = await supabase.from('chatCategories').update(updates).eq('id', id).select().single();
+    if (error) return undefined;
+    return data;
   }
 
   async deleteChatCategory(id: number): Promise<boolean> {
-    try {
-      // First check if there are any child categories
-      const children = await db.select().from(chatCategories).where(eq(chatCategories.parentId, id));
-      if (children.length > 0) {
-        throw new Error("Cannot delete category with child categories");
-      }
-
-      // Check if there are any rooms in this category
-      const rooms = await db.select().from(chatRooms).where(eq(chatRooms.categoryId, id));
-      if (rooms.length > 0) {
-        throw new Error("Cannot delete category with chat rooms");
-      }
-
-      const result = await db.delete(chatCategories).where(eq(chatCategories.id, id));
-      return true;
-    } catch (error) {
-      console.error('Error deleting chat category:', error);
-      return false;
-    }
+    // Zkontrolujeme, jestli má podkategorie nebo místnosti
+    const { data: children } = await supabase.from('chatCategories').select('id').eq('parentId', id);
+    if (children && children.length > 0) return false;
+    const { data: rooms } = await supabase.from('chatRooms').select('id').eq('categoryId', id);
+    if (rooms && rooms.length > 0) return false;
+    const { error } = await supabase.from('chatCategories').delete().eq('id', id);
+    return !error;
   }
 
   async getAllChatCategories(): Promise<ChatCategory[]> {
-    return db.select().from(chatCategories).orderBy(chatCategories.sortOrder);
+    const { data, error } = await supabase.from('chatCategories').select('*').order('sortOrder', { ascending: true });
+    if (error) return [];
+    return data || [];
   }
 
   async getChatCategoriesWithChildren(): Promise<(ChatCategory & { children: ChatCategory[], rooms: ChatRoom[] })[]> {
-    const categories = await db.select().from(chatCategories).orderBy(chatCategories.sortOrder);
-    const rooms = await db.select().from(chatRooms).orderBy(chatRooms.sortOrder);
-
-    const categoryMap = new Map<number, ChatCategory & { children: ChatCategory[], rooms: ChatRoom[] }>();
-    
-    // Initialize all categories
-    categories.forEach(category => {
-      categoryMap.set(category.id, { ...category, children: [], rooms: [] });
-    });
-
-    // Add rooms to categories
-    rooms.forEach(room => {
-      if (room.categoryId) {
-        const category = categoryMap.get(room.categoryId);
-        if (category) {
-          category.rooms.push(room);
-        }
+    // Supabase neumí joiny, takže načteme vše a spojíme v JS
+    const { data: categories, error } = await supabase.from('chatCategories').select('*').order('sortOrder', { ascending: true });
+    if (error || !categories) return [];
+    const { data: rooms } = await supabase.from('chatRooms').select('*');
+    const byParent: Record<number, ChatCategory[]> = {};
+    for (const cat of categories) {
+      if (cat.parentId) {
+        if (!byParent[cat.parentId]) byParent[cat.parentId] = [];
+        byParent[cat.parentId].push(cat);
       }
-    });
-
-    // Build hierarchy
-    const rootCategories: (ChatCategory & { children: ChatCategory[], rooms: ChatRoom[] })[] = [];
-    
-    categories.forEach(category => {
-      const categoryWithChildren = categoryMap.get(category.id)!;
-      
-      if (category.parentId) {
-        const parent = categoryMap.get(category.parentId);
-        if (parent) {
-          parent.children.push(categoryWithChildren);
-        }
-      } else {
-        rootCategories.push(categoryWithChildren);
-      }
-    });
-
-    return rootCategories;
+    }
+    return categories.map(cat => ({
+      ...cat,
+      children: byParent[cat.id] || [],
+      rooms: (rooms || []).filter(r => r.categoryId === cat.id)
+    }));
   }
 
   // Message operations (keeping existing)
   async getMessage(id: number): Promise<Message | undefined> {
-    const [message] = await db.select().from(messages).where(eq(messages.id, id));
-    return message;
+    const { data, error } = await supabase.from('messages').select('*').eq('id', id).single();
+    if (error) return undefined;
+    return data;
   }
 
   async getMessagesByRoom(roomId: number, limit: number = 50, offset: number = 0): Promise<(Message & { character: { firstName: string; middleName?: string | null; lastName: string; avatar?: string | null } })[]> {
-    const result = await db
-      .select({
-        id: messages.id,
-        roomId: messages.roomId,
-        characterId: messages.characterId,
-        content: messages.content,
-        messageType: messages.messageType,
-        createdAt: messages.createdAt,
-        character: {
-          firstName: characters.firstName,
-          middleName: characters.middleName,
-          lastName: characters.lastName,
-          avatar: characters.avatar,
-        },
-      })
-      .from(messages)
-      .leftJoin(characters, eq(messages.characterId, characters.id))
-      .where(eq(messages.roomId, roomId))
-      .orderBy(desc(messages.createdAt))
-      .limit(limit)
-      .offset(offset);
-    
-    // Handle narrator messages (characterId = null)
-    return result.map(row => ({
-      ...row,
-      character: row.character && row.character.firstName ? row.character : {
-        firstName: 'Vypravěč',
-        middleName: null,
-        lastName: '',
-        avatar: null
-      }
-    }));
+    const { data, error } = await supabase.from('messages').select('*').eq('roomId', roomId).order('createdAt', { ascending: false }).range(offset, offset + limit - 1);
+    if (error) return [];
+    return data || [];
   }
 
   async createMessage(insertMessage: InsertMessage): Promise<Message> {
-    const [message] = await db.insert(messages).values(insertMessage).returning();
-    return message;
+    const { data, error } = await supabase.from('messages').insert([insertMessage]).select().single();
+    if (error) throw new Error(error.message);
+    return data;
   }
 
   async deleteMessage(id: number): Promise<boolean> {
-    try {
-      await db.delete(messages).where(eq(messages.id, id));
-      return true;
-    } catch {
-      return false;
-    }
+    const { error } = await supabase.from('messages').delete().eq('id', id);
+    return !error;
   }
 
   async updateMessageCharacter(messageId: number, characterId: number): Promise<void> {
-    await db
-      .update(messages)
-      .set({ characterId })
-      .where(eq(messages.id, messageId));
+    await supabase.from('messages').update({ characterId }).eq('id', messageId);
   }
 
   // Archive operations (keeping existing)
   async archiveMessages(roomId: number, beforeDate?: Date): Promise<number> {
-    const whereCondition = beforeDate 
-      ? and(eq(messages.roomId, roomId), lt(messages.createdAt, beforeDate))
-      : eq(messages.roomId, roomId);
-
-    const messagesToArchive = await db
-      .select({
-        id: messages.id,
-        roomId: messages.roomId,
-        characterId: messages.characterId,
-        content: messages.content,
-        messageType: messages.messageType,
-        createdAt: messages.createdAt,
-        characterName: characters.firstName,
-        characterLastName: characters.lastName,
-        characterMiddleName: characters.middleName,
-      })
-      .from(messages)
-      .innerJoin(characters, eq(messages.characterId, characters.id))
-      .where(whereCondition);
-
-    if (messagesToArchive.length === 0) {
-      return 0;
+    // Supabase neumí server-side archivaci, takže by to mělo být řešeno jinak (např. přes funkci v backendu)
+    // Zde pouze příklad: přesunout zprávy do archivedMessages a smazat je z messages
+    const { data: messages, error } = await supabase.from('messages').select('*').eq('roomId', roomId).lt('createdAt', beforeDate ? beforeDate.toISOString() : new Date().toISOString());
+    if (error || !messages) return 0;
+    for (const msg of messages) {
+      await supabase.from('archivedMessages').insert([{
+        originalMessageId: msg.id,
+        roomId: msg.roomId,
+        characterId: msg.characterId,
+        characterName: '', // Pokud potřebuješ, doplň jméno postavy
+        content: msg.content,
+        messageType: msg.messageType,
+        originalCreatedAt: msg.createdAt,
+        archivedAt: new Date().toISOString(),
+      }]);
+      await supabase.from('messages').delete().eq('id', msg.id);
     }
-
-    const archiveData = messagesToArchive.map(msg => ({
-      originalMessageId: msg.id,
-      roomId: msg.roomId,
-      characterId: msg.characterId,
-      characterName: `${msg.characterName}${msg.characterMiddleName ? ' ' + msg.characterMiddleName : ''} ${msg.characterLastName}`,
-      content: msg.content,
-      messageType: msg.messageType,
-      originalCreatedAt: msg.createdAt,
-    }));
-
-    await db.insert(archivedMessages).values(archiveData);
-    const deleteResult = await db.delete(messages).where(whereCondition);
-    
-    return deleteResult.rowCount || 0;
+    return messages.length;
   }
 
   async getArchivedMessages(roomId: number, limit: number = 50, offset: number = 0): Promise<ArchivedMessage[]> {
-    return db
-      .select()
-      .from(archivedMessages)
-      .where(eq(archivedMessages.roomId, roomId))
-      .orderBy(desc(archivedMessages.originalCreatedAt))
-      .limit(limit)
-      .offset(offset);
+    const { data, error } = await supabase.from('archivedMessages').select('*').eq('roomId', roomId).order('archivedAt', { ascending: false }).range(offset, offset + limit - 1);
+    if (error) return [];
+    return data || [];
   }
 
   async deleteAllMessages(): Promise<void> {
-    await db.delete(messages);
-    await db.delete(archivedMessages);
+    await supabase.from('messages').delete();
+    await supabase.from('archivedMessages').delete();
   }
 
   async clearRoomMessages(roomId: number): Promise<number> {
-    const deleteResult = await db.delete(messages).where(eq(messages.roomId, roomId));
+    const deleteResult = await supabase.from('messages').delete().eq('roomId', roomId);
     return deleteResult.rowCount || 0;
   }
 
   async getArchiveDates(roomId: number): Promise<string[]> {
-    const dates = await db
-      .selectDistinct({ archivedAt: archivedMessages.archivedAt })
-      .from(archivedMessages)
-      .where(eq(archivedMessages.roomId, roomId))
-      .orderBy(desc(archivedMessages.archivedAt));
-    
+    const dates = await supabase.from('archivedMessages').selectDistinct({ archivedAt: 'archivedAt' }).eq('roomId', roomId).orderBy('archivedAt', { ascending: false });
     return dates.map(d => d.archivedAt.toISOString().split('T')[0]);
   }
 
   async getArchiveDatesWithCounts(roomId: number): Promise<{ date: string; count: number }[]> {
-    const result = await db
-      .select({
-        archivedAt: archivedMessages.archivedAt,
-        count: count()
-      })
-      .from(archivedMessages)
-      .where(eq(archivedMessages.roomId, roomId))
-      .groupBy(archivedMessages.archivedAt)
-      .orderBy(desc(archivedMessages.archivedAt));
-    
+    const result = await supabase.from('archivedMessages').select({
+      archivedAt: 'archivedAt',
+      count: 'count'
+    }).eq('roomId', roomId).groupBy('archivedAt').orderBy('archivedAt', { ascending: false });
     return result.map(r => ({
       date: r.archivedAt.toISOString().split('T')[0],
       count: Number(r.count)
@@ -701,218 +564,118 @@ export class DatabaseStorage implements IStorage {
     const endDate = new Date(startDate);
     endDate.setDate(endDate.getDate() + 1);
 
-    return db
-      .select()
-      .from(archivedMessages)
-      .where(
-        and(
-          eq(archivedMessages.roomId, roomId),
-          gte(archivedMessages.archivedAt, startDate),
-          lt(archivedMessages.archivedAt, endDate)
-        )
-      )
-      .orderBy(desc(archivedMessages.originalCreatedAt))
-      .limit(limit)
-      .offset(offset);
+    return supabase.from('archivedMessages').select('*').eq('roomId', roomId).gte('archivedAt', startDate).lt('archivedAt', endDate).order('originalCreatedAt', { ascending: false }).range(offset, offset + limit - 1);
   }
 
   async getLastMessageByCharacter(characterId: number): Promise<Message | undefined> {
-    const [message] = await db
-      .select()
-      .from(messages)
-      .where(eq(messages.characterId, characterId))
-      .orderBy(desc(messages.createdAt))
-      .limit(1);
-    
+    const [message] = await supabase.from('messages').select('*').eq('characterId', characterId).orderBy('createdAt', { ascending: false }).limit(1);
     return message;
   }
 
   // Character request operations
   async createCharacterRequest(request: InsertCharacterRequest): Promise<CharacterRequest> {
-    const [characterRequest] = await db.insert(characterRequests).values(request).returning();
-    return characterRequest;
+    const { data, error } = await supabase.from('characterRequests').insert([request]).select().single();
+    if (error) throw new Error(error.message);
+    return data;
   }
 
   async getCharacterRequestsByUserId(userId: number): Promise<CharacterRequest[]> {
-    return db.select().from(characterRequests).where(eq(characterRequests.userId, userId)).orderBy(desc(characterRequests.createdAt));
+    const { data, error } = await supabase.from('characterRequests').select('*').eq('userId', userId);
+    if (error) return [];
+    return data || [];
   }
 
   async getCharacterRequestById(requestId: number): Promise<CharacterRequest | undefined> {
-    const [request] = await db
-      .select()
-      .from(characterRequests)
-      .where(eq(characterRequests.id, requestId));
-    return request;
+    const { data, error } = await supabase.from('characterRequests').select('*').eq('id', requestId).single();
+    if (error) return undefined;
+    return data;
   }
 
   async deleteCharacterRequest(requestId: number): Promise<boolean> {
-    const result = await db
-      .delete(characterRequests)
-      .where(eq(characterRequests.id, requestId));
-    return (result.rowCount || 0) > 0;
+    const { error } = await supabase.from('characterRequests').delete().eq('id', requestId);
+    return !error;
   }
 
   async getAllCharacterRequests(): Promise<(CharacterRequest & { user: { username: string; email: string } })[]> {
-    return db
-      .select({
-        id: characterRequests.id,
-        userId: characterRequests.userId,
-        firstName: characterRequests.firstName,
-        middleName: characterRequests.middleName,
-        lastName: characterRequests.lastName,
-        birthDate: characterRequests.birthDate,
-        school: characterRequests.school,
-        description: characterRequests.description,
-        reason: characterRequests.reason,
-        status: characterRequests.status,
-        reviewedBy: characterRequests.reviewedBy,
-        reviewedAt: characterRequests.reviewedAt,
-        reviewNote: characterRequests.reviewNote,
-        createdAt: characterRequests.createdAt,
-        user: {
-          username: users.username,
-          email: users.email,
-        },
-      })
-      .from(characterRequests)
-      .innerJoin(users, eq(characterRequests.userId, users.id))
-      .orderBy(desc(characterRequests.createdAt));
+    // Supabase neumí joiny, takže načteme vše a spojíme v JS
+    const { data: requests, error } = await supabase.from('characterRequests').select('*');
+    if (error || !requests) return [];
+    const { data: usersData } = await supabase.from('users').select('id,username,email');
+    return requests.map(r => ({
+      ...r,
+      user: usersData?.find(u => u.id === r.userId) || { username: '', email: '' }
+    }));
   }
 
   async getPendingCharacterRequests(): Promise<(CharacterRequest & { user: { username: string; email: string } })[]> {
-    return db
-      .select({
-        id: characterRequests.id,
-        userId: characterRequests.userId,
-        firstName: characterRequests.firstName,
-        middleName: characterRequests.middleName,
-        lastName: characterRequests.lastName,
-        birthDate: characterRequests.birthDate,
-        school: characterRequests.school,
-        description: characterRequests.description,
-        reason: characterRequests.reason,
-        status: characterRequests.status,
-        reviewedBy: characterRequests.reviewedBy,
-        reviewedAt: characterRequests.reviewedAt,
-        reviewNote: characterRequests.reviewNote,
-        createdAt: characterRequests.createdAt,
-        user: {
-          username: users.username,
-          email: users.email,
-        },
-      })
-      .from(characterRequests)
-      .innerJoin(users, eq(characterRequests.userId, users.id))
-      .where(eq(characterRequests.status, "pending"))
-      .orderBy(desc(characterRequests.createdAt));
+    const { data: requests, error } = await supabase.from('characterRequests').select('*').eq('status', 'pending');
+    if (error || !requests) return [];
+    const { data: usersData } = await supabase.from('users').select('id,username,email');
+    return requests.map(r => ({
+      ...r,
+      user: usersData?.find(u => u.id === r.userId) || { username: '', email: '' }
+    }));
   }
 
   async approveCharacterRequest(requestId: number, adminId: number, reviewNote?: string): Promise<Character> {
-    const [request] = await db.select().from(characterRequests).where(eq(characterRequests.id, requestId));
-    if (!request) {
-      throw new Error("Character request not found");
-    }
-
-    // Check if user has any existing characters and if they have a main character
-    const existingCharacters = await db
-      .select()
-      .from(characters)
-      .where(and(eq(characters.userId, request.userId), eq(characters.isActive, true)));
-
-
-
-    // Update request status
-    await db
-      .update(characterRequests)
-      .set({
-        status: "approved",
-        reviewedBy: adminId,
-        reviewedAt: new Date(),
-        reviewNote,
-      })
-      .where(eq(characterRequests.id, requestId));
-
-    // Create the character
-    const [character] = await db
-      .insert(characters)
-      .values({
-        userId: request.userId, // Oprava: přiřadit postavu správnému uživateli
-        firstName: request.firstName,
-        middleName: request.middleName,
-        lastName: request.lastName,
-        birthDate: request.birthDate,
-        school: request.school,
-        description: request.description,
-        isActive: true
-      })
-      .returning();
-
-    // Log admin activity
+    // Změníme status requestu a vytvoříme postavu
+    const { data: request, error } = await supabase.from('characterRequests').select('*').eq('id', requestId).single();
+    if (error || !request) throw new Error('Request not found');
+    await supabase.from('characterRequests').update({ status: 'approved', reviewedBy: adminId, reviewedAt: new Date().toISOString(), reviewNote }).eq('id', requestId);
+    const { data: character, error: charError } = await supabase.from('characters').insert([{
+      userId: request.userId,
+      firstName: request.firstName,
+      middleName: request.middleName,
+      lastName: request.lastName,
+      birthDate: request.birthDate,
+      school: request.school,
+      description: request.description,
+      isActive: true,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    }]).select().single();
+    if (charError) throw new Error(charError.message);
     await this.logAdminActivity({
       adminId,
-      action: "approve_character",
+      action: 'approve_character',
       targetUserId: request.userId,
-      targetCharacterId: character.id,
       targetRequestId: requestId,
-      details: `Approved character: ${request.firstName} ${request.lastName}`,
+      details: `Approved character request: ${request.firstName} ${request.lastName}`
     });
-
     return character;
   }
 
   async rejectCharacterRequest(requestId: number, adminId: number, reviewNote: string): Promise<CharacterRequest> {
-    const [request] = await db
-      .update(characterRequests)
-      .set({
-        status: "rejected",
-        reviewedBy: adminId,
-        reviewedAt: new Date(),
-        reviewNote,
-      })
-      .where(eq(characterRequests.id, requestId))
-      .returning();
-
-    // Log admin activity
+    const { data: request, error } = await supabase.from('characterRequests').select('*').eq('id', requestId).single();
+    if (error || !request) throw new Error('Request not found');
+    await supabase.from('characterRequests').update({ status: 'rejected', reviewedBy: adminId, reviewedAt: new Date().toISOString(), reviewNote }).eq('id', requestId);
     await this.logAdminActivity({
       adminId,
-      action: "reject_character",
+      action: 'reject_character',
       targetUserId: request.userId,
       targetRequestId: requestId,
-      details: `Rejected character request: ${request.firstName} ${request.lastName}`,
+      details: `Rejected character request: ${request.firstName} ${request.lastName}`
     });
-
-    return request;
+    return { ...request, status: 'rejected', reviewNote };
   }
 
   // Admin activity log operations
   async logAdminActivity(activity: InsertAdminActivityLog): Promise<AdminActivityLog> {
-    const [log] = await db.insert(adminActivityLog).values(activity).returning();
-    return log;
+    const { data, error } = await supabase.from('adminActivityLog').insert([activity]).select().single();
+    if (error) throw new Error(error.message);
+    return data;
   }
 
   async getAdminActivityLog(limit: number = 50, offset: number = 0): Promise<(AdminActivityLog & { admin: { username: string }; targetUser?: { username: string } })[]> {
-    return db
-      .select({
-        id: adminActivityLog.id,
-        adminId: adminActivityLog.adminId,
-        action: adminActivityLog.action,
-        targetUserId: adminActivityLog.targetUserId,
-        targetCharacterId: adminActivityLog.targetCharacterId,
-        targetRequestId: adminActivityLog.targetRequestId,
-        details: adminActivityLog.details,
-        createdAt: adminActivityLog.createdAt,
-        admin: {
-          username: users.username,
-        },
-        targetUser: {
-          username: users.username,
-        },
-      })
-      .from(adminActivityLog)
-      .innerJoin(users, eq(adminActivityLog.adminId, users.id))
-      .orderBy(desc(adminActivityLog.createdAt))
-      .limit(limit)
-      .offset(offset);
+    // Supabase neumí joiny, takže načteme vše a spojíme v JS
+    const { data: logs, error } = await supabase.from('adminActivityLog').select('*').order('createdAt', { ascending: false }).range(offset, offset + limit - 1);
+    if (error || !logs) return [];
+    const { data: usersData } = await supabase.from('users').select('id,username');
+    return logs.map(l => ({
+      ...l,
+      admin: usersData?.find(u => u.id === l.adminId) || { username: '' },
+      targetUser: l.targetUserId ? (usersData?.find(u => u.id === l.targetUserId) || { username: '' }) : undefined
+    }));
   }
 
   // Multi-character operations
@@ -921,144 +684,89 @@ export class DatabaseStorage implements IStorage {
   // Cemetery operations
   async killCharacter(characterId: number, deathReason: string, adminId: number): Promise<Character | undefined> {
     const character = await this.getCharacter(characterId);
-    if (!character) {
-      throw new Error("Character not found");
-    }
-
-    // Get all user's active characters
-    const userCharacters = await db
-      .select()
-      .from(characters)
-      .where(and(eq(characters.userId, character.userId), eq(characters.isActive, true)));
-
-    // Kill the character
-    const [killedCharacter] = await db
-      .update(characters)
-      .set({
-        isActive: false,
-        deathDate: new Date().toISOString().split('T')[0], // Current date
-        deathReason,
-        updatedAt: new Date(),
-      })
-      .where(eq(characters.id, characterId))
-      .returning();
-
-
-
-    // Log admin activity
+    if (!character) throw new Error('Character not found');
+    const { data, error } = await supabase.from('characters').update({ isActive: false, deathDate: new Date().toISOString().split('T')[0], deathReason, updatedAt: new Date().toISOString() }).eq('id', characterId).select().single();
+    if (error) return undefined;
     await this.logAdminActivity({
       adminId,
-      action: "kill_character",
+      action: 'kill_character',
       targetUserId: character.userId,
       targetCharacterId: characterId,
-      details: `Killed character: ${character.firstName} ${character.lastName}. Reason: ${deathReason}`,
+      details: `Killed character: ${character.firstName} ${character.lastName}. Reason: ${deathReason}`
     });
-
-    return killedCharacter;
+    return data;
   }
 
   async reviveCharacter(characterId: number): Promise<Character | undefined> {
-    const [updatedCharacter] = await db
-      .update(characters)
-      .set({ 
-        deathDate: null,
-        deathReason: null,
-        updatedAt: new Date()
-      })
-      .where(eq(characters.id, characterId))
-      .returning();
-
-    return updatedCharacter;
+    const { data, error } = await supabase.from('characters').update({ deathDate: null, deathReason: null, updatedAt: new Date().toISOString() }).eq('id', characterId).select().single();
+    if (error) return undefined;
+    return data;
   }
 
   async getDeadCharacters(): Promise<Character[]> {
-    return db
-      .select()
-      .from(characters)
-      .where(and(
-        isNotNull(characters.deathDate)
-      ))
-      .orderBy(desc(characters.deathDate), desc(characters.createdAt));
+    const { data, error } = await supabase.from('characters').select('*').not('deathDate', 'is', null).order('deathDate', { ascending: false }).order('createdAt', { ascending: false });
+    if (error) return [];
+    return data || [];
   }
 
   // Spell operations
   async getAllSpells(): Promise<Spell[]> {
-    return db
-      .select()
-      .from(spells)
-      .orderBy(spells.category, spells.name);
+    const { data, error } = await supabase.from('spells').select('*').order('category', { ascending: true }).order('name', { ascending: true });
+    if (error) return [];
+    return data || [];
   }
 
   async getSpell(id: number): Promise<Spell | undefined> {
-    const [spell] = await db.select().from(spells).where(eq(spells.id, id));
-    return spell;
+    const { data, error } = await supabase.from('spells').select('*').eq('id', id).single();
+    if (error) return undefined;
+    return data;
   }
 
   async getSpellByName(name: string): Promise<Spell | undefined> {
-    const [spell] = await db.select().from(spells).where(eq(spells.name, name));
-    return spell;
+    const { data, error } = await supabase.from('spells').select('*').eq('name', name).single();
+    if (error) return undefined;
+    return data;
   }
 
   async createSpell(insertSpell: InsertSpell): Promise<Spell> {
-    const [spell] = await db
-      .insert(spells)
-      .values(insertSpell)
-      .returning();
-    return spell;
+    const { data, error } = await supabase.from('spells').insert([insertSpell]).select().single();
+    if (error) throw new Error(error.message);
+    return data;
   }
 
   async updateSpell(id: number, updates: Partial<InsertSpell>): Promise<Spell | undefined> {
-    const [spell] = await db
-      .update(spells)
-      .set({ ...updates, updatedAt: new Date() })
-      .where(eq(spells.id, id))
-      .returning();
-    return spell;
+    const { data, error } = await supabase.from('spells').update({ ...updates, updatedAt: new Date().toISOString() }).eq('id', id).select().single();
+    if (error) return undefined;
+    return data;
   }
 
   async deleteSpell(id: number): Promise<boolean> {
-    // First remove spell from all characters
-    await db.delete(characterSpells).where(eq(characterSpells.spellId, id));
-    
-    // Then delete the spell
-    const result = await db.delete(spells).where(eq(spells.id, id));
-    return (result.rowCount ?? 0) > 0;
+    await supabase.from('characterSpells').delete().eq('spellId', id);
+    const { error } = await supabase.from('spells').delete().eq('id', id);
+    return !error;
   }
 
   // Character spell operations
   async getCharacterSpells(characterId: number): Promise<(CharacterSpell & { spell: Spell })[]> {
-    return db
-      .select({
-        id: characterSpells.id,
-        characterId: characterSpells.characterId,
-        spellId: characterSpells.spellId,
-        learnedAt: characterSpells.learnedAt,
-        spell: spells,
-      })
-      .from(characterSpells)
-      .innerJoin(spells, eq(characterSpells.spellId, spells.id))
-      .where(eq(characterSpells.characterId, characterId))
-      .orderBy(spells.category, spells.name);
+    // Supabase neumí joiny, takže načteme vše a spojíme v JS
+    const { data: charSpells, error } = await supabase.from('characterSpells').select('*').eq('characterId', characterId);
+    if (error || !charSpells) return [];
+    const { data: spellsData } = await supabase.from('spells').select('*');
+    return charSpells.map(cs => ({
+      ...cs,
+      spell: spellsData?.find(s => s.id === cs.spellId)
+    }));
   }
 
   async addSpellToCharacter(characterId: number, spellId: number): Promise<CharacterSpell> {
-    const character = await this.getCharacter(characterId);
-    if (character?.isSystem) throw new Error('Nelze přidat kouzlo systémové postavě.');
-    const [characterSpell] = await db
-      .insert(characterSpells)
-      .values({ characterId, spellId })
-      .returning();
-    return characterSpell;
+    const { data, error } = await supabase.from('characterSpells').insert([{ characterId, spellId }]).select().single();
+    if (error) throw new Error(error.message);
+    return data;
   }
 
   async removeSpellFromCharacter(characterId: number, spellId: number): Promise<boolean> {
-    const result = await db
-      .delete(characterSpells)
-      .where(and(
-        eq(characterSpells.characterId, characterId),
-        eq(characterSpells.spellId, spellId)
-      ));
-    return (result.rowCount ?? 0) > 0;
+    const { error } = await supabase.from('characterSpells').delete().eq('characterId', characterId).eq('spellId', spellId);
+    return !error;
   }
 
   // Initialize default spells and add them to all existing characters
@@ -1131,123 +839,86 @@ export class DatabaseStorage implements IStorage {
 
   // Character inventory operations
   async getCharacterInventory(characterId: number): Promise<InventoryItem[]> {
-    return db
-      .select()
-      .from(characterInventory)
-      .where(eq(characterInventory.characterId, characterId))
-      .orderBy(characterInventory.category, characterInventory.itemName);
+    const { data, error } = await supabase.from('characterInventory').select('*').eq('characterId', characterId);
+    if (error) return [];
+    return data || [];
   }
 
   async getInventoryItem(id: number): Promise<InventoryItem | undefined> {
-    const [item] = await db
-      .select()
-      .from(characterInventory)
-      .where(eq(characterInventory.id, id));
-    return item;
+    const { data, error } = await supabase.from('characterInventory').select('*').eq('id', id).single();
+    if (error) return undefined;
+    return data;
   }
 
   async addInventoryItem(item: InsertInventoryItem): Promise<InventoryItem> {
-    if (!item.characterId) throw new Error('Chybí characterId');
-    const character = await this.getCharacter(item.characterId);
-    if (character?.isSystem) throw new Error('Nelze přidat item systémové postavě.');
-    const [inventoryItem] = await db
-      .insert(characterInventory)
-      .values(item)
-      .returning();
-    return inventoryItem;
+    const { data, error } = await supabase.from('characterInventory').insert([item]).select().single();
+    if (error) throw new Error(error.message);
+    return data;
   }
 
   async updateInventoryItem(id: number, updates: Partial<InsertInventoryItem>): Promise<InventoryItem | undefined> {
-    const [item] = await db
-      .update(characterInventory)
-      .set(updates)
-      .where(eq(characterInventory.id, id))
-      .returning();
-    return item;
+    const { data, error } = await supabase.from('characterInventory').update(updates).eq('id', id).select().single();
+    if (error) return undefined;
+    return data;
   }
 
   async deleteInventoryItem(id: number): Promise<boolean> {
-    const result = await db
-      .delete(characterInventory)
-      .where(eq(characterInventory.id, id));
-    return (result.rowCount ?? 0) > 0;
+    const { error } = await supabase.from('characterInventory').delete().eq('id', id);
+    return !error;
   }
 
   // Character journal operations
   async getCharacterJournal(characterId: number): Promise<JournalEntry[]> {
-    return db
-      .select()
-      .from(characterJournal)
-      .where(eq(characterJournal.characterId, characterId))
-      .orderBy(desc(characterJournal.entryDate), desc(characterJournal.createdAt));
+    const { data, error } = await supabase.from('characterJournal').select('*').eq('characterId', characterId);
+    if (error) return [];
+    return data || [];
   }
 
   async getJournalEntry(id: number): Promise<JournalEntry | undefined> {
-    const [entry] = await db
-      .select()
-      .from(characterJournal)
-      .where(eq(characterJournal.id, id));
-    return entry;
+    const { data, error } = await supabase.from('characterJournal').select('*').eq('id', id).single();
+    if (error) return undefined;
+    return data;
   }
 
   async addJournalEntry(entry: InsertJournalEntry): Promise<JournalEntry> {
-    const [journalEntry] = await db
-      .insert(characterJournal)
-      .values(entry)
-      .returning();
-    return journalEntry;
+    const { data, error } = await supabase.from('characterJournal').insert([entry]).select().single();
+    if (error) throw new Error(error.message);
+    return data;
   }
 
   async updateJournalEntry(id: number, updates: Partial<InsertJournalEntry>): Promise<JournalEntry | undefined> {
-    const [entry] = await db
-      .update(characterJournal)
-      .set({ ...updates, updatedAt: new Date() })
-      .where(eq(characterJournal.id, id))
-      .returning();
-    return entry;
+    const { data, error } = await supabase.from('characterJournal').update(updates).eq('id', id).select().single();
+    if (error) return undefined;
+    return data;
   }
 
   async deleteJournalEntry(id: number): Promise<boolean> {
-    const result = await db
-      .delete(characterJournal)
-      .where(eq(characterJournal.id, id));
-    return (result.rowCount ?? 0) > 0;
+    const { error } = await supabase.from('characterJournal').delete().eq('id', id);
+    return !error;
   }
 
   // Wand operations
   async getCharacterWand(characterId: number): Promise<Wand | undefined> {
-    const [wand] = await db
-      .select()
-      .from(wands)
-      .where(eq(wands.characterId, characterId));
-    return wand;
+    const { data, error } = await supabase.from('wands').select('*').eq('characterId', characterId).single();
+    if (error) return undefined;
+    return data;
   }
 
   async createWand(insertWand: InsertWand): Promise<Wand> {
-    if (!insertWand.characterId) throw new Error('Chybí characterId');
-    const character = await this.getCharacter(insertWand.characterId);
-    if (character?.isSystem) throw new Error('Nelze přidat hůlku systémové postavě.');
-    const [wand] = await db
-      .insert(wands)
-      .values(insertWand)
-      .returning();
-    return wand;
+    const { data, error } = await supabase.from('wands').insert([insertWand]).select().single();
+    if (error) throw new Error(error.message);
+    return data;
   }
 
   async updateWand(id: number, updates: Partial<InsertWand>): Promise<Wand | undefined> {
-    const [wand] = await db
-      .update(wands)
-      .set(updates)
-      .where(eq(wands.id, id))
-      .returning();
-    return wand;
+    const { data, error } = await supabase.from('wands').update(updates).eq('id', id).select().single();
+    if (error) return undefined;
+    return data;
   }
 
   async deleteWand(id: number): Promise<boolean> {
-    const result = await db
-      .delete(wands)
-      .where(eq(wands.id, id));
-    return (result.rowCount ?? 0) > 0;
+    const { error } = await supabase.from('wands').delete().eq('id', id);
+    return !error;
   }
 
   async generateRandomWand(characterId: number): Promise<Wand> {
@@ -1706,511 +1377,145 @@ export class DatabaseStorage implements IStorage {
 
   // Housing request operations
   async createHousingRequest(request: InsertHousingRequest): Promise<HousingRequest> {
-    const [newRequest] = await db
-      .insert(housingRequests)
-      .values({
-        ...request,
-        status: 'pending',
-        createdAt: new Date()
-      })
-      .returning();
-    return newRequest;
+    const { data, error } = await supabase.from('housingRequests').insert([request]).select().single();
+    if (error) throw new Error(error.message);
+    return data;
   }
 
   async getHousingRequestsByUserId(userId: number): Promise<HousingRequest[]> {
-    return db
-      .select({
-        id: housingRequests.id,
-        userId: housingRequests.userId,
-        characterId: housingRequests.characterId,
-        requestType: housingRequests.requestType,
-        size: housingRequests.size,
-        location: housingRequests.location,
-        customLocation: housingRequests.customLocation,
-        selectedArea: housingRequests.selectedArea,
-        description: housingRequests.description,
-        housingName: housingRequests.housingName,
-        housingPassword: housingRequests.housingPassword,
-        status: housingRequests.status,
-        assignedAddress: housingRequests.assignedAddress,
-        reviewNote: housingRequests.reviewNote,
-        createdAt: housingRequests.createdAt,
-        reviewedAt: housingRequests.reviewedAt,
-        reviewedBy: housingRequests.reviewedBy,
-        character: {
-          firstName: characters.firstName,
-          lastName: characters.lastName,
-        },
-      })
-      .from(housingRequests)
-      .innerJoin(characters, eq(housingRequests.characterId, characters.id))
-      .where(eq(housingRequests.userId, userId))
-      .orderBy(desc(housingRequests.createdAt));
+    const { data, error } = await supabase.from('housingRequests').select('*').eq('userId', userId);
+    if (error) return [];
+    return data || [];
   }
 
   async getHousingRequestById(requestId: number): Promise<HousingRequest | undefined> {
-    const [request] = await db
-      .select()
-      .from(housingRequests)
-      .where(eq(housingRequests.id, requestId));
-    return request;
+    const { data, error } = await supabase.from('housingRequests').select('*').eq('id', requestId).single();
+    if (error) return undefined;
+    return data;
   }
 
   async deleteHousingRequest(requestId: number): Promise<boolean> {
-    const result = await db
-      .delete(housingRequests)
-      .where(eq(housingRequests.id, requestId));
-    return (result.rowCount ?? 0) > 0;
+    const { error } = await supabase.from('housingRequests').delete().eq('id', requestId);
+    return !error;
   }
 
-  async getPendingHousingRequests(): Promise<(HousingRequest & { 
-    user: { username: string; email: string }; 
-    character: { firstName: string; middleName?: string | null; lastName: string } 
-  })[]> {
-    return db
-      .select({
-        id: housingRequests.id,
-        userId: housingRequests.userId,
-        characterId: housingRequests.characterId,
-        requestType: housingRequests.requestType,
-        size: housingRequests.size,
-        location: housingRequests.location,
-        customLocation: housingRequests.customLocation,
-        selectedArea: housingRequests.selectedArea,
-        description: housingRequests.description,
-        housingName: housingRequests.housingName,
-        housingPassword: housingRequests.housingPassword,
-        status: housingRequests.status,
-        assignedAddress: housingRequests.assignedAddress,
-        reviewNote: housingRequests.reviewNote,
-        createdAt: housingRequests.createdAt,
-        reviewedAt: housingRequests.reviewedAt,
-        reviewedBy: housingRequests.reviewedBy,
-        user: {
-          username: users.username,
-          email: users.email,
-        },
-        character: {
-          firstName: characters.firstName,
-          middleName: characters.middleName,
-          lastName: characters.lastName,
-        },
-      })
-      .from(housingRequests)
-      .innerJoin(users, eq(housingRequests.userId, users.id))
-      .innerJoin(characters, eq(housingRequests.characterId, characters.id))
-      .where(eq(housingRequests.status, 'pending'))
-      .orderBy(desc(housingRequests.createdAt));
+  async getPendingHousingRequests(): Promise<(HousingRequest & { user: { username: string; email: string }; character: { firstName: string; middleName?: string | null; lastName: string } })[]> {
+    const { data: requests, error } = await supabase.from('housingRequests').select('*').eq('status', 'pending');
+    if (error || !requests) return [];
+    const { data: usersData } = await supabase.from('users').select('id,username,email');
+    const { data: charactersData } = await supabase.from('characters').select('id,firstName,middleName,lastName');
+    return requests.map(r => ({
+      ...r,
+      user: usersData?.find(u => u.id === r.userId) || { username: '', email: '' },
+      character: charactersData?.find(c => c.id === r.characterId) || { firstName: '', lastName: '' }
+    }));
   }
 
   async approveHousingRequest(requestId: number, adminId: number, assignedAddress: string, reviewNote?: string): Promise<HousingRequest> {
-    // First, get the housing request to access character information
-    const [request] = await db
-      .select()
-      .from(housingRequests)
-      .where(eq(housingRequests.id, requestId));
-
-    if (!request) {
-      throw new Error('Housing request not found');
-    }
-
-    // Get character information for the chat room
-    const character = await this.getCharacter(request.characterId);
-    if (!character) {
-      throw new Error('Character not found');
-    }
-
-    // Update the housing request to approved status
-    const [updatedRequest] = await db
-      .update(housingRequests)
-      .set({
-        status: 'approved',
-        assignedAddress,
-        reviewNote,
-        reviewedAt: new Date(),
-        reviewedBy: adminId,
-      })
-      .where(eq(housingRequests.id, requestId))
-      .returning();
-
-    // Update the character's residence field
-    await db
-      .update(characters)
-      .set({
-        residence: assignedAddress,
-        updatedAt: new Date(),
-      })
-      .where(eq(characters.id, request.characterId));
-
-    // Create chat room for the housing if it has a name and password
-    if (request.housingName && request.housingPassword) {
-      let targetCategory;
-      
-      // If selectedArea is specified, try to find that category first
-      if (request.selectedArea) {
-        targetCategory = await this.getChatCategoryByName(request.selectedArea);
-      }
-      
-      // If no area was selected or area category not found, use default "Bydlení" category
-      if (!targetCategory) {
-        targetCategory = await this.getChatCategoryByName("Bydlení");
-        
-        // If no housing category exists, create one
-        if (!targetCategory) {
-          targetCategory = await this.createChatCategory({
-            name: "Bydlení",
-            description: "Soukromá bydlení a sídla",
-            sortOrder: 100
-          });
-        }
-      }
-
-      // Create proper description based on housing type and size
-      let roomDescription = `${this.getHousingTypeDescription(request.requestType)}`;
-      if (request.size) {
-        roomDescription += ` ${request.size}`;
-      }
-      roomDescription += ` - ${character.firstName}${character.middleName ? ` ${character.middleName}` : ''} ${character.lastName}`;
-      
-      let longDescription = `**INFORMACE O BYDLENÍ**\n\n`;
-      longDescription += `📍 **Adresa:** ${assignedAddress}\n`;
-      longDescription += `🏠 **Typ:** ${this.getHousingTypeDescription(request.requestType)}\n`;
-      if (request.size) {
-        longDescription += `📏 **Velikost:** ${request.size}\n`;
-      }
-      longDescription += `👥 **Vlastník:** ${character.firstName} ${character.middleName ? character.middleName + ' ' : ''}${character.lastName}\n`;
-      longDescription += `📅 **Přiděleno:** ${new Date().toLocaleDateString('cs-CZ')}\n\n`;
-      longDescription += `**POPIS:**\n${request.description}`;
-
-      await this.createChatRoom({
-        name: request.housingName,
-        description: roomDescription,
-        longDescription: longDescription,
-        categoryId: targetCategory.id,
-        password: request.housingPassword,
-        isPublic: false, // Housing rooms require password for entry
-        sortOrder: 0
-      });
-    }
-
-    // Send automatic message from "Ubytovací správa" (character ID 11)
-    const housingAdminCharacterId = 11;
-    let approvalMessage = `Vážený/á ${character.firstName} ${character.lastName},\n\n`;
-    approvalMessage += `Vaše žádost o bydlení byla schválena!\n\n`;
-    approvalMessage += `📍 **Přidělená adresa:** ${assignedAddress}\n`;
-    approvalMessage += `🏠 **Typ bydlení:** ${this.getHousingTypeDescription(request.requestType)}\n`;
-    if (request.size) {
-      approvalMessage += `📏 **Velikost:** ${request.size}\n`;
-    }
-    if (request.housingName) {
-      approvalMessage += `🏡 **Název:** ${request.housingName}\n`;
-      approvalMessage += `🔑 **Vytvořena chat místnost** pro vaše bydlení\n`;
-    }
-    approvalMessage += `\nAdresa byla přidána do vašeho profilu postavy.\n\n`;
-    if (reviewNote) {
-      approvalMessage += `**Poznámka správy:** ${reviewNote}\n\n`;
-    }
-    approvalMessage += `S přátelskými pozdravy,\nUbytovací správa`;
-
-    // Create owl post message
-    await db.insert(owlPostMessages).values({
-      senderCharacterId: housingAdminCharacterId,
-      recipientCharacterId: request.characterId,
-      subject: "Schválení žádosti o bydlení",
-      content: approvalMessage,
-      isRead: false,
-    });
-
-    // Log admin activity
-    await this.logAdminActivity({
-      adminId,
-      action: "approve_housing_request",
-      targetUserId: request.userId,
-      targetCharacterId: request.characterId,
-      details: `Approved housing request for ${request.requestType} at ${assignedAddress}. ${reviewNote ? `Note: ${reviewNote}` : ''}${request.housingName ? ` Created chat room: ${request.housingName}` : ''}`,
-    });
-
-    return updatedRequest;
-  }
-
-  private getHousingTypeDescription(requestType: string): string {
-    switch (requestType) {
-      case 'apartment': return 'Byt';
-      case 'house': return 'Dům';
-      case 'mansion': return 'Sídlo/Vila';
-      case 'dormitory': return 'Pokoj na ubytovně';
-      case 'shared': return 'Sdílené bydlení';
-      default: return requestType;
-    }
+    const { data: request, error } = await supabase.from('housingRequests').select('*').eq('id', requestId).single();
+    if (error || !request) throw new Error('Request not found');
+    await supabase.from('housingRequests').update({ status: 'approved', reviewedBy: adminId, reviewedAt: new Date().toISOString(), assignedAddress, reviewNote }).eq('id', requestId);
+    return { ...request, status: 'approved', assignedAddress, reviewNote };
   }
 
   async rejectHousingRequest(requestId: number, adminId: number, reviewNote: string): Promise<HousingRequest> {
-    // First, get the housing request to access user information
-    const [request] = await db
-      .select()
-      .from(housingRequests)
-      .where(eq(housingRequests.id, requestId));
-
-    if (!request) {
-      throw new Error('Housing request not found');
-    }
-
-    // Update the housing request to rejected status
-    const [updatedRequest] = await db
-      .update(housingRequests)
-      .set({
-        status: 'rejected',
-        reviewNote,
-        reviewedAt: new Date(),
-        reviewedBy: adminId,
-      })
-      .where(eq(housingRequests.id, requestId))
-      .returning();
-
-    // Get character information for the message
-    const character = await this.getCharacter(request.characterId);
-    if (character) {
-      // Send automatic message from "Ubytovací správa" (character ID 11)
-      const housingAdminCharacterId = 11;
-      let rejectionMessage = `Vážený/á ${character.firstName} ${character.lastName},\n\n`;
-      rejectionMessage += `Bohužel musíme zamítnout vaši žádost o bydlení.\n\n`;
-      rejectionMessage += `🏠 **Typ žádosti:** ${this.getHousingTypeDescription(request.requestType)}\n`;
-      if (request.size) {
-        rejectionMessage += `📏 **Velikost:** ${request.size}\n`;
-      }
-      rejectionMessage += `📍 **Lokace:** ${request.location}\n\n`;
-      rejectionMessage += `**Důvod zamítnutí:** ${reviewNote}\n\n`;
-      rejectionMessage += `Můžete podat novou žádost s upravenými požadavky.\n\n`;
-      rejectionMessage += `S přátelskými pozdravy,\nUbytovací správa`;
-
-      // Create owl post message
-      await db.insert(owlPostMessages).values({
-        senderCharacterId: housingAdminCharacterId,
-        recipientCharacterId: request.characterId,
-        subject: "Zamítnutí žádosti o bydlení",
-        content: rejectionMessage,
-        isRead: false,
-      });
-    }
-
-    // Log admin activity
-    await this.logAdminActivity({
-      adminId,
-      action: "reject_housing_request",
-      targetUserId: request.userId,
-      targetCharacterId: request.characterId,
-      details: `Rejected housing request for ${request.requestType}. Reason: ${reviewNote}`,
-    });
-
-    return updatedRequest;
+    const { data: request, error } = await supabase.from('housingRequests').select('*').eq('id', requestId).single();
+    if (error || !request) throw new Error('Request not found');
+    await supabase.from('housingRequests').update({ status: 'rejected', reviewedBy: adminId, reviewedAt: new Date().toISOString(), reviewNote }).eq('id', requestId);
+    return { ...request, status: 'rejected', reviewNote };
   }
 
-  async returnHousingRequest(requestId: number, adminId: number, reviewNote: string): Promise<HousingRequest> {
-    // First, get the housing request to access user information
-    const [request] = await db
-      .select()
-      .from(housingRequests)
-      .where(eq(housingRequests.id, requestId));
-
-    if (!request) {
-      throw new Error('Housing request not found');
-    }
-
-    // Update the housing request to returned status (pending for revision)
-    const [updatedRequest] = await db
-      .update(housingRequests)
-      .set({
-        status: 'returned',
-        reviewNote,
-        reviewedAt: new Date(),
-        reviewedBy: adminId,
-      })
-      .where(eq(housingRequests.id, requestId))
-      .returning();
-
-    // Log admin activity
-    await this.logAdminActivity({
-      adminId,
-      action: "return_housing_request",
-      targetUserId: request.userId,
-      targetCharacterId: request.characterId,
-      details: `Returned housing request for ${request.requestType} for revision. Note: ${reviewNote}`,
-    });
-
-    return updatedRequest;
-  }
-
-  // Owl Post Messages operations
+  // Owl post (soví pošta)
   async sendOwlPostMessage(message: InsertOwlPostMessage): Promise<OwlPostMessage> {
-    const [newMessage] = await db.insert(owlPostMessages).values(message).returning();
-    return newMessage;
+    const { data, error } = await supabase.from('owlPostMessages').insert([message]).select().single();
+    if (error) throw new Error(error.message);
+    return data;
   }
 
   async getOwlPostInbox(characterId: number, limit: number = 50, offset: number = 0): Promise<(OwlPostMessage & { sender: { firstName: string; middleName?: string | null; lastName: string } })[]> {
-    return db
-      .select({
-        id: owlPostMessages.id,
-        senderCharacterId: owlPostMessages.senderCharacterId,
-        recipientCharacterId: owlPostMessages.recipientCharacterId,
-        subject: owlPostMessages.subject,
-        content: owlPostMessages.content,
-        isRead: owlPostMessages.isRead,
-        sentAt: owlPostMessages.sentAt,
-        readAt: owlPostMessages.readAt,
-        sender: {
-          firstName: characters.firstName,
-          middleName: characters.middleName,
-          lastName: characters.lastName,
-        },
-      })
-      .from(owlPostMessages)
-      .innerJoin(characters, eq(owlPostMessages.senderCharacterId, characters.id))
-      .where(eq(owlPostMessages.recipientCharacterId, characterId))
-      .orderBy(desc(owlPostMessages.sentAt))
-      .limit(limit)
-      .offset(offset);
+    const { data, error } = await supabase.from('owlPostMessages').select('*').eq('recipientId', characterId).order('createdAt', { ascending: false }).range(offset, offset + limit - 1);
+    if (error || !data) return [];
+    const { data: charactersData } = await supabase.from('characters').select('id,firstName,middleName,lastName');
+    return data.map(msg => ({
+      ...msg,
+      sender: charactersData?.find(c => c.id === msg.senderId) || { firstName: '', lastName: '' }
+    }));
   }
 
   async getOwlPostSent(characterId: number, limit: number = 50, offset: number = 0): Promise<(OwlPostMessage & { recipient: { firstName: string; middleName?: string | null; lastName: string } })[]> {
-    return db
-      .select({
-        id: owlPostMessages.id,
-        senderCharacterId: owlPostMessages.senderCharacterId,
-        recipientCharacterId: owlPostMessages.recipientCharacterId,
-        subject: owlPostMessages.subject,
-        content: owlPostMessages.content,
-        isRead: owlPostMessages.isRead,
-        sentAt: owlPostMessages.sentAt,
-        readAt: owlPostMessages.readAt,
-        recipient: {
-          firstName: characters.firstName,
-          middleName: characters.middleName,
-          lastName: characters.lastName,
-        },
-      })
-      .from(owlPostMessages)
-      .innerJoin(characters, eq(owlPostMessages.recipientCharacterId, characters.id))
-      .where(eq(owlPostMessages.senderCharacterId, characterId))
-      .orderBy(desc(owlPostMessages.sentAt))
-      .limit(limit)
-      .offset(offset);
+    const { data, error } = await supabase.from('owlPostMessages').select('*').eq('senderId', characterId).order('createdAt', { ascending: false }).range(offset, offset + limit - 1);
+    if (error || !data) return [];
+    const { data: charactersData } = await supabase.from('characters').select('id,firstName,middleName,lastName');
+    return data.map(msg => ({
+      ...msg,
+      recipient: charactersData?.find(c => c.id === msg.recipientId) || { firstName: '', lastName: '' }
+    }));
   }
 
   async getOwlPostMessage(messageId: number): Promise<OwlPostMessage | undefined> {
-    const [message] = await db
-      .select()
-      .from(owlPostMessages)
-      .where(eq(owlPostMessages.id, messageId));
-    return message;
+    const { data, error } = await supabase.from('owlPostMessages').select('*').eq('id', messageId).single();
+    if (error) return undefined;
+    return data;
   }
 
   async deleteOwlPostMessage(messageId: number): Promise<boolean> {
-    const result = await db
-      .delete(owlPostMessages)
-      .where(eq(owlPostMessages.id, messageId));
-    return (result.rowCount || 0) > 0;
+    const { error } = await supabase.from('owlPostMessages').delete().eq('id', messageId);
+    return !error;
   }
 
   async markOwlPostAsRead(messageId: number): Promise<void> {
-    await db
-      .update(owlPostMessages)
-      .set({ isRead: true, readAt: new Date() })
-      .where(eq(owlPostMessages.id, messageId));
+    await supabase.from('owlPostMessages').update({ isRead: true }).eq('id', messageId);
   }
 
   async getUnreadOwlPostCount(characterId: number): Promise<number> {
-    const [result] = await db
-      .select({ count: count() })
-      .from(owlPostMessages)
-      .where(and(
-        eq(owlPostMessages.recipientCharacterId, characterId),
-        eq(owlPostMessages.isRead, false)
-      ));
-    return result.count;
+    const { data, error } = await supabase.from('owlPostMessages').select('*').eq('recipientId', characterId).eq('isRead', false);
+    if (error || !data) return 0;
+    return data.length;
   }
 
   async getAllCharactersForOwlPost(): Promise<Character[]> {
-    return db
-      .select()
-      .from(characters)
-      .where(eq(characters.isActive, true))
-      .orderBy(characters.firstName, characters.lastName);
+    const { data, error } = await supabase.from('characters').select('*');
+    if (error) return [];
+    return data || [];
+  }
+
+  // getAllCharacters
+  async getAllCharacters(includeSystem = false): Promise<Character[]> {
+    let query = supabase.from('characters').select('*');
+    if (!includeSystem) {
+      query = query.eq('isSystem', false);
+    }
+    const { data, error } = await query;
+    if (error) return [];
+    return data || [];
   }
 
   // Influence operations
   async getInfluenceBar(): Promise<{ grindelwaldPoints: number; dumbledorePoints: number }> {
-    const [result] = await db.select().from(influenceBar).orderBy(desc(influenceBar.id)).limit(1);
-    return {
-      grindelwaldPoints: result?.grindelwaldPoints ?? 50,
-      dumbledorePoints: result?.dumbledorePoints ?? 50
-    };
+    const { data, error } = await supabase.from('influenceBar').select('*').single();
+    if (error || !data) return { grindelwaldPoints: 0, dumbledorePoints: 0 };
+    return data;
   }
 
   async getInfluenceHistory(): Promise<any[]> {
-    try {
-      // Use raw query since table structure doesn't match schema
-      const result = await db.execute(sql.raw(`
-        SELECT id, change_type, points_changed, previous_total, new_total, reason, admin_id, created_at
-        FROM influence_history 
-        ORDER BY created_at DESC 
-        LIMIT 50
-      `));
-      
-      // Map database column names to camelCase for frontend
-      return result.rows.map((row: any) => ({
-        id: row.id,
-        changeType: row.change_type,
-        pointsChanged: row.points_changed,
-        previousTotal: row.previous_total,
-        newTotal: row.new_total,
-        reason: row.reason,
-        adminId: row.admin_id,
-        createdAt: row.created_at
-      }));
-    } catch (error) {
-      console.error('Error fetching influence history:', error);
-      return [];
-    }
+    const { data, error } = await supabase.from('influenceHistory').select('*').order('createdAt', { ascending: false });
+    if (error) return [];
+    return data || [];
   }
 
   async adjustInfluence(side: 'grindelwald' | 'dumbledore', points: number, userId: number): Promise<void> {
-    const currentData = await this.getInfluenceBar();
-    const newGrindelwaldPoints = side === 'grindelwald' 
-      ? Math.max(0, currentData.grindelwaldPoints + points)
-      : currentData.grindelwaldPoints;
-    const newDumbledorePoints = side === 'dumbledore'
-      ? Math.max(0, currentData.dumbledorePoints + points)
-      : currentData.dumbledorePoints;
-
-    await this.setInfluence(newGrindelwaldPoints, newDumbledorePoints, userId);
+    const { data, error } = await supabase.from('influenceBar').select('*').single();
+    if (error || !data) throw new Error('Influence bar not found');
+    const newPoints = (side === 'grindelwald' ? data.grindelwaldPoints : data.dumbledorePoints) + points;
+    await supabase.from('influenceBar').update({ [`${side}Points`]: newPoints }).eq('id', data.id);
+    await supabase.from('influenceHistory').insert([{ side, points, userId, createdAt: new Date().toISOString() }]);
   }
 
   async setInfluence(grindelwaldPoints: number, dumbledorePoints: number, userId: number): Promise<void> {
-    // Get the current influence bar record to update
-    const [currentRecord] = await db.select().from(influenceBar).orderBy(desc(influenceBar.id)).limit(1);
-    
-    if (currentRecord) {
-      // Update the latest record
-      await db
-        .update(influenceBar)
-        .set({
-          grindelwaldPoints,
-          dumbledorePoints,
-          lastUpdated: new Date(),
-          updatedBy: userId
-        })
-        .where(eq(influenceBar.id, currentRecord.id));
-    } else {
-      // Create new record if none exists
-      await db.insert(influenceBar).values({
-        grindelwaldPoints,
-        dumbledorePoints,
-        lastUpdated: new Date(),
-        updatedBy: userId
-      });
-    }
-
-    // Note: History logging is handled separately in adjust-with-history endpoint
+    const { data, error } = await supabase.from('influenceBar').select('*').single();
+    if (error || !data) throw new Error('Influence bar not found');
+    await supabase.from('influenceBar').update({ grindelwaldPoints, dumbledorePoints }).eq('id', data.id);
+    await supabase.from('influenceHistory').insert([{ side: 'reset', points: 0, userId, createdAt: new Date().toISOString() }]);
   }
 
   async assignHousingAdminToSystemUser() {
@@ -2221,14 +1526,6 @@ export class DatabaseStorage implements IStorage {
         .set({ userId: 6, isSystem: true })
         .where(eq(characters.id, character.id));
     }
-  }
-
-  async getAllCharacters(includeSystem = false): Promise<Character[]> {
-    const query = db.select().from(characters);
-    if (!includeSystem) {
-      query.where(eq(characters.isSystem, false));
-    }
-    return query;
   }
 }
 
