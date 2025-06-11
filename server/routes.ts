@@ -10,7 +10,7 @@ import sharp from "sharp";
 import pgSession from "connect-pg-simple";
 import jwt from 'jsonwebtoken';
 import cors from 'cors';
-import { supabase } from './storage';
+import { supabase } from './supabaseClient';
 import type { Request } from "express";
 
 // CORS configuration
