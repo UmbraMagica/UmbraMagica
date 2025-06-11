@@ -13,7 +13,9 @@ app.use((req, res, next) => {
     'https://umbramagica-1.onrender.com', // frontend
     'https://umbramagica.onrender.com', // backend
   ];
-  if (process.env.NODE_ENV === 'production') {
+  const nodeEnv = process.env.NODE_ENV || 'production';
+  console.log('CORS check:', { origin, nodeEnv });
+  if (nodeEnv === 'production' || !process.env.NODE_ENV) {
     if (origin && allowedOrigins.includes(origin)) {
       res.header('Access-Control-Allow-Origin', origin);
     }
