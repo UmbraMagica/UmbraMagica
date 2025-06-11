@@ -8,6 +8,7 @@ import session from "express-session";
 import multer from "multer";
 import sharp from "sharp";
 import pgSession from "connect-pg-simple";
+import jwt from 'jsonwebtoken';
 
 // Game date utility function
 const GAME_YEAR = 1926;
@@ -43,6 +44,20 @@ const checkRateLimit = (identifier: string, maxRequests: number = 100, windowMs:
   userLimit.count++;
   return true;
 };
+
+const JWT_SECRET = process.env.JWT_SECRET || 'umbra-magica-jwt-secret-key-fixed-2024';
+
+function generateJwt(user) {
+  return jwt.sign({ id: user.id, username: user.username, role: user.role }, JWT_SECRET, { expiresIn: '7d' });
+}
+
+function verifyJwt(token) {
+  try {
+    return jwt.verify(token, JWT_SECRET);
+  } catch (e) {
+    return null;
+  }
+}
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Create HTTP server
@@ -205,61 +220,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Auth routes
-  app.get("/api/auth/user", requireAuth, async (req: any, res) => {
-    try {
-      const user = await storage.getUser(req.session.userId);
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
-
-      const characters = await storage.getCharactersByUserId(user.id);
-
-      res.json({
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        role: user.role,
-        characters,
-        characterOrder: user.characterOrder ? (() => {
-          try {
-            return JSON.parse(user.characterOrder);
-          } catch (e) {
-            console.error("Invalid characterOrder JSON:", user.characterOrder);
-            return null;
-          }
-        })() : null,
-        highlightWords: user.highlightWords || '',
-        highlightColor: user.highlightColor || 'yellow',
-        canNarrate: user.canNarrate || false,
-        narratorColor: user.narratorColor || 'yellow'
-      });
-    } catch (error) {
-      console.error("Error fetching user:", error);
-      res.status(500).json({ message: "Failed to fetch user" });
+  app.get("/api/auth/user", async (req, res) => {
+    const auth = req.headers.authorization;
+    if (!auth || !auth.startsWith('Bearer ')) {
+      return res.status(401).json({ message: "Unauthorized" });
     }
+    const token = auth.slice(7);
+    const payload = verifyJwt(token);
+    if (!payload) {
+      return res.status(401).json({ message: "Invalid token" });
+    }
+    const user = await storage.getUser(payload.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const characters = await storage.getCharactersByUserId(user.id);
+    res.json({
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      role: user.role,
+      characters,
+    });
   });
 
   app.post("/api/auth/login", async (req, res) => {
     try {
       const { username, password } = loginSchema.parse(req.body);
-
       const user = await storage.validateUser(username, password);
-
       if (!user) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
-
-      req.session.userId = user.id;
-      req.session.userRole = user.role;
-
+      const token = generateJwt(user);
       const characters = await storage.getCharactersByUserId(user.id);
-
       res.json({
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        role: user.role,
-        characters,
+        token,
+        user: {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          role: user.role,
+          characters,
+        }
       });
     } catch (error) {
       console.error("Login error:", error);

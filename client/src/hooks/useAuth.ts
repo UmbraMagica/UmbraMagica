@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiRequest, getQueryFn } from "@/lib/queryClient";
+import { apiRequest, getQueryFn, getAuthToken } from "@/lib/queryClient";
 import { useLocation } from "wouter";
 import type { User } from "@shared/types";
 
@@ -26,20 +26,17 @@ export function useAuth() {
     queryFn: getQueryFn({ on401: "returnNull" }),
     retry: false,
     staleTime: 5 * 60 * 1000, // 5 minutes
+    enabled: !!getAuthToken(), // dotazuj jen pokud je token
   });
-
-
 
   const loginMutation = useMutation({
     mutationFn: async (credentials: { username: string; password: string }) => {
       const response = await apiRequest("POST", "/api/auth/login", credentials);
-      try {
-        return await response.json();
-      } catch (e) {
-        // Pokud není validní JSON, vrať prázdný objekt a loguj chybu
-        console.error("Chyba při parsování JSON odpovědi z loginu:", e);
-        return {};
+      const data = await response.json();
+      if (data.token) {
+        localStorage.setItem('jwt_token', data.token);
       }
+      return data.user || null;
     },
     onSuccess: (data) => {
       queryClient.setQueryData([`${import.meta.env.VITE_API_URL}/api/auth/user`], data);
@@ -49,10 +46,10 @@ export function useAuth() {
 
   const logoutMutation = useMutation({
     mutationFn: async () => {
-      await apiRequest("POST", "/api/auth/logout");
+      localStorage.removeItem('jwt_token');
+      queryClient.setQueryData([`${import.meta.env.VITE_API_URL}/api/auth/user`], null);
     },
     onSuccess: () => {
-      queryClient.setQueryData([`${import.meta.env.VITE_API_URL}/api/auth/user`], null);
       queryClient.removeQueries();
       setLocation("/login");
     },

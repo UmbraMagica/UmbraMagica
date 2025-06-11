@@ -22,27 +22,24 @@ async function throwIfResNotOk(res: Response) {
   }
 }
 
+export function getAuthToken() {
+  return localStorage.getItem('jwt_token');
+}
+
 export async function apiRequest(
   method: string,
   url: string,
   data?: unknown | undefined,
 ): Promise<Response> {
-  console.log("=== FRONTEND API REQUEST ===");
-  console.log("Method:", method);
-  console.log("URL:", url);
-  console.log("Data:", data);
-  console.log("Full URL:", window.location.origin + url);
-  
+  const token = getAuthToken();
+  const headers: Record<string, string> = data ? { "Content-Type": "application/json" } : {};
+  if (token) headers["Authorization"] = `Bearer ${token}`;
   const res = await fetch(url, {
     method,
-    headers: data ? { "Content-Type": "application/json" } : {},
+    headers,
     body: data ? JSON.stringify(data) : undefined,
-    credentials: "include",
+    credentials: "omit", // JWT nepotřebuje cookies
   });
-
-  console.log("Response status:", res.status);
-  console.log("Response headers:", Object.fromEntries(res.headers.entries()));
-  
   await throwIfResNotOk(res);
   return res;
 }
@@ -53,14 +50,16 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
+    const token = getAuthToken();
+    const headers: Record<string, string> = {};
+    if (token) headers["Authorization"] = `Bearer ${token}`;
     const res = await fetch(queryKey[0] as string, {
-      credentials: "include",
+      headers,
+      credentials: "omit",
     });
-
     if (unauthorizedBehavior === "returnNull" && res.status === 401) {
       return null;
     }
-
     await throwIfResNotOk(res);
     return await res.json();
   };
