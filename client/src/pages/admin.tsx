@@ -155,19 +155,19 @@ export default function Admin() {
 
   // Data queries
   const { data: users = [] } = useQuery<AdminUser[]>({
-    queryKey: ["/api/users"],
+    queryKey: [`${import.meta.env.VITE_API_URL}/api/users`],
     staleTime: 30000,
   });
-  const { data: allCharacters = [] } = useQuery({ queryKey: ['/api/characters/all'] });
-  const { data: characterRequests = [] } = useQuery({ queryKey: ['/api/admin/character-requests'] });
-  const { data: housingRequests = [] } = useQuery({ queryKey: ['/api/admin/housing-requests'] });
-  const { data: adminActivityLog = [] } = useQuery({ queryKey: ['/api/admin/activity-log'] });
-  const { data: inviteCodes = [] } = useQuery({ queryKey: ['/api/admin/invite-codes'] });
-  const { data: chatCategories = [] } = useQuery({ queryKey: ['/api/admin/chat-categories'] });
-  const { data: influenceBar = {} } = useQuery({ queryKey: ['/api/influence-bar'] });
-  const { data: influenceHistory = [] } = useQuery({ queryKey: ['/api/influence-history'] });
-  const { data: onlineUsersData = {} } = useQuery({ queryKey: ['/api/admin/online-users'] });
-  const { data: chatRooms = [] } = useQuery({ queryKey: ['/api/chat/rooms'] });
+  const { data: allCharacters = [] } = useQuery({ queryKey: [`${import.meta.env.VITE_API_URL}/api/characters/all`] });
+  const { data: characterRequests = [] } = useQuery({ queryKey: [`${import.meta.env.VITE_API_URL}/api/admin/character-requests`] });
+  const { data: housingRequests = [] } = useQuery({ queryKey: [`${import.meta.env.VITE_API_URL}/api/admin/housing-requests`] });
+  const { data: adminActivityLog = [] } = useQuery({ queryKey: [`${import.meta.env.VITE_API_URL}/api/admin/activity-log`] });
+  const { data: inviteCodes = [] } = useQuery({ queryKey: [`${import.meta.env.VITE_API_URL}/api/admin/invite-codes`] });
+  const { data: chatCategories = [] } = useQuery({ queryKey: [`${import.meta.env.VITE_API_URL}/api/admin/chat-categories`] });
+  const { data: influenceBar = {} } = useQuery({ queryKey: [`${import.meta.env.VITE_API_URL}/api/influence-bar`] });
+  const { data: influenceHistory = [] } = useQuery({ queryKey: [`${import.meta.env.VITE_API_URL}/api/influence-history`] });
+  const { data: onlineUsersData = {} } = useQuery({ queryKey: [`${import.meta.env.VITE_API_URL}/api/admin/online-users`] });
+  const { data: chatRooms = [] } = useQuery({ queryKey: [`${import.meta.env.VITE_API_URL}/api/chat/rooms`] });
 
   // Stats calculations
   // Filter out system characters (not users)
