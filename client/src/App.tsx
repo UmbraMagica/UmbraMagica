@@ -31,6 +31,7 @@ import Cemetery from "@/pages/cemetery";
 import Ollivanders from "@/pages/ollivanders";
 import OwlPost from "@/pages/owl-post";
 import NotFound from "@/pages/not-found";
+import TestBackend from './pages/test-backend';
 
 
 function Router() {
@@ -101,6 +102,7 @@ function App() {
         <TooltipProvider>
           <Toaster />
           <Router />
+          <a href="/test-backend">Test spojení s backendem</a>
         </TooltipProvider>
       </ThemeProvider>
     </QueryClientProvider>
