@@ -10,6 +10,17 @@ import sharp from "sharp";
 import pgSession from "connect-pg-simple";
 import jwt from 'jsonwebtoken';
 import { createClient } from '@supabase/supabase-js'
+import type { Request } from "express";
+
+declare module 'express-serve-static-core' {
+  interface Request {
+    user?: {
+      id: number;
+      username: string;
+      role: string;
+    }
+  }
+}
 
 // Game date utility function
 const GAME_YEAR = 1926;
@@ -609,7 +620,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Log admin activity
       await storage.logAdminActivity({
-        adminId: (req.session && req.session.userId) || (req.user && req.user.id),
+        adminId: req.user.id,
         action: "user_role_change",
         details: `Changed role of user ${user.username} to ${role}`
       });
@@ -641,7 +652,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         : `Revoked narrator permission for user ${user.username}${reason ? ` - Reason: ${reason}` : ''}`;
         
       await storage.logAdminActivity({
-        adminId: (req.session && req.session.userId) || (req.user && req.user.id),
+        adminId: req.user.id,
         action: "narrator_permission_change",
         details
       });
@@ -842,6 +853,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   app.get("/api/characters/online", requireAuthFlexible, async (req, res) => {
+    console.log("HIT /api/characters/online", { user: req.user, session: req.session });
+    if (!req.user) return res.status(401).json({ message: 'Unauthorized' });
     try {
       const onlineCharacters = await storage.getOnlineCharacters();
       res.json(onlineCharacters);
@@ -852,7 +865,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin endpoint for online users count (including users without active WebSocket characters)
-  app.get("/api/admin/online-users", requireAuth, requireAdminJWT, async (req, res) => {
+  app.get("/api/admin/online-users", requireAdminJWT, async (req, res) => {
     try {
       // Get unique user IDs from active WebSocket connections
       const connectedUserIds = new Set<number>();
@@ -868,7 +881,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Add current admin user as online (since they're making this request)
-      const currentUserId = (req.session && req.session.userId) || (req.user && req.user.id);
+      const currentUserId = req.user.id;
       if (currentUserId) {
         const currentUser = await storage.getUser(currentUserId);
         if (currentUser && !currentUser.isSystem) {
@@ -1283,7 +1296,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin endpoint to update room details
-  app.patch("/api/admin/chat/rooms/:roomId", requireAuth, requireAdminJWT, async (req, res) => {
+  app.patch("/api/admin/chat/rooms/:roomId", requireAdminJWT, async (req, res) => {
     try {
       const user = req.session.userId ? await storage.getUser(req.session.userId) : null;
       if (!user || user.role !== 'admin') {
@@ -1386,11 +1399,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Get all characters with user info (for admin/public use)
   app.get("/api/characters/all", requireAuthFlexible, async (req, res) => {
+    console.log("HIT /api/characters/all", { user: req.user, session: req.session });
+    if (!req.user) return res.status(401).json({ message: 'Unauthorized' });
     try {
       const users = await storage.getAllUsers();
       const allCharacters = [];
       // Rozpoznání admina i při JWT autentizaci
-      const isAdmin = (req.session && req.session.userRole === 'admin') || (req.user && req.user.role === 'admin');
+      const isAdmin = req.user.role === 'admin';
 
       for (const user of users) {
         // Skip system users unless requesting user is admin
@@ -1427,7 +1442,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const users = await storage.getAllUsers();
       const dormitoryCharacters = [];
-      const isAdmin = (req.session && req.session.userRole === 'admin') || (req.user && req.user.role === 'admin');
+      const isAdmin = req.user.role === 'admin';
       for (const user of users) {
         if (user.isSystem && !isAdmin) {
           continue;
@@ -1605,7 +1620,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Spell management endpoints
   
   // Get all spells (for admin)
-  app.get("/api/admin/spells", requireAuth, requireAdminJWT, async (req, res) => {
+  app.get("/api/admin/spells", requireAdminJWT, async (req, res) => {
     try {
       const spells = await storage.getAllSpells();
       res.json(spells);
@@ -1616,7 +1631,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Create new spell (admin only)
-  app.post("/api/admin/spells", requireAuth, requireAdminJWT, async (req, res) => {
+  app.post("/api/admin/spells", requireAdminJWT, async (req, res) => {
     try {
       const validatedData = spellSchema.parse(req.body);
       const spell = await storage.createSpell(validatedData);
@@ -1628,7 +1643,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Update spell (admin only)
-  app.put("/api/admin/spells/:id", requireAuth, requireAdminJWT, async (req, res) => {
+  app.put("/api/admin/spells/:id", requireAdminJWT, async (req, res) => {
     try {
       const spellId = parseInt(req.params.id);
       const validatedData = spellSchema.parse(req.body);
@@ -1646,7 +1661,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Delete spell (admin only)
-  app.delete("/api/admin/spells/:id", requireAuth, requireAdminJWT, async (req, res) => {
+  app.delete("/api/admin/spells/:id", requireAdminJWT, async (req, res) => {
     try {
       const spellId = parseInt(req.params.id);
       const success = await storage.deleteSpell(spellId);
@@ -1675,7 +1690,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Initialize default spells (admin only)
-  app.post("/api/admin/spells/initialize", requireAuth, requireAdminJWT, async (req, res) => {
+  app.post("/api/admin/spells/initialize", requireAdminJWT, async (req, res) => {
     try {
       await storage.initializeDefaultSpells();
       res.json({ message: "Default spells initialized and added to all characters" });
@@ -1686,7 +1701,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Bulk import spells (admin only)
-  app.post("/api/admin/spells/bulk-import", requireAuth, requireAdminJWT, async (req, res) => {
+  app.post("/api/admin/spells/bulk-import", requireAdminJWT, async (req, res) => {
     try {
       const { spells } = req.body;
       
@@ -1810,7 +1825,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Update wand components (admin only)
-  app.put("/api/admin/wand-components", requireAuth, requireAdminJWT, async (req, res) => {
+  app.put("/api/admin/wand-components", requireAdminJWT, async (req, res) => {
     try {
       const user = await storage.getUser(req.session.userId!);
       if (!user || user.role !== 'admin') {
@@ -1832,7 +1847,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Migrate existing wands to inventory (admin only)
-  app.post("/api/admin/migrate-wands-to-inventory", requireAuth, requireAdminJWT, async (req, res) => {
+  app.post("/api/admin/migrate-wands-to-inventory", requireAdminJWT, async (req, res) => {
     try {
       if (req.session.userRole !== 'admin') {
         return res.status(403).json({ message: "Admin access required" });
@@ -2186,6 +2201,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Influence Bar endpoints
   app.get("/api/influence-bar", requireAuthFlexible, (req, res, next) => {
+    console.log("HIT /api/influence-bar", { user: req.user, session: req.session });
+    if (!req.user) return res.status(401).json({ message: 'Unauthorized' });
     res.set('Cache-Control', 'no-cache, no-store, must-revalidate, proxy-revalidate');
     res.set('Pragma', 'no-cache');
     res.set('Expires', '0');
@@ -2202,6 +2219,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   app.get("/api/influence-history", requireAuthFlexible, async (req, res) => {
+    console.log("HIT /api/influence-history", { user: req.user, session: req.session });
+    if (!req.user) return res.status(401).json({ message: 'Unauthorized' });
     try {
       const history = await storage.getInfluenceHistory();
       res.json(history);
@@ -2211,7 +2230,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/admin/influence-bar/adjust", requireAuth, requireAdminJWT, async (req, res) => {
+  app.post("/api/admin/influence-bar/adjust", requireAdminJWT, async (req, res) => {
     try {
       const { side, points } = req.body;
       
@@ -2219,7 +2238,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Side and points are required" });
       }
       
-      await storage.adjustInfluence(side, points, (req.session && req.session.userId) || (req.user && req.user.id));
+      await storage.adjustInfluence(side, points, req.user.id);
       res.json({ message: "Influence adjusted successfully" });
     } catch (error) {
       console.error("Error adjusting influence:", error);
@@ -2227,7 +2246,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/admin/influence-bar/set", requireAuth, requireAdminJWT, async (req, res) => {
+  app.post("/api/admin/influence-bar/set", requireAdminJWT, async (req, res) => {
     try {
       const { grindelwaldPoints, dumbledorePoints } = req.body;
       
@@ -2235,7 +2254,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Both point values are required" });
       }
       
-      await storage.setInfluence(grindelwaldPoints, dumbledorePoints, (req.session && req.session.userId) || (req.user && req.user.id));
+      await storage.setInfluence(grindelwaldPoints, dumbledorePoints, req.user.id);
       res.json({ message: "Influence set successfully" });
     } catch (error) {
       console.error("Error setting influence:", error);
@@ -2243,7 +2262,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/admin/influence-bar/adjust-with-history", requireAuth, requireAdminJWT, async (req, res) => {
+  app.post("/api/admin/influence-bar/adjust-with-history", requireAdminJWT, async (req, res) => {
     try {
       const { changeType, points, reason } = req.body;
       
@@ -2261,11 +2280,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const newGrindelwaldPoints = changeType === 'grindelwald' ? newTotal : currentData.grindelwaldPoints;
       const newDumbledorePoints = changeType === 'dumbledore' ? newTotal : currentData.dumbledorePoints;
       
-      await storage.setInfluence(newGrindelwaldPoints, newDumbledorePoints, (req.session && req.session.userId) || (req.user && req.user.id));
+      await storage.setInfluence(newGrindelwaldPoints, newDumbledorePoints, req.user.id);
       
       // Record the change in history using parameterized query
       await storage.logAdminActivity({
-        adminId: (req.session && req.session.userId) || (req.user && req.user.id),
+        adminId: req.user.id,
         action: "influence_change",
         details: `Changed influence for ${changeType} by ${points} points. Reason: ${reason}`
       });
@@ -2277,7 +2296,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/admin/influence-bar/reset", requireAuth, requireAdminJWT, async (req, res) => {
+  app.post("/api/admin/influence-bar/reset", requireAdminJWT, async (req, res) => {
     try {
       const { type } = req.body;
       
@@ -2289,14 +2308,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const resetValues = type === '0:0' ? { grindelwald: 0, dumbledore: 0 } : { grindelwald: 50, dumbledore: 50 };
       
       // Set the new values
-      await storage.setInfluence(resetValues.grindelwald, resetValues.dumbledore, (req.session && req.session.userId) || (req.user && req.user.id));
+      await storage.setInfluence(resetValues.grindelwald, resetValues.dumbledore, req.user.id);
       
       // Record both changes in history
       const grindelwaldChange = resetValues.grindelwald - currentData.grindelwaldPoints;
       const dumbledoreChange = resetValues.dumbledore - currentData.dumbledorePoints;
       
       await storage.logAdminActivity({
-        adminId: (req.session && req.session.userId) || (req.user && req.user.id),
+        adminId: req.user.id,
         action: "influence_reset",
         details: `Influence reset to ${type}. Grindelwald changed by ${grindelwaldChange}, Dumbledore changed by ${dumbledoreChange}`
       });
@@ -2431,7 +2450,7 @@ Správa ubytování`
     }
   });
 
-  app.get("/api/admin/housing-requests", requireAuth, requireAdminJWT, async (req, res) => {
+  app.get("/api/admin/housing-requests", requireAdminJWT, async (req, res) => {
     try {
       const requests = await storage.getPendingHousingRequests();
       res.json(requests);
@@ -2508,7 +2527,7 @@ Správa ubytování`
   });
 
   // Admin: Get pending character requests
-  app.get("/api/admin/character-requests", requireAuth, requireAdminJWT, async (req, res) => {
+  app.get("/api/admin/character-requests", requireAdminJWT, async (req, res) => {
     try {
       const requests = await storage.getPendingCharacterRequests();
       res.json(requests);
@@ -2519,12 +2538,12 @@ Správa ubytování`
   });
 
   // Admin: Approve character request
-  app.post("/api/admin/character-requests/:id/approve", requireAuth, requireAdminJWT, async (req, res) => {
+  app.post("/api/admin/character-requests/:id/approve", requireAdminJWT, async (req, res) => {
     try {
       const requestId = parseInt(req.params.id);
       const { reviewNote } = req.body;
       
-      const character = await storage.approveCharacterRequest(requestId, (req.session && req.session.userId) || (req.user && req.user.id), reviewNote);
+      const character = await storage.approveCharacterRequest(requestId, req.user.id, reviewNote);
       res.json({ message: "Character request approved", character });
     } catch (error) {
       console.error("Error approving character request:", error);
@@ -2533,7 +2552,7 @@ Správa ubytování`
   });
 
   // Admin: Reject character request
-  app.post("/api/admin/character-requests/:id/reject", requireAuth, requireAdminJWT, async (req, res) => {
+  app.post("/api/admin/character-requests/:id/reject", requireAdminJWT, async (req, res) => {
     try {
       const requestId = parseInt(req.params.id);
       const { reviewNote } = req.body;
@@ -2542,7 +2561,7 @@ Správa ubytování`
         return res.status(400).json({ message: "Review note is required and must be at least 10 characters long" });
       }
       
-      const request = await storage.rejectCharacterRequest(requestId, (req.session && req.session.userId) || (req.user && req.user.id), reviewNote);
+      const request = await storage.rejectCharacterRequest(requestId, req.user.id, reviewNote);
       res.json({ message: "Character request rejected", request });
     } catch (error) {
       console.error("Error rejecting character request:", error);
@@ -2603,7 +2622,7 @@ Správa ubytování`
   });
 
   // Admin activity log
-  app.get("/api/admin/activity-log", requireAuth, requireAdminJWT, async (req, res) => {
+  app.get("/api/admin/activity-log", requireAdminJWT, async (req, res) => {
     try {
       const limit = parseInt(req.query.limit as string) || 50;
       const offset = parseInt(req.query.offset as string) || 0;
@@ -2621,7 +2640,7 @@ Správa ubytování`
     try {
       const characterId = parseInt(req.params.id);
       const { deathReason } = req.body;
-      const adminId = (req.session && req.session.userId) || (req.user && req.user.id);
+      const adminId = req.user.id;
       
       if (!deathReason || deathReason.trim().length === 0) {
         return res.status(400).json({ message: "Death reason is required" });
@@ -2662,7 +2681,7 @@ Správa ubytování`
   app.post("/api/characters/:id/revive", requireAuth, requireAdminJWT, async (req, res) => {
     try {
       const characterId = parseInt(req.params.id);
-      const adminId = (req.session && req.session.userId) || (req.user && req.user.id);
+      const adminId = req.user.id;
       
       const revivedCharacter = await storage.reviveCharacter(characterId);
       
@@ -2686,11 +2705,11 @@ Správa ubytování`
   });
 
   // Admin: Ban user
-  app.post("/api/admin/users/:id/ban", requireAuth, requireAdminJWT, async (req, res) => {
+  app.post("/api/admin/users/:id/ban", requireAdminJWT, async (req, res) => {
     try {
       const userId = parseInt(req.params.id);
       const { banReason } = req.body;
-      const adminId = (req.session && req.session.userId) || (req.user && req.user.id);
+      const adminId = req.user.id;
       
       if (!banReason || banReason.trim().length === 0) {
         return res.status(400).json({ message: "Ban reason is required" });
@@ -2727,10 +2746,10 @@ Správa ubytování`
   });
 
   // Admin: Reset user password
-  app.post("/api/admin/users/:id/reset-password", requireAuth, requireAdminJWT, async (req, res) => {
+  app.post("/api/admin/users/:id/reset-password", requireAdminJWT, async (req, res) => {
     try {
       const userId = parseInt(req.params.id);
-      const adminId = (req.session && req.session.userId) || (req.user && req.user.id);
+      const adminId = req.user.id;
       
       if (typeof userId !== 'number' || isNaN(userId)) {
         return res.status(400).json({ message: "Invalid user ID" });
@@ -2766,11 +2785,11 @@ Správa ubytování`
   });
 
   // Admin: Update user narrator permissions
-  app.patch("/api/admin/users/:id/narrator", requireAuth, requireAdminJWT, async (req, res) => {
+  app.patch("/api/admin/users/:id/narrator", requireAdminJWT, async (req, res) => {
     try {
       const userId = parseInt(req.params.id);
       const { canNarrate, reason } = req.body;
-      const adminId = (req.session && req.session.userId) || (req.user && req.user.id);
+      const adminId = req.user.id;
       
       if (typeof userId !== 'number' || isNaN(userId)) {
         return res.status(400).json({ message: "Invalid user ID" });
@@ -2799,7 +2818,7 @@ Správa ubytování`
   });
 
   // Admin chat management endpoints
-  app.get('/api/admin/chat-categories', requireAuth, requireAdminJWT, async (req, res) => {
+  app.get('/api/admin/chat-categories', requireAdminJWT, async (req, res) => {
     try {
       // Return flat list of all categories for admin management
       const categories = await storage.getAllChatCategories();
@@ -2810,12 +2829,12 @@ Správa ubytování`
     }
   });
 
-  app.post('/api/admin/chat-categories', requireAuth, requireAdminJWT, async (req, res) => {
+  app.post('/api/admin/chat-categories', requireAdminJWT, async (req, res) => {
     try {
       const categoryData = insertChatCategorySchema.parse(req.body);
       const category = await storage.createChatCategory(categoryData);
       await storage.logAdminActivity({
-        adminId: (req.session && req.session.userId) || (req.user && req.user.id),
+        adminId: req.user.id,
         action: 'chat_category_create',
         details: `Vytvořena kategorie "${category.name}"`,
       });
@@ -2826,7 +2845,7 @@ Správa ubytování`
     }
   });
 
-  app.put('/api/admin/chat-categories/:id', requireAuth, requireAdminJWT, async (req, res) => {
+  app.put('/api/admin/chat-categories/:id', requireAdminJWT, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const updates = insertChatCategorySchema.partial().parse(req.body);
@@ -2835,7 +2854,7 @@ Správa ubytování`
         return res.status(404).json({ message: 'Chat category not found' });
       }
       await storage.logAdminActivity({
-        adminId: (req.session && req.session.userId) || (req.user && req.user.id),
+        adminId: req.user.id,
         action: 'chat_category_update',
         details: `Upravena kategorie "${category.name}"`,
       });
@@ -2846,7 +2865,7 @@ Správa ubytování`
     }
   });
 
-  app.delete('/api/admin/chat-categories/:id', requireAuth, requireAdminJWT, async (req, res) => {
+  app.delete('/api/admin/chat-categories/:id', requireAdminJWT, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const category = await storage.getChatCategory(id);
@@ -2860,7 +2879,7 @@ Správa ubytování`
       }
       
       await storage.logAdminActivity({
-        adminId: (req.session && req.session.userId) || (req.user && req.user.id),
+        adminId: req.user.id,
         action: 'chat_category_delete',
         details: `Smazána kategorie "${category.name}"`,
       });
@@ -2871,7 +2890,7 @@ Správa ubytování`
     }
   });
 
-  app.post('/api/admin/chat-rooms', requireAuth, requireAdminJWT, async (req, res) => {
+  app.post('/api/admin/chat-rooms', requireAdminJWT, async (req, res) => {
     try {
       const roomData = insertChatRoomSchema.parse(req.body);
       // Hash password if provided
@@ -2880,7 +2899,7 @@ Správa ubytování`
       }
       const room = await storage.createChatRoom(roomData);
       await storage.logAdminActivity({
-        adminId: (req.session && req.session.userId) || (req.user && req.user.id),
+        adminId: req.user.id,
         action: 'chat_room_create',
         details: `Vytvořena místnost "${room.name}"`,
       });
@@ -2891,7 +2910,7 @@ Správa ubytování`
     }
   });
 
-  app.put('/api/admin/chat-rooms/:id', requireAuth, requireAdminJWT, async (req, res) => {
+  app.put('/api/admin/chat-rooms/:id', requireAdminJWT, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const updates = insertChatRoomSchema.partial().parse(req.body);
@@ -2900,7 +2919,7 @@ Správa ubytování`
         return res.status(404).json({ message: 'Chat room not found' });
       }
       await storage.logAdminActivity({
-        adminId: (req.session && req.session.userId) || (req.user && req.user.id),
+        adminId: req.user.id,
         action: 'chat_room_update',
         details: `Upravena místnost "${room.name}"`,
       });
@@ -2911,7 +2930,7 @@ Správa ubytování`
     }
   });
 
-  app.delete('/api/admin/chat-rooms/:id', requireAuth, requireAdminJWT, async (req, res) => {
+  app.delete('/api/admin/chat-rooms/:id', requireAdminJWT, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const room = await storage.getChatRoom(id);
@@ -2925,7 +2944,7 @@ Správa ubytování`
       }
       
       await storage.logAdminActivity({
-        adminId: (req.session && req.session.userId) || (req.user && req.user.id),
+        adminId: req.user.id,
         action: 'chat_room_delete',
         details: `Smazána místnost "${room.name}"`,
       });
@@ -3165,6 +3184,8 @@ Správa ubytování`
 
   // Get total unread owl post count for all user characters
   app.get("/api/owl-post/unread-total", requireAuthFlexible, async (req, res) => {
+    console.log("HIT /api/owl-post/unread-total", { user: req.user, session: req.session });
+    if (!req.user) return res.status(401).json({ message: 'Unauthorized' });
     try {
       const userCharacters = await storage.getCharactersByUserId((req.session && req.session.userId) || (req.user && req.user.id));
       const aliveCharacters = userCharacters.filter(char => !char.deathDate);
@@ -3194,7 +3215,7 @@ Správa ubytování`
       
       const approvedRequest = await storage.approveHousingRequest(
         requestId,
-        (req.session && req.session.userId) || (req.user && req.user.id),
+        req.user.id,
         assignedAddress,
         reviewNote
       );
@@ -3217,7 +3238,7 @@ Správa ubytování`
       
       const rejectedRequest = await storage.rejectHousingRequest(
         requestId,
-        (req.session && req.session.userId) || (req.user && req.user.id),
+        req.user.id,
         reviewNote
       );
       
@@ -3240,7 +3261,7 @@ Správa ubytování`
       // Return request uses rejection but with different message
       const request = await storage.rejectHousingRequest(
         requestId,
-        (req.session && req.session.userId) || (req.user && req.user.id),
+        req.user.id,
         reviewNote
       );
       
@@ -3252,7 +3273,7 @@ Správa ubytování`
   });
 
   // Update category sort order
-  app.put('/api/admin/chat-categories/:id/sort-order', requireAuth, requireAdminJWT, async (req, res) => {
+  app.put('/api/admin/chat-categories/:id/sort-order', requireAdminJWT, async (req, res) => {
     try {
       const categoryId = parseInt(req.params.id);
       const { sortOrder } = req.body;
@@ -3275,7 +3296,7 @@ Správa ubytování`
   });
 
   // Update room sort order
-  app.put('/api/admin/chat-rooms/:id/sort-order', requireAuth, requireAdminJWT, async (req, res) => {
+  app.put('/api/admin/chat-rooms/:id/sort-order', requireAdminJWT, async (req, res) => {
     try {
       const roomId = parseInt(req.params.id);
       const { sortOrder } = req.body;
@@ -3317,6 +3338,11 @@ Správa ubytování`
     } catch (error) {
       res.status(500).json({ ok: false, error: error.message });
     }
+  });
+
+  // Přidávám testovací endpoint
+  app.get('/api/debug', (req, res) => {
+    res.json({ ok: true, user: req.user || null, session: req.session || null });
   });
 
   return httpServer;
