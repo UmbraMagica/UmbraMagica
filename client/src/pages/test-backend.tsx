@@ -1,10 +1,20 @@
 import React, { useEffect, useState } from 'react';
 
+// Přidejte toto do souboru, pokud používáte TypeScript a Vite:
+declare global {
+  interface ImportMeta {
+    env: {
+      VITE_API_URL: string;
+      // případně další proměnné
+    };
+  }
+}
+
 const TestBackend: React.FC = () => {
   const [result, setResult] = useState<string>('Načítám...');
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/auth/user`, {
+    fetch(`${import.meta.env.VITE_API_URL}/api/test`, {
       credentials: 'include',
     })
       .then(async (res) => {
