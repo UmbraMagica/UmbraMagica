@@ -209,6 +209,8 @@ export interface IStorage {
   adjustInfluence(side: 'grindelwald' | 'dumbledore', points: number, userId: number): Promise<void>;
   setInfluence(grindelwaldPoints: number, dumbledorePoints: number, userId: number): Promise<void>;
 
+  // Přidávám implementaci chybějící funkce pro admin rozhraní
+  getPendingHousingRequests(): Promise<HousingRequest[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -216,37 +218,37 @@ export class DatabaseStorage implements IStorage {
   async getUser(id: number): Promise<User | undefined> {
     const { data, error } = await supabase.from('users').select('*').eq('id', id).single();
     if (error) return undefined;
-    return data;
+    return toCamel(data);
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
     const { data, error } = await supabase.from('users').select('*').eq('username', username).single();
     if (error) return undefined;
-    return data;
+    return toCamel(data);
   }
 
   async getUserByEmail(email: string): Promise<User | undefined> {
     const { data, error } = await supabase.from('users').select('*').eq('email', email).single();
     if (error) return undefined;
-    return data;
+    return toCamel(data);
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const { data, error } = await supabase.from('users').insert([{ ...insertUser, updatedAt: new Date() }]).select().single();
+    const { data, error } = await supabase.from('users').insert([{ ...insertUser, updated_at: new Date() }]).select().single();
     if (error) throw new Error(error.message);
-    return data;
+    return toCamel(data);
   }
 
   async updateUserRole(id: number, role: string): Promise<User | undefined> {
-    const { data, error } = await supabase.from('users').update({ role, updatedAt: new Date() }).eq('id', id).select().single();
+    const { data, error } = await supabase.from('users').update({ role, updated_at: new Date() }).eq('id', id).select().single();
     if (error) return undefined;
-    return data;
+    return toCamel(data);
   }
 
   async updateUserNarratorPermission(id: number, canNarrate: boolean): Promise<User | undefined> {
-    const { data, error } = await supabase.from('users').update({ canNarrate, updatedAt: new Date() }).eq('id', id).select().single();
+    const { data, error } = await supabase.from('users').update({ can_narrate: canNarrate, updated_at: new Date() }).eq('id', id).select().single();
     if (error) return undefined;
-    return data;
+    return toCamel(data);
   }
 
   async getAllUsers(includeSystem = false): Promise<User[]> {
@@ -256,11 +258,11 @@ export class DatabaseStorage implements IStorage {
     }
     const { data, error } = await query;
     if (error) return [];
-    return data || [];
+    return toCamel(data || []);
   }
 
   async banUser(id: number, banReason: string): Promise<void> {
-    await supabase.from('users').update({ isBanned: true, banReason, bannedAt: new Date() }).eq('id', id);
+    await supabase.from('users').update({ is_banned: true, ban_reason: banReason, banned_at: new Date() }).eq('id', id);
   }
 
   async resetUserPassword(id: number, hashedPassword: string): Promise<void> {
@@ -268,34 +270,35 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateUserPassword(id: number, hashedPassword: string): Promise<void> {
-    await supabase.from('users').update({ password: hashedPassword, updatedAt: new Date() }).eq('id', id);
+    await supabase.from('users').update({ password: hashedPassword, updated_at: new Date() }).eq('id', id);
   }
 
   async updateUserEmail(id: number, email: string): Promise<void> {
-    await supabase.from('users').update({ email, updatedAt: new Date() }).eq('id', id);
+    await supabase.from('users').update({ email, updated_at: new Date() }).eq('id', id);
   }
 
   async updateUserSettings(id: number, settings: { characterOrder?: string; highlightWords?: string; highlightColor?: string; narratorColor?: string }): Promise<void> {
-    await supabase.from('users').update({ ...settings, updatedAt: new Date() }).eq('id', id);
-  }
-
-  async updateUserNarratorPermissions(id: number, canNarrate: boolean): Promise<User | undefined> {
-    const { data, error } = await supabase.from('users').update({ canNarrate, updatedAt: new Date() }).eq('id', id).select().single();
-    if (error) return undefined;
-    return data;
+    // Převedu camelCase na snake_case pro klíče
+    const snakeSettings: any = {};
+    if (settings.characterOrder !== undefined) snakeSettings.character_order = settings.characterOrder;
+    if (settings.highlightWords !== undefined) snakeSettings.highlight_words = settings.highlightWords;
+    if (settings.highlightColor !== undefined) snakeSettings.highlight_color = settings.highlightColor;
+    if (settings.narratorColor !== undefined) snakeSettings.narrator_color = settings.narratorColor;
+    snakeSettings.updated_at = new Date();
+    await supabase.from('users').update(snakeSettings).eq('id', id);
   }
 
   // Character operations
   async getCharacter(id: number): Promise<Character | undefined> {
     const { data, error } = await supabase.from('characters').select('*').eq('id', id).single();
     if (error) return undefined;
-    return data;
+    return toCamel(data);
   }
 
   async getCharactersByUserId(userId: number): Promise<Character[]> {
-    const { data, error } = await supabase.from('characters').select('*').eq('userId', userId).order('createdAt', { ascending: false });
+    const { data, error } = await supabase.from('characters').select('*').eq('user_id', userId).order('created_at', { ascending: false });
     if (error) return [];
-    return data || [];
+    return toCamel(data || []);
   }
 
   async createCharacter(insertCharacter: InsertCharacter): Promise<Character> {
@@ -311,9 +314,9 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getCharacterByName(firstName: string, lastName: string): Promise<Character | undefined> {
-    const { data, error } = await supabase.from('characters').select('*').eq('firstName', firstName).eq('lastName', lastName).single();
+    const { data, error } = await supabase.from('characters').select('*').eq('first_name', firstName).eq('last_name', lastName).single();
     if (error) return undefined;
-    return data;
+    return toCamel(data);
   }
 
   // Authentication and invite codes remain same...
@@ -324,9 +327,9 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllInviteCodes(): Promise<InviteCode[]> {
-    const { data, error } = await supabase.from('inviteCodes').select('*').order('createdAt', { ascending: false });
+    const { data, error } = await supabase.from('inviteCodes').select('*').order('created_at', { ascending: false });
     if (error) return [];
-    return data || [];
+    return toCamel(data || []);
   }
 
   async createInviteCode(insertInviteCode: InsertInviteCode): Promise<InviteCode> {
@@ -356,47 +359,46 @@ export class DatabaseStorage implements IStorage {
   async getChatRoom(id: number): Promise<ChatRoom | undefined> {
     const { data, error } = await supabase.from('chatRooms').select('*').eq('id', id).single();
     if (error) return undefined;
-    return data;
+    return toCamel(data);
   }
 
   async getChatRoomByName(name: string): Promise<ChatRoom | undefined> {
     const { data, error } = await supabase.from('chatRooms').select('*').eq('name', name).single();
     if (error) return undefined;
-    return data;
+    return toCamel(data);
   }
 
   async createChatRoom(insertChatRoom: InsertChatRoom): Promise<ChatRoom> {
     const { data, error } = await supabase.from('chatRooms').insert([insertChatRoom]).select().single();
     if (error) throw new Error(error.message);
-    return data;
+    return toCamel(data);
   }
 
   async updateChatRoom(id: number, updates: Partial<InsertChatRoom>): Promise<ChatRoom | undefined> {
     if (updates.password) {
       updates.password = await this.hashPassword(updates.password);
     }
-    const { data, error } = await supabase.from('chatRooms').update({ ...updates, updatedAt: new Date() }).eq('id', id).select().single();
+    const { data, error } = await supabase.from('chatRooms').update({ ...updates, updated_at: new Date() }).eq('id', id).select().single();
     if (error) return undefined;
-    return data;
+    return toCamel(data);
   }
 
   async deleteChatRoom(id: number): Promise<boolean> {
-    // Smažeme nejdřív zprávy v místnosti, pak místnost samotnou
-    await supabase.from('messages').delete().eq('roomId', id);
+    await supabase.from('messages').delete().eq('room_id', id);
     const { error } = await supabase.from('chatRooms').delete().eq('id', id);
     return !error;
   }
 
   async getAllChatRooms(): Promise<ChatRoom[]> {
-    const { data, error } = await supabase.from('chatRooms').select('*').order('sortOrder', { ascending: true });
+    const { data, error } = await supabase.from('chatRooms').select('*').order('sort_order', { ascending: true });
     if (error) return [];
-    return data || [];
+    return toCamel(data || []);
   }
 
   async getChatRoomsByCategory(categoryId: number): Promise<ChatRoom[]> {
-    const { data, error } = await supabase.from('chatRooms').select('*').eq('categoryId', categoryId).order('sortOrder', { ascending: true });
+    const { data, error } = await supabase.from('chatRooms').select('*').eq('category_id', categoryId).order('sort_order', { ascending: true });
     if (error) return [];
-    return data || [];
+    return toCamel(data || []);
   }
 
   async validateRoomPassword(roomId: number, password: string): Promise<boolean> {
@@ -421,13 +423,13 @@ export class DatabaseStorage implements IStorage {
   async getChatCategory(id: number): Promise<ChatCategory | undefined> {
     const { data, error } = await supabase.from('chatCategories').select('*').eq('id', id).single();
     if (error) return undefined;
-    return data;
+    return toCamel(data);
   }
 
   async getChatCategoryByName(name: string): Promise<ChatCategory | undefined> {
     const { data, error } = await supabase.from('chatCategories').select('*').eq('name', name).single();
     if (error) return undefined;
-    return data;
+    return toCamel(data);
   }
 
   async createChatCategory(insertChatCategory: InsertChatCategory): Promise<ChatCategory> {
@@ -453,47 +455,46 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllChatCategories(): Promise<ChatCategory[]> {
-    const { data, error } = await supabase.from('chatCategories').select('*').order('sortOrder', { ascending: true });
+    const { data, error } = await supabase.from('chatCategories').select('*').order('sort_order', { ascending: true });
     if (error) return [];
-    return data || [];
+    return toCamel(data || []);
   }
 
   async getChatCategoriesWithChildren(): Promise<(ChatCategory & { children: ChatCategory[], rooms: ChatRoom[] })[]> {
-    // Supabase neumí joiny, takže načteme vše a spojíme v JS
-    const { data: categories, error } = await supabase.from('chatCategories').select('*').order('sortOrder', { ascending: true });
+    const { data: categories, error } = await supabase.from('chatCategories').select('*').order('sort_order', { ascending: true });
     if (error || !categories) return [];
     const { data: rooms } = await supabase.from('chatRooms').select('*');
     const byParent: Record<number, ChatCategory[]> = {};
     for (const cat of categories) {
-      if (cat.parentId) {
-        if (!byParent[cat.parentId]) byParent[cat.parentId] = [];
-        byParent[cat.parentId].push(cat);
+      if (cat.parent_id) {
+        if (!byParent[cat.parent_id]) byParent[cat.parent_id] = [];
+        byParent[cat.parent_id].push(cat);
       }
     }
-    return categories.map(cat => ({
+    return toCamel(categories.map(cat => ({
       ...cat,
       children: byParent[cat.id] || [],
-      rooms: (rooms || []).filter(r => r.categoryId === cat.id)
-    }));
+      rooms: (rooms || []).filter(r => r.category_id === cat.id)
+    })));
   }
 
   // Message operations (keeping existing)
   async getMessage(id: number): Promise<Message | undefined> {
     const { data, error } = await supabase.from('messages').select('*').eq('id', id).single();
     if (error) return undefined;
-    return data;
+    return toCamel(data);
   }
 
   async getMessagesByRoom(roomId: number, limit: number = 50, offset: number = 0): Promise<(Message & { character: { firstName: string; middleName?: string | null; lastName: string; avatar?: string | null } })[]> {
-    const { data, error } = await supabase.from('messages').select('*').eq('roomId', roomId).order('createdAt', { ascending: false }).range(offset, offset + limit - 1);
+    const { data, error } = await supabase.from('messages').select('*').eq('room_id', roomId).order('created_at', { ascending: false }).range(offset, offset + limit - 1);
     if (error) return [];
-    return data || [];
+    return toCamel(data || []);
   }
 
   async createMessage(insertMessage: InsertMessage): Promise<Message> {
     const { data, error } = await supabase.from('messages').insert([insertMessage]).select().single();
     if (error) throw new Error(error.message);
-    return data;
+    return toCamel(data);
   }
 
   async deleteMessage(id: number): Promise<boolean> {
@@ -502,7 +503,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateMessageCharacter(messageId: number, characterId: number): Promise<void> {
-    await supabase.from('messages').update({ characterId }).eq('id', messageId);
+    await supabase.from('messages').update({ character_id: characterId }).eq('id', messageId);
   }
 
   // Archive operations (keeping existing)
@@ -539,37 +540,47 @@ export class DatabaseStorage implements IStorage {
   }
 
   async clearRoomMessages(roomId: number): Promise<number> {
-    const deleteResult = await supabase.from('messages').delete().eq('roomId', roomId);
-    return deleteResult.rowCount || 0;
+    const { data, error, count } = await supabase.from('messages').delete().eq('roomId', roomId).select('*', { count: 'exact' });
+    if (error) return 0;
+    // count může být undefined, pokud není count: 'exact' podporováno, v tom případě použij délku data
+    if (typeof count === 'number') return count;
+    if (Array.isArray(data)) return data.length;
+    return 0;
   }
 
   async getArchiveDates(roomId: number): Promise<string[]> {
-    const dates = await supabase.from('archivedMessages').selectDistinct({ archivedAt: 'archivedAt' }).eq('roomId', roomId).orderBy('archivedAt', { ascending: false });
-    return dates.map(d => d.archivedAt.toISOString().split('T')[0]);
+    const { data, error } = await supabase.from('archivedMessages').select('archivedAt').eq('roomId', roomId).order('archivedAt', { ascending: false });
+    if (error || !data) return [];
+    // Vrací pole unikátních dat (jen datum, bez času)
+    const uniqueDates = Array.from(new Set(data.map(d => d.archivedAt && d.archivedAt.split('T')[0])));
+    return uniqueDates;
   }
 
   async getArchiveDatesWithCounts(roomId: number): Promise<{ date: string; count: number }[]> {
-    const result = await supabase.from('archivedMessages').select({
-      archivedAt: 'archivedAt',
-      count: 'count'
-    }).eq('roomId', roomId).groupBy('archivedAt').orderBy('archivedAt', { ascending: false });
-    return result.map(r => ({
-      date: r.archivedAt.toISOString().split('T')[0],
-      count: Number(r.count)
-    }));
+    const { data, error } = await supabase.from('archivedMessages').select('archivedAt').eq('roomId', roomId).order('archivedAt', { ascending: false });
+    if (error || !data) return [];
+    // Spočítat počet zpráv pro každý unikátní den
+    const counts: Record<string, number> = {};
+    for (const row of data) {
+      const date = row.archivedAt && row.archivedAt.split('T')[0];
+      if (date) counts[date] = (counts[date] || 0) + 1;
+    }
+    return Object.entries(counts).map(([date, count]) => ({ date, count }));
   }
 
   async getArchivedMessagesByDate(roomId: number, archiveDate: string, limit: number = 50, offset: number = 0): Promise<ArchivedMessage[]> {
     const startDate = new Date(archiveDate);
     const endDate = new Date(startDate);
     endDate.setDate(endDate.getDate() + 1);
-
-    return supabase.from('archivedMessages').select('*').eq('roomId', roomId).gte('archivedAt', startDate).lt('archivedAt', endDate).order('originalCreatedAt', { ascending: false }).range(offset, offset + limit - 1);
+    const { data, error } = await supabase.from('archivedMessages').select('*').eq('roomId', roomId).gte('archivedAt', startDate.toISOString()).lt('archivedAt', endDate.toISOString()).order('originalCreatedAt', { ascending: false }).range(offset, offset + limit - 1);
+    if (error) return [];
+    return data || [];
   }
 
   async getLastMessageByCharacter(characterId: number): Promise<Message | undefined> {
-    const [message] = await supabase.from('messages').select('*').eq('characterId', characterId).orderBy('createdAt', { ascending: false }).limit(1);
-    return message;
+    const { data, error } = await supabase.from('messages').select('*').eq('characterId', characterId).order('createdAt', { ascending: false }).limit(1);
+    if (error || !data || data.length === 0) return undefined;
+    return data[0];
   }
 
   // Character request operations
@@ -588,7 +599,7 @@ export class DatabaseStorage implements IStorage {
   async getCharacterRequestById(requestId: number): Promise<CharacterRequest | undefined> {
     const { data, error } = await supabase.from('characterRequests').select('*').eq('id', requestId).single();
     if (error) return undefined;
-    return data;
+    return toCamel(data);
   }
 
   async deleteCharacterRequest(requestId: number): Promise<boolean> {
@@ -597,24 +608,23 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllCharacterRequests(): Promise<(CharacterRequest & { user: { username: string; email: string } })[]> {
-    // Supabase neumí joiny, takže načteme vše a spojíme v JS
     const { data: requests, error } = await supabase.from('characterRequests').select('*');
     if (error || !requests) return [];
     const { data: usersData } = await supabase.from('users').select('id,username,email');
-    return requests.map(r => ({
+    return toCamel(requests.map(r => ({
       ...r,
-      user: usersData?.find(u => u.id === r.userId) || { username: '', email: '' }
-    }));
+      user: usersData?.find(u => u.id === r.user_id) || { username: '', email: '' }
+    })));
   }
 
   async getPendingCharacterRequests(): Promise<(CharacterRequest & { user: { username: string; email: string } })[]> {
     const { data: requests, error } = await supabase.from('characterRequests').select('*').eq('status', 'pending');
     if (error || !requests) return [];
     const { data: usersData } = await supabase.from('users').select('id,username,email');
-    return requests.map(r => ({
+    return toCamel(requests.map(r => ({
       ...r,
-      user: usersData?.find(u => u.id === r.userId) || { username: '', email: '' }
-    }));
+      user: usersData?.find(u => u.id === r.user_id) || { username: '', email: '' }
+    })));
   }
 
   async approveCharacterRequest(requestId: number, adminId: number, reviewNote?: string): Promise<Character> {
@@ -667,15 +677,14 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAdminActivityLog(limit: number = 50, offset: number = 0): Promise<(AdminActivityLog & { admin: { username: string }; targetUser?: { username: string } })[]> {
-    // Supabase neumí joiny, takže načteme vše a spojíme v JS
-    const { data: logs, error } = await supabase.from('adminActivityLog').select('*').order('createdAt', { ascending: false }).range(offset, offset + limit - 1);
+    const { data: logs, error } = await supabase.from('adminActivityLog').select('*').order('created_at', { ascending: false }).range(offset, offset + limit - 1);
     if (error || !logs) return [];
     const { data: usersData } = await supabase.from('users').select('id,username');
-    return logs.map(l => ({
+    return toCamel(logs.map(l => ({
       ...l,
-      admin: usersData?.find(u => u.id === l.adminId) || { username: '' },
-      targetUser: l.targetUserId ? (usersData?.find(u => u.id === l.targetUserId) || { username: '' }) : undefined
-    }));
+      admin: usersData?.find(u => u.id === l.admin_id) || { username: '' },
+      targetUser: l.target_user_id ? (usersData?.find(u => u.id === l.target_user_id) || { username: '' }) : undefined
+    })));
   }
 
   // Multi-character operations
@@ -704,28 +713,28 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getDeadCharacters(): Promise<Character[]> {
-    const { data, error } = await supabase.from('characters').select('*').not('deathDate', 'is', null).order('deathDate', { ascending: false }).order('createdAt', { ascending: false });
+    const { data, error } = await supabase.from('characters').select('*').not('death_date', 'is', null).order('death_date', { ascending: false }).order('created_at', { ascending: false });
     if (error) return [];
-    return data || [];
+    return toCamel(data || []);
   }
 
   // Spell operations
   async getAllSpells(): Promise<Spell[]> {
     const { data, error } = await supabase.from('spells').select('*').order('category', { ascending: true }).order('name', { ascending: true });
     if (error) return [];
-    return data || [];
+    return toCamel(data || []);
   }
 
   async getSpell(id: number): Promise<Spell | undefined> {
     const { data, error } = await supabase.from('spells').select('*').eq('id', id).single();
     if (error) return undefined;
-    return data;
+    return toCamel(data);
   }
 
   async getSpellByName(name: string): Promise<Spell | undefined> {
     const { data, error } = await supabase.from('spells').select('*').eq('name', name).single();
     if (error) return undefined;
-    return data;
+    return toCamel(data);
   }
 
   async createSpell(insertSpell: InsertSpell): Promise<Spell> {
@@ -748,24 +757,23 @@ export class DatabaseStorage implements IStorage {
 
   // Character spell operations
   async getCharacterSpells(characterId: number): Promise<(CharacterSpell & { spell: Spell })[]> {
-    // Supabase neumí joiny, takže načteme vše a spojíme v JS
-    const { data: charSpells, error } = await supabase.from('characterSpells').select('*').eq('characterId', characterId);
+    const { data: charSpells, error } = await supabase.from('characterSpells').select('*').eq('character_id', characterId);
     if (error || !charSpells) return [];
     const { data: spellsData } = await supabase.from('spells').select('*');
-    return charSpells.map(cs => ({
+    return toCamel(charSpells.map(cs => ({
       ...cs,
-      spell: spellsData?.find(s => s.id === cs.spellId)
-    }));
+      spell: spellsData?.find(s => s.id === cs.spell_id)
+    })));
   }
 
   async addSpellToCharacter(characterId: number, spellId: number): Promise<CharacterSpell> {
-    const { data, error } = await supabase.from('characterSpells').insert([{ characterId, spellId }]).select().single();
+    const { data, error } = await supabase.from('characterSpells').insert([{ character_id: characterId, spell_id: spellId }]).select().single();
     if (error) throw new Error(error.message);
-    return data;
+    return toCamel(data);
   }
 
   async removeSpellFromCharacter(characterId: number, spellId: number): Promise<boolean> {
-    const { error } = await supabase.from('characterSpells').delete().eq('characterId', characterId).eq('spellId', spellId);
+    const { error } = await supabase.from('characterSpells').delete().eq('character_id', characterId).eq('spell_id', spellId);
     return !error;
   }
 
@@ -801,30 +809,28 @@ export class DatabaseStorage implements IStorage {
     // Create spells if they don't exist
     for (const spellData of defaultSpells) {
       // Check if spell already exists
-      const existingSpells = await supabase.from('spells').select('*').eq('name', spellData.name);
-      
+      const { data: existingSpells } = await supabase.from('spells').select('*').eq('name', spellData.name);
       let spell;
-      if (existingSpells.length === 0) {
-        // Create new spell
-        [spell] = await supabase.from('spells').insert([spellData]).returning();
+      if (!existingSpells || existingSpells.length === 0) {
+        const { data: inserted, error } = await supabase.from('spells').insert([spellData]).select().single();
+        if (error) throw new Error(error.message);
+        spell = inserted;
         console.log(`Created spell: ${spell.name}`);
       } else {
         spell = existingSpells[0];
         console.log(`Spell already exists: ${spell.name}`);
       }
-
       // Add spell to all existing characters who don't have it
-      const allCharacters = await supabase.from('characters').select('*');
+      const { data: allCharacters } = await supabase.from('characters').select('*');
+      if (!allCharacters) continue;
       for (const character of allCharacters) {
         // Check if character already has this spell
-        const existingCharacterSpell = await supabase
+        const { data: existingCharacterSpell } = await supabase
           .from('characterSpells')
-          .select()
+          .select('*')
           .eq('characterId', character.id)
           .eq('spellId', spell.id);
-
-        if (existingCharacterSpell.length === 0) {
-          // Add spell to character
+        if (!existingCharacterSpell || existingCharacterSpell.length === 0) {
           await supabase.from('characterSpells').insert([{
             characterId: character.id,
             spellId: spell.id,
@@ -836,38 +842,118 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Character inventory operations
-  async getCharacterInventory(characterId: number): Promise<InventoryItem[]>;
-  getInventoryItem(id: number): Promise<InventoryItem | undefined>;
-  addInventoryItem(item: InsertInventoryItem): Promise<InventoryItem>;
-  updateInventoryItem(id: number, updates: Partial<InsertInventoryItem>): Promise<InventoryItem | undefined>;
-  deleteInventoryItem(id: number): Promise<boolean>;
+  async getCharacterInventory(characterId: number): Promise<InventoryItem[]> {
+    const { data, error } = await supabase.from('characterInventory').select('*').eq('character_id', characterId);
+    if (error) return [];
+    return toCamel(data || []);
+  }
+
+  async getInventoryItem(id: number): Promise<InventoryItem | undefined> {
+    const { data, error } = await supabase.from('characterInventory').select('*').eq('id', id).single();
+    if (error) return undefined;
+    return data;
+  }
+
+  async addInventoryItem(item: InsertInventoryItem): Promise<InventoryItem> {
+    const { data, error } = await supabase.from('characterInventory').insert([item]).select().single();
+    if (error) throw new Error(error.message);
+    return data;
+  }
+
+  async updateInventoryItem(id: number, updates: Partial<InsertInventoryItem>): Promise<InventoryItem | undefined> {
+    const { data, error } = await supabase.from('characterInventory').update(updates).eq('id', id).select().single();
+    if (error) return undefined;
+    return data;
+  }
+
+  async deleteInventoryItem(id: number): Promise<boolean> {
+    const { error } = await supabase.from('characterInventory').delete().eq('id', id);
+    return !error;
+  }
   
   // Character journal operations
-  async getCharacterJournal(characterId: number): Promise<JournalEntry[]>;
-  getJournalEntry(id: number): Promise<JournalEntry | undefined>;
-  addJournalEntry(entry: InsertJournalEntry): Promise<JournalEntry>;
-  updateJournalEntry(id: number, updates: Partial<InsertJournalEntry>): Promise<JournalEntry | undefined>;
-  deleteJournalEntry(id: number): Promise<boolean>;
+  async getCharacterJournal(characterId: number): Promise<JournalEntry[]> {
+    const { data, error } = await supabase.from('characterJournal').select('*').eq('character_id', characterId);
+    if (error) return [];
+    return toCamel(data || []);
+  }
+
+  async getJournalEntry(id: number): Promise<JournalEntry | undefined> {
+    const { data, error } = await supabase.from('characterJournal').select('*').eq('id', id).single();
+    if (error) return undefined;
+    return data;
+  }
+
+  async addJournalEntry(entry: InsertJournalEntry): Promise<JournalEntry> {
+    const { data, error } = await supabase.from('characterJournal').insert([entry]).select().single();
+    if (error) throw new Error(error.message);
+    return data;
+  }
+
+  async updateJournalEntry(id: number, updates: Partial<InsertJournalEntry>): Promise<JournalEntry | undefined> {
+    const { data, error } = await supabase.from('characterJournal').update(updates).eq('id', id).select().single();
+    if (error) return undefined;
+    return data;
+  }
+
+  async deleteJournalEntry(id: number): Promise<boolean> {
+    const { error } = await supabase.from('characterJournal').delete().eq('id', id);
+    return !error;
+  }
   
   // Wand operations
-  async getCharacterWand(characterId: number): Promise<Wand | undefined>;
-  createWand(wand: InsertWand): Promise<Wand>;
-  updateWand(wandId: number, updates: Partial<InsertWand>): Promise<Wand | undefined>;
-  deleteWand(wandId: number): Promise<boolean>;
-  generateRandomWand(characterId: number): Promise<Wand>;
-  getAllWandComponents(): Promise<{
+  async getCharacterWand(characterId: number): Promise<Wand | undefined> {
+    const { data, error } = await supabase.from('wands').select('*').eq('character_id', characterId).single();
+    if (error) return undefined;
+    return toCamel(data);
+  }
+
+  async createWand(wand: InsertWand): Promise<Wand> {
+    const { data, error } = await supabase.from('wands').insert([wand]).select().single();
+    if (error) throw new Error(error.message);
+    return data;
+  }
+
+  async updateWand(wandId: number, updates: Partial<InsertWand>): Promise<Wand | undefined> {
+    const { data, error } = await supabase.from('wands').update(updates).eq('id', wandId).select().single();
+    if (error) return undefined;
+    return data;
+  }
+
+  async deleteWand(wandId: number): Promise<boolean> {
+    const { error } = await supabase.from('wands').delete().eq('id', wandId);
+    return !error;
+  }
+
+  async generateRandomWand(characterId: number): Promise<Wand> {
+    // Implementation needed
+    throw new Error("Method not implemented");
+  }
+
+  async getAllWandComponents(): Promise<{
     woods: { name: string; shortDescription: string; longDescription: string }[];
     cores: { name: string; category: string; description: string }[];
     lengths: { name: string; description: string }[];
     flexibilities: { name: string; description: string }[];
-  }>;
-  migrateExistingWandsToInventory(): Promise<number>;
-  updateWandComponents(components: {
+  }> {
+    // Implementation needed
+    throw new Error("Method not implemented");
+  }
+
+  async migrateExistingWandsToInventory(): Promise<number> {
+    // Implementation needed
+    throw new Error("Method not implemented");
+  }
+
+  async updateWandComponents(components: {
     woods: { name: string; shortDescription: string; longDescription: string }[];
     cores: { name: string; category: string; description: string }[];
     lengths: { name: string; description: string }[];
     flexibilities: { name: string; description: string }[];
-  }): Promise<void>;
+  }): Promise<void> {
+    // Implementation needed
+    throw new Error("Method not implemented");
+  }
   
   // Influence operations
   async getInfluenceBar(): Promise<{ grindelwaldPoints: number; dumbledorePoints: number }> {
@@ -879,8 +965,18 @@ export class DatabaseStorage implements IStorage {
     // TODO: Implementace podle skutečné logiky/databáze
     return [];
   }
-  adjustInfluence(side: 'grindelwald' | 'dumbledore', points: number, userId: number): Promise<void>;
-  setInfluence(grindelwaldPoints: number, dumbledorePoints: number, userId: number): Promise<void>;
+
+  async adjustInfluence(side: 'grindelwald' | 'dumbledore', points: number, userId: number): Promise<void> {
+    // TODO: Implementace podle skutečné logiky/databáze
+    // Příklad: await supabase.from('influenceBar').update({ [side + 'Points']: ... }).eq(...)
+    return;
+  }
+
+  async setInfluence(grindelwaldPoints: number, dumbledorePoints: number, userId: number): Promise<void> {
+    // TODO: Implementace podle skutečné logiky/databáze
+    // Příklad: await supabase.from('influenceBar').update({ grindelwaldPoints, dumbledorePoints }).eq(...)
+    return;
+  }
 
   // ... existující kód ...
   async getAllCharacters(includeSystem = false): Promise<Character[]> {
@@ -890,7 +986,7 @@ export class DatabaseStorage implements IStorage {
     }
     const { data, error } = await query;
     if (error) return [];
-    return data || [];
+    return toCamel(data || []);
   }
   // ... existující kód ...
   async assignHousingAdminToSystemUser() {
@@ -900,6 +996,27 @@ export class DatabaseStorage implements IStorage {
       await supabase.from('characters').update({ userId: 6, is_system: true }).eq('id', character.id);
     }
   }
+
+  // Přidávám implementaci chybějící funkce pro admin rozhraní
+  async getPendingHousingRequests(): Promise<HousingRequest[]> {
+    const { data, error } = await supabase.from('housingRequests').select('*').eq('status', 'pending').order('created_at', { ascending: false });
+    if (error) return [];
+    return toCamel(data || []);
+  }
 }
 
 export const storage = new DatabaseStorage();
+
+// Utilita pro převod snake_case na camelCase
+function toCamel(obj: any): any {
+  if (Array.isArray(obj)) return obj.map(toCamel);
+  if (obj && typeof obj === 'object') {
+    return Object.fromEntries(
+      Object.entries(obj).map(([k, v]) => [
+        k.replace(/_([a-z])/g, (_, c) => c.toUpperCase()),
+        toCamel(v)
+      ])
+    );
+  }
+  return obj;
+}
