@@ -13,6 +13,7 @@ app.use((req, res, next) => {
     'http://localhost:5173', // vývoj
     'https://umbra-magica.cz', // produkce
     'https://www.umbra-magica.cz',
+    'https://umbramagica-1.onrender.com', // Render frontend
     // případně další domény
   ];
   if (process.env.NODE_ENV === 'production') {
