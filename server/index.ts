@@ -10,12 +10,8 @@ const app = express();
 app.use((req, res, next) => {
   const origin = req.headers.origin;
   const allowedOrigins = [
-    'http://localhost:5173', // vývoj
-    'https://umbra-magica.cz', // produkce
-    'https://www.umbra-magica.cz',
-    'https://umbramagica-1.onrender.com', // Render frontend
-    'https://umbramagica.onrender.com', // Render backend
-    // případně další domény
+    'https://umbramagica-1.onrender.com', // frontend
+    'https://umbramagica.onrender.com', // backend
   ];
   if (process.env.NODE_ENV === 'production') {
     if (origin && allowedOrigins.includes(origin)) {
