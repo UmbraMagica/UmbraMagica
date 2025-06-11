@@ -21,9 +21,6 @@ const corsOptions = {
   allowedHeaders: process.env.CORS_HEADERS?.split(',') || ['Content-Type', 'Authorization'],
 };
 
-// Apply CORS middleware
-app.use(cors(corsOptions));
-
 declare module 'express-serve-static-core' {
   interface Request {
     user?: {
