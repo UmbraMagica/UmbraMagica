@@ -588,7 +588,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Log admin activity
       await storage.logAdminActivity({
-        adminId: req.session.userId!,
+        adminId: (req.session && req.session.userId) || (req.user && req.user.id),
         action: "user_role_change",
         details: `Changed role of user ${user.username} to ${role}`
       });
@@ -620,7 +620,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         : `Revoked narrator permission for user ${user.username}${reason ? ` - Reason: ${reason}` : ''}`;
         
       await storage.logAdminActivity({
-        adminId: req.session.userId!,
+        adminId: (req.session && req.session.userId) || (req.user && req.user.id),
         action: "narrator_permission_change",
         details
       });
@@ -2232,7 +2232,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Side and points are required" });
       }
       
-      await storage.adjustInfluence(side, points, req.session.userId!);
+      await storage.adjustInfluence(side, points, (req.session && req.session.userId) || (req.user && req.user.id));
       res.json({ message: "Influence adjusted successfully" });
     } catch (error) {
       console.error("Error adjusting influence:", error);
@@ -2248,7 +2248,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Both point values are required" });
       }
       
-      await storage.setInfluence(grindelwaldPoints, dumbledorePoints, req.session.userId!);
+      await storage.setInfluence(grindelwaldPoints, dumbledorePoints, (req.session && req.session.userId) || (req.user && req.user.id));
       res.json({ message: "Influence set successfully" });
     } catch (error) {
       console.error("Error setting influence:", error);
@@ -2274,11 +2274,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const newGrindelwaldPoints = changeType === 'grindelwald' ? newTotal : currentData.grindelwaldPoints;
       const newDumbledorePoints = changeType === 'dumbledore' ? newTotal : currentData.dumbledorePoints;
       
-      await storage.setInfluence(newGrindelwaldPoints, newDumbledorePoints, req.session.userId!);
+      await storage.setInfluence(newGrindelwaldPoints, newDumbledorePoints, (req.session && req.session.userId) || (req.user && req.user.id));
       
       // Record the change in history using parameterized query
       await storage.logAdminActivity({
-        adminId: req.session.userId!,
+        adminId: (req.session && req.session.userId) || (req.user && req.user.id),
         action: "influence_change",
         details: `Changed influence for ${changeType} by ${points} points. Reason: ${reason}`
       });
@@ -2302,14 +2302,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const resetValues = type === '0:0' ? { grindelwald: 0, dumbledore: 0 } : { grindelwald: 50, dumbledore: 50 };
       
       // Set the new values
-      await storage.setInfluence(resetValues.grindelwald, resetValues.dumbledore, req.session.userId!);
+      await storage.setInfluence(resetValues.grindelwald, resetValues.dumbledore, (req.session && req.session.userId) || (req.user && req.user.id));
       
       // Record both changes in history
       const grindelwaldChange = resetValues.grindelwald - currentData.grindelwaldPoints;
       const dumbledoreChange = resetValues.dumbledore - currentData.dumbledorePoints;
       
       await storage.logAdminActivity({
-        adminId: req.session.userId!,
+        adminId: (req.session && req.session.userId) || (req.user && req.user.id),
         action: "influence_reset",
         details: `Influence reset to ${type}. Grindelwald changed by ${grindelwaldChange}, Dumbledore changed by ${dumbledoreChange}`
       });
@@ -2537,7 +2537,7 @@ Správa ubytování`
       const requestId = parseInt(req.params.id);
       const { reviewNote } = req.body;
       
-      const character = await storage.approveCharacterRequest(requestId, req.session.userId!, reviewNote);
+      const character = await storage.approveCharacterRequest(requestId, (req.session && req.session.userId) || (req.user && req.user.id), reviewNote);
       res.json({ message: "Character request approved", character });
     } catch (error) {
       console.error("Error approving character request:", error);
@@ -2555,7 +2555,7 @@ Správa ubytování`
         return res.status(400).json({ message: "Review note is required and must be at least 10 characters long" });
       }
       
-      const request = await storage.rejectCharacterRequest(requestId, req.session.userId!, reviewNote);
+      const request = await storage.rejectCharacterRequest(requestId, (req.session && req.session.userId) || (req.user && req.user.id), reviewNote);
       res.json({ message: "Character request rejected", request });
     } catch (error) {
       console.error("Error rejecting character request:", error);
@@ -2634,7 +2634,7 @@ Správa ubytování`
     try {
       const characterId = parseInt(req.params.id);
       const { deathReason } = req.body;
-      const adminId = req.session.userId!;
+      const adminId = (req.session && req.session.userId) || (req.user && req.user.id);
       
       if (!deathReason || deathReason.trim().length === 0) {
         return res.status(400).json({ message: "Death reason is required" });
@@ -2675,7 +2675,7 @@ Správa ubytování`
   app.post("/api/characters/:id/revive", requireAuth, requireAdminJWT, async (req, res) => {
     try {
       const characterId = parseInt(req.params.id);
-      const adminId = req.session.userId!;
+      const adminId = (req.session && req.session.userId) || (req.user && req.user.id);
       
       const revivedCharacter = await storage.reviveCharacter(characterId);
       
@@ -2703,7 +2703,7 @@ Správa ubytování`
     try {
       const userId = parseInt(req.params.id);
       const { banReason } = req.body;
-      const adminId = req.session.userId!;
+      const adminId = (req.session && req.session.userId) || (req.user && req.user.id);
       
       if (!banReason || banReason.trim().length === 0) {
         return res.status(400).json({ message: "Ban reason is required" });
@@ -2743,7 +2743,7 @@ Správa ubytování`
   app.post("/api/admin/users/:id/reset-password", requireAuth, requireAdminJWT, async (req, res) => {
     try {
       const userId = parseInt(req.params.id);
-      const adminId = req.session.userId!;
+      const adminId = (req.session && req.session.userId) || (req.user && req.user.id);
       
       if (typeof userId !== 'number' || isNaN(userId)) {
         return res.status(400).json({ message: "Invalid user ID" });
@@ -2783,7 +2783,7 @@ Správa ubytování`
     try {
       const userId = parseInt(req.params.id);
       const { canNarrate, reason } = req.body;
-      const adminId = req.session.userId!;
+      const adminId = (req.session && req.session.userId) || (req.user && req.user.id);
       
       if (typeof userId !== 'number' || isNaN(userId)) {
         return res.status(400).json({ message: "Invalid user ID" });
@@ -2828,7 +2828,7 @@ Správa ubytování`
       const categoryData = insertChatCategorySchema.parse(req.body);
       const category = await storage.createChatCategory(categoryData);
       await storage.logAdminActivity({
-        adminId: req.session.userId!,
+        adminId: (req.session && req.session.userId) || (req.user && req.user.id),
         action: 'chat_category_create',
         details: `Vytvořena kategorie "${category.name}"`,
       });
@@ -2848,7 +2848,7 @@ Správa ubytování`
         return res.status(404).json({ message: 'Chat category not found' });
       }
       await storage.logAdminActivity({
-        adminId: req.session.userId!,
+        adminId: (req.session && req.session.userId) || (req.user && req.user.id),
         action: 'chat_category_update',
         details: `Upravena kategorie "${category.name}"`,
       });
@@ -2873,7 +2873,7 @@ Správa ubytování`
       }
       
       await storage.logAdminActivity({
-        adminId: req.session.userId!,
+        adminId: (req.session && req.session.userId) || (req.user && req.user.id),
         action: 'chat_category_delete',
         details: `Smazána kategorie "${category.name}"`,
       });
@@ -2893,7 +2893,7 @@ Správa ubytování`
       }
       const room = await storage.createChatRoom(roomData);
       await storage.logAdminActivity({
-        adminId: req.session.userId!,
+        adminId: (req.session && req.session.userId) || (req.user && req.user.id),
         action: 'chat_room_create',
         details: `Vytvořena místnost "${room.name}"`,
       });
@@ -2913,7 +2913,7 @@ Správa ubytování`
         return res.status(404).json({ message: 'Chat room not found' });
       }
       await storage.logAdminActivity({
-        adminId: req.session.userId!,
+        adminId: (req.session && req.session.userId) || (req.user && req.user.id),
         action: 'chat_room_update',
         details: `Upravena místnost "${room.name}"`,
       });
@@ -2938,7 +2938,7 @@ Správa ubytování`
       }
       
       await storage.logAdminActivity({
-        adminId: req.session.userId!,
+        adminId: (req.session && req.session.userId) || (req.user && req.user.id),
         action: 'chat_room_delete',
         details: `Smazána místnost "${room.name}"`,
       });
@@ -3207,7 +3207,7 @@ Správa ubytování`
       
       const approvedRequest = await storage.approveHousingRequest(
         requestId,
-        req.session.userId!,
+        (req.session && req.session.userId) || (req.user && req.user.id),
         assignedAddress,
         reviewNote
       );
@@ -3230,7 +3230,7 @@ Správa ubytování`
       
       const rejectedRequest = await storage.rejectHousingRequest(
         requestId,
-        req.session.userId!,
+        (req.session && req.session.userId) || (req.user && req.user.id),
         reviewNote
       );
       
@@ -3253,7 +3253,7 @@ Správa ubytování`
       // Return request uses rejection but with different message
       const request = await storage.rejectHousingRequest(
         requestId,
-        req.session.userId!,
+        (req.session && req.session.userId) || (req.user && req.user.id),
         reviewNote
       );
       
