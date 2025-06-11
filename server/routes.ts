@@ -3302,6 +3302,11 @@ Správa ubytování`
     }
   });
 
+  // Testovací endpoint pro ověření spojení s backendem
+  app.get('/api/test', (req, res) => {
+    res.json({ message: 'Backend funguje!' });
+  });
+
   // Globální error handler pro všechny neobsloužené chyby
   app.use((err, req, res, next) => {
     console.error('Unhandled error:', err);
