@@ -12,6 +12,7 @@ import { Plus, Edit, Trash2, Wand2, ArrowLeft, Search, Filter, Upload, FileText 
 import { useToast } from "@/hooks/use-toast";
 import type { Spell } from "@shared/types";
 import { useLocation } from "wouter";
+import { getAuthToken } from "@/lib/queryClient";
 
 export default function AdminSpells() {
   const [isCreating, setIsCreating] = useState(false);
@@ -74,9 +75,10 @@ export default function AdminSpells() {
 
   const initializeSpellsMutation = useMutation({
     mutationFn: async () => {
+      const token = getAuthToken();
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/spells/initialize`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
       });
       if (!response.ok) throw new Error('Failed to initialize spells');
       return response.json();
@@ -92,9 +94,10 @@ export default function AdminSpells() {
 
   const createSpellMutation = useMutation({
     mutationFn: async (spellData: typeof formData) => {
+      const token = getAuthToken();
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/spells`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
         body: JSON.stringify(spellData),
       });
       if (!response.ok) throw new Error('Failed to create spell');
@@ -113,9 +116,10 @@ export default function AdminSpells() {
 
   const updateSpellMutation = useMutation({
     mutationFn: async ({ id, data }: { id: number; data: typeof formData }) => {
+      const token = getAuthToken();
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/spells/${id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
         body: JSON.stringify(data),
       });
       if (!response.ok) throw new Error('Failed to update spell');
@@ -134,8 +138,10 @@ export default function AdminSpells() {
 
   const deleteSpellMutation = useMutation({
     mutationFn: async (id: number) => {
+      const token = getAuthToken();
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/spells/${id}`, {
         method: 'DELETE',
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
       if (!response.ok) throw new Error('Failed to delete spell');
       return response.json();
@@ -151,9 +157,10 @@ export default function AdminSpells() {
 
   const bulkImportMutation = useMutation({
     mutationFn: async (spellsData: Array<{name: string, effect: string, category: string, type: string, targetType: string}>) => {
+      const token = getAuthToken();
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/spells/bulk-import`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
         body: JSON.stringify({ spells: spellsData }),
       });
       if (!response.ok) throw new Error('Failed to import spells');

@@ -17,7 +17,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { formatDistanceToNow } from "date-fns";
 import { cs } from "date-fns/locale";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest, getQueryFn, getAuthToken } from "@/lib/queryClient";
 
 // Message form schema
 const messageSchema = z.object({
@@ -75,6 +75,7 @@ export default function OwlPost() {
   const { data: userCharacters = [] } = useQuery<any[]>({
     queryKey: ["/api/characters"],
     enabled: !!user,
+    queryFn: getQueryFn({ on401: "throw" }),
   });
 
   // Get first alive character as default
@@ -91,24 +92,35 @@ export default function OwlPost() {
   const { data: allCharacters = [] } = useQuery<Character[]>({
     queryKey: ["/api/owl-post/characters"],
     enabled: !!user,
+    queryFn: getQueryFn({ on401: "throw" }),
   });
 
   // Get inbox messages
   const { data: inboxMessages = [] } = useQuery<OwlPostMessage[]>({
     queryKey: [`/api/owl-post/inbox/${activeCharacter?.id}`],
     enabled: !!activeCharacter,
+    queryFn: getQueryFn({ on401: "throw" }),
   });
 
   // Get sent messages
   const { data: sentMessages = [] } = useQuery<OwlPostMessage[]>({
     queryKey: [`/api/owl-post/sent/${activeCharacter?.id}`],
     enabled: !!activeCharacter,
+    queryFn: getQueryFn({ on401: "throw" }),
   });
 
   // Get unread count
   const { data: unreadData } = useQuery<{ count: number }>({
     queryKey: [`/api/owl-post/unread-count/${activeCharacter?.id}`],
     enabled: !!activeCharacter,
+    queryFn: getQueryFn({ on401: "throw" }),
+  });
+
+  // Get unread total
+  const { data: unreadTotalData } = useQuery<{ count: number }>({
+    queryKey: ["/api/owl-post/unread-total"],
+    enabled: !!user,
+    queryFn: getQueryFn({ on401: "throw" }),
   });
 
   const unreadCount = unreadData?.count || 0;
@@ -116,10 +128,12 @@ export default function OwlPost() {
   // Send message mutation
   const sendMessageMutation = useMutation({
     mutationFn: async (data: MessageForm & { senderCharacterId: number }) => {
+      const token = getAuthToken();
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/owl-post/send`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         body: JSON.stringify(data),
       });
@@ -147,8 +161,10 @@ export default function OwlPost() {
   // Delete message mutation
   const deleteMessageMutation = useMutation({
     mutationFn: async (messageId: number) => {
+      const token = getAuthToken();
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/owl-post/message/${messageId}`, {
         method: "DELETE",
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
       if (!response.ok) {
         throw new Error("Failed to delete message");
@@ -170,10 +186,12 @@ export default function OwlPost() {
   // Mark as read mutation
   const markAsReadMutation = useMutation({
     mutationFn: async (messageId: number) => {
+      const token = getAuthToken();
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/owl-post/mark-read/${messageId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
       if (!response.ok) {

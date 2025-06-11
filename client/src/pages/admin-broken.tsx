@@ -1,6 +1,6 @@
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest, getQueryFn } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -64,22 +64,26 @@ export default function Admin() {
   const { data: users = [] } = useQuery<AdminUser[]>({
     queryKey: ["/api/users"],
     staleTime: 30000,
+    queryFn: getQueryFn({ on401: "throw" }),
   });
 
   const { data: characterRequests = [] } = useQuery<any[]>({
     queryKey: ["/api/admin/character-requests"],
     staleTime: 30000,
+    queryFn: getQueryFn({ on401: "throw" }),
   });
 
   const { data: adminActivityLog = [] } = useQuery<any[]>({
     queryKey: ["/api/admin/activity-log"],
     staleTime: 30000,
+    queryFn: getQueryFn({ on401: "throw" }),
   });
 
   // Fetch all characters for cemetery management
   const { data: allCharacters = [] } = useQuery<any[]>({
     queryKey: ["/api/characters/all"],
     staleTime: 30000,
+    queryFn: getQueryFn({ on401: "throw" }),
   });
 
   const createInviteCodeMutation = useMutation({
