@@ -2316,7 +2316,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       await storage.logAdminActivity({
         adminId: req.user.id,
-        action: "influence_reset",
+        action: 'influence_reset',
         details: `Influence reset to ${type}. Grindelwald changed by ${grindelwaldChange}, Dumbledore changed by ${dumbledoreChange}`
       });
       
@@ -2761,11 +2761,18 @@ Správa ubytování`
       
       // Generate temporary password
       const tempPassword = Math.random().toString(36).slice(-8);
-      const hashedPassword = await storage.hashPassword(tempPassword);
       
-      // Update user password
-      await storage.resetUserPassword(userId, hashedPassword);
-      
+      // Update password using Supabase Auth API
+      const { data, error } = await supabase.auth.admin.updateUserById(userId.toString(), {
+        password: tempPassword,
+        email_confirm: true
+      });
+
+      if (error) {
+        console.error('Error resetting password with Supabase Auth:', error);
+        return res.status(500).json({ message: 'Failed to reset password' });
+      }
+
       // Log admin activity
       await storage.logAdminActivity({
         adminId,
