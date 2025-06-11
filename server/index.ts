@@ -71,6 +71,11 @@ app.use((req, res, next) => {
   next();
 });
 
+// Testovací endpoint pro ověření funkčnosti backendu
+app.get('/api/test', (req: Request, res: Response) => {
+  res.json({ message: 'Backend funguje!' });
+});
+
 app.use('/api', supabaseRoutes);
 
 (async () => {
