@@ -33,7 +33,13 @@ export function useAuth() {
   const loginMutation = useMutation({
     mutationFn: async (credentials: { username: string; password: string }) => {
       const response = await apiRequest("POST", "/api/auth/login", credentials);
-      return response.json();
+      try {
+        return await response.json();
+      } catch (e) {
+        // Pokud není validní JSON, vrať prázdný objekt a loguj chybu
+        console.error("Chyba při parsování JSON odpovědi z loginu:", e);
+        return {};
+      }
     },
     onSuccess: (data) => {
       queryClient.setQueryData([`${import.meta.env.VITE_API_URL}/api/auth/user`], data);
