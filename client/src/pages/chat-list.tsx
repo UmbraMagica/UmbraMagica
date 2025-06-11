@@ -144,18 +144,44 @@ export default function ChatList() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-              </div>
+        {categories.map((category) => (
+          <div key={category.id}>
+            <h2 className="text-xl font-semibold mb-4">{category.name}</h2>
+            <div className="space-y-4">
+              {category.rooms.map((room) => (
+                <Card key={room.id}>
+                  <CardContent>
+                    <div className="flex flex-col space-y-2">
+                      <div className="flex justify-between items-center">
+                        <h3 className="font-semibold">{room.name}</h3>
+                        {isAdmin && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={(event) => handleEditStart(room, event)}
+                          >
+                            Upravit
+                          </Button>
+                        )}
+                      </div>
+                      {room.description && (
+                        <p className="text-sm text-muted-foreground">{room.description}</p>
+                      )}
+                      <div className="flex justify-end">
+                        <Button
+                          onClick={() => handleRoomClick(room.id)}
+                          disabled={!selectedCharacter}
+                        >
+                          Vstoupit
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
-          ))}
-        </div>
-      )}
-                  Vstoupit
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+          </div>
         ))}
-
         {rooms.length === 0 && (
           <div className="col-span-full text-center py-12">
             <MessageCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
