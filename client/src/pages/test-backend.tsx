@@ -5,7 +5,6 @@ declare global {
   interface ImportMeta {
     env: {
       VITE_API_URL: string;
-      // případně další proměnné
     };
   }
 }
@@ -14,9 +13,7 @@ const TestBackend: React.FC = () => {
   const [result, setResult] = useState<string>('Načítám...');
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/test`, {
-      credentials: 'include',
-    })
+    fetch(`${import.meta.env.VITE_API_URL}/api/test`)
       .then(async (res) => {
         const text = await res.text();
         setResult(`Status: ${res.status}\nOdpověď: ${text}`);
