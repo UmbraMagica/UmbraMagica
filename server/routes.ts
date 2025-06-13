@@ -116,6 +116,27 @@ function requireAuthFlexible(req, res, next) {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Session configuration (MUSÍ BÝT NA ZAČÁTKU!)
+  const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
+  const sessionSecret = process.env.SESSION_SECRET || 'umbra-magica-session-secret-key-fixed-2024';
+
+  app.use(session({
+    store: new (pgSession(session))({
+      conString: process.env.DATABASE_URL
+    }),
+    secret: sessionSecret,
+    resave: false,
+    saveUninitialized: false,
+    name: 'connect.sid',
+    cookie: {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+      domain: '.onrender.com', // důležité pro cross-domain cookies na Renderu
+      maxAge: sessionTtl,
+    },
+  }));
+
   // Create HTTP server
   const httpServer = createServer(app);
 
@@ -200,29 +221,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     next();
   });
 
-  // Session configuration
-  const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
-  const sessionSecret = process.env.SESSION_SECRET || 'umbra-magica-session-secret-key-fixed-2024';
-
-  app.use(session({
-    store: new (pgSession(session))({
-      conString: process.env.DATABASE_URL
-    }),
-    secret: sessionSecret,
-    resave: false,
-    saveUninitialized: false,
-    name: 'connect.sid',
-    cookie: {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'none',
-      domain: '.onrender.com', // důležité pro cross-domain cookies na Renderu
-      maxAge: sessionTtl,
-    },
-  }));
-
   // Authentication middleware
   const requireAuth = (req: any, res: any, next: any) => {
+    console.log('Session in requireAuth:', req.session);
     if (!req.session.userId) {
       return res.status(401).json({ message: "Unauthorized" });
     }
@@ -632,7 +633,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "User not found" });
       }
 
-      // Log admin activity
+      if (!req.user) return res.status(401).json({ message: 'Unauthorized' });
       await storage.logAdminActivity({
         adminId: req.user.id,
         action: "user_role_change",
@@ -665,6 +666,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ? `Granted narrator permission for user ${user.username}`
         : `Revoked narrator permission for user ${user.username}${reason ? ` - Reason: ${reason}` : ''}`;
         
+      if (!req.user) return res.status(401).json({ message: 'Unauthorized' });
       await storage.logAdminActivity({
         adminId: req.user.id,
         action: "narrator_permission_change",
@@ -894,6 +896,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
       
+      if (!req.user) return res.status(401).json({ message: 'Unauthorized' });
       // Add current admin user as online (since they're making this request)
       const currentUserId = req.user.id;
       if (currentUserId) {
