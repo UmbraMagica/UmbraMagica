@@ -243,6 +243,80 @@ export async function registerRoutes(app: Express): Promise<void> {
     }
   });
 
+  // Seznam všech postav uživatele
+  app.get("/api/characters/all", requireAuth, async (req, res) => {
+    const characters = await storage.getCharactersByUserId(req.user!.id);
+    res.json({ characters });
+  });
+
+  // Seznam online postav (zatím prázdné)
+  app.get("/api/characters/online", requireAuth, async (_req, res) => {
+    res.json([]);
+  });
+
+  // Hůlka postavy
+  app.get("/api/characters/:id/wand", requireAuth, async (req, res) => {
+    const characterId = Number(req.params.id);
+    if (!characterId || isNaN(characterId)) {
+      return res.status(400).json({ message: "Invalid characterId" });
+    }
+    if (req.user!.role !== 'admin') {
+      const characters = await storage.getCharactersByUserId(req.user!.id);
+      if (!characters.some((char: any) => char.id === characterId)) {
+        return res.status(403).json({ message: "Forbidden" });
+      }
+    }
+    const wand = await storage.getCharacterWand(characterId);
+    if (!wand) return res.status(404).json({ message: "Not Found" });
+    res.json(wand);
+  });
+
+  // Poslední chat postavy (zatím null)
+  app.get("/api/characters/:id/last-chat", requireAuth, async (req, res) => {
+    res.json(null);
+  });
+
+  // Seznam všech postav uživatele (pro kompatibilitu)
+  app.get("/api/characters", requireAuth, async (req, res) => {
+    const characters = await storage.getCharactersByUserId(req.user!.id);
+    res.json({ characters });
+  });
+
+  // Komponenty pro tvorbu hůlek (zatím prázdné)
+  app.get("/api/wand-components", requireAuth, async (_req, res) => {
+    res.json({ woods: [], cores: [], lengths: [], flexibilities: [] });
+  });
+
+  // Chat kategorie (zatím prázdné)
+  app.get("/api/chat/categories", requireAuth, async (_req, res) => {
+    res.json([]);
+  });
+
+  // Chat místnosti (zatím prázdné)
+  app.get("/api/chat/rooms", requireAuth, async (_req, res) => {
+    res.json([]);
+  });
+
+  // Influence bar (mock)
+  app.get("/api/influence-bar", requireAuth, async (_req, res) => {
+    res.json({ grindelwaldPoints: 50, dumbledorePoints: 50 });
+  });
+
+  // Influence history (mock)
+  app.get("/api/influence-history", requireAuth, async (_req, res) => {
+    res.json([]);
+  });
+
+  // Seznam postav pro poštu (zatím prázdné)
+  app.get("/api/owl-post/characters", requireAuth, async (_req, res) => {
+    res.json([]);
+  });
+
+  // Celkový počet nepřečtených zpráv (zatím 0)
+  app.get("/api/owl-post/unread-total", requireAuth, async (_req, res) => {
+    res.json({ count: 0 });
+  });
+
   // ... další endpointy (např. /api/user/character-order, /api/user/highlight-words, atd.) ...
   // Všude používej pouze req.user!.id a req.user!.role
   // ŽÁDNÉ req.session, req.cookies, SessionData, debug endpointy na session/cookie!
