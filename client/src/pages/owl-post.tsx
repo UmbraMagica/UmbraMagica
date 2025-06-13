@@ -85,8 +85,12 @@ export default function OwlPost() {
   const characterFromUrl = characterIdFromUrl ? 
     userCharacters.find((char: any) => char.id === parseInt(characterIdFromUrl)) : null;
   
-  // Use selected character, character from URL, or first alive character
-  const activeCharacter = selectedCharacter || characterFromUrl || firstAliveCharacter;
+  // Načti postavu z localStorage pokud není v URL
+  const characterIdFromStorage = !characterIdFromUrl ? localStorage.getItem('selectedOwlPostCharacterId') : null;
+  const characterFromStorage = characterIdFromStorage ? userCharacters.find((char: any) => char.id === parseInt(characterIdFromStorage)) : null;
+
+  // Use selected character, character from URL, from storage, or first alive character
+  const activeCharacter = selectedCharacter || characterFromUrl || characterFromStorage || firstAliveCharacter;
 
   // Get all characters for recipient selection
   const { data: allCharacters = [] } = useQuery<Character[]>({
@@ -228,21 +232,28 @@ export default function OwlPost() {
     },
   });
 
+  // Ulož výběr postavy do localStorage při změně
+  const handleCharacterChange = (value: string) => {
+    const character = userCharacters.find((char: any) => char.id === parseInt(value));
+    setSelectedCharacter(character);
+    if (character) {
+      localStorage.setItem('selectedOwlPostCharacterId', character.id.toString());
+    }
+  };
+
   const onSubmit = (data: MessageForm) => {
-    if (!firstAliveCharacter) return;
-    
+    if (!activeCharacter) return;
     sendMessageMutation.mutate({
       ...data,
-      senderCharacterId: firstAliveCharacter.id,
+      senderCharacterId: activeCharacter.id,
     });
   };
 
   const onReplySubmit = (data: MessageForm) => {
-    if (!firstAliveCharacter) return;
-    
+    if (!activeCharacter) return;
     sendMessageMutation.mutate({
       ...data,
-      senderCharacterId: firstAliveCharacter.id,
+      senderCharacterId: activeCharacter.id,
     });
   };
 
@@ -313,11 +324,8 @@ export default function OwlPost() {
             <div className="flex items-center gap-2 text-sm">
               <span className="text-muted-foreground">Aktivní postava:</span>
               <Select 
-                value={activeCharacter.id.toString()} 
-                onValueChange={(value) => {
-                  const character = userCharacters.find((char: any) => char.id === parseInt(value));
-                  setSelectedCharacter(character);
-                }}
+                value={activeCharacter?.id?.toString() || ""} 
+                onValueChange={handleCharacterChange}
               >
                 <SelectTrigger className="w-40 h-7 text-xs">
                   <SelectValue />

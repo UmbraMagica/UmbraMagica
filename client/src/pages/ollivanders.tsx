@@ -60,9 +60,21 @@ export default function Ollivanders() {
       const firstAliveCharacter = userCharacters.find((char: any) => !char.deathDate);
       if (firstAliveCharacter && !selectedCharacter) {
         setSelectedCharacter(firstAliveCharacter);
+        localStorage.setItem('selectedCharacterId', firstAliveCharacter.id.toString());
       }
     }
   }, [userCharacters]);
+
+  // Funkce pro změnu postavy v roletce Ollivandera
+  const handleCharacterChange = (characterId: string) => {
+    const selectedChar = userCharacters.find((char: any) => char.id === parseInt(characterId));
+    if (selectedChar) {
+      setSelectedCharacter(selectedChar);
+      localStorage.setItem('selectedCharacterId', selectedChar.id.toString());
+      // Po změně postavy invalidovat dotaz na hůlku
+      queryClient.invalidateQueries({ queryKey: [`/api/characters/${selectedChar.id}/wand`] });
+    }
+  };
 
   const mainCharacter = selectedCharacter || activeCharacter;
 
@@ -237,8 +249,41 @@ export default function Ollivanders() {
           </h1>
         </div>
         
-        {/* Character Info - shows currently selected character from main navbar */}
-        {mainCharacter && (
+        {/* Character Info + roletka pro výběr postavy */}
+        {userCharacters.length > 1 && (
+          <Select
+            value={mainCharacter?.id?.toString() || ""}
+            onValueChange={handleCharacterChange}
+          >
+            <SelectTrigger className="w-[200px]">
+              <SelectValue placeholder="Vyberte postavu">
+                {mainCharacter ? (
+                  <div className="flex items-center gap-2">
+                    <CharacterAvatar character={mainCharacter} size="sm" />
+                    <span className="truncate">
+                      {mainCharacter.firstName} {mainCharacter.lastName}
+                    </span>
+                  </div>
+                ) : (
+                  "Vyberte postavu"
+                )}
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              {userCharacters.filter((char: any) => !char.deathDate).map((character: any) => (
+                <SelectItem key={character.id} value={character.id.toString()}>
+                  <div className="flex items-center gap-2">
+                    <CharacterAvatar character={character} size="sm" />
+                    <span>
+                      {character.firstName} {character.lastName}
+                    </span>
+                  </div>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
+        {userCharacters.length === 1 && mainCharacter && (
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <span>Postava:</span>
             <div className="flex items-center gap-2">

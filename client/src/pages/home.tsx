@@ -121,11 +121,17 @@ export default function Home() {
     gcTime: 0     // Don't cache
   });
 
-  // Get unread owl post count
+  // Get unread owl post count for current character
   const { data: unreadOwlPostData } = useQuery({
-    queryKey: ["/api/owl-post/unread-total"],
-    enabled: !!user,
+    queryKey: ["/api/owl-post/unread-count", currentDisplayedCharacter?.id],
+    enabled: !!currentDisplayedCharacter?.id,
     refetchInterval: 30000, // Refresh every 30 seconds
+    queryFn: async () => {
+      if (!currentDisplayedCharacter?.id) return { count: 0 };
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/owl-post/unread-count/${currentDisplayedCharacter.id}`);
+      if (!response.ok) return { count: 0 };
+      return response.json();
+    }
   });
 
   // Get character's last used chat room
