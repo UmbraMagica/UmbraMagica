@@ -211,6 +211,12 @@ export interface IStorage {
 
   // Přidávám implementaci chybějící funkce pro admin rozhraní
   getPendingHousingRequests(): Promise<HousingRequest[]>;
+
+  // Owl Post operations
+  getUnreadOwlPostCount(characterId: number): Promise<number>;
+  getOwlPostInbox(characterId: number): Promise<OwlPostMessage[]>;
+  sendOwlPostMessage(senderCharacterId: number, recipientCharacterId: number, subject: string, content: string): Promise<OwlPostMessage>;
+  markOwlPostMessageRead(messageId: number, characterId: number): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -1005,6 +1011,47 @@ export class DatabaseStorage implements IStorage {
     const { data, error } = await supabase.from('housingRequests').select('*').eq('status', 'pending').order('created_at', { ascending: false });
     if (error) return [];
     return toCamel(data || []);
+  }
+
+  // Owl Post operations
+  async getUnreadOwlPostCount(characterId: number): Promise<number> {
+    const { count, error } = await supabase
+      .from('owl_post_messages')
+      .select('*', { count: 'exact', head: true })
+      .eq('recipient_character_id', characterId)
+      .eq('is_read', false);
+    if (error) return 0;
+    return count || 0;
+  }
+
+  async getOwlPostInbox(characterId: number): Promise<OwlPostMessage[]> {
+    const { data, error } = await supabase
+      .from('owl_post_messages')
+      .select('*')
+      .eq('recipient_character_id', characterId)
+      .order('sent_at', { ascending: false });
+    if (error) return [];
+    return data || [];
+  }
+
+  async sendOwlPostMessage(senderCharacterId: number, recipientCharacterId: number, subject: string, content: string): Promise<OwlPostMessage> {
+    const { data, error } = await supabase
+      .from('owl_post_messages')
+      .insert([{ sender_character_id: senderCharacterId, recipient_character_id: recipientCharacterId, subject, content, is_read: false, sent_at: new Date() }])
+      .select()
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    return data;
+  }
+
+  async markOwlPostMessageRead(messageId: number, characterId: number): Promise<boolean> {
+    // Zprávu může označit jako přečtenou pouze příjemce
+    const { error } = await supabase
+      .from('owl_post_messages')
+      .update({ is_read: true, read_at: new Date() })
+      .eq('id', messageId)
+      .eq('recipient_character_id', characterId);
+    return !error;
   }
 }
 

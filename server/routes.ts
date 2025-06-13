@@ -167,6 +167,82 @@ export async function registerRoutes(app: Express): Promise<void> {
     });
   });
 
+  // Soví pošta: počet nepřečtených zpráv pro postavu
+  app.get("/api/owl-post/unread-count/:characterId", requireAuth, async (req, res) => {
+    const characterId = Number(req.params.characterId);
+    if (!characterId || isNaN(characterId)) {
+      return res.status(400).json({ message: "Invalid characterId" });
+    }
+    // Ověř, že postava patří uživateli (nebo je admin)
+    if (req.user!.role !== 'admin') {
+      const characters = await storage.getCharactersByUserId(req.user!.id);
+      if (!characters.some((char: any) => char.id === characterId)) {
+        return res.status(403).json({ message: "Forbidden" });
+      }
+    }
+    const count = await storage.getUnreadOwlPostCount(characterId);
+    res.json({ count });
+  });
+
+  // Soví pošta: inbox pro postavu
+  app.get("/api/owl-post/:characterId", requireAuth, async (req, res) => {
+    const characterId = Number(req.params.characterId);
+    if (!characterId || isNaN(characterId)) {
+      return res.status(400).json({ message: "Invalid characterId" });
+    }
+    if (req.user!.role !== 'admin') {
+      const characters = await storage.getCharactersByUserId(req.user!.id);
+      if (!characters.some((char: any) => char.id === characterId)) {
+        return res.status(403).json({ message: "Forbidden" });
+      }
+    }
+    const inbox = await storage.getOwlPostInbox(characterId);
+    res.json({ messages: inbox });
+  });
+
+  // Soví pošta: odeslání nové zprávy
+  app.post("/api/owl-post", requireAuth, async (req, res) => {
+    const { senderCharacterId, recipientCharacterId, subject, content } = req.body;
+    if (!senderCharacterId || !recipientCharacterId || !subject || !content) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+    // Ověř, že odesílatelská postava patří uživateli (nebo je admin)
+    if (req.user!.role !== 'admin') {
+      const characters = await storage.getCharactersByUserId(req.user!.id);
+      if (!characters.some((char: any) => char.id === senderCharacterId)) {
+        return res.status(403).json({ message: "Forbidden" });
+      }
+    }
+    try {
+      const msg = await storage.sendOwlPostMessage(senderCharacterId, recipientCharacterId, subject, content);
+      res.status(201).json({ message: msg });
+    } catch (e: any) {
+      res.status(500).json({ message: e.message || "Failed to send message" });
+    }
+  });
+
+  // Soví pošta: označení zprávy jako přečtené
+  app.post("/api/owl-post/:messageId/read", requireAuth, async (req, res) => {
+    const messageId = Number(req.params.messageId);
+    const { characterId } = req.body;
+    if (!messageId || isNaN(messageId) || !characterId) {
+      return res.status(400).json({ message: "Invalid messageId or characterId" });
+    }
+    // Ověř, že postava patří uživateli (nebo je admin)
+    if (req.user!.role !== 'admin') {
+      const characters = await storage.getCharactersByUserId(req.user!.id);
+      if (!characters.some((char: any) => char.id === characterId)) {
+        return res.status(403).json({ message: "Forbidden" });
+      }
+    }
+    const ok = await storage.markOwlPostMessageRead(messageId, characterId);
+    if (ok) {
+      res.json({ success: true });
+    } else {
+      res.status(404).json({ message: "Message not found or not allowed" });
+    }
+  });
+
   // ... další endpointy (např. /api/user/character-order, /api/user/highlight-words, atd.) ...
   // Všude používej pouze req.user!.id a req.user!.role
   // ŽÁDNÉ req.session, req.cookies, SessionData, debug endpointy na session/cookie!
