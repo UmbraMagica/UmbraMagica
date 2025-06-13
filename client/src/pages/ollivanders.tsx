@@ -66,13 +66,28 @@ export default function Ollivanders() {
     }
   }, [userCharacters]);
 
+  // Debug: log načítání všech postav
+  useEffect(() => {
+    if (allCharacters) {
+      console.log("[Ollivanders] Načteno allCharacters:", allCharacters);
+    }
+  }, [allCharacters]);
+
+  // Debug: log načítání uživatelských postav
+  useEffect(() => {
+    if (userCharacters) {
+      console.log("[Ollivanders] Načteno userCharacters:", userCharacters);
+    }
+  }, [userCharacters]);
+
   // Funkce pro změnu postavy v roletce Ollivandera
   const handleCharacterChange = (characterId: string) => {
+    console.log("[Ollivanders] handleCharacterChange na:", characterId);
     const selectedChar = userCharacters.find((char: any) => char.id === parseInt(characterId));
     if (selectedChar) {
       setSelectedCharacter(selectedChar);
       localStorage.setItem('selectedCharacterId', selectedChar.id.toString());
-      // Po změně postavy invalidovat dotaz na hůlku
+      console.log("[Ollivanders] Nastaven selectedCharacter:", selectedChar);
       queryClient.invalidateQueries({ queryKey: [`/api/characters/${selectedChar.id}/wand`] });
     }
   };
@@ -115,6 +130,13 @@ export default function Ollivanders() {
   console.log('Ollivanders - Character wand query key:', `/api/characters/${mainCharacter?.id}/wand`);
   console.log('Ollivanders - Character wand data:', characterWand);
 
+  // Debug: log načítání hůlky
+  useEffect(() => {
+    if (mainCharacter?.id && characterWand !== undefined) {
+      console.log("[Ollivanders] Načítám hůlku pro postavu:", mainCharacter.id, characterWand);
+    }
+  }, [mainCharacter?.id, characterWand]);
+
   // Get wand components for manual selection
   const { data: wandComponents } = useQuery<{
     woods: Array<{ name: string; shortDescription: string; longDescription: string; availableForRandom?: boolean }>;
@@ -128,11 +150,25 @@ export default function Ollivanders() {
     },
   });
 
+  // Debug: log načítání komponent hůlky
+  useEffect(() => {
+    if (wandComponents) {
+      console.log("[Ollivanders] Načteny wandComponents:", wandComponents);
+    }
+  }, [wandComponents]);
+
+  // Debug: log načítání hůlky
+  useEffect(() => {
+    if (mainCharacter?.id) {
+      console.log("[Ollivanders] Načítám hůlku pro postavu:", mainCharacter.id);
+    }
+  }, [mainCharacter?.id]);
+
   // Visit Ollivanders mutation (random wand)
   const visitOllivandersMutation = useMutation({
     mutationFn: async () => {
       if (!mainCharacter?.id) throw new Error("No character selected");
-      
+      console.log("[Ollivanders] Posílám požadavek na návštěvu Ollivandera pro postavu:", mainCharacter.id);
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/characters/${mainCharacter.id}/visit-ollivanders`, {
         method: 'POST',
         headers: {
@@ -141,30 +177,25 @@ export default function Ollivanders() {
         },
         credentials: 'include'
       });
-      
       if (!response.ok) {
-        if (response.headers.get("content-type")?.includes("application/json")) {
-          const error = await response.json();
-          throw new Error(error.message || 'Failed to visit Ollivanders');
-        } else {
-          const text = await response.text();
-          throw new Error(text || 'Failed to visit Ollivanders');
-        }
+        const text = await response.text();
+        console.error("[Ollivanders] Chyba při návštěvě Ollivandera:", text);
+        throw new Error(text || 'Failed to visit Ollivanders');
       }
-      if (response.headers.get("content-type")?.includes("application/json")) {
-        return response.json();
-      } else {
-        return {};
-      }
+      const data = await response.json();
+      console.log("[Ollivanders] Odpověď z API:", data);
+      return data;
     },
-    onSuccess: (newWand: Wand) => {
+    onSuccess: (newWand) => {
+      console.log("[Ollivanders] Návštěva Ollivandera úspěšná, nová hůlka:", newWand);
       toast({
         title: "Gratulujeme!",
         description: `${mainCharacter?.firstName} získal novou hůlku od pana Ollivandera!`
       });
       queryClient.invalidateQueries({ queryKey: [`/api/characters/${mainCharacter?.id}/wand`] });
     },
-    onError: (error: Error) => {
+    onError: (error) => {
+      console.error("[Ollivanders] Chyba při návštěvě Ollivandera (mutace):", error);
       toast({
         title: "Chyba",
         description: error.message,
@@ -177,7 +208,7 @@ export default function Ollivanders() {
   const createCustomWandMutation = useMutation({
     mutationFn: async () => {
       if (!mainCharacter?.id) throw new Error("No character selected");
-      
+      console.log("[Ollivanders] Posílám požadavek na tvorbu vlastní hůlky pro postavu:", mainCharacter.id, customWand);
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/characters/${mainCharacter.id}/create-custom-wand`, {
         method: 'POST',
         headers: {
@@ -187,38 +218,25 @@ export default function Ollivanders() {
         body: JSON.stringify(customWand),
         credentials: 'include'
       });
-      
       if (!response.ok) {
-        if (response.headers.get("content-type")?.includes("application/json")) {
-          const error = await response.json();
-          throw new Error(error.message || 'Failed to create custom wand');
-        } else {
-          const text = await response.text();
-          throw new Error(text || 'Failed to create custom wand');
-        }
+        const text = await response.text();
+        console.error("[Ollivanders] Chyba při tvorbě vlastní hůlky:", text);
+        throw new Error(text || 'Failed to create custom wand');
       }
-      if (response.headers.get("content-type")?.includes("application/json")) {
-        return response.json();
-      } else {
-        return {};
-      }
+      const data = await response.json();
+      console.log("[Ollivanders] Odpověď z API:", data);
+      return data;
     },
-    onSuccess: (newWand: Wand) => {
+    onSuccess: (newWand) => {
+      console.log("[Ollivanders] Vlastní hůlka úspěšně vytvořena:", newWand);
       toast({
         title: "Hůlka vytvořena!",
-        description: `${mainCharacter?.firstName} si pečlivě vybral svou jedinečnou hůlku!`
+        description: `${mainCharacter?.firstName} má novou vlastní hůlku!`
       });
       queryClient.invalidateQueries({ queryKey: [`/api/characters/${mainCharacter?.id}/wand`] });
-      // Reset form
-      setCustomWand({
-        wood: "",
-        core: "",
-        length: "",
-        flexibility: "",
-        description: ""
-      });
     },
-    onError: (error: Error) => {
+    onError: (error) => {
+      console.error("[Ollivanders] Chyba při tvorbě vlastní hůlky (mutace):", error);
       toast({
         title: "Chyba",
         description: error.message,

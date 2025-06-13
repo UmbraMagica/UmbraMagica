@@ -834,38 +834,43 @@ export default function Home() {
                         return a.firstName.localeCompare(b.firstName, 'cs');
                       })
                       .map((character: any) => (
-                      <div 
-                        key={character.id} 
-                        className="flex items-center justify-between p-3 rounded-lg bg-muted/30"
-                      >
-                        <div className="flex items-center space-x-3 flex-1">
-                          <CharacterAvatar character={character} size="sm" />
-                          <div>
-                            <p className="font-medium text-foreground text-sm">
-                              {character.firstName} {character.lastName}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              {calculateGameAge(character.birthDate)} let
-                            </p>
-                          </div>
-                        </div>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            // First set the character as selected in localStorage
-                            localStorage.setItem('selectedCharacterId', character.id.toString());
-                            setLocation("/character/edit");
-                          }}
-                          className="text-muted-foreground hover:text-foreground ml-2"
+                        <div 
+                          key={character.id} 
+                          className="flex items-center justify-between p-3 rounded-lg bg-muted/30"
                         >
-                          <Settings className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    ))}
+                          <div className="flex items-center space-x-3 flex-1">
+                            <CharacterAvatar character={character} size="sm" />
+                            <div>
+                              <p
+                                className="font-medium text-foreground text-sm cursor-pointer hover:text-accent transition-colors"
+                                onClick={() => {
+                                  console.log("Kliknuto na postavu:", character.id);
+                                  localStorage.setItem('selectedCharacterId', character.id.toString());
+                                  setLocation(`/characters/${character.id}`);
+                                }}
+                              >
+                                {character.firstName} {character.lastName}
+                              </p>
+                              <p className="text-xs text-muted-foreground">
+                                {calculateGameAge(character.birthDate)} let
+                              </p>
+                            </div>
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              localStorage.setItem('selectedCharacterId', character.id.toString());
+                              setLocation("/character/edit");
+                            }}
+                            className="text-muted-foreground hover:text-foreground ml-2"
+                          >
+                            <Settings className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
                   </div>
-
                 </CardContent>
               </Card>
             )}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -241,18 +241,55 @@ export default function OwlPost() {
 
   // Ulož výběr postavy do localStorage při změně
   const handleCharacterChange = (value: string) => {
-    const character = userCharacters.find((char: any) => char.id === parseInt(value));
-    setSelectedCharacter(character);
-    if (character) {
-      localStorage.setItem('selectedOwlPostCharacterId', character.id.toString());
+    console.log("[OwlPost] handleCharacterChange na:", value);
+    const selectedChar = userCharacters.find((char: any) => char.id === parseInt(value));
+    if (selectedChar) {
+      setSelectedCharacter(selectedChar);
+      localStorage.setItem('selectedOwlPostCharacterId', selectedChar.id.toString());
+      console.log("[OwlPost] Nastaven selectedCharacter:", selectedChar);
     }
   };
 
+  // Debug: log aktivní postavu při načítání inboxu/sentu
+  useEffect(() => {
+    if (activeCharacter) {
+      console.log("[OwlPost] Načítám inbox/sent pro postavu:", activeCharacter.id, activeCharacter);
+    }
+  }, [activeCharacter]);
+
+  // Debug: log při otevření zprávy
+  const handleOpenMessage = (message: OwlPostMessage) => {
+    console.log("[OwlPost] Otevírám zprávu:", message, "pro postavu:", activeCharacter?.id);
+    setSelectedMessage(message);
+    if (!message.isRead) {
+      console.log("[OwlPost] Označuji zprávu jako přečtenou:", message.id);
+      markAsReadMutation.mutate(message.id, {
+        onSuccess: (data) => console.log("[OwlPost] Označeno jako přečtené, odpověď:", data),
+        onError: (err) => console.error("[OwlPost] Chyba při označení jako přečtené:", err)
+      });
+    }
+  };
+
+  // Debug: log při odpovědi na zprávu
+  const handleReply = (message: OwlPostMessage) => {
+    console.log("[OwlPost] Odpovídám na zprávu:", message, "pro postavu:", activeCharacter?.id);
+    setSelectedMessage(message);
+    replyForm.setValue("recipientCharacterId", message.senderCharacterId);
+    replyForm.setValue("subject", message.subject.startsWith("Re: ") ? message.subject : `Re: ${message.subject}`);
+    replyForm.setValue("content", "");
+    setIsReplyOpen(true);
+  };
+
+  // Debug: log při odeslání zprávy
   const onSubmit = (data: MessageForm) => {
+    console.log("[OwlPost] Odesílám zprávu od postavy:", activeCharacter?.id, "na adresáta:", data.recipientCharacterId, "data:", data);
     if (!activeCharacter) return;
     sendMessageMutation.mutate({
       ...data,
       senderCharacterId: activeCharacter.id,
+    }, {
+      onSuccess: (resp) => console.log("[OwlPost] Zpráva úspěšně odeslána, odpověď:", resp),
+      onError: (err) => console.error("[OwlPost] Chyba při odesílání zprávy:", err)
     });
   };
 
@@ -264,21 +301,6 @@ export default function OwlPost() {
     });
   };
 
-  const handleReply = (message: OwlPostMessage) => {
-    setSelectedMessage(message);
-    replyForm.setValue("recipientCharacterId", message.senderCharacterId);
-    replyForm.setValue("subject", message.subject.startsWith("Re: ") ? message.subject : `Re: ${message.subject}`);
-    replyForm.setValue("content", "");
-    setIsReplyOpen(true);
-  };
-
-  const handleOpenMessage = (message: OwlPostMessage) => {
-    setSelectedMessage(message);
-    if (!message.isRead) {
-      markAsReadMutation.mutate(message.id);
-    }
-  };
-
   const formatSenderName = (sender: { firstName: string; middleName?: string | null; lastName: string }) => {
     return `${sender.firstName} ${sender.middleName ? sender.middleName + ' ' : ''}${sender.lastName}`;
   };
@@ -287,6 +309,23 @@ export default function OwlPost() {
     return `${recipient.firstName} ${recipient.middleName ? recipient.middleName + ' ' : ''}${recipient.lastName}`;
   };
 
+  // Debug: log načítání postav
+  useEffect(() => {
+    if (userCharacters) {
+      console.log("[OwlPost] Načteno userCharacters:", userCharacters);
+    }
+  }, [userCharacters]);
+
+  // Debug: log načítání všech postav pro soví poštu
+  useEffect(() => {
+    if (owlPostCharacters) {
+      console.log("[OwlPost] Načteno owlPostCharacters:", owlPostCharacters);
+    }
+  }, [owlPostCharacters]);
+
+  // Debug: log načítání inboxu
+  useEffect(() => {
+    if (inboxMessages) {
   if (!user) {
     return <div>Přihlaste se prosím</div>;
   }
