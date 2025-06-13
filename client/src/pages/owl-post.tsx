@@ -732,6 +732,6 @@ export default function OwlPost() {
           </Dialog>
         </div>
       );
-    }
-  }
 }
+
+export default OwlPost;
