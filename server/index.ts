@@ -38,8 +38,34 @@ app.use((req, res, next) => {
   }
 });
 
+// Session configuration (musí být před body parserem!)
+const session = require('express-session');
+const pgSession = require('connect-pg-simple')(session);
+const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
+const sessionSecret = process.env.SESSION_SECRET || 'umbra-magica-session-secret-key-fixed-2024';
+app.use(session({
+  store: new pgSession({ conString: process.env.DATABASE_URL }),
+  secret: sessionSecret,
+  resave: false,
+  saveUninitialized: false,
+  name: 'connect.sid',
+  cookie: {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'none',
+    domain: '.onrender.com',
+    maxAge: sessionTtl,
+  },
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// Debug logování cookies a session pro každý API request
+app.use('/api/*', (req, res, next) => {
+  console.log('API DEBUG - cookies:', req.cookies, 'session:', req.session, 'url:', req.url);
+  next();
+});
 
 app.use((req, res, next) => {
   const start = Date.now();

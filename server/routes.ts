@@ -115,7 +115,7 @@ function requireAuthFlexible(req, res, next) {
   return res.status(401).json({ message: "Unauthorized" });
 }
 
-export async function registerRoutes(app: Express): Promise<Server> {
+export async function registerRoutes(app: Express): Promise<void> {
   // Session configuration (MUSÍ BÝT NA ZAČÁTKU!)
   const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
   const sessionSecret = process.env.SESSION_SECRET || 'umbra-magica-session-secret-key-fixed-2024';
@@ -223,8 +223,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Authentication middleware
   const requireAuth = (req: any, res: any, next: any) => {
-    console.log('Session in requireAuth:', req.session);
+    console.log('REQUIRE_AUTH DEBUG - cookies:', req.cookies, 'session:', req.session, 'url:', req.url);
     if (!req.session.userId) {
+      console.log('REQUIRE_AUTH DEBUG - missing userId in session');
       return res.status(401).json({ message: "Unauthorized" });
     }
     next();
@@ -278,11 +279,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Auth routes
   app.get("/api/auth/user", async (req, res) => {
-    // Nejprve zkus session (cookie)
+    console.log('[DEBUG] /api/auth/user', { session: req.session, cookies: req.cookies });
     if (req.session && req.session.userId) {
       const user = await storage.getUser(req.session.userId);
+      console.log('[DEBUG] /api/auth/user - user:', user);
       if (!user) return res.status(404).json({ message: "User not found" });
       const characters = await storage.getCharactersByUserId(user.id);
+      console.log('[DEBUG] /api/auth/user - characters:', characters);
       return res.json({
         id: user.id,
         username: user.username,
@@ -317,16 +320,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/auth/login", async (req, res) => {
     try {
+      console.log('LOGIN DEBUG - cookies:', req.cookies, 'session (before):', req.session, 'body:', req.body);
       const { username, password } = loginSchema.parse(req.body);
       const user = await storage.validateUser(username, password);
       if (!user) {
+        console.log('LOGIN DEBUG - invalid credentials');
         return res.status(401).json({ message: "Invalid credentials" });
       }
       const token = generateJwt(user);
       const characters = await storage.getCharactersByUserId(user.id);
-      // Uložit userId a userRole do session
       req.session.userId = user.id;
       req.session.userRole = user.role;
+      console.log('LOGIN DEBUG - session (after):', req.session);
       res.json({
         token,
         user: {
@@ -340,9 +345,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Login error:", error);
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid input", errors: error.errors });
+        if (!res.headersSent) return res.status(400).json({ message: "Invalid input", errors: error.errors });
       }
-      res.status(500).json({ message: "Login failed" });
+      if (!res.headersSent) res.status(500).json({ message: "Login failed" });
     }
   });
 
@@ -1409,7 +1414,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get user's own characters
   app.get("/api/characters", requireAuth, async (req, res) => {
     try {
+      console.log('[DEBUG] /api/characters', { session: req.session, userId: req.session.userId });
       const characters = await storage.getCharactersByUserId(req.session.userId!);
+      console.log('[DEBUG] /api/characters - characters:', characters);
       res.json(characters);
     } catch (error) {
       console.error("Error fetching user characters:", error);
@@ -1497,22 +1504,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/characters/:id", requireAuthFlexible, async (req, res) => {
     try {
       const characterId = parseInt(req.params.id);
-      
+      console.log('[DEBUG] /api/characters/:id', { session: req.session, user: req.user, characterId });
       if (isNaN(characterId)) {
         return res.status(400).json({ message: "Invalid character ID" });
       }
-      
       const character = await storage.getCharacter(characterId);
-      
+      console.log('[DEBUG] /api/characters/:id - character:', character);
       if (!character) {
         return res.status(404).json({ message: "Character not found" });
       }
-
       const user = await storage.getUser(character.userId);
+      console.log('[DEBUG] /api/characters/:id - user:', user);
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
-
       res.json({
         ...character,
         user: {
@@ -1888,23 +1893,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/characters/:id/visit-ollivanders", requireAuth, async (req, res) => {
     try {
       const characterId = parseInt(req.params.id);
-      
-      // Verify character belongs to user or user is admin
+      console.log('[DEBUG] /api/characters/:id/visit-ollivanders', { session: req.session, userId: req.session.userId, characterId });
       const character = await storage.getCharacter(characterId);
+      console.log('[DEBUG] /api/characters/:id/visit-ollivanders - character:', character);
       if (!character || (character.userId !== req.session.userId! && req.session.userRole !== 'admin')) {
         return res.status(403).json({ message: "Access denied" });
       }
-
-      // Check if character already has a wand
       const existingWand = await storage.getCharacterWand(characterId);
+      console.log('[DEBUG] /api/characters/:id/visit-ollivanders - existingWand:', existingWand);
       if (existingWand) {
         return res.status(400).json({ message: "Character already has a wand" });
       }
-
-      // Generate a random wand for the character
       const wand = await storage.generateRandomWand(characterId);
-      
-      // Add wand to character's inventory
+      console.log('[DEBUG] /api/characters/:id/visit-ollivanders - new wand:', wand);
       await storage.addInventoryItem({
         characterId,
         itemName: `Hůlka (${wand.wood})`,
@@ -1912,11 +1913,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         quantity: 1,
         category: "Wand",
         rarity: "Epic",
-        value: 7, // 7 galleons for a wand
+        value: 7,
         isEquipped: true,
         notes: "Hlavní hůlka postavy pro sesílání kouzel"
       });
-      
       res.json(wand);
     } catch (error) {
       console.error("Error visiting Ollivanders:", error);
@@ -2980,18 +2980,19 @@ Správa ubytování`
   // Legacy endpoints without character ID - get first alive character
   app.get("/api/owl-post/inbox", requireAuth, async (req, res) => {
     try {
+      console.log('[DEBUG] /api/owl-post/inbox', { session: req.session, userId: req.session.userId });
       const userCharacters = await storage.getCharactersByUserId(req.session.userId!);
+      console.log('[DEBUG] /api/owl-post/inbox - userCharacters:', userCharacters);
       const firstAliveCharacter = userCharacters.find(char => !char.deathDate);
-      
+      console.log('[DEBUG] /api/owl-post/inbox - firstAliveCharacter:', firstAliveCharacter);
       if (!firstAliveCharacter) {
         return res.status(404).json({ message: "No alive character found" });
       }
-      
       const page = parseInt(req.query.page as string) || 1;
       const limit = 50;
       const offset = (page - 1) * limit;
-      
       const messages = await storage.getOwlPostInbox(firstAliveCharacter.id, limit, offset);
+      console.log('[DEBUG] /api/owl-post/inbox - messages:', messages);
       res.json(messages);
     } catch (error) {
       console.error('Error fetching inbox messages:', error);
@@ -3022,14 +3023,16 @@ Správa ubytování`
 
   app.get("/api/owl-post/unread-count", requireAuth, async (req, res) => {
     try {
+      console.log('[DEBUG] /api/owl-post/unread-count', { session: req.session, userId: req.session.userId });
       const userCharacters = await storage.getCharactersByUserId(req.session.userId!);
+      console.log('[DEBUG] /api/owl-post/unread-count - userCharacters:', userCharacters);
       const firstAliveCharacter = userCharacters.find(char => !char.deathDate);
-      
+      console.log('[DEBUG] /api/owl-post/unread-count - firstAliveCharacter:', firstAliveCharacter);
       if (!firstAliveCharacter) {
         return res.status(404).json({ message: "No alive character found" });
       }
-      
       const count = await storage.getUnreadOwlPostCount(firstAliveCharacter.id);
+      console.log('[DEBUG] /api/owl-post/unread-count - count:', count);
       res.json({ count });
     } catch (error) {
       console.error('Error fetching unread count:', error);
@@ -3378,6 +3381,4 @@ Správa ubytování`
       ip: req.ip,
     });
   });
-
-  return httpServer;
 }
