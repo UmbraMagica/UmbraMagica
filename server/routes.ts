@@ -303,19 +303,23 @@ export async function registerRoutes(app: Express): Promise<void> {
 
   // Influence bar (mock)
   app.get("/api/influence-bar", requireAuth, async (_req, res) => {
+    console.log("HIT /api/influence-bar");
     res.json({ grindelwaldPoints: 50, dumbledorePoints: 50 });
   });
 
   app.get("/api/influence-bar/", requireAuth, async (_req, res) => {
+    console.log("HIT /api/influence-bar/");
     res.json({ grindelwaldPoints: 50, dumbledorePoints: 50 });
   });
 
   // Influence history (mock)
   app.get("/api/influence-history", requireAuth, async (_req, res) => {
+    console.log("HIT /api/influence-history");
     res.json([]);
   });
 
   app.get("/api/influence-history/", requireAuth, async (_req, res) => {
+    console.log("HIT /api/influence-history/");
     res.json([]);
   });
 
