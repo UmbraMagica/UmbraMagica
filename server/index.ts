@@ -117,11 +117,6 @@ app.get('/api/debug/routes', (req, res) => {
   });
 });
 
-// 404 handler pro API
-app.use('/api/*', (req, res) => {
-  res.status(404).json({ message: 'Not Found', url: req.originalUrl });
-});
-
 (async () => {
   await registerRoutes(app);
 
@@ -149,3 +144,8 @@ app.use('/api/*', (req, res) => {
     log(`serving on port ${port}`);
   });
 })();
+
+// 404 handler pro API
+app.use('/api/*', (req, res) => {
+  res.status(404).json({ message: 'Not Found', url: req.originalUrl });
+});
