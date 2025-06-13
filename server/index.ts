@@ -4,6 +4,7 @@ import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import supabaseRoutes from "./routes/supabase.js";
 import cookieParser from 'cookie-parser';
+import { Pool } from 'pg';
 
 const app = express();
 app.set('trust proxy', 1);
@@ -114,6 +115,52 @@ app.get('/api/debug/session', (req, res) => {
     cookies: req.cookies,
     session: req.session
   });
+});
+
+// Debug logování všech requestů a odpovědí
+app.use((req, res, next) => {
+  const start = Date.now();
+  const { method, url, headers, body, cookies, session } = req;
+  console.log('[DEBUG][REQUEST]', { method, url, headers, body, cookies, session });
+
+  const originalJson = res.json;
+  res.json = function (data) {
+    console.log('[DEBUG][RESPONSE]', { url, status: res.statusCode, data });
+    return originalJson.apply(this, arguments);
+  };
+
+  res.on('finish', () => {
+    const duration = Date.now() - start;
+    console.log(`[DEBUG][FINISH] ${method} ${url} ${res.statusCode} in ${duration}ms`);
+  });
+  next();
+});
+
+// Debug endpoint pro výpis všech session z databáze
+app.get('/api/debug/sessions', async (req, res) => {
+  try {
+    const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+    const result = await pool.query('SELECT * FROM session');
+    res.json({ sessions: result.rows });
+  } catch (error) {
+    console.error('[DEBUG][DB][SESSIONS]', error);
+    res.status(500).json({ message: 'DB error', error: error.message });
+  }
+});
+
+// Globální error handler pro logování všech chyb
+app.use((err, req, res, next) => {
+  console.error('[DEBUG][ERROR]', {
+    message: err.message,
+    stack: err.stack,
+    url: req.url,
+    body: req.body,
+    cookies: req.cookies,
+    session: req.session
+  });
+  if (!res.headersSent) {
+    res.status(err.status || 500).json({ message: err.message || 'Internal Server Error' });
+  }
 });
 
 (async () => {
