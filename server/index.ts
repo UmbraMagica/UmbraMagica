@@ -19,6 +19,12 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Globální logování všech requestů
+app.use((req, res, next) => {
+  console.log(`[DEBUG] ${req.method} ${req.path}`);
+  next();
+});
+
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
@@ -108,4 +114,6 @@ app.use((err, req, res, next) => {
   app.use('/api/*', (req, res) => {
     res.status(404).json({ message: 'Not Found', url: req.originalUrl });
   });
+
+  console.log("registerRoutes: konec");
 })();
