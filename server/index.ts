@@ -49,7 +49,7 @@ app.use(session({
     httpOnly: true,
     secure: true,
     sameSite: 'none',
-    domain: 'umbramagica-1.onrender.com',
+    domain: '.onrender.com',
     maxAge: sessionTtl,
   },
 }));
