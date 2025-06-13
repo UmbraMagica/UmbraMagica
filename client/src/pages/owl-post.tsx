@@ -735,5 +735,3 @@ export default function OwlPost() {
     }
   }
 }
-
-export default OwlPost;
