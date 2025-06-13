@@ -767,7 +767,7 @@ export default function Home() {
                     </div>
                     <h4 
                       className="font-bold text-xl text-foreground cursor-pointer hover:text-accent transition-colors font-serif"
-                      onClick={() => setLocation(`/character/${currentDisplayedCharacter.id}`)}
+                      onClick={() => setLocation(`/characters/${currentDisplayedCharacter.id}`)}
                     >
                       {currentDisplayedCharacter.firstName}
                       {currentDisplayedCharacter.middleName && ` ${currentDisplayedCharacter.middleName}`}
