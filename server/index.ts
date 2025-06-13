@@ -47,9 +47,9 @@ app.use(session({
   name: 'connect.sid',
   cookie: {
     httpOnly: true,
-    secure: true,
-    sameSite: 'none',
-    domain: '.onrender.com',
+    secure: false,
+    sameSite: 'lax',
+    // domain: '.onrender.com',
     maxAge: sessionTtl,
   },
 }));
