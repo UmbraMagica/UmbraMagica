@@ -321,7 +321,7 @@ export async function registerRoutes(app: Express): Promise<void> {
 
   app.post("/api/auth/login", async (req, res) => {
     try {
-      console.log('LOGIN DEBUG - cookies:', req.cookies, 'session (before):', req.session, 'body:', req.body);
+      console.log('LOGIN DEBUG - cookies:', req.cookies, 'session (before):', req.session, 'sessionID:', req.sessionID, 'body:', req.body);
       const { username, password } = loginSchema.parse(req.body);
       const user = await storage.validateUser(username, password);
       if (!user) {
@@ -333,7 +333,7 @@ export async function registerRoutes(app: Express): Promise<void> {
       req.session.userId = user.id;
       req.session.userRole = user.role;
       req.session.save(() => {
-        console.log('LOGIN DEBUG - session (after):', req.session);
+        console.log('LOGIN DEBUG - session (after):', req.session, 'sessionID:', req.sessionID);
         res.json({
           token,
           user: {

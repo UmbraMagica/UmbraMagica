@@ -57,9 +57,9 @@ app.use(session({
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Debug logování cookies a session pro každý API request
+// Debug logování cookies, session a sessionID pro každý API request
 app.use('/api/*', (req, res, next) => {
-  console.log('API DEBUG - cookies:', req.cookies, 'session:', req.session, 'url:', req.url);
+  console.log('API DEBUG - cookies:', req.cookies, 'session:', req.session, 'sessionID:', req.sessionID, 'url:', req.url);
   next();
 });
 
