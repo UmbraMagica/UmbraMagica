@@ -324,6 +324,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       const token = generateJwt(user);
       const characters = await storage.getCharactersByUserId(user.id);
+      // Uložit userId a userRole do session
+      req.session.userId = user.id;
+      req.session.userRole = user.role;
       res.json({
         token,
         user: {
@@ -3360,6 +3363,20 @@ Správa ubytování`
   // Přidávám testovací endpoint
   app.get('/api/debug', (req, res) => {
     res.json({ ok: true, user: req.user || null, session: req.session || null });
+  });
+
+  // Debug endpoint for session/cookie troubleshooting
+  app.get('/api/debug/session', (req, res) => {
+    res.json({
+      session: req.session,
+      cookies: req.cookies,
+      headers: req.headers,
+      userId: req.session?.userId,
+      userRole: req.session?.userRole,
+      method: req.method,
+      url: req.url,
+      ip: req.ip,
+    });
   });
 
   return httpServer;

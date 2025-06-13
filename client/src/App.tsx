@@ -31,7 +31,6 @@ import Cemetery from "@/pages/cemetery";
 import Ollivanders from "@/pages/ollivanders";
 import OwlPost from "@/pages/owl-post";
 import NotFound from "@/pages/not-found";
-import TestBackend from './pages/test-backend';
 
 
 function Router() {
@@ -88,7 +87,6 @@ function Router() {
           <Route path="/cemetery" component={Cemetery} />
           <Route path="/ollivanders" component={Ollivanders} />
           <Route path="/owl-post" component={OwlPost} />
-          <Route path="/test-backend" component={TestBackend} />
         </>
       )}
       <Route component={NotFound} />
@@ -103,7 +101,6 @@ function App() {
         <TooltipProvider>
           <Toaster />
           <Router />
-          <a href="/test-backend">Test spojení s backendem</a>
         </TooltipProvider>
       </ThemeProvider>
     </QueryClientProvider>
