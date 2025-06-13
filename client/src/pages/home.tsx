@@ -128,8 +128,10 @@ export default function Home() {
     refetchInterval: 30000, // Refresh every 30 seconds
     queryFn: async () => {
       if (!currentDisplayedCharacter?.id) return { count: 0 };
+      const token = localStorage.getItem('jwt_token');
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/owl-post/unread-count/${currentDisplayedCharacter.id}`, {
         credentials: 'include',
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
       if (!response.ok) return { count: 0 };
       return response.json();
