@@ -111,22 +111,6 @@ export default function CharacterProfile() {
     setIsEditingHistory(false);
   };
 
-  // Fetch character data
-  useEffect(() => {
-    if (!id) return;
-    (async () => {
-      setLoading(true);
-      try {
-        const data = await apiFetch(`${import.meta.env.VITE_API_URL}/api/characters/${id}`);
-        setCharacter(data);
-      } catch (e) {
-        setCharacter(null);
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, [id]);
-
   if (isLoading) {
     return (
       <div className="container mx-auto p-6">
