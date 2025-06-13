@@ -5,6 +5,7 @@ import { setupVite, serveStatic, log } from "./vite";
 import supabaseRoutes from "./routes/supabase.js";
 import cookieParser from 'cookie-parser';
 import { Pool } from 'pg';
+import cors from 'cors';
 
 const app = express();
 app.set('trust proxy', 1);
@@ -12,26 +13,10 @@ app.set('trust proxy', 1);
 app.use(cookieParser());
 
 // CORS configuration for frontend
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  const allowedOrigins = [
-    'https://umbramagica-1.onrender.com', // frontend
-    'https://umbramagica.onrender.com', // backend
-  ];
-  const nodeEnv = process.env.NODE_ENV || 'production';
-  console.log('CORS check:', { origin, nodeEnv });
-  if (origin && allowedOrigins.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', origin);
-  }
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-  res.header('Access-Control-Allow-Credentials', 'true');
-
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(200);
-  }
-  next();
-});
+app.use(cors({
+  origin: 'https://umbramagica-1.onrender.com', // pouze frontend doména
+  credentials: true,
+}));
 
 // Session configuration (musí být před body parserem!)
 import session from 'express-session';
@@ -47,9 +32,9 @@ app.use(session({
   name: 'connect.sid',
   cookie: {
     httpOnly: true,
-    secure: false,
-    sameSite: 'lax',
-    // domain: '.onrender.com',
+    secure: true, // MUSÍ být true na HTTPS!
+    sameSite: 'none', // MUSÍ být 'none' pro cross-origin!
+    domain: '.onrender.com', // MUSÍ být společná nadřazená doména pro sdílení mezi subdoménami!
     maxAge: sessionTtl,
   },
 }));
