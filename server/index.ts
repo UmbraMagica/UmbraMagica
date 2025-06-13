@@ -3,8 +3,11 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import supabaseRoutes from "./routes/supabase.js";
+import cookieParser from 'cookie-parser';
 
 const app = express();
+
+app.use(cookieParser());
 
 // CORS configuration for frontend
 app.use((req, res, next) => {
