@@ -59,6 +59,13 @@ export default function CharacterProfile() {
   const { data: character, isLoading, error } = useQuery<Character>({
     queryKey: [`/api/characters/${id}`],
     enabled: !!id,
+    queryFn: async () => {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/characters/${id}`, {
+        credentials: 'include',
+      });
+      if (!response.ok) throw new Error('Postava nenalezena');
+      return response.json();
+    },
   });
 
   // Initialize history state when character data loads

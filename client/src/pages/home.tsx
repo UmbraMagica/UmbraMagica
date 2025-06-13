@@ -128,7 +128,9 @@ export default function Home() {
     refetchInterval: 30000, // Refresh every 30 seconds
     queryFn: async () => {
       if (!currentDisplayedCharacter?.id) return { count: 0 };
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/owl-post/unread-count/${currentDisplayedCharacter.id}`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/owl-post/unread-count/${currentDisplayedCharacter.id}`, {
+        credentials: 'include',
+      });
       if (!response.ok) return { count: 0 };
       return response.json();
     }

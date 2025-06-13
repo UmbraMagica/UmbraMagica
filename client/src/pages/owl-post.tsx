@@ -140,6 +140,7 @@ export default function OwlPost() {
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         body: JSON.stringify(data),
+        credentials: "include",
       });
       if (!response.ok) {
         throw new Error("Failed to send message");
@@ -169,6 +170,7 @@ export default function OwlPost() {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/owl-post/message/${messageId}`, {
         method: "DELETE",
         headers: token ? { Authorization: `Bearer ${token}` } : {},
+        credentials: "include",
       });
       if (!response.ok) {
         throw new Error("Failed to delete message");
@@ -197,6 +199,7 @@ export default function OwlPost() {
           "Content-Type": "application/json",
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
+        credentials: "include",
       });
       if (!response.ok) {
         throw new Error("Failed to mark as read");

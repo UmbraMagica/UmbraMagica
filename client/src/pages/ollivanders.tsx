@@ -131,7 +131,8 @@ export default function Ollivanders() {
       
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/characters/${mainCharacter.id}/visit-ollivanders`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include'
       });
       
       if (!response.ok) {
@@ -165,7 +166,8 @@ export default function Ollivanders() {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/characters/${mainCharacter.id}/create-custom-wand`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(customWand)
+        body: JSON.stringify(customWand),
+        credentials: 'include'
       });
       
       if (!response.ok) {

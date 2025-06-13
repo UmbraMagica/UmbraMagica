@@ -277,6 +277,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Auth routes
   app.get("/api/auth/user", async (req, res) => {
+    // Nejprve zkus session (cookie)
+    if (req.session && req.session.userId) {
+      const user = await storage.getUser(req.session.userId);
+      if (!user) return res.status(404).json({ message: "User not found" });
+      const characters = await storage.getCharactersByUserId(user.id);
+      return res.json({
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        characters,
+      });
+    }
+    // fallback na JWT
     const auth = req.headers.authorization;
     if (!auth || !auth.startsWith('Bearer ')) {
       return res.status(401).json({ message: "Unauthorized" });
