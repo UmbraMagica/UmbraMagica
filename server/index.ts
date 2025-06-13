@@ -18,34 +18,8 @@ app.use(cors({
   credentials: true,
 }));
 
-// Session configuration (musí být před body parserem!)
-import session from 'express-session';
-import connectPgSimple from 'connect-pg-simple';
-const pgSession = connectPgSimple(session);
-const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
-const sessionSecret = process.env.SESSION_SECRET || 'umbra-magica-session-secret-key-fixed-2024';
-app.use(session({
-  store: new pgSession({ conString: process.env.DATABASE_URL }),
-  secret: sessionSecret,
-  resave: false,
-  saveUninitialized: false,
-  name: 'connect.sid',
-  cookie: {
-    httpOnly: true,
-    secure: true, // MUSÍ být true na HTTPS!
-    sameSite: 'none', // MUSÍ být 'none' pro cross-origin!
-    maxAge: sessionTtl,
-  },
-}));
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-
-// Debug logování cookies, session a sessionID pro každý API request
-app.use('/api/*', (req, res, next) => {
-  console.log('API DEBUG - cookies:', req.cookies, 'session:', req.session, 'sessionID:', req.sessionID, 'url:', req.url);
-  next();
-});
 
 app.use((req, res, next) => {
   const start = Date.now();
@@ -93,45 +67,6 @@ app.get('/api/debug/routes', (req, res) => {
   });
 });
 
-// Debug endpoint pro výpis session a cookies
-app.get('/api/debug/session', (req, res) => {
-  res.json({
-    cookies: req.cookies,
-    session: req.session
-  });
-});
-
-// Debug logování všech requestů a odpovědí
-app.use((req, res, next) => {
-  const start = Date.now();
-  const { method, url, headers, body, cookies, session } = req;
-  console.log('[DEBUG][REQUEST]', { method, url, headers, body, cookies, session });
-
-  const originalJson = res.json;
-  res.json = function (data) {
-    console.log('[DEBUG][RESPONSE]', { url, status: res.statusCode, data });
-    return originalJson.apply(this, arguments);
-  };
-
-  res.on('finish', () => {
-    const duration = Date.now() - start;
-    console.log(`[DEBUG][FINISH] ${method} ${url} ${res.statusCode} in ${duration}ms`);
-  });
-  next();
-});
-
-// Debug endpoint pro výpis všech session z databáze
-app.get('/api/debug/sessions', async (req, res) => {
-  try {
-    const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-    const result = await pool.query('SELECT * FROM session');
-    res.json({ sessions: result.rows });
-  } catch (error) {
-    console.error('[DEBUG][DB][SESSIONS]', error);
-    res.status(500).json({ message: 'DB error', error: error.message });
-  }
-});
-
 // Globální error handler pro logování všech chyb
 app.use((err, req, res, next) => {
   console.error('[DEBUG][ERROR]', {
@@ -140,7 +75,6 @@ app.use((err, req, res, next) => {
     url: req.url,
     body: req.body,
     cookies: req.cookies,
-    session: req.session
   });
   if (!res.headersSent) {
     res.status(err.status || 500).json({ message: err.message || 'Internal Server Error' });
