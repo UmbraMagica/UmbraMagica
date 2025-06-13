@@ -223,6 +223,7 @@ export class DatabaseStorage implements IStorage {
 
   async getUserByUsername(username: string): Promise<User | undefined> {
     const { data, error } = await supabase.from('users').select('*').eq('username', username).single();
+    console.log('getUserByUsername:', { username, data, error });
     if (error) return undefined;
     return toCamel(data);
   }
@@ -345,9 +346,11 @@ export class DatabaseStorage implements IStorage {
 
   async validateUser(username: string, password: string): Promise<User | null> {
     const user = await this.getUserByUsername(username);
+    console.log('validateUser - user:', user);
     if (!user) return null;
 
     const isValidPassword = await bcrypt.compare(password, user.password);
+    console.log('validateUser - isValidPassword:', isValidPassword, 'hash:', user.password, 'input:', password);
     return isValidPassword ? user : null;
   }
 
