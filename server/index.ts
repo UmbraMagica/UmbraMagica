@@ -39,8 +39,9 @@ app.use((req, res, next) => {
 });
 
 // Session configuration (musí být před body parserem!)
-const session = require('express-session');
-const pgSession = require('connect-pg-simple')(session);
+import session from 'express-session';
+import connectPgSimple from 'connect-pg-simple';
+const pgSession = connectPgSimple(session);
 const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
 const sessionSecret = process.env.SESSION_SECRET || 'umbra-magica-session-secret-key-fixed-2024';
 app.use(session({

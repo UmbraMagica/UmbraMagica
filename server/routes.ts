@@ -7,7 +7,8 @@ import { z } from "zod";
 import session from "express-session";
 import multer from "multer";
 import sharp from "sharp";
-import pgSession from "connect-pg-simple";
+import connectPgSimple from "connect-pg-simple";
+const pgSession = connectPgSimple(session);
 import jwt from 'jsonwebtoken';
 import { createClient } from '@supabase/supabase-js'
 import type { Request } from "express";
@@ -121,7 +122,7 @@ export async function registerRoutes(app: Express): Promise<void> {
   const sessionSecret = process.env.SESSION_SECRET || 'umbra-magica-session-secret-key-fixed-2024';
 
   app.use(session({
-    store: new (pgSession(session))({
+    store: new pgSession({
       conString: process.env.DATABASE_URL
     }),
     secret: sessionSecret,
