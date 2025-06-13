@@ -18,27 +18,17 @@ app.use((req, res, next) => {
   ];
   const nodeEnv = process.env.NODE_ENV || 'production';
   console.log('CORS check:', { origin, nodeEnv });
-  if (nodeEnv === 'production' || !process.env.NODE_ENV) {
-    if (origin && allowedOrigins.includes(origin)) {
-      res.header('Access-Control-Allow-Origin', origin);
-    }
-  } else {
-    // Vývoj: povol vše
-    if (origin) {
-      res.header('Access-Control-Allow-Origin', origin);
-    } else {
-      res.header('Access-Control-Allow-Origin', '*');
-    }
+  if (origin && allowedOrigins.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
   }
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
   res.header('Access-Control-Allow-Credentials', 'true');
 
   if (req.method === 'OPTIONS') {
-    res.sendStatus(200);
-  } else {
-    next();
+    return res.sendStatus(200);
   }
+  next();
 });
 
 // Session configuration (musí být před body parserem!)
@@ -114,6 +104,14 @@ app.get('/api/debug/routes', (req, res) => {
     routes: app._router.stack
       .filter(r => r.route)
       .map(r => r.route.path)
+  });
+});
+
+// Debug endpoint pro výpis session a cookies
+app.get('/api/debug/session', (req, res) => {
+  res.json({
+    cookies: req.cookies,
+    session: req.session
   });
 });
 
