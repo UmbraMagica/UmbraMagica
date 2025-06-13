@@ -118,25 +118,25 @@ function requireAuthFlexible(req, res, next) {
 
 export async function registerRoutes(app: Express): Promise<void> {
   // Session configuration (MUSÍ BÝT NA ZAČÁTKU!)
-  const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
-  const sessionSecret = process.env.SESSION_SECRET || 'umbra-magica-session-secret-key-fixed-2024';
-
-  app.use(session({
-    store: new pgSession({
-      conString: process.env.DATABASE_URL
-    }),
-    secret: sessionSecret,
-    resave: false,
-    saveUninitialized: false,
-    name: 'connect.sid',
-    cookie: {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'none',
-      domain: '.onrender.com', // důležité pro cross-domain cookies na Renderu
-      maxAge: sessionTtl,
-    },
-  }));
+  // const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
+  // const sessionSecret = process.env.SESSION_SECRET || 'umbra-magica-session-secret-key-fixed-2024';
+  //
+  // app.use(session({
+  //   store: new pgSession({
+  //     conString: process.env.DATABASE_URL
+  //   }),
+  //   secret: sessionSecret,
+  //   resave: false,
+  //   saveUninitialized: false,
+  //   name: 'connect.sid',
+  //   cookie: {
+  //     httpOnly: true,
+  //     secure: true,
+  //     sameSite: 'none',
+  //     domain: 'umbramagica-1.onrender.com',
+  //     maxAge: sessionTtl,
+  //   },
+  // }));
 
   // Create HTTP server
   const httpServer = createServer(app);
