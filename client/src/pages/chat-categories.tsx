@@ -259,22 +259,38 @@ export default function ChatCategories() {
   const { data: categories, isLoading, error } = useQuery({
     queryKey: ["/api/chat/categories"],
     queryFn: async () => {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/chat/categories`);
+      const token = localStorage.getItem('jwt_token');
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/chat/categories`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
       if (!response.ok) {
         throw new Error("Failed to fetch chat categories");
       }
-      return response.json() as Promise<ChatCategory[]>;
+      if (response.headers.get("content-type")?.includes("application/json")) {
+        return response.json() as Promise<ChatCategory[]>;
+      } else {
+        const text = await response.text();
+        throw new Error(text);
+      }
     },
   });
 
   const { data: allRooms } = useQuery({
     queryKey: ["/api/chat/rooms"],
     queryFn: async () => {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/chat/rooms`);
+      const token = localStorage.getItem('jwt_token');
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/chat/rooms`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
       if (!response.ok) {
         throw new Error("Failed to fetch chat rooms");
       }
-      return response.json() as Promise<ChatRoom[]>;
+      if (response.headers.get("content-type")?.includes("application/json")) {
+        return response.json() as Promise<ChatRoom[]>;
+      } else {
+        const text = await response.text();
+        throw new Error(text);
+      }
     },
   });
 

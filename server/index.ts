@@ -53,8 +53,6 @@ app.get('/api/test', (req: Request, res: Response) => {
   res.json({ message: 'Backend funguje!' });
 });
 
-app.use('/api', supabaseRoutes);
-
 // Debug endpoint pro ověření rout
 app.get('/api/debug/routes', (req, res) => {
   res.json({
@@ -104,9 +102,9 @@ app.use((err, req, res, next) => {
   app.listen(port, "0.0.0.0", () => {
     log(`serving on port ${port}`);
   });
-})();
 
-// 404 handler pro API
-app.use('/api/*', (req, res) => {
-  res.status(404).json({ message: 'Not Found', url: req.originalUrl });
-});
+  // 404 handler pro API - musí být až po všech routách!
+  app.use('/api/*', (req, res) => {
+    res.status(404).json({ message: 'Not Found', url: req.originalUrl });
+  });
+})();

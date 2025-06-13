@@ -134,7 +134,12 @@ export default function Home() {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
       if (!response.ok) return { count: 0 };
-      return response.json();
+      if (response.headers.get("content-type")?.includes("application/json")) {
+        return response.json();
+      } else {
+        const text = await response.text();
+        return { count: 0, error: text };
+      }
     }
   });
 

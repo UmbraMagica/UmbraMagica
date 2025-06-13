@@ -131,16 +131,27 @@ export default function Ollivanders() {
       
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/characters/${mainCharacter.id}/visit-ollivanders`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(localStorage.getItem('jwt_token') ? { Authorization: `Bearer ${localStorage.getItem('jwt_token')}` } : {}),
+        },
         credentials: 'include'
       });
       
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to visit Ollivanders');
+        if (response.headers.get("content-type")?.includes("application/json")) {
+          const error = await response.json();
+          throw new Error(error.message || 'Failed to visit Ollivanders');
+        } else {
+          const text = await response.text();
+          throw new Error(text || 'Failed to visit Ollivanders');
+        }
       }
-      
-      return response.json();
+      if (response.headers.get("content-type")?.includes("application/json")) {
+        return response.json();
+      } else {
+        return {};
+      }
     },
     onSuccess: (newWand: Wand) => {
       toast({
@@ -165,17 +176,28 @@ export default function Ollivanders() {
       
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/characters/${mainCharacter.id}/create-custom-wand`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(localStorage.getItem('jwt_token') ? { Authorization: `Bearer ${localStorage.getItem('jwt_token')}` } : {}),
+        },
         body: JSON.stringify(customWand),
         credentials: 'include'
       });
       
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to create custom wand');
+        if (response.headers.get("content-type")?.includes("application/json")) {
+          const error = await response.json();
+          throw new Error(error.message || 'Failed to create custom wand');
+        } else {
+          const text = await response.text();
+          throw new Error(text || 'Failed to create custom wand');
+        }
       }
-      
-      return response.json();
+      if (response.headers.get("content-type")?.includes("application/json")) {
+        return response.json();
+      } else {
+        return {};
+      }
     },
     onSuccess: (newWand: Wand) => {
       toast({
