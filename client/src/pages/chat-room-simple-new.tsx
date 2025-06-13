@@ -244,7 +244,7 @@ export default function ChatRoom() {
       if (user && chatCharacter) {
         newWs.send(JSON.stringify({
           type: 'authenticate',
-          sessionId: 'session-' + user.id, // Simple session ID
+          localId: 'session-' + user.id, // Simple session ID
           userId: user.id,
           characterId: chatCharacter.id
         }));
