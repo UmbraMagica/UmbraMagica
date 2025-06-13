@@ -281,6 +281,10 @@ export async function registerRoutes(app: Express): Promise<void> {
     const characters = await storage.getCharactersByUserId(req.user!.id);
     res.json({ characters });
   });
+  app.get("/api/characters/", requireAuth, async (req, res) => {
+    const characters = await storage.getCharactersByUserId(req.user!.id);
+    res.json({ characters });
+  });
 
   // Komponenty pro tvorbu hůlek (zatím prázdné)
   app.get("/api/wand-components", requireAuth, async (_req, res) => {
@@ -319,9 +323,15 @@ export async function registerRoutes(app: Express): Promise<void> {
   app.get("/api/owl-post/characters", requireAuth, async (_req, res) => {
     res.json([]);
   });
+  app.get("/api/owl-post/characters/", requireAuth, async (_req, res) => {
+    res.json([]);
+  });
 
   // Celkový počet nepřečtených zpráv (zatím 0)
   app.get("/api/owl-post/unread-total", requireAuth, async (_req, res) => {
+    res.json({ count: 0 });
+  });
+  app.get("/api/owl-post/unread-total/", requireAuth, async (_req, res) => {
     res.json({ count: 0 });
   });
 

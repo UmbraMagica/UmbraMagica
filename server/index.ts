@@ -8,6 +8,7 @@ import cors from 'cors';
 
 const app = express();
 app.set('trust proxy', 1);
+app.enable('strict routing', false);
 
 // CORS configuration for frontend
 app.use(cors({
