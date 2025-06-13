@@ -38,6 +38,13 @@ export default function Landing() {
     try {
       const result = await login({ username, password });
       console.log("Login result:", result);
+      // PODROBNÝ DEBUG LOG
+      console.log("localStorage keys:", Object.keys(localStorage));
+      console.log("localStorage['jwt_token']:", localStorage.getItem('jwt_token'));
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        console.log(`localStorage[${key}]:`, localStorage.getItem(key));
+      }
       toast({
         title: "Úspěch",
         description: "Přihlášení bylo úspěšné",
