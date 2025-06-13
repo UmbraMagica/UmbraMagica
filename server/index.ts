@@ -6,6 +6,7 @@ import supabaseRoutes from "./routes/supabase.js";
 import cookieParser from 'cookie-parser';
 
 const app = express();
+app.set('trust proxy', 1);
 
 app.use(cookieParser());
 
