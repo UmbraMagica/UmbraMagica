@@ -34,7 +34,6 @@ app.use(session({
     httpOnly: true,
     secure: true, // MUSÍ být true na HTTPS!
     sameSite: 'none', // MUSÍ být 'none' pro cross-origin!
-    domain: '.onrender.com', // MUSÍ být společná nadřazená doména pro sdílení mezi subdoménami!
     maxAge: sessionTtl,
   },
 }));
