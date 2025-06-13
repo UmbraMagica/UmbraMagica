@@ -108,6 +108,20 @@ app.get('/api/test', (req: Request, res: Response) => {
 
 app.use('/api', supabaseRoutes);
 
+// Debug endpoint pro ověření rout
+app.get('/api/debug/routes', (req, res) => {
+  res.json({
+    routes: app._router.stack
+      .filter(r => r.route)
+      .map(r => r.route.path)
+  });
+});
+
+// 404 handler pro API
+app.use('/api/*', (req, res) => {
+  res.status(404).json({ message: 'Not Found', url: req.originalUrl });
+});
+
 (async () => {
   await registerRoutes(app);
 
