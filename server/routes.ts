@@ -226,7 +226,7 @@ export async function registerRoutes(app: Express): Promise<void> {
   const requireAuth = (req: any, res: any, next: any) => {
     console.log('REQUIRE_AUTH DEBUG - cookies:', req.cookies, 'session:', req.session, 'url:', req.url);
     if (!req.session.userId) {
-      console.log('REQUIRE_AUTH DEBUG - missing userId in session');
+      console.log('REQUIRE_AUTH DEBUG - missing userId in session', { session: req.session });
       return res.status(401).json({ message: "Unauthorized" });
     }
     next();
@@ -332,16 +332,18 @@ export async function registerRoutes(app: Express): Promise<void> {
       const characters = await storage.getCharactersByUserId(user.id);
       req.session.userId = user.id;
       req.session.userRole = user.role;
-      console.log('LOGIN DEBUG - session (after):', req.session);
-      res.json({
-        token,
-        user: {
-          id: user.id,
-          username: user.username,
-          email: user.email,
-          role: user.role,
-          characters,
-        }
+      req.session.save(() => {
+        console.log('LOGIN DEBUG - session (after):', req.session);
+        res.json({
+          token,
+          user: {
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            role: user.role,
+            characters,
+          }
+        });
       });
     } catch (error) {
       console.error("Login error:", error);
@@ -3380,6 +3382,22 @@ Správa ubytování`
       method: req.method,
       url: req.url,
       ip: req.ip,
+    });
+  });
+
+  // Extra debug endpoint pro ověření session a cookies
+  app.get('/api/debug/session-check', (req, res) => {
+    console.log('[DEBUG][SESSION-CHECK]', {
+      cookies: req.cookies,
+      session: req.session,
+      sessionID: req.sessionID,
+      headers: req.headers
+    });
+    res.json({
+      cookies: req.cookies,
+      session: req.session,
+      sessionID: req.sessionID,
+      headers: req.headers
     });
   });
 }

@@ -38,7 +38,7 @@ export async function apiRequest(
     method,
     headers,
     body: data ? JSON.stringify(data) : undefined,
-    credentials: "omit", // JWT nepotřebuje cookies
+    credentials: "include", // OPRAVENO: session/cookies budou posílány
   });
   await throwIfResNotOk(res);
   return res;
@@ -55,7 +55,7 @@ export const getQueryFn: <T>(options: {
     if (token) headers["Authorization"] = `Bearer ${token}`;
     const res = await fetch(queryKey[0] as string, {
       headers,
-      credentials: "omit",
+      credentials: "include", // OPRAVENO: session/cookies budou posílány
     });
     if (unauthorizedBehavior === "returnNull" && res.status === 401) {
       return null;
