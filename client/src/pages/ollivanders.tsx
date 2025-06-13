@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
 import { CharacterAvatar } from "@/components/CharacterAvatar";
 import type { Wand } from "@shared/types";
+import { apiFetch } from "@/lib/queryClient";
 
 export default function Ollivanders() {
   const [, setLocation] = useLocation();
@@ -121,7 +122,10 @@ export default function Ollivanders() {
     lengths: Array<{ name: string; description: string; availableForRandom?: boolean }>;
     flexibilities: Array<{ name: string; description: string; availableForRandom?: boolean }>;
   }>({
-    queryKey: ['/api/wand-components']
+    queryKey: ['/api/wand-components'],
+    queryFn: async () => {
+      return apiFetch(`${import.meta.env.VITE_API_URL}/api/wand-components`);
+    },
   });
 
   // Visit Ollivanders mutation (random wand)
@@ -222,6 +226,17 @@ export default function Ollivanders() {
       });
     }
   });
+
+  // Přepis dalších fetch volání na apiFetch
+  async function visitOllivanders() {
+    if (!mainCharacter) return;
+    await apiFetch(`${import.meta.env.VITE_API_URL}/api/characters/${mainCharacter.id}/visit-ollivanders`, { method: 'POST' });
+  }
+
+  async function createCustomWand() {
+    if (!mainCharacter) return;
+    await apiFetch(`${import.meta.env.VITE_API_URL}/api/characters/${mainCharacter.id}/create-custom-wand`, { method: 'POST' });
+  }
 
   if (!user || !mainCharacter) {
     return (

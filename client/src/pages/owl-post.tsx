@@ -17,7 +17,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { formatDistanceToNow } from "date-fns";
 import { cs } from "date-fns/locale";
-import { apiRequest, getQueryFn, getAuthToken } from "@/lib/queryClient";
+import { apiFetch, getQueryFn, getAuthToken } from "@/lib/queryClient";
 
 // Message form schema
 const messageSchema = z.object({
@@ -92,11 +92,13 @@ export default function OwlPost() {
   // Use selected character, character from URL, from storage, or first alive character
   const activeCharacter = selectedCharacter || characterFromUrl || characterFromStorage || firstAliveCharacter;
 
-  // Get all characters for recipient selection
-  const { data: allCharacters = [] } = useQuery<Character[]>({
+  // Get all characters for owl post
+  const { data: owlPostCharacters = [] } = useQuery({
     queryKey: ["/api/owl-post/characters"],
     enabled: !!user,
-    queryFn: getQueryFn({ on401: "throw" }),
+    queryFn: async () => {
+      return apiFetch(`${import.meta.env.VITE_API_URL}/api/owl-post/characters`);
+    },
   });
 
   // Get inbox messages
@@ -124,7 +126,9 @@ export default function OwlPost() {
   const { data: unreadTotalData } = useQuery<{ count: number }>({
     queryKey: ["/api/owl-post/unread-total"],
     enabled: !!user,
-    queryFn: getQueryFn({ on401: "throw" }),
+    queryFn: async () => {
+      return apiFetch(`${import.meta.env.VITE_API_URL}/api/owl-post/unread-total`);
+    },
   });
 
   const unreadCount = unreadData?.count || 0;
@@ -383,7 +387,7 @@ export default function OwlPost() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {allCharacters.map((character) => (
+                            {owlPostCharacters.map((character) => (
                               <SelectItem key={character.id} value={character.id.toString()}>
                                 {character.fullName}
                               </SelectItem>

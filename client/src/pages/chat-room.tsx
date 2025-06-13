@@ -10,6 +10,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import { MessageCircle, Send, Download, Archive, ArrowLeft, User, Dices, Coins } from "lucide-react";
 import { format } from "date-fns";
+import { apiFetch } from "@/lib/queryClient";
 
 interface ChatRoom {
   id: number;
@@ -65,6 +66,24 @@ export default function ChatRoom() {
   const { data: messages = [] } = useQuery<ChatMessage[]>({
     queryKey: ["/api/chat/rooms", currentRoomId, "messages"],
     enabled: !!currentRoomId,
+  });
+
+  // Get influence bar
+  const { data: influenceBar } = useQuery({
+    queryKey: ["/api/influence-bar"],
+    enabled: !!user,
+    queryFn: async () => {
+      return apiFetch(`${import.meta.env.VITE_API_URL}/api/influence-bar`);
+    },
+  });
+
+  // Get influence history
+  const { data: influenceHistory } = useQuery({
+    queryKey: ["/api/influence-history"],
+    enabled: !!user,
+    queryFn: async () => {
+      return apiFetch(`${import.meta.env.VITE_API_URL}/api/influence-history`);
+    },
   });
 
   // Send message mutation

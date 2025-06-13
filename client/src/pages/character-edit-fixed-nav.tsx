@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest, apiFetch } from "@/lib/queryClient";
 import { calculateGameAge } from "@/lib/gameDate";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { 
@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import { z } from "zod";
 import { useLocation } from "wouter";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { characterEditSchema, characterAdminEditSchema } from "@shared/types";
 
 type UserEditForm = z.infer<typeof characterEditSchema>;
@@ -46,6 +46,8 @@ export default function CharacterEditFixedNav() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const queryClient = useQueryClient();
+  const [loading, setLoading] = useState(true);
+  const [character, setCharacter] = useState<any | null>(null);
 
   // Check if we're in admin context based on URL
   const currentPath = window.location.pathname;
@@ -188,7 +190,22 @@ export default function CharacterEditFixedNav() {
     updateCharacterMutation.mutate(data);
   };
 
-  if (!primaryCharacter) {
+  useEffect(() => {
+    if (!characterId) return;
+    (async () => {
+      setLoading(true);
+      try {
+        const data = await apiFetch(`${import.meta.env.VITE_API_URL}/api/characters/${characterId}`);
+        setCharacter(data);
+      } catch (e) {
+        setCharacter(null);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [characterId]);
+
+  if (loading || !character) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">

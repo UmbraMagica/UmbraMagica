@@ -15,7 +15,7 @@ import { calculateGameAge } from "@/lib/gameDate";
 import { CharacterAvatar } from "@/components/CharacterAvatar";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest, apiFetch } from "@/lib/queryClient";
 import DOMPurify from 'dompurify';
 
 interface Character {
@@ -111,7 +111,21 @@ export default function CharacterProfile() {
     setIsEditingHistory(false);
   };
 
-
+  // Fetch character data
+  useEffect(() => {
+    if (!id) return;
+    (async () => {
+      setLoading(true);
+      try {
+        const data = await apiFetch(`${import.meta.env.VITE_API_URL}/api/characters/${id}`);
+        setCharacter(data);
+      } catch (e) {
+        setCharacter(null);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [id]);
 
   if (isLoading) {
     return (

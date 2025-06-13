@@ -76,3 +76,19 @@ export const queryClient = new QueryClient({
     },
   },
 });
+
+export async function apiFetch(input: RequestInfo, init: RequestInit = {}) {
+  const token = localStorage.getItem('jwt_token');
+  const headers = new Headers(init.headers || {});
+  if (token) {
+    headers.set('Authorization', `Bearer ${token}`);
+  }
+  const response = await fetch(input, { ...init, headers });
+  if (!response.ok) throw new Error(`API error: ${response.status}`);
+  const contentType = response.headers.get('content-type');
+  if (contentType && contentType.includes('application/json')) {
+    return response.json();
+  } else {
+    return response.text();
+  }
+}

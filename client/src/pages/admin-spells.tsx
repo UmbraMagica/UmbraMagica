@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,7 +12,7 @@ import { Plus, Edit, Trash2, Wand2, ArrowLeft, Search, Filter, Upload, FileText 
 import { useToast } from "@/hooks/use-toast";
 import type { Spell } from "@shared/types";
 import { useLocation } from "wouter";
-import { getAuthToken } from "@/lib/queryClient";
+import { getAuthToken, apiFetch } from "@/lib/queryClient";
 
 export default function AdminSpells() {
   const [isCreating, setIsCreating] = useState(false);
@@ -290,6 +290,21 @@ export default function AdminSpells() {
       toast({ title: "Chyba zpracování", description: "Nepodařilo se zpracovat data", variant: "destructive" });
     }
   };
+
+  // Fetch spells
+  useEffect(() => {
+    (async () => {
+      setLoading(true);
+      try {
+        const data = await apiFetch(`${import.meta.env.VITE_API_URL}/api/admin/spells`);
+        setSpells(data);
+      } catch (e) {
+        setSpells([]);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
 
   if (isLoading) {
     return <div className="flex justify-center p-8">Načítání kouzel...</div>;

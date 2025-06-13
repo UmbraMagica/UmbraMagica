@@ -39,6 +39,7 @@ import { GameDate, getCurrentGameDate } from "@/components/GameDate";
 import { calculateGameAge } from "@/lib/gameDate";
 import { CharacterAvatar } from "@/components/CharacterAvatar";
 import { MoonPhase } from "@/components/MoonPhase";
+import { apiFetch } from "@/lib/queryClient";
 
 interface OnlineCharacter {
   id: number;
@@ -67,9 +68,12 @@ export default function Home() {
     }
   };
 
-  const { data: onlineCharacters = [] } = useQuery<OnlineCharacter[]>({
+  const { data: onlineCharacters = [] } = useQuery({
     queryKey: ["/api/characters/online"],
-    staleTime: 30000,
+    enabled: !!user,
+    queryFn: async () => {
+      return apiFetch(`${import.meta.env.VITE_API_URL}/api/characters/online`);
+    },
   });
 
   // Get user's characters from the auth user object
@@ -79,6 +83,10 @@ export default function Home() {
   const { data: allCharacters = [] } = useQuery({
     queryKey: ["/api/characters/all"],
     enabled: !!user,
+    queryFn: async () => {
+      const data = await apiFetch(`${import.meta.env.VITE_API_URL}/api/characters/all`);
+      return data.characters || [];
+    },
   });
 
   // Find the active character from database (isActive: true)
@@ -117,8 +125,10 @@ export default function Home() {
   const { data: characterWand } = useQuery({
     queryKey: [`/api/characters/${currentDisplayedCharacter?.id}/wand`],
     enabled: !!currentDisplayedCharacter?.id,
-    staleTime: 0, // Always fetch fresh data
-    gcTime: 0     // Don't cache
+    queryFn: async () => {
+      if (!currentDisplayedCharacter?.id) return null;
+      return apiFetch(`${import.meta.env.VITE_API_URL}/api/characters/${currentDisplayedCharacter.id}/wand`);
+    },
   });
 
   // Get unread owl post count for current character
@@ -147,6 +157,10 @@ export default function Home() {
   const { data: lastChatRoom } = useQuery({
     queryKey: [`/api/characters/${currentDisplayedCharacter?.id}/last-chat`],
     enabled: !!currentDisplayedCharacter?.id,
+    queryFn: async () => {
+      if (!currentDisplayedCharacter?.id) return null;
+      return apiFetch(`${import.meta.env.VITE_API_URL}/api/characters/${currentDisplayedCharacter.id}/last-chat`);
+    },
   });
 
   const characterAge = currentDisplayedCharacter ? calculateGameAge(currentDisplayedCharacter.birthDate) : 0;

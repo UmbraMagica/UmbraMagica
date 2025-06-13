@@ -7,10 +7,10 @@ import { ArrowLeft, Users, MapPin, ChevronDown, ChevronRight, Lock } from "lucid
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
+import { apiFetch } from "@/lib/queryClient";
 
 interface ChatCategory {
   id: number;
