@@ -42,6 +42,8 @@ interface AdminUser {
   characters: any[];
 }
 
+const API_URL = import.meta.env.VITE_API_URL || '';
+
 export default function Admin() {
   const { user, logout } = useAuth();
   const { toast } = useToast();
@@ -88,7 +90,7 @@ export default function Admin() {
 
   const createInviteCodeMutation = useMutation({
     mutationFn: async (code: string) => {
-      const response = await apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/admin/invite-codes`, { code });
+      const response = await apiRequest("POST", `${API_URL}/api/admin/invite-codes`, { code });
       return response.json();
     },
     onSuccess: () => {
@@ -109,7 +111,7 @@ export default function Admin() {
 
   const updateRoleMutation = useMutation({
     mutationFn: async ({ userId, role }: { userId: number; role: string }) => {
-      const response = await apiRequest("PATCH", `${import.meta.env.VITE_API_URL}/api/users/${userId}/role`, { role });
+      const response = await apiRequest("PATCH", `${API_URL}/api/users/${userId}/role`, { role });
       return response.json();
     },
     onSuccess: () => {
@@ -130,7 +132,7 @@ export default function Admin() {
 
   const approveCharacterRequestMutation = useMutation({
     mutationFn: async ({ requestId, reviewNote }: { requestId: number; reviewNote?: string }) => {
-      const response = await apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/admin/character-requests/${requestId}/approve`, { reviewNote });
+      const response = await apiRequest("POST", `${API_URL}/api/admin/character-requests/${requestId}/approve`, { reviewNote });
       return response.json();
     },
     onSuccess: () => {
@@ -152,7 +154,7 @@ export default function Admin() {
 
   const rejectCharacterRequestMutation = useMutation({
     mutationFn: async ({ requestId, reviewNote }: { requestId: number; reviewNote: string }) => {
-      const response = await apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/admin/character-requests/${requestId}/reject`, { reviewNote });
+      const response = await apiRequest("POST", `${API_URL}/api/admin/character-requests/${requestId}/reject`, { reviewNote });
       return response.json();
     },
     onSuccess: () => {
@@ -174,7 +176,7 @@ export default function Admin() {
 
   const killCharacterMutation = useMutation({
     mutationFn: async ({ characterId, deathReason }: { characterId: number; deathReason: string }) => {
-      const response = await apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/admin/characters/${characterId}/kill`, { deathReason });
+      const response = await apiRequest("POST", `${API_URL}/api/admin/characters/${characterId}/kill`, { deathReason });
       return response.json();
     },
     onSuccess: () => {
@@ -200,7 +202,7 @@ export default function Admin() {
 
   const resurrectCharacterMutation = useMutation({
     mutationFn: async (characterId: number) => {
-      const response = await apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/characters/${characterId}/revive`);
+      const response = await apiRequest("POST", `${API_URL}/api/characters/${characterId}/revive`);
       return response.json();
     },
     onSuccess: () => {
@@ -223,7 +225,7 @@ export default function Admin() {
 
   const banUserMutation = useMutation({
     mutationFn: async ({ userId, banReason }: { userId: number; banReason: string }) => {
-      const response = await apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/admin/users/${userId}/ban`, { banReason });
+      const response = await apiRequest("POST", `${API_URL}/api/admin/users/${userId}/ban`, { banReason });
       return response.json();
     },
     onSuccess: () => {
@@ -248,7 +250,7 @@ export default function Admin() {
 
   const resetPasswordMutation = useMutation({
     mutationFn: async (userId: number) => {
-      const response = await apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/admin/users/${userId}/reset-password`);
+      const response = await apiRequest("POST", `${API_URL}/api/admin/users/${userId}/reset-password`);
       return response.json();
     },
     onSuccess: (data) => {
@@ -558,7 +560,7 @@ export default function Admin() {
                 <div className="flex gap-2">
                   <Button
                     onClick={() => {
-                      fetch(`${import.meta.env.VITE_API_URL}/api/admin/spells/initialize`, { 
+                      fetch(`${API_URL}/api/admin/spells/initialize`, { 
                         method: 'POST',
                         credentials: 'include'
                       })
@@ -619,7 +621,7 @@ export default function Admin() {
 
                   const adjustInfluence = useMutation({
                     mutationFn: async ({ side, points }: { side: 'grindelwald' | 'dumbledore', points: number }) => {
-                      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/influence-bar/adjust`, {
+                      const response = await fetch(`${API_URL}/api/admin/influence-bar/adjust`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ side, points }),
@@ -645,7 +647,7 @@ export default function Admin() {
 
                   const setInfluence = useMutation({
                     mutationFn: async ({ grindelwaldPoints, dumbledorePoints }: { grindelwaldPoints: number, dumbledorePoints: number }) => {
-                      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/influence-bar/set`, {
+                      const response = await fetch(`${API_URL}/api/admin/influence-bar/set`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ grindelwaldPoints, dumbledorePoints }),

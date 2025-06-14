@@ -35,6 +35,8 @@ interface ArchivedMessage {
   archivedAt: string;
 }
 
+const API_URL = import.meta.env.VITE_API_URL || '';
+
 export default function AdminArchive() {
   const { user } = useAuth();
   const [, setLocation] = useLocation();
@@ -72,7 +74,7 @@ export default function AdminArchive() {
     if (!selectedRoomId) return;
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/rooms/${selectedRoomId}/download`, {
+      const response = await fetch(`${API_URL}/api/rooms/${selectedRoomId}/download`, {
         credentials: "include",
       });
       

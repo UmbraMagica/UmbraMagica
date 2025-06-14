@@ -17,6 +17,8 @@ interface Character {
   isActive: boolean;
 }
 
+const API_URL = import.meta.env.VITE_API_URL || '';
+
 export function useAuth() {
   const queryClient = useQueryClient();
   const [, setLocation] = useLocation();
@@ -27,7 +29,7 @@ export function useAuth() {
       const token = getAuthToken();
       if (!token) return null;
 
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/user`, {
+      const response = await fetch(`${API_URL}/api/auth/user`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -50,7 +52,7 @@ export function useAuth() {
       // Pokud user nemá characters property, načti je zvlášť
       if (userData && !userData.characters) {
         try {
-          const charactersResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/characters`, {
+          const charactersResponse = await fetch(`${API_URL}/api/characters`, {
             headers: {
               'Authorization': `Bearer ${token}`,
               'Content-Type': 'application/json'
@@ -77,7 +79,7 @@ export function useAuth() {
 
   const loginMutation = useMutation({
     mutationFn: async (credentials: { username: string; password: string }) => {
-      const response = await apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/auth/login`, credentials);
+      const response = await apiRequest("POST", `${API_URL}/api/auth/login`, credentials);
       const data = await response.json();
       if (data.token) {
         localStorage.setItem('jwt_token', data.token);
@@ -85,7 +87,7 @@ export function useAuth() {
       return data.user || null;
     },
     onSuccess: (data) => {
-      queryClient.setQueryData([`${import.meta.env.VITE_API_URL}/api/auth/user`], data);
+      queryClient.setQueryData([`${API_URL}/api/auth/user`], data);
       setLocation("/");
     },
   });
@@ -93,7 +95,7 @@ export function useAuth() {
   const logoutMutation = useMutation({
     mutationFn: async () => {
       localStorage.removeItem('jwt_token');
-      queryClient.setQueryData([`${import.meta.env.VITE_API_URL}/api/auth/user`], null);
+      queryClient.setQueryData([`${API_URL}/api/auth/user`], null);
     },
     onSuccess: () => {
       queryClient.removeQueries();
@@ -117,7 +119,7 @@ export function useAuth() {
       return response.json();
     },
     onSuccess: (data) => {
-      queryClient.setQueryData([`${import.meta.env.VITE_API_URL}/api/auth/user`], data);
+      queryClient.setQueryData([`${API_URL}/api/auth/user`], data);
       queryClient.invalidateQueries();
       setLocation("/");
     },

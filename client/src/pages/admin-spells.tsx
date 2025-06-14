@@ -14,6 +14,8 @@ import type { Spell } from "@shared/types";
 import { useLocation } from "wouter";
 import { getAuthToken, apiFetch } from "@/lib/queryClient";
 
+const API_URL = import.meta.env.VITE_API_URL || '';
+
 export default function AdminSpells() {
   const [isCreating, setIsCreating] = useState(false);
   const [editingSpell, setEditingSpell] = useState<Spell | null>(null);
@@ -76,7 +78,7 @@ export default function AdminSpells() {
   const initializeSpellsMutation = useMutation({
     mutationFn: async () => {
       const token = getAuthToken();
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/spells/initialize`, {
+      const response = await fetch(`${API_URL}/api/admin/spells/initialize`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
       });
@@ -95,7 +97,7 @@ export default function AdminSpells() {
   const createSpellMutation = useMutation({
     mutationFn: async (spellData: typeof formData) => {
       const token = getAuthToken();
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/spells`, {
+      const response = await fetch(`${API_URL}/api/admin/spells`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
         body: JSON.stringify(spellData),
@@ -117,7 +119,7 @@ export default function AdminSpells() {
   const updateSpellMutation = useMutation({
     mutationFn: async ({ id, data }: { id: number; data: typeof formData }) => {
       const token = getAuthToken();
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/spells/${id}`, {
+      const response = await fetch(`${API_URL}/api/admin/spells/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
         body: JSON.stringify(data),
@@ -139,7 +141,7 @@ export default function AdminSpells() {
   const deleteSpellMutation = useMutation({
     mutationFn: async (id: number) => {
       const token = getAuthToken();
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/spells/${id}`, {
+      const response = await fetch(`${API_URL}/api/admin/spells/${id}`, {
         method: 'DELETE',
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
@@ -158,7 +160,7 @@ export default function AdminSpells() {
   const bulkImportMutation = useMutation({
     mutationFn: async (spellsData: Array<{name: string, effect: string, category: string, type: string, targetType: string}>) => {
       const token = getAuthToken();
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/spells/bulk-import`, {
+      const response = await fetch(`${API_URL}/api/admin/spells/bulk-import`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
         body: JSON.stringify({ spells: spellsData }),
@@ -296,7 +298,7 @@ export default function AdminSpells() {
     (async () => {
       setLoading(true);
       try {
-        const data = await apiFetch(`${import.meta.env.VITE_API_URL}/api/admin/spells`);
+        const data = await apiFetch(`${API_URL}/api/admin/spells`);
         setSpells(data);
       } catch (e) {
         setSpells([]);

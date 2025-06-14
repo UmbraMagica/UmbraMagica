@@ -12,6 +12,8 @@ import { useLocation } from "wouter";
 import { useState, useEffect } from "react";
 import { apiRequest } from "@/lib/queryClient";
 
+const API_URL = import.meta.env.VITE_API_URL || '';
+
 export default function AdminWandComponents() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
@@ -50,7 +52,7 @@ export default function AdminWandComponents() {
   // Save components mutation
   const saveComponentsMutation = useMutation({
     mutationFn: async (components: any) => {
-      const response = await apiRequest("PUT", `${import.meta.env.VITE_API_URL}/api/admin/wand-components`, components);
+      const response = await apiRequest("PUT", `${API_URL}/api/admin/wand-components`, components);
       return response.json();
     },
     onSuccess: () => {
