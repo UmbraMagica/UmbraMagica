@@ -1,0 +1,115 @@
+index-CKRoorby.js:57 
+            
+            
+           GET https://umbramagica-1.onrender.com/api/influence-history 404 (Not Found)
+(anonymní) @ index-CKRoorby.js:57
+i @ index-CKRoorby.js:57
+w @ index-CKRoorby.js:57
+start @ index-CKRoorby.js:57
+fetch @ index-CKRoorby.js:57
+Dc @ index-CKRoorby.js:57
+onSubscribe @ index-CKRoorby.js:57
+subscribe @ index-CKRoorby.js:57
+(anonymní) @ index-CKRoorby.js:57
+tw @ index-CKRoorby.js:48
+Qd @ index-CKRoorby.js:48
+e1 @ index-CKRoorby.js:48
+aa @ index-CKRoorby.js:48
+e1 @ index-CKRoorby.js:48
+aa @ index-CKRoorby.js:48
+e1 @ index-CKRoorby.js:48
+aa @ index-CKRoorby.js:48
+e1 @ index-CKRoorby.js:48
+aa @ index-CKRoorby.js:48
+e1 @ index-CKRoorby.js:48
+aa @ index-CKRoorby.js:48
+e1 @ index-CKRoorby.js:48
+aa @ index-CKRoorby.js:48
+e1 @ index-CKRoorby.js:48
+aa @ index-CKRoorby.js:48
+e1 @ index-CKRoorby.js:48
+aa @ index-CKRoorby.js:48
+e1 @ index-CKRoorby.js:48
+aa @ index-CKRoorby.js:48
+e1 @ index-CKRoorby.js:48
+aa @ index-CKRoorby.js:48
+e1 @ index-CKRoorby.js:48
+aa @ index-CKRoorby.js:48
+e1 @ index-CKRoorby.js:48
+aa @ index-CKRoorby.js:48
+e1 @ index-CKRoorby.js:48
+aa @ index-CKRoorby.js:48
+e1 @ index-CKRoorby.js:48
+aa @ index-CKRoorby.js:48
+e1 @ index-CKRoorby.js:48
+v1 @ index-CKRoorby.js:48
+Af @ index-CKRoorby.js:48
+p1 @ index-CKRoorby.js:48
+vb @ index-CKRoorby.js:48
+pb @ index-CKRoorby.js:48
+l1 @ index-CKRoorby.js:48
+yb @ index-CKRoorby.js:48
+Yd @ index-CKRoorby.js:48
+y1 @ index-CKRoorby.js:48
+(anonymní) @ index-CKRoorby.js:48Nechte si tuto chybu vysvětlit
+index-CKRoorby.js:57 JSON Parse Error: SyntaxError: Unexpected token 'N', "Not Found
+" is not valid JSON
+index-CKRoorby.js:57 Error Response Text: Not Found
+
+index-CKRoorby.js:57 
+            
+            
+           GET https://umbramagica-1.onrender.com/api/influence-bar 404 (Not Found)
+(anonymní) @ index-CKRoorby.js:57
+i @ index-CKRoorby.js:57
+w @ index-CKRoorby.js:57
+start @ index-CKRoorby.js:57
+fetch @ index-CKRoorby.js:57
+Dc @ index-CKRoorby.js:57
+onSubscribe @ index-CKRoorby.js:57
+subscribe @ index-CKRoorby.js:57
+(anonymní) @ index-CKRoorby.js:57
+tw @ index-CKRoorby.js:48
+Qd @ index-CKRoorby.js:48
+e1 @ index-CKRoorby.js:48
+aa @ index-CKRoorby.js:48
+e1 @ index-CKRoorby.js:48
+aa @ index-CKRoorby.js:48
+e1 @ index-CKRoorby.js:48
+aa @ index-CKRoorby.js:48
+e1 @ index-CKRoorby.js:48
+aa @ index-CKRoorby.js:48
+e1 @ index-CKRoorby.js:48
+aa @ index-CKRoorby.js:48
+e1 @ index-CKRoorby.js:48
+aa @ index-CKRoorby.js:48
+e1 @ index-CKRoorby.js:48
+aa @ index-CKRoorby.js:48
+e1 @ index-CKRoorby.js:48
+aa @ index-CKRoorby.js:48
+e1 @ index-CKRoorby.js:48
+aa @ index-CKRoorby.js:48
+e1 @ index-CKRoorby.js:48
+aa @ index-CKRoorby.js:48
+e1 @ index-CKRoorby.js:48
+aa @ index-CKRoorby.js:48
+e1 @ index-CKRoorby.js:48
+aa @ index-CKRoorby.js:48
+e1 @ index-CKRoorby.js:48
+aa @ index-CKRoorby.js:48
+e1 @ index-CKRoorby.js:48
+aa @ index-CKRoorby.js:48
+e1 @ index-CKRoorby.js:48
+v1 @ index-CKRoorby.js:48
+Af @ index-CKRoorby.js:48
+p1 @ index-CKRoorby.js:48
+vb @ index-CKRoorby.js:48
+pb @ index-CKRoorby.js:48
+l1 @ index-CKRoorby.js:48
+yb @ index-CKRoorby.js:48
+Yd @ index-CKRoorby.js:48
+y1 @ index-CKRoorby.js:48
+(anonymní) @ index-CKRoorby.js:48Nechte si tuto chybu vysvětlit
+index-CKRoorby.js:57 JSON Parse Error: SyntaxError: Unexpected token 'N', "Not Found
+" is not valid JSON
+index-CKRoorby.js:57 Error Response Text: Not Found

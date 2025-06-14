@@ -1,0 +1,161 @@
+Failed to load resource: the server responded with a status of 404 ()Nechte si tuto chybu vysvětlit
+index-BxgjSi5p.js:57 JSON Parse Error: SyntaxError: Unexpected token 'N', "Not Found
+" is not valid JSON
+index-BxgjSi5p.js:57 Error Response Text: Not Found
+
+/api/influence-bar:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()Nechte si tuto chybu vysvětlit
+index-BxgjSi5p.js:57 JSON Parse Error: SyntaxError: Unexpected token 'N', "Not Found
+" is not valid JSON
+index-BxgjSi5p.js:57 Error Response Text: Not Found
+
+umbramagica.onrender.com/api/characters/6:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 ()Nechte si tuto chybu vysvětlit
+/api/influence-bar:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()Nechte si tuto chybu vysvětlit
+index-BxgjSi5p.js:57 JSON Parse Error: SyntaxError: Unexpected token 'N', "Not Found
+" is not valid JSON
+index-BxgjSi5p.js:57 Error Response Text: Not Found
+
+/api/influence-history:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()Nechte si tuto chybu vysvětlit
+index-BxgjSi5p.js:57 JSON Parse Error: SyntaxError: Unexpected token 'N', "Not Found
+" is not valid JSON
+index-BxgjSi5p.js:57 Error Response Text: Not Found
+
+/api/influence-history:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()Nechte si tuto chybu vysvětlit
+index-BxgjSi5p.js:57 JSON Parse Error: SyntaxError: Unexpected token 'N', "Not Found
+" is not valid JSON
+index-BxgjSi5p.js:57 Error Response Text: Not Found
+
+/api/influence-bar:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()Nechte si tuto chybu vysvětlit
+index-BxgjSi5p.js:57 JSON Parse Error: SyntaxError: Unexpected token 'N', "Not Found
+" is not valid JSON
+index-BxgjSi5p.js:57 Error Response Text: Not Found
+
+/api/influence-bar:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()Nechte si tuto chybu vysvětlit
+index-BxgjSi5p.js:57 JSON Parse Error: SyntaxError: Unexpected token 'N', "Not Found
+" is not valid JSON
+index-BxgjSi5p.js:57 Error Response Text: Not Found
+
+/api/influence-history:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()Nechte si tuto chybu vysvětlit
+index-BxgjSi5p.js:57 JSON Parse Error: SyntaxError: Unexpected token 'N', "Not Found
+" is not valid JSON
+index-BxgjSi5p.js:57 Error Response Text: Not Found
+
+/api/influence-history:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()Nechte si tuto chybu vysvětlit
+index-BxgjSi5p.js:57 JSON Parse Error: SyntaxError: Unexpected token 'N', "Not Found
+" is not valid JSON
+index-BxgjSi5p.js:57 Error Response Text: Not Found
+
+/api/influence-bar:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()Nechte si tuto chybu vysvětlit
+index-BxgjSi5p.js:57 JSON Parse Error: SyntaxError: Unexpected token 'N', "Not Found
+" is not valid JSON
+index-BxgjSi5p.js:57 Error Response Text: Not Found
+
+index-BxgjSi5p.js:490 Ollivanders - Character wand query key: /api/characters/undefined/wand
+index-BxgjSi5p.js:490 Ollivanders - Character wand data: undefined
+index-BxgjSi5p.js:490 [Ollivanders] Načteno allCharacters: Array(0)
+index-BxgjSi5p.js:490 [Ollivanders] Načteno userCharacters: Array(0)
+/api/characters:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()Nechte si tuto chybu vysvětlit
+index-BxgjSi5p.js:57 JSON Parse Error: SyntaxError: Unexpected token 'N', "Not Found
+" is not valid JSON
+index-BxgjSi5p.js:57 Error Response Text: Not Found
+
+index-BxgjSi5p.js:490 Ollivanders - Character wand query key: /api/characters/undefined/wand
+index-BxgjSi5p.js:490 Ollivanders - Character wand data: undefined
+index-BxgjSi5p.js:490 [Ollivanders] Načteno allCharacters: Array(0)
+index-BxgjSi5p.js:490 [Ollivanders] Načteno userCharacters: Array(0)
+index-BxgjSi5p.js:490 [Ollivanders] Načteny wandComponents: Object
+/api/characters:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()Nechte si tuto chybu vysvětlit
+index-BxgjSi5p.js:57 JSON Parse Error: SyntaxError: Unexpected token 'N', "Not Found
+" is not valid JSON
+index-BxgjSi5p.js:57 Error Response Text: Not Found
+
+/api/influence-bar:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()Nechte si tuto chybu vysvětlit
+index-BxgjSi5p.js:57 JSON Parse Error: SyntaxError: Unexpected token 'N', "Not Found
+" is not valid JSON
+index-BxgjSi5p.js:57 Error Response Text: Not Found
+
+/api/influence-history:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()Nechte si tuto chybu vysvětlit
+index-BxgjSi5p.js:57 JSON Parse Error: SyntaxError: Unexpected token 'N', "Not Found
+" is not valid JSON
+index-BxgjSi5p.js:57 Error Response Text: Not Found
+
+index-BxgjSi5p.js:490 [OwlPost] Načteno userCharacters: Array(0)
+index-BxgjSi5p.js:490 [OwlPost] Načteno owlPostCharacters: Array(0)
+index-BxgjSi5p.js:490 [OwlPost] Načten inboxMessages: Array(0)
+index-BxgjSi5p.js:490 [OwlPost] Načten sentMessages: Array(0)
+index-BxgjSi5p.js:490 [OwlPost] Načteno userCharacters: Array(0)
+index-BxgjSi5p.js:490 [OwlPost] Načteno owlPostCharacters: Array(0)
+index-BxgjSi5p.js:490 [OwlPost] Načten inboxMessages: Array(0)
+index-BxgjSi5p.js:490 [OwlPost] Načten sentMessages: Array(0)
+/api/characters:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()Nechte si tuto chybu vysvětlit
+index-BxgjSi5p.js:57 JSON Parse Error: SyntaxError: Unexpected token 'N', "Not Found
+" is not valid JSON
+index-BxgjSi5p.js:57 Error Response Text: Not Found
+
+umbramagica.onrender.com/api/owl-post/unread-total:1 
+            
+            
+           Failed to load resource: the server responded with a status of 400 ()Nechte si tuto chybu vysvětlit
+umbramagica.onrender.com/api/owl-post/characters:1 
+            
+            
+           Failed to load resource: the server responded with a status of 400 ()Nechte si tuto chybu vysvětlit
+/api/influence-bar:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()Nechte si tuto chybu vysvětlit
+index-BxgjSi5p.js:57 JSON Parse Error: SyntaxError: Unexpected token 'N', "Not Found
+" is not valid JSON
+index-BxgjSi5p.js:57 Error Response Text: Not Found
+
+/api/influence-history:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()Nechte si tuto chybu vysvětlit
+index-BxgjSi5p.js:57 JSON Parse Error: SyntaxError: Unexpected token 'N', "Not Found
+" is not valid JSON
+index-BxgjSi5p.js:57 Error Response Text: Not Found

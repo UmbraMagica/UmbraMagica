@@ -1,0 +1,432 @@
+index-MMJmBOBT.js:437 [useAuth] Loaded user data: Object
+index-MMJmBOBT.js:490 Ollivanders - Character wand query key: /api/characters/undefined/wand
+index-MMJmBOBT.js:490 Ollivanders - Character wand data: undefined
+index-MMJmBOBT.js:490 [Ollivanders] Načteno allCharacters: Array(0)
+index-MMJmBOBT.js:490 [Ollivanders] Načteno userCharacters: Array(0)
+index-MMJmBOBT.js:490 Ollivanders - Character wand query key: /api/characters/undefined/wand
+index-MMJmBOBT.js:490 Ollivanders - Character wand data: undefined
+index-MMJmBOBT.js:490 [Ollivanders] Načteno allCharacters: Array(0)
+index-MMJmBOBT.js:490 [Ollivanders] Načteno userCharacters: Array(0)
+index-MMJmBOBT.js:490 [Ollivanders] Načteny wandComponents: Object
+index-MMJmBOBT.js:490 Ollivanders - Character wand query key: /api/characters/undefined/wand
+index-MMJmBOBT.js:490 Ollivanders - Character wand data: undefined
+index-MMJmBOBT.js:490 [Ollivanders] Načteno allCharacters: Array(0)
+index-MMJmBOBT.js:490 [Ollivanders] Načteno userCharacters: Array(0)
+/api/characters:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()Nechte si tuto chybu vysvětlit
+index-MMJmBOBT.js:57 JSON Parse Error: SyntaxError: Unexpected token 'N', "Not Found
+" is not valid JSON
+index-MMJmBOBT.js:57 Error Response Text: Not Found
+
+/api/characters:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()Nechte si tuto chybu vysvětlit
+index-MMJmBOBT.js:57 JSON Parse Error: SyntaxError: Unexpected token 'N', "Not Found
+" is not valid JSON
+index-MMJmBOBT.js:57 Error Response Text: Not Found
+
+index-MMJmBOBT.js:437 Landing component rendered
+index-MMJmBOBT.js:437 Login function: function
+index-MMJmBOBT.js:437 isLoginPending: false
+index-MMJmBOBT.js:437 Landing component rendered
+index-MMJmBOBT.js:437 Login function: function
+index-MMJmBOBT.js:437 isLoginPending: false
+index-MMJmBOBT.js:437 Landing component rendered
+index-MMJmBOBT.js:437 Login function: function
+index-MMJmBOBT.js:437 isLoginPending: false
+index-MMJmBOBT.js:437 Landing component rendered
+index-MMJmBOBT.js:437 Login function: function
+index-MMJmBOBT.js:437 isLoginPending: false
+index-MMJmBOBT.js:437 Landing component rendered
+index-MMJmBOBT.js:437 Login function: function
+index-MMJmBOBT.js:437 isLoginPending: false
+index-MMJmBOBT.js:437 Landing component rendered
+index-MMJmBOBT.js:437 Login function: function
+index-MMJmBOBT.js:437 isLoginPending: false
+index-MMJmBOBT.js:437 Landing component rendered
+index-MMJmBOBT.js:437 Login function: function
+index-MMJmBOBT.js:437 isLoginPending: false
+index-MMJmBOBT.js:437 Landing component rendered
+index-MMJmBOBT.js:437 Login function: function
+index-MMJmBOBT.js:437 isLoginPending: false
+index-MMJmBOBT.js:437 Landing component rendered
+index-MMJmBOBT.js:437 Login function: function
+index-MMJmBOBT.js:437 isLoginPending: false
+index-MMJmBOBT.js:437 Landing component rendered
+index-MMJmBOBT.js:437 Login function: function
+index-MMJmBOBT.js:437 isLoginPending: false
+index-MMJmBOBT.js:437 === FRONTEND LOGIN HANDLER ===
+index-MMJmBOBT.js:437 Username: Casey
+index-MMJmBOBT.js:437 Password: ***
+index-MMJmBOBT.js:437 Calling login function...
+index-MMJmBOBT.js:437 Landing component rendered
+index-MMJmBOBT.js:437 Login function: function
+index-MMJmBOBT.js:437 isLoginPending: true
+index-MMJmBOBT.js:437 Login result: Object
+index-MMJmBOBT.js:437 localStorage keys: Array(2)
+index-MMJmBOBT.js:437 localStorage['jwt_token']: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwidXNlcm5hbWUiOiJDYXNleSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc0OTg5NzcyNCwiZXhwIjoxNzUwNTAyNTI0fQ.Ri70oDStPjv0u_ZN_kmJx-VPn64hFP4mjDm3AtW3tf8
+index-MMJmBOBT.js:437 localStorage[selectedCharacterId]: 6
+index-MMJmBOBT.js:437 localStorage[jwt_token]: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwidXNlcm5hbWUiOiJDYXNleSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc0OTg5NzcyNCwiZXhwIjoxNzUwNTAyNTI0fQ.Ri70oDStPjv0u_ZN_kmJx-VPn64hFP4mjDm3AtW3tf8
+index-MMJmBOBT.js:437 [useAuth] Loaded user data: Object
+index-MMJmBOBT.js:490 [OwlPost] Načteno userCharacters: []
+index-MMJmBOBT.js:490 [OwlPost] Načteno owlPostCharacters: []
+index-MMJmBOBT.js:490 [OwlPost] Načten inboxMessages: []
+index-MMJmBOBT.js:490 [OwlPost] Načten sentMessages: []
+index-MMJmBOBT.js:490 [OwlPost] Načteno userCharacters: []
+index-MMJmBOBT.js:490 [OwlPost] Načteno owlPostCharacters: []
+index-MMJmBOBT.js:490 [OwlPost] Načten inboxMessages: []
+index-MMJmBOBT.js:490 [OwlPost] Načten sentMessages: []
+index-MMJmBOBT.js:57 
+            
+            
+           GET https://umbramagica-1.onrender.com/api/characters 404 (Not Found)
+(anonymní) @ index-MMJmBOBT.js:57
+i @ index-MMJmBOBT.js:57
+w @ index-MMJmBOBT.js:57
+start @ index-MMJmBOBT.js:57
+fetch @ index-MMJmBOBT.js:57
+Dc @ index-MMJmBOBT.js:57
+onSubscribe @ index-MMJmBOBT.js:57
+subscribe @ index-MMJmBOBT.js:57
+(anonymní) @ index-MMJmBOBT.js:57
+tw @ index-MMJmBOBT.js:48
+Qd @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+v1 @ index-MMJmBOBT.js:48
+Af @ index-MMJmBOBT.js:48
+p1 @ index-MMJmBOBT.js:48
+vb @ index-MMJmBOBT.js:48
+pb @ index-MMJmBOBT.js:48
+l1 @ index-MMJmBOBT.js:48
+yb @ index-MMJmBOBT.js:48
+Yd @ index-MMJmBOBT.js:48
+y1 @ index-MMJmBOBT.js:48
+(anonymní) @ index-MMJmBOBT.js:48Nechte si tuto chybu vysvětlit
+index-MMJmBOBT.js:57 JSON Parse Error: SyntaxError: Unexpected token 'N', "Not Found
+" is not valid JSON
+index-MMJmBOBT.js:57 Error Response Text: Not Found
+
+index-MMJmBOBT.js:57 
+            
+            
+           GET https://umbramagica.onrender.com/api/owl-post/unread-total 400 (Bad Request)
+Yn @ index-MMJmBOBT.js:57
+queryFn @ index-MMJmBOBT.js:490
+i @ index-MMJmBOBT.js:57
+w @ index-MMJmBOBT.js:57
+start @ index-MMJmBOBT.js:57
+fetch @ index-MMJmBOBT.js:57
+Dc @ index-MMJmBOBT.js:57
+onSubscribe @ index-MMJmBOBT.js:57
+subscribe @ index-MMJmBOBT.js:57
+(anonymní) @ index-MMJmBOBT.js:57
+tw @ index-MMJmBOBT.js:48
+Qd @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+v1 @ index-MMJmBOBT.js:48
+Af @ index-MMJmBOBT.js:48
+p1 @ index-MMJmBOBT.js:48
+vb @ index-MMJmBOBT.js:48
+pb @ index-MMJmBOBT.js:48
+l1 @ index-MMJmBOBT.js:48
+yb @ index-MMJmBOBT.js:48
+Yd @ index-MMJmBOBT.js:48
+y1 @ index-MMJmBOBT.js:48
+(anonymní) @ index-MMJmBOBT.js:48Nechte si tuto chybu vysvětlit
+index-MMJmBOBT.js:57 
+            
+            
+           GET https://umbramagica.onrender.com/api/owl-post/characters 400 (Bad Request)
+Yn @ index-MMJmBOBT.js:57
+queryFn @ index-MMJmBOBT.js:490
+i @ index-MMJmBOBT.js:57
+w @ index-MMJmBOBT.js:57
+start @ index-MMJmBOBT.js:57
+fetch @ index-MMJmBOBT.js:57
+Dc @ index-MMJmBOBT.js:57
+onSubscribe @ index-MMJmBOBT.js:57
+subscribe @ index-MMJmBOBT.js:57
+(anonymní) @ index-MMJmBOBT.js:57
+tw @ index-MMJmBOBT.js:48
+Qd @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+v1 @ index-MMJmBOBT.js:48
+Af @ index-MMJmBOBT.js:48
+p1 @ index-MMJmBOBT.js:48
+vb @ index-MMJmBOBT.js:48
+pb @ index-MMJmBOBT.js:48
+l1 @ index-MMJmBOBT.js:48
+yb @ index-MMJmBOBT.js:48
+Yd @ index-MMJmBOBT.js:48
+y1 @ index-MMJmBOBT.js:48
+(anonymní) @ index-MMJmBOBT.js:48Nechte si tuto chybu vysvětlit
+index-MMJmBOBT.js:490 [OwlPost] Načteno userCharacters: []
+index-MMJmBOBT.js:490 [OwlPost] Načteno owlPostCharacters: []
+index-MMJmBOBT.js:490 [OwlPost] Načten inboxMessages: []
+index-MMJmBOBT.js:490 [OwlPost] Načten sentMessages: []
+index-MMJmBOBT.js:490 Ollivanders - Character wand query key: /api/characters/undefined/wand
+index-MMJmBOBT.js:490 Ollivanders - Character wand data: undefined
+index-MMJmBOBT.js:490 [Ollivanders] Načteno allCharacters: []
+index-MMJmBOBT.js:490 [Ollivanders] Načteno userCharacters: []
+index-MMJmBOBT.js:57 
+            
+            
+           GET https://umbramagica-1.onrender.com/api/characters 404 (Not Found)
+(anonymní) @ index-MMJmBOBT.js:57
+i @ index-MMJmBOBT.js:57
+w @ index-MMJmBOBT.js:57
+start @ index-MMJmBOBT.js:57
+fetch @ index-MMJmBOBT.js:57
+Dc @ index-MMJmBOBT.js:57
+onSubscribe @ index-MMJmBOBT.js:57
+subscribe @ index-MMJmBOBT.js:57
+(anonymní) @ index-MMJmBOBT.js:57
+tw @ index-MMJmBOBT.js:48
+Qd @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+v1 @ index-MMJmBOBT.js:48
+Af @ index-MMJmBOBT.js:48
+p1 @ index-MMJmBOBT.js:48
+vb @ index-MMJmBOBT.js:48
+pb @ index-MMJmBOBT.js:48
+l1 @ index-MMJmBOBT.js:48
+yb @ index-MMJmBOBT.js:48
+Yd @ index-MMJmBOBT.js:48
+y1 @ index-MMJmBOBT.js:48
+(anonymní) @ index-MMJmBOBT.js:48Nechte si tuto chybu vysvětlit
+index-MMJmBOBT.js:57 JSON Parse Error: SyntaxError: Unexpected token 'N', "Not Found
+" is not valid JSON
+index-MMJmBOBT.js:57 Error Response Text: Not Found
+
+index-MMJmBOBT.js:490 Ollivanders - Character wand query key: /api/characters/undefined/wand
+index-MMJmBOBT.js:490 Ollivanders - Character wand data: undefined
+index-MMJmBOBT.js:490 [Ollivanders] Načteno allCharacters: []
+index-MMJmBOBT.js:490 [Ollivanders] Načteno userCharacters: []
+index-MMJmBOBT.js:490 [Ollivanders] Načteny wandComponents: {woods: Array(0), cores: Array(0), lengths: Array(0), flexibilities: Array(0)}
+index-MMJmBOBT.js:57 
+            
+            
+           GET https://umbramagica-1.onrender.com/api/characters 404 (Not Found)
+(anonymní) @ index-MMJmBOBT.js:57
+i @ index-MMJmBOBT.js:57
+w @ index-MMJmBOBT.js:57
+start @ index-MMJmBOBT.js:57
+fetch @ index-MMJmBOBT.js:57
+Dc @ index-MMJmBOBT.js:57
+setOptions @ index-MMJmBOBT.js:57
+(anonymní) @ index-MMJmBOBT.js:57
+Qd @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+v1 @ index-MMJmBOBT.js:48
+Af @ index-MMJmBOBT.js:48
+p1 @ index-MMJmBOBT.js:48
+vb @ index-MMJmBOBT.js:48
+pb @ index-MMJmBOBT.js:48
+l1 @ index-MMJmBOBT.js:48
+yb @ index-MMJmBOBT.js:48
+Yd @ index-MMJmBOBT.js:48
+y1 @ index-MMJmBOBT.js:48
+(anonymní) @ index-MMJmBOBT.js:48
+setTimeout
+xA @ index-MMJmBOBT.js:57
+l @ index-MMJmBOBT.js:57
+batch @ index-MMJmBOBT.js:57
+Fa @ index-MMJmBOBT.js:57
+setData @ index-MMJmBOBT.js:57
+onSuccess @ index-MMJmBOBT.js:57
+h @ index-MMJmBOBT.js:57
+Promise.then
+w @ index-MMJmBOBT.js:57
+start @ index-MMJmBOBT.js:57
+fetch @ index-MMJmBOBT.js:57
+Dc @ index-MMJmBOBT.js:57
+onSubscribe @ index-MMJmBOBT.js:57
+subscribe @ index-MMJmBOBT.js:57
+(anonymní) @ index-MMJmBOBT.js:57
+tw @ index-MMJmBOBT.js:48
+Qd @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+ra @ index-MMJmBOBT.js:48
+e1 @ index-MMJmBOBT.js:48
+v1 @ index-MMJmBOBT.js:48
+Af @ index-MMJmBOBT.js:48
+p1 @ index-MMJmBOBT.js:48
+vb @ index-MMJmBOBT.js:48
+pb @ index-MMJmBOBT.js:48
+l1 @ index-MMJmBOBT.js:48
+yb @ index-MMJmBOBT.js:48
+Yd @ index-MMJmBOBT.js:48
+y1 @ index-MMJmBOBT.js:48
+(anonymní) @ index-MMJmBOBT.js:48Nechte si tuto chybu vysvětlit
+index-MMJmBOBT.js:57 JSON Parse Error: SyntaxError: Unexpected token 'N', "Not Found
+" is not valid JSON
+index-MMJmBOBT.js:57 Error Response Text: Not Found

@@ -1,0 +1,68 @@
+> umbra-magica@1.0.0 build
+> esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+  dist/index.js  72.7kb
+⚡ Done in 16ms
+==> Uploading build...
+==> Uploaded in 6.2s. Compression took 3.9s
+==> Build successful 🎉
+==> Deploying...
+==> Running '     node dist/index.js'
+registerRoutes: konec
+10:05:31 AM [express] serving on port 10000
+[DEBUG] HEAD /
+==> Your service is live 🎉
+[DEBUG] GET /
+[DEBUG] GET /api/auth/user
+10:05:48 AM [express] GET /api/auth/user 304 in 922ms :: {"id":5,"username":"Casey","email":"caseylot…
+[DEBUG] GET /api/characters/7/wand
+[DEBUG] GET /api/characters/all
+[DEBUG] GET /api/characters/7/last-chat
+10:05:48 AM [express] GET /api/characters/7/last-chat 304 in 1ms
+[DEBUG] GET /api/characters/6/wand
+[DEBUG] GET /api/owl-post/unread-count/7
+[DEBUG] GET /api/owl-post/unread-count/6
+[DEBUG] GET /api/characters/online
+10:05:48 AM [express] GET /api/characters/online 304 in 2ms :: []
+10:05:48 AM [express] GET /api/characters/7/wand 304 in 206ms :: {"id":3,"characterId":7,"wood":"Boro…
+10:05:48 AM [express] GET /api/characters/all 304 in 227ms :: {"characters":[{"id":7,"userId":5,"firs…
+[DEBUG] GET /api/characters/6/last-chat
+10:05:48 AM [express] GET /api/characters/6/last-chat 304 in 2ms
+10:05:48 AM [express] GET /api/owl-post/unread-count/6 304 in 223ms :: {"count":0}
+10:05:48 AM [express] GET /api/characters/6/wand 304 in 241ms :: {"id":6,"characterId":6,"wood":"Topo…
+10:05:49 AM [express] GET /api/owl-post/unread-count/7 304 in 569ms :: {"count":0}
+[DEBUG] GET /api/chat/categories
+10:05:52 AM [express] GET /api/chat/categories 304 in 2ms :: []
+[DEBUG] GET /api/chat/rooms
+10:05:52 AM [express] GET /api/chat/rooms 304 in 1ms :: []
+[DEBUG] GET /api/wand-components
+10:05:55 AM [express] GET /api/wand-components 304 in 2ms :: {"woods":[],"cores":[],"lengths":[],"fle…
+[DEBUG] GET /api/auth/user
+10:05:55 AM [express] GET /api/auth/user 304 in 428ms :: {"id":5,"username":"Casey","email":"caseylot…
+[DEBUG] GET /api/characters/6/wand
+10:05:57 AM [express] GET /api/characters/6/wand 304 in 214ms :: {"id":6,"characterId":6,"wood":"Topo…
+[DEBUG] GET /api/owl-post/characters
+10:05:58 AM [express] GET /api/owl-post/characters 400 in 2ms :: {"message":"Invalid characterId"}
+[DEBUG] GET /api/owl-post/unread-total
+10:05:58 AM [express] GET /api/owl-post/unread-total 400 in 1ms :: {"message":"Invalid characterId"}
+[DEBUG] GET /api/auth/user
+10:06:14 AM [express] GET /api/auth/user 304 in 428ms :: {"id":5,"username":"Casey","email":"caseylot…
+[DEBUG] GET /api/characters/7/last-chat
+10:06:15 AM [express] GET /api/characters/7/last-chat 304 in 2ms
+[DEBUG] GET /api/characters/6/last-chat
+10:06:15 AM [express] GET /api/characters/6/last-chat 304 in 1ms
+[DEBUG] GET /api/characters/all
+[DEBUG] GET /api/characters/7/wand
+[DEBUG] GET /api/characters/6/wand
+[DEBUG] GET /api/owl-post/unread-count/6
+[DEBUG] GET /api/owl-post/unread-count/7
+10:06:15 AM [express] GET /api/characters/all 304 in 207ms :: {"characters":[{"id":7,"userId":5,"firs…
+10:06:15 AM [express] GET /api/characters/6/wand 304 in 277ms :: {"id":6,"characterId":6,"wood":"Topo…
+10:06:15 AM [express] GET /api/owl-post/unread-count/6 304 in 274ms :: {"count":0}
+10:06:15 AM [express] GET /api/owl-post/unread-count/7 304 in 274ms :: {"count":0}
+[DEBUG] GET /api/characters/online
+10:06:15 AM [express] GET /api/characters/online 304 in 2ms :: []
+10:06:15 AM [express] GET /api/characters/7/wand 304 in 602ms :: {"id":3,"characterId":7,"wood":"Boro…
+[DEBUG] GET /api/characters/6
+10:06:18 AM [express] GET /api/characters/6 200 in 1121ms :: {"id":6,"userId":5,"firstName":"Casey","…
+[DEBUG] GET /api/characters/7
+10:06:32 AM [express] GET /api/characters/7 200 in 460ms :: {"id":7,"userId":5,"firstName":"Kira","mi…

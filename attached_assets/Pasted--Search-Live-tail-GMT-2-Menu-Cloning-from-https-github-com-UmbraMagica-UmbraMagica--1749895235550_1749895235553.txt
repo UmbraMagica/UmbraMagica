@@ -1,0 +1,93 @@
+
+Search
+
+Live tail
+GMT+2
+
+Menu
+==> Cloning from https://github.com/UmbraMagica/UmbraMagica
+==> Checking out commit 413634ec478b13a4d81b9d5cb4d7d3c17aa19b6c in branch main
+==> Using Node.js version 22.14.0 (default)
+==> Docs on specifying a Node.js version: https://render.com/docs/node-version
+==> Using Bun version 1.1.0 (default)
+==> Docs on specifying a bun version: https://render.com/docs/bun-version
+==> Running build command '  npm install && npm run build'...
+added 559 packages, and audited 560 packages in 9s
+75 packages are looking for funding
+  run `npm fund` for details
+9 vulnerabilities (1 low, 7 moderate, 1 high)
+To address issues that do not require attention, run:
+  npm audit fix
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+Run `npm audit` for details.
+> umbra-magica@1.0.0 build
+> esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+  dist/index.js  72.7kb
+⚡ Done in 10ms
+==> Uploading build...
+==> Uploaded in 5.8s. Compression took 3.1s
+==> Build successful 🎉
+==> Deploying...
+==> Running '     node dist/index.js'
+registerRoutes: konec
+9:59:15 AM [express] serving on port 10000
+[DEBUG] HEAD /
+==> Your service is live 🎉
+[DEBUG] GET /
+[DEBUG] GET /api/auth/user
+9:59:41 AM [express] GET /api/auth/user 304 in 1560ms :: {"id":5,"username":"Casey","email":"caseylo…
+[DEBUG] GET /api/characters/online
+9:59:42 AM [express] GET /api/characters/online 304 in 2ms :: []
+[DEBUG] GET /api/characters/7/wand
+[DEBUG] GET /api/characters/all
+[DEBUG] GET /api/owl-post/unread-count/7
+[DEBUG] GET /api/owl-post/unread-count/6
+[DEBUG] GET /api/characters/7/last-chat
+9:59:42 AM [express] GET /api/characters/7/last-chat 304 in 1ms
+[DEBUG] GET /api/characters/6/wand
+[DEBUG] GET /api/characters/6/last-chat
+9:59:42 AM [express] GET /api/characters/6/last-chat 304 in 1ms
+9:59:42 AM [express] GET /api/characters/all 304 in 566ms :: {"characters":[{"id":7,"userId":5,"firs…
+9:59:42 AM [express] GET /api/characters/7/wand 304 in 607ms :: {"id":3,"characterId":7,"wood":"Boro…
+9:59:42 AM [express] GET /api/owl-post/unread-count/7 304 in 594ms :: {"count":0}
+9:59:42 AM [express] GET /api/owl-post/unread-count/6 304 in 622ms :: {"count":0}
+9:59:42 AM [express] GET /api/characters/6/wand 304 in 614ms :: {"id":6,"characterId":6,"wood":"Topo…
+[DEBUG] GET /api/characters/6
+9:59:46 AM [express] GET /api/characters/6 401 in 1ms :: {"message":"Unauthorized"}
+[DEBUG] GET /api/auth/user
+[DEBUG] GET /api/characters/all
+[DEBUG] GET /api/characters/online
+9:59:50 AM [express] GET /api/characters/online 304 in 2ms :: []
+[DEBUG] GET /api/characters/6/last-chat
+9:59:50 AM [express] GET /api/characters/6/last-chat 304 in 77ms
+[DEBUG] GET /api/characters/6/wand
+[DEBUG] GET /api/owl-post/unread-count/6
+9:59:51 AM [express] GET /api/characters/all 304 in 628ms :: {"characters":[{"id":7,"userId":5,"firs…
+9:59:51 AM [express] GET /api/owl-post/unread-count/6 304 in 236ms :: {"count":0}
+9:59:51 AM [express] GET /api/characters/6/wand 304 in 553ms :: {"id":6,"characterId":6,"wood":"Topo…
+[DEBUG] GET /api/characters/online
+9:59:51 AM [express] GET /api/characters/online 304 in 1ms :: []
+[DEBUG] GET /api/characters/all
+[DEBUG] GET /api/characters/6/wand
+[DEBUG] GET /api/characters/6/last-chat
+9:59:51 AM [express] GET /api/characters/6/last-chat 304 in 1ms
+[DEBUG] GET /api/owl-post/unread-count/6
+9:59:51 AM [express] GET /api/auth/user 304 in 1214ms :: {"id":5,"username":"Casey","email":"caseylo…
+9:59:52 AM [express] GET /api/owl-post/unread-count/6 304 in 220ms :: {"count":0}
+[DEBUG] GET /api/auth/user
+9:59:52 AM [express] GET /api/characters/all 304 in 562ms :: {"characters":[{"id":7,"userId":5,"firs…
+9:59:52 AM [express] GET /api/characters/6/wand 304 in 560ms :: {"id":6,"characterId":6,"wood":"Topo…
+9:59:52 AM [express] GET /api/auth/user 304 in 411ms :: {"id":5,"username":"Casey","email":"caseylot…
+[DEBUG] GET /api/chat/categories
+9:59:54 AM [express] GET /api/chat/categories 304 in 1ms :: []
+[DEBUG] GET /api/chat/rooms
+9:59:54 AM [express] GET /api/chat/rooms 304 in 1ms :: []
+[DEBUG] GET /api/wand-components
+9:59:57 AM [express] GET /api/wand-components 304 in 2ms :: {"woods":[],"cores":[],"lengths":[],"fle…
+[DEBUG] GET /api/characters/6/wand
+9:59:59 AM [express] GET /api/characters/6/wand 304 in 211ms :: {"id":6,"characterId":6,"wood":"Topo…
+[DEBUG] GET /api/owl-post/unread-total
+10:00:00 AM [express] GET /api/owl-post/unread-total 400 in 1ms :: {"message":"Invalid characterId"}
+[DEBUG] GET /api/owl-post/characters
+10:00:00 AM [express] GET /api/owl-post/characters 400 in 1ms :: {"message":"Invalid characterId"}
