@@ -315,9 +315,29 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateCharacter(id: number, updates: Partial<InsertCharacter>): Promise<Character | undefined> {
-    const { data, error } = await supabase.from('characters').update({ ...updates, updatedAt: new Date() }).eq('id', id).select().single();
-    if (error) return undefined;
-    return data;
+    // Převod camelCase na snake_case pro databázi
+    const dbUpdates: any = { updated_at: new Date() };
+    
+    if (updates.characterHistory !== undefined) dbUpdates.character_history = updates.characterHistory;
+    if (updates.showHistoryToOthers !== undefined) dbUpdates.show_history_to_others = updates.showHistoryToOthers;
+    if (updates.firstName !== undefined) dbUpdates.first_name = updates.firstName;
+    if (updates.middleName !== undefined) dbUpdates.middle_name = updates.middleName;
+    if (updates.lastName !== undefined) dbUpdates.last_name = updates.lastName;
+    if (updates.birthDate !== undefined) dbUpdates.birth_date = updates.birthDate;
+    if (updates.school !== undefined) dbUpdates.school = updates.school;
+    if (updates.description !== undefined) dbUpdates.description = updates.description;
+    if (updates.avatar !== undefined) dbUpdates.avatar = updates.avatar;
+    if (updates.residence !== undefined) dbUpdates.residence = updates.residence;
+    if (updates.height !== undefined) dbUpdates.height = updates.height;
+    if (updates.weight !== undefined) dbUpdates.weight = updates.weight;
+    if (updates.isActive !== undefined) dbUpdates.is_active = updates.isActive;
+    
+    const { data, error } = await supabase.from('characters').update(dbUpdates).eq('id', id).select().single();
+    if (error) {
+      console.error('Database error in updateCharacter:', error);
+      return undefined;
+    }
+    return toCamel(data);
   }
 
   async getCharacterByName(firstName: string, lastName: string): Promise<Character | undefined> {

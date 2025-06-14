@@ -286,6 +286,65 @@ export async function registerRoutes(app: Express): Promise<void> {
     res.json({ characters });
   });
 
+  // Detail postavy
+  app.get("/api/characters/:id", requireAuth, async (req, res) => {
+    const characterId = Number(req.params.id);
+    if (!characterId || isNaN(characterId)) {
+      return res.status(400).json({ message: "Invalid characterId" });
+    }
+    
+    const character = await storage.getCharacter(characterId);
+    if (!character) {
+      return res.status(404).json({ message: "Character not found" });
+    }
+    
+    // Ověř přístup k postavě
+    if (req.user!.role !== 'admin' && character.userId !== req.user!.id) {
+      return res.status(403).json({ message: "Forbidden" });
+    }
+    
+    // Přidej informace o uživateli
+    const user = await storage.getUser(character.userId);
+    res.json({
+      ...character,
+      user: {
+        username: user?.username || 'Unknown',
+        email: user?.email || 'Unknown'
+      }
+    });
+  });
+
+  // Aktualizace historie postavy
+  app.put("/api/characters/:id/history", requireAuth, async (req, res) => {
+    const characterId = Number(req.params.id);
+    const { history, showHistoryToOthers } = req.body;
+    
+    if (!characterId || isNaN(characterId)) {
+      return res.status(400).json({ message: "Invalid characterId" });
+    }
+    
+    const character = await storage.getCharacter(characterId);
+    if (!character) {
+      return res.status(404).json({ message: "Character not found" });
+    }
+    
+    // Ověř přístup k postavě
+    if (req.user!.role !== 'admin' && character.userId !== req.user!.id) {
+      return res.status(403).json({ message: "Forbidden" });
+    }
+    
+    const updatedCharacter = await storage.updateCharacter(characterId, {
+      characterHistory: history,
+      showHistoryToOthers: showHistoryToOthers
+    });
+    
+    if (!updatedCharacter) {
+      return res.status(500).json({ message: "Failed to update character" });
+    }
+    
+    res.json(updatedCharacter);
+  });
+
   // Komponenty pro tvorbu hůlek (zatím prázdné)
   app.get("/api/wand-components", requireAuth, async (_req, res) => {
     res.json({ woods: [], cores: [], lengths: [], flexibilities: [] });

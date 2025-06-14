@@ -58,10 +58,14 @@ export default function CharacterProfile() {
 
   const { data: character, isLoading, error } = useQuery<Character>({
     queryKey: [`/api/characters/${id}`],
-    enabled: !!id,
+    enabled: !!id && !!user,
     queryFn: async () => {
+      const token = localStorage.getItem('jwt_token');
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/characters/${id}`, {
-        credentials: 'include',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
       });
       if (!response.ok) throw new Error('Postava nenalezena');
       return response.json();
@@ -79,7 +83,20 @@ export default function CharacterProfile() {
   // History update mutation
   const updateHistoryMutation = useMutation({
     mutationFn: async (data: { history: string; showHistoryToOthers: boolean }) => {
-      return apiRequest(`${import.meta.env.VITE_API_URL}/api/characters/${id}/history`, "PUT", data);
+      const token = localStorage.getItem('jwt_token');
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/characters/${id}/history`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || 'Failed to update history');
+      }
+      return response.json();
     },
     onSuccess: () => {
       toast({

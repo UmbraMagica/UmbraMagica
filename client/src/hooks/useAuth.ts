@@ -22,8 +22,29 @@ export function useAuth() {
   const [, setLocation] = useLocation();
 
   const { data: user, isLoading, error } = useQuery<AuthUser | null>({
-    queryKey: [`${import.meta.env.VITE_API_URL}/api/auth/user`],
-    queryFn: getQueryFn({ on401: "returnNull" }),
+    queryKey: ['/api/auth/user'],
+    queryFn: async () => {
+      const token = getAuthToken();
+      if (!token) return null;
+      
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/user`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (response.status === 401) {
+        localStorage.removeItem('jwt_token');
+        return null;
+      }
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch user');
+      }
+      
+      return response.json();
+    },
     retry: false,
     staleTime: 5 * 60 * 1000, // 5 minutes
     enabled: !!getAuthToken(), // dotazuj jen pokud je token

@@ -8,6 +8,20 @@ export default function ChatDebug() {
   const { data: allUserCharacters = [] } = useQuery<any[]>({
     queryKey: ["/api/characters"],
     enabled: !!user,
+    queryFn: async () => {
+      const token = localStorage.getItem('jwt_token');
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/characters`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch characters');
+      }
+      const data = await response.json();
+      return data.characters || [];
+    }
   });
 
   const filteredCharacters = allUserCharacters.filter((char: any) => !char.deathDate && !char.isSystem);
