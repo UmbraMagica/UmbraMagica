@@ -1,7 +1,8 @@
 // @ts-check
 import fetch from 'node-fetch';
 
-const BASE_URL = process.env.API_URL || 'http://localhost:5000';
+// BASE_URL je pouze pro vývoj/testování. Pro produkci používejte relativní cesty nebo správnou doménu.
+const BASE_URL = process.env.API_URL || '/';
 const ADMIN_USER = process.env.TEST_ADMIN_USER || 'Casey';
 const ADMIN_PASS = process.env.TEST_ADMIN_PASS || 'Twilight0';
 

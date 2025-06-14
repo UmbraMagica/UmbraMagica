@@ -10,7 +10,7 @@ const app = express();
 app.set('trust proxy', 1);
 app.enable('strict routing', false);
 
-// CORS configuration for frontend
+// CORS pouze pro vývoj
 if (process.env.NODE_ENV !== "production") {
   app.use(cors({
     origin: [

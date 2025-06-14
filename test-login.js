@@ -1,6 +1,7 @@
 import fetch from 'node-fetch';
 
-const url = 'https://umbramagica.onrender.com/api/auth/login';
+// Tento skript je pouze pro vývoj/testování. Pro produkci používejte relativní cesty nebo správnou doménu.
+const url = '/api/auth/login';
 const username = 'Casey';
 const password = 'Twilight0';
 
