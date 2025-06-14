@@ -7,6 +7,10 @@ import { Pool } from 'pg';
 import cors from 'cors';
 
 const app = express();
+
+// 🛠 Zákaz ETag (kvůli 304 Not Modified)
+app.set('etag', false);
+
 app.set('trust proxy', 1);
 app.enable('strict routing', false);
 
@@ -18,6 +22,12 @@ app.use(cors({
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// 🛠 Zákaz cache pro všechny /api requesty
+app.use('/api', (req, res, next) => {
+  res.set('Cache-Control', 'no-store');
+  next();
+});
 
 // Globální logování všech requestů
 app.use((req, res, next) => {
