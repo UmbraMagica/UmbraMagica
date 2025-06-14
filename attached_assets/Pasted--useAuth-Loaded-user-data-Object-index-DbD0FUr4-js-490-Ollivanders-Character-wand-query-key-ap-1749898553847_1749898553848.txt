@@ -1,0 +1,46 @@
+[useAuth] Loaded user data: Object
+index-DbD0FUr4.js:490 Ollivanders - Character wand query key: /api/characters/undefined/wand
+index-DbD0FUr4.js:490 Ollivanders - Character wand data: undefined
+index-DbD0FUr4.js:490 [Ollivanders] Načteno allCharacters: Array(0)
+index-DbD0FUr4.js:490 [Ollivanders] Načteno userCharacters: Array(0)
+index-DbD0FUr4.js:490 Ollivanders - Character wand query key: /api/characters/undefined/wand
+index-DbD0FUr4.js:490 Ollivanders - Character wand data: undefined
+index-DbD0FUr4.js:490 [Ollivanders] Načteno allCharacters: Array(0)
+index-DbD0FUr4.js:490 [Ollivanders] Načteno userCharacters: Array(0)
+index-DbD0FUr4.js:490 [Ollivanders] Načteny wandComponents: Object
+index-DbD0FUr4.js:490 Ollivanders - Character wand query key: /api/characters/undefined/wand
+index-DbD0FUr4.js:490 Ollivanders - Character wand data: undefined
+index-DbD0FUr4.js:490 [Ollivanders] Načteno allCharacters: Array(0)
+index-DbD0FUr4.js:490 [Ollivanders] Načteno userCharacters: Array(0)
+/api/characters:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()Nechte si tuto chybu vysvětlit
+index-DbD0FUr4.js:57 JSON Parse Error: SyntaxError: Unexpected token 'N', "Not Found
+" is not valid JSON
+index-DbD0FUr4.js:57 Error Response Text: Not Found
+
+index-DbD0FUr4.js:490 [OwlPost] Načteno userCharacters: Array(0)
+index-DbD0FUr4.js:490 [OwlPost] Načteno owlPostCharacters: Array(0)
+index-DbD0FUr4.js:490 [OwlPost] Načten inboxMessages: Array(0)
+index-DbD0FUr4.js:490 [OwlPost] Načten sentMessages: Array(0)
+index-DbD0FUr4.js:490 [OwlPost] Načteno userCharacters: Array(0)
+index-DbD0FUr4.js:490 [OwlPost] Načteno owlPostCharacters: Array(0)
+index-DbD0FUr4.js:490 [OwlPost] Načten inboxMessages: Array(0)
+index-DbD0FUr4.js:490 [OwlPost] Načten sentMessages: Array(0)
+/api/characters:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()Nechte si tuto chybu vysvětlit
+index-DbD0FUr4.js:57 JSON Parse Error: SyntaxError: Unexpected token 'N', "Not Found
+" is not valid JSON
+index-DbD0FUr4.js:57 Error Response Text: Not Found
+
+umbramagica.onrender.com/api/owl-post/characters:1 
+            
+            
+           Failed to load resource: the server responded with a status of 400 ()Nechte si tuto chybu vysvětlit
+umbramagica.onrender.com/api/owl-post/unread-total:1 
+            
+            
+           Failed to load resource: the server responded with a status of 400 ()
