@@ -1,0 +1,73 @@
+/api/influence-bar:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()Nechte si tuto chybu vysvětlit
+index-CKRoorby.js:57 JSON Parse Error: SyntaxError: Unexpected token 'N', "Not Found
+" is not valid JSON
+index-CKRoorby.js:57 Error Response Text: Not Found
+
+/api/influence-history:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()Nechte si tuto chybu vysvětlit
+index-CKRoorby.js:57 JSON Parse Error: SyntaxError: Unexpected token 'N', "Not Found
+" is not valid JSON
+index-CKRoorby.js:57 Error Response Text: Not Found
+
+/api/influence-history:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()Nechte si tuto chybu vysvětlit
+index-CKRoorby.js:57 JSON Parse Error: SyntaxError: Unexpected token 'N', "Not Found
+" is not valid JSON
+index-CKRoorby.js:57 Error Response Text: Not Found
+
+/api/influence-bar:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()Nechte si tuto chybu vysvětlit
+index-CKRoorby.js:57 JSON Parse Error: SyntaxError: Unexpected token 'N', "Not Found
+" is not valid JSON
+index-CKRoorby.js:57 Error Response Text: Not Found
+
+/api/characters:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()Nechte si tuto chybu vysvětlit
+index-CKRoorby.js:57 JSON Parse Error: SyntaxError: Unexpected token 'N', "Not Found
+" is not valid JSON
+index-CKRoorby.js:57 Error Response Text: Not Found
+
+/api/influence-bar:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()Nechte si tuto chybu vysvětlit
+index-CKRoorby.js:57 JSON Parse Error: SyntaxError: Unexpected token 'N', "Not Found
+" is not valid JSON
+index-CKRoorby.js:57 Error Response Text: Not Found
+
+/api/influence-history:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()Nechte si tuto chybu vysvětlit
+index-CKRoorby.js:57 JSON Parse Error: SyntaxError: Unexpected token 'N', "Not Found
+" is not valid JSON
+index-CKRoorby.js:57 Error Response Text: Not Found
+
+/api/characters/7/inventory:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()Nechte si tuto chybu vysvětlit
+index-CKRoorby.js:57 JSON Parse Error: SyntaxError: Unexpected token 'N', "Not Found
+" is not valid JSON
+index-CKRoorby.js:57 Error Response Text: Not Found
+
+/api/characters/7/journal:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()Nechte si tuto chybu vysvětlit
+index-CKRoorby.js:57 JSON Parse Error: SyntaxError: Unexpected token 'N', "Not Found
+" is not valid JSON
+index-CKRoorby.js:57 Error Response Text: Not Found
+
+index-CKRoorby.js:481 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
