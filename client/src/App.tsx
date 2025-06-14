@@ -33,8 +33,9 @@ import OwlPost from "@/pages/owl-post";
 import NotFound from "@/pages/not-found";
 import { SelectedCharacterProvider } from "@/contexts/SelectedCharacterContext";
 
-function Router({ user, userCharacters }: { user: any, userCharacters: any[] }) {
-  const isLoading = false;
+function Router() {
+  const { user, isLoading } = useAuth();
+  const userCharacters = user?.characters || [];
 
   if (isLoading) {
     return (
@@ -97,14 +98,12 @@ function Router({ user, userCharacters }: { user: any, userCharacters: any[] }) 
 }
 
 function App() {
-  const { user } = useAuth();
-  const userCharacters = user?.characters || [];
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="dark">
         <TooltipProvider>
           <Toaster />
-          <Router user={user} userCharacters={userCharacters} />
+          <Router />
         </TooltipProvider>
       </ThemeProvider>
     </QueryClientProvider>
