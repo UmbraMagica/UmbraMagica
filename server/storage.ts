@@ -1001,25 +1001,77 @@ export class DatabaseStorage implements IStorage {
 
   // Influence operations
   async getInfluenceBar(): Promise<{ grindelwaldPoints: number; dumbledorePoints: number }> {
-    // TODO: Implementace podle skutečné logiky/databáze
-    return { grindelwaldPoints: 50, dumbledorePoints: 50 };
+    try {
+      const { data, error } = await supabase.from('influence_bar').select('*').single();
+      if (error || !data) {
+        // Vytvoř výchozí záznam pokud neexistuje
+        const { data: newData, error: createError } = await supabase
+          .from('influence_bar')
+          .insert([{ grindelwald_points: 50, dumbledore_points: 50 }])
+          .select()
+          .single();
+        if (createError) {
+          console.error("Error creating influence bar:", createError);
+          return { grindelwaldPoints: 50, dumbledorePoints: 50 };
+        }
+        return { grindelwaldPoints: newData.grindelwald_points, dumbledorePoints: newData.dumbledore_points };
+      }
+      return { grindelwaldPoints: data.grindelwald_points, dumbledorePoints: data.dumbledore_points };
+    } catch (error) {
+      console.error("Error fetching influence bar:", error);
+      return { grindelwaldPoints: 50, dumbledorePoints: 50 };
+    }
   }
 
   async getInfluenceHistory(): Promise<any[]> {
-    // TODO: Implementace podle skutečné logiky/databáze
-    return [];
+    try {
+      const { data, error } = await supabase
+        .from('influence_history')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(50);
+      if (error) {
+        console.error("Error fetching influence history:", error);
+        return [];
+      }
+      return toCamel(data || []);
+    } catch (error) {
+      console.error("Error fetching influence history:", error);
+      return [];
+    }
   }
 
   async adjustInfluence(side: 'grindelwald' | 'dumbledore', points: number, userId: number): Promise<void> {
-    // TODO: Implementace podle skutečné logiky/databáze
-    // Příklad: await supabase.from('influenceBar').update({ [side + 'Points']: ... }).eq(...)
-    return;
+    try {
+      const current = await this.getInfluenceBar();
+      const newGrindelwaldPoints = side === 'grindelwald' ? current.grindelwaldPoints + points : current.grindelwaldPoints;
+      const newDumbledorePoints = side === 'dumbledore' ? current.dumbledorePoints + points : current.dumbledorePoints;
+      await this.setInfluence(newGrindelwaldPoints, newDumbledorePoints, userId);
+    } catch (error) {
+      console.error("Error adjusting influence:", error);
+      throw error;
+    }
   }
 
   async setInfluence(grindelwaldPoints: number, dumbledorePoints: number, userId: number): Promise<void> {
-    // TODO: Implementace podle skutečné logiky/databáze
-    // Příklad: await supabase.from('influenceBar').update({ grindelwaldPoints, dumbledorePoints }).eq(...)
-    return;
+    try {
+      // Aktualizuj nebo vytvoř záznam v influence_bar
+      const { error } = await supabase
+        .from('influence_bar')
+        .upsert([{ 
+          id: 1, // Předpokládáme pouze jeden řádek
+          grindelwald_points: grindelwaldPoints, 
+          dumbledore_points: dumbledorePoints,
+          updated_at: new Date()
+        }]);
+      if (error) {
+        console.error("Error setting influence:", error);
+        throw error;
+      }
+    } catch (error) {
+      console.error("Error setting influence:", error);
+      throw error;
+    }
   }
 
   // ... existující kód ...

@@ -40,10 +40,13 @@ export function useAuth() {
       }
 
       if (!response.ok) {
+        console.error('Failed to fetch user:', response.status, response.statusText);
         throw new Error('Failed to fetch user');
       }
 
-      return response.json();
+      const userData = await response.json();
+      console.log('[useAuth] Loaded user data:', userData);
+      return userData;
     },
     retry: false,
     staleTime: 5 * 60 * 1000, // 5 minutes

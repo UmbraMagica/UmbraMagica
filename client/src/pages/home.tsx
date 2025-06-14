@@ -531,12 +531,20 @@ export default function Home() {
                 {(() => {
                   const { data: influenceData } = useQuery({
                     queryKey: ['/api/influence-bar'],
+                    enabled: !!user,
                     staleTime: 30000, // Refresh every 30 seconds
+                    queryFn: async () => {
+                      return apiFetch(`${import.meta.env.VITE_API_URL}/api/influence-bar`);
+                    },
                   });
                   
                   const { data: influenceHistory } = useQuery({
                     queryKey: ['/api/influence-history'],
+                    enabled: !!user,
                     staleTime: 30000,
+                    queryFn: async () => {
+                      return apiFetch(`${import.meta.env.VITE_API_URL}/api/influence-history`);
+                    },
                   });
 
                   if (!influenceData) {

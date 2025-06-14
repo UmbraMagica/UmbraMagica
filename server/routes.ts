@@ -245,8 +245,14 @@ export async function registerRoutes(app: Express): Promise<void> {
 
   // Seznam všech postav uživatele
   app.get("/api/characters/all", requireAuth, async (req, res) => {
-    const characters = await storage.getCharactersByUserId(req.user!.id);
-    res.json({ characters });
+    try {
+      const characters = await storage.getCharactersByUserId(req.user!.id);
+      console.log(`[API] /api/characters/all - User ${req.user!.id} has ${characters.length} characters`);
+      res.json({ characters });
+    } catch (error) {
+      console.error("Error fetching user characters:", error);
+      res.status(500).json({ message: "Failed to fetch characters" });
+    }
   });
 
   // Seznam online postav (zatím prázdné)
@@ -297,6 +303,35 @@ export async function registerRoutes(app: Express): Promise<void> {
     }
 
     res.json(character);
+  });
+
+  // Editace postavy
+  app.put("/api/characters/:id", requireAuth, async (req, res) => {
+    const characterId = Number(req.params.id);
+    if (!characterId || isNaN(characterId)) {
+      return res.status(400).json({ message: "Neplatné characterId" });
+    }
+
+    const character = await storage.getCharacter(characterId);
+    if (!character) {
+      return res.status(404).json({ message: "Postava nenalezena" });
+    }
+
+    // Ověř přístup k postavě
+    if (req.user!.role !== 'admin' && character.userId !== req.user!.id) {
+      return res.status(403).json({ message: "Zakázáno" });
+    }
+
+    try {
+      const updatedCharacter = await storage.updateCharacter(characterId, req.body);
+      if (!updatedCharacter) {
+        return res.status(500).json({ message: "Nepodařilo se aktualizovat postavu" });
+      }
+      res.json(updatedCharacter);
+    } catch (error) {
+      console.error("Error updating character:", error);
+      res.status(500).json({ message: "Chyba při aktualizaci postavy" });
+    }
   });
 
   // Endpoint pro seznam všech postav (bez parametrů)
@@ -585,6 +620,47 @@ export async function registerRoutes(app: Express): Promise<void> {
     } catch (error) {
       console.error("Error fetching influence history:", error);
       res.status(500).json({ message: "Failed to fetch influence history" });
+    }
+  });
+
+  // Admin influence routes
+  app.post("/api/admin/influence-bar/adjust-with-history", requireAdmin, async (req, res) => {
+    try {
+      const { changeType, points, reason } = req.body;
+      if (!changeType || !points || !reason) {
+        return res.status(400).json({ message: "Missing required fields" });
+      }
+      
+      const currentData = await storage.getInfluenceBar();
+      const previousTotal = changeType === 'grindelwald' ? currentData.grindelwaldPoints : currentData.dumbledorePoints;
+      const newTotal = Math.max(0, previousTotal + points);
+      
+      const newGrindelwaldPoints = changeType === 'grindelwald' ? newTotal : currentData.grindelwaldPoints;
+      const newDumbledorePoints = changeType === 'dumbledore' ? newTotal : currentData.dumbledorePoints;
+      
+      await storage.setInfluence(newGrindelwaldPoints, newDumbledorePoints, req.user!.id);
+      
+      res.json({ message: "Influence adjusted successfully" });
+    } catch (error) {
+      console.error("Error adjusting influence:", error);
+      res.status(500).json({ message: "Failed to adjust influence" });
+    }
+  });
+
+  app.post("/api/admin/influence-bar/reset", requireAdmin, async (req, res) => {
+    try {
+      const { type } = req.body;
+      if (!type || (type !== "0:0" && type !== "50:50")) {
+        return res.status(400).json({ message: "Reset type must be '0:0' or '50:50'" });
+      }
+      
+      const resetValues = type === "0:0" ? { grindelwald: 0, dumbledore: 0 } : { grindelwald: 50, dumbledore: 50 };
+      await storage.setInfluence(resetValues.grindelwald, resetValues.dumbledore, req.user!.id);
+      
+      res.json({ message: "Influence reset successfully" });
+    } catch (error) {
+      console.error("Error resetting influence:", error);
+      res.status(500).json({ message: "Failed to reset influence" });
     }
   });
 
