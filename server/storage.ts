@@ -216,6 +216,7 @@ export interface IStorage {
   // Owl Post operations
   getUnreadOwlPostCount(characterId: number): Promise<number>;
   getOwlPostInbox(characterId: number): Promise<OwlPostMessage[]>;
+  getOwlPostSent(characterId: number): Promise<OwlPostMessage[]>;
   sendOwlPostMessage(senderCharacterId: number, recipientCharacterId: number, subject: string, content: string): Promise<OwlPostMessage>;
   markOwlPostMessageRead(messageId: number, characterId: number): Promise<boolean>;
 }
@@ -511,27 +512,27 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllChatCategories(): Promise<ChatCategory[]> {
-    const { data, error } = await supabase.from('chatCategories').select('*').order('sort_order', { ascending: true });
-    if (error) return [];
+    const { data, error } = await supabase.from('chatCategories').select('*').order('sort_order');
+    if (error) {
+      console.error("getAllChatCategories error:", error);
+      return [];
+    }
+    if (!data || data.length === 0) {
+      console.warn("No chat categories found", { data });
+    }
     return toCamel(data || []);
   }
 
   async getChatCategoriesWithChildren(): Promise<(ChatCategory & { children: ChatCategory[], rooms: ChatRoom[] })[]> {
-    const { data: categories, error } = await supabase.from('chatCategories').select('*').order('sort_order', { ascending: true });
-    if (error || !categories) return [];
-    const { data: rooms } = await supabase.from('chatRooms').select('*');
-    const byParent: Record<number, ChatCategory[]> = {};
-    for (const cat of categories) {
-      if (cat.parent_id) {
-        if (!byParent[cat.parent_id]) byParent[cat.parent_id] = [];
-        byParent[cat.parent_id].push(cat);
-      }
+    const { data, error } = await supabase.from('chatCategories').select('*, chat_rooms(*)').order('sort_order');
+    if (error) {
+      console.error("getChatCategoriesWithChildren error:", error);
+      return [];
     }
-    return toCamel(categories.map(cat => ({
-      ...cat,
-      children: byParent[cat.id] || [],
-      rooms: (rooms || []).filter(r => r.category_id === cat.id)
-    })));
+    if (!data || data.length === 0) {
+      console.warn("No chat categories with children found", { data });
+    }
+    return toCamel(data || []);
   }
 
   // Message operations (keeping existing)
@@ -543,13 +544,23 @@ export class DatabaseStorage implements IStorage {
 
   async getMessagesByRoom(roomId: number, limit: number = 50, offset: number = 0): Promise<(Message & { character: { firstName: string; middleName?: string | null; lastName: string; avatar?: string | null } })[]> {
     const { data, error } = await supabase.from('messages').select('*').eq('room_id', roomId).order('created_at', { ascending: false }).range(offset, offset + limit - 1);
-    if (error) return [];
+    if (error) {
+      console.error("getMessagesByRoom error:", { roomId, error });
+      return [];
+    }
+    if (!data || data.length === 0) {
+      console.warn("No messages found for room", { roomId, data });
+    }
     return toCamel(data || []);
   }
 
   async createMessage(insertMessage: InsertMessage): Promise<Message> {
     const { data, error } = await supabase.from('messages').insert([insertMessage]).select().single();
-    if (error) throw new Error(error.message);
+    if (error) {
+      console.error("createMessage error:", { insertMessage, error });
+      throw new Error(error.message);
+    }
+    console.log("Message created", { message: data });
     return toCamel(data);
   }
 
@@ -605,17 +616,15 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getArchiveDates(roomId: number): Promise<string[]> {
-    const { data, error } = await supabase.from('archivedMessages').select('archivedAt').eq('roomId', roomId).order('archivedAt', { ascending: false });
+    const { data, error } = await supabase.from('archivedMessages').select('archivedAt').eq('roomId', roomId).order('archivedAt');
     if (error || !data) return [];
-    // Vrací pole unikátních dat (jen datum, bez času)
     const uniqueDates = Array.from(new Set(data.map(d => d.archivedAt && d.archivedAt.split('T')[0])));
     return uniqueDates;
   }
 
   async getArchiveDatesWithCounts(roomId: number): Promise<{ date: string; count: number }[]> {
-    const { data, error } = await supabase.from('archivedMessages').select('archivedAt').eq('roomId', roomId).order('archivedAt', { ascending: false });
+    const { data, error } = await supabase.from('archivedMessages').select('archivedAt').eq('roomId', roomId).order('archivedAt');
     if (error || !data) return [];
-    // Spočítat počet zpráv pro každý unikátní den
     const counts: Record<string, number> = {};
     for (const row of data) {
       const date = row.archivedAt && row.archivedAt.split('T')[0];
@@ -628,13 +637,13 @@ export class DatabaseStorage implements IStorage {
     const startDate = new Date(archiveDate);
     const endDate = new Date(startDate);
     endDate.setDate(endDate.getDate() + 1);
-    const { data, error } = await supabase.from('archivedMessages').select('*').eq('roomId', roomId).gte('archivedAt', startDate.toISOString()).lt('archivedAt', endDate.toISOString()).order('originalCreatedAt', { ascending: false }).range(offset, offset + limit - 1);
+    const { data, error } = await supabase.from('archivedMessages').select('*').eq('roomId', roomId).gte('archivedAt', startDate.toISOString()).lt('archivedAt', endDate.toISOString()).order('originalCreatedAt').range(offset, offset + limit - 1);
     if (error) return [];
     return data || [];
   }
 
   async getLastMessageByCharacter(characterId: number): Promise<Message | undefined> {
-    const { data, error } = await supabase.from('messages').select('*').eq('characterId', characterId).order('createdAt', { ascending: false }).limit(1);
+    const { data, error } = await supabase.from('messages').select('*').eq('characterId', characterId).order('createdAt').limit(1);
     if (error || !data || data.length === 0) return undefined;
     return data[0];
   }
@@ -776,13 +785,15 @@ export class DatabaseStorage implements IStorage {
     }
     if (!data || data.length === 0) {
       console.warn("No dead characters found", { data });
+    } else {
+      console.log(`Loaded ${data.length} dead characters`);
     }
     return toCamel(data || []);
   }
 
   // Spell operations
   async getAllSpells(): Promise<Spell[]> {
-    const { data, error } = await supabase.from('spells').select('*').order('category', { ascending: true }).order('name', { ascending: true });
+    const { data, error } = await supabase.from('spells').select('*').order('category').order('name');
     if (error) return [];
     return toCamel(data || []);
   }
@@ -935,13 +946,19 @@ export class DatabaseStorage implements IStorage {
 
   // Character journal operations
   async getCharacterJournal(characterId: number): Promise<JournalEntry[]> {
-    const { data, error } = await supabase.from('character_journal').select('*').eq('character_id', characterId);
+    const { data, error } = await supabase
+      .from('character_journal')
+      .select('*')
+      .eq('character_id', characterId)
+      .order('created_at', { ascending: false });
     if (error) {
-      console.error("getCharacterJournal error:", error);
+      console.error("getCharacterJournal error:", { characterId, error });
       return [];
     }
     if (!data || data.length === 0) {
       console.warn("No journal entries found for character", { characterId, data });
+    } else {
+      console.log(`Loaded ${data.length} journal entries for character`, { characterId });
     }
     return toCamel(data || []);
   }
@@ -953,20 +970,45 @@ export class DatabaseStorage implements IStorage {
   }
 
   async addJournalEntry(entry: InsertJournalEntry): Promise<JournalEntry> {
-    const { data, error } = await supabase.from('characterJournal').insert([entry]).select().single();
-    if (error) throw new Error(error.message);
-    return data;
+    const { data, error } = await supabase
+      .from('character_journal')
+      .insert([entry])
+      .select()
+      .single();
+    if (error) {
+      console.error("addJournalEntry error:", { entry, error });
+      throw new Error(error.message);
+    }
+    console.log("Journal entry added", { entry });
+    return toCamel(data);
   }
 
   async updateJournalEntry(id: number, updates: Partial<InsertJournalEntry>): Promise<JournalEntry | undefined> {
-    const { data, error } = await supabase.from('characterJournal').update(updates).eq('id', id).select().single();
-    if (error) return undefined;
-    return data;
+    const { data, error } = await supabase
+      .from('character_journal')
+      .update(updates)
+      .eq('id', id)
+      .select()
+      .single();
+    if (error) {
+      console.error("updateJournalEntry error:", { id, updates, error });
+      return undefined;
+    }
+    console.log("Journal entry updated", { id, updates });
+    return toCamel(data);
   }
 
   async deleteJournalEntry(id: number): Promise<boolean> {
-    const { error } = await supabase.from('characterJournal').delete().eq('id', id);
-    return !error;
+    const { error } = await supabase
+      .from('character_journal')
+      .delete()
+      .eq('id', id);
+    if (error) {
+      console.error("deleteJournalEntry error:", { id, error });
+      return false;
+    }
+    console.log("Journal entry deleted", { id });
+    return true;
   }
 
   // Wand operations
@@ -1004,25 +1046,25 @@ export class DatabaseStorage implements IStorage {
     lengths: { name: string; description: string; availableForRandom?: boolean }[];
     flexibilities: { name: string; description: string; availableForRandom?: boolean }[];
   }> {
-    const { data: woods = [], error: woodsError } = await supabase.from('wand_woods').select('*');
-    const { data: cores = [], error: coresError } = await supabase.from('wand_cores').select('*');
-    const { data: lengths = [], error: lengthsError } = await supabase.from('wand_lengths').select('*');
-    const { data: flexibilities = [], error: flexError } = await supabase.from('wand_flexibilities').select('*');
+    const { data: woods, error: woodsError } = await supabase.from('wand_woods').select('*');
+    const { data: cores, error: coresError } = await supabase.from('wand_cores').select('*');
+    const { data: lengths, error: lengthsError } = await supabase.from('wand_lengths').select('*');
+    const { data: flexibilities, error: flexError } = await supabase.from('wand_flexibilities').select('*');
 
     if (woodsError || coresError || lengthsError || flexError) {
       console.error("Wand components fetch error:", { woodsError, coresError, lengthsError, flexError });
       return { woods: [], cores: [], lengths: [], flexibilities: [] };
     }
-    if (!woods.length) console.warn("No data found in wand_woods", { woods });
-    if (!cores.length) console.warn("No data found in wand_cores", { cores });
-    if (!lengths.length) console.warn("No data found in wand_lengths", { lengths });
-    if (!flexibilities.length) console.warn("No data found in wand_flexibilities", { flexibilities });
+    if (!woods || woods.length === 0) console.warn("No data found in wand_woods", { woods });
+    if (!cores || cores.length === 0) console.warn("No data found in wand_cores", { cores });
+    if (!lengths || lengths.length === 0) console.warn("No data found in wand_lengths", { lengths });
+    if (!flexibilities || flexibilities.length === 0) console.warn("No data found in wand_flexibilities", { flexibilities });
 
     return {
-      woods: woods.map(toCamel),
-      cores: cores.map(toCamel),
-      lengths: lengths.map(toCamel),
-      flexibilities: flexibilities.map(toCamel),
+      woods: (woods || []).map(toCamel),
+      cores: (cores || []).map(toCamel),
+      lengths: (lengths || []).map(toCamel),
+      flexibilities: (flexibilities || []).map(toCamel),
     };
   }
 
@@ -1114,6 +1156,21 @@ export class DatabaseStorage implements IStorage {
         console.error("Error setting influence:", error);
         throw error;
       }
+      // Zapiš změnu do influence_history
+      const { error: histError } = await supabase
+        .from('influence_history')
+        .insert([{ 
+          change_type: 'manual',
+          grindelwald_points: grindelwaldPoints,
+          dumbledore_points: dumbledorePoints,
+          admin_user_id: userId,
+          created_at: new Date()
+        }]);
+      if (histError) {
+        console.error("Error writing to influence_history:", histError);
+      } else {
+        console.log("Influence history record created", { grindelwaldPoints, dumbledorePoints, userId });
+      }
     } catch (error) {
       console.error("Error setting influence:", error);
       throw error;
@@ -1156,11 +1213,13 @@ export class DatabaseStorage implements IStorage {
       .eq('recipient_character_id', characterId)
       .order('sent_at', { ascending: false });
     if (error) {
-      console.error("getOwlPostInbox error:", error);
+      console.error("getOwlPostInbox error:", { characterId, error });
       return [];
     }
     if (!data || data.length === 0) {
       console.warn("No owl post inbox messages found for character", { characterId, data });
+    } else {
+      console.log(`Loaded ${data.length} owl post inbox messages for character`, { characterId });
     }
     return toCamel(data || []);
   }
@@ -1172,11 +1231,13 @@ export class DatabaseStorage implements IStorage {
       .eq('sender_character_id', characterId)
       .order('sent_at', { ascending: false });
     if (error) {
-      console.error("getOwlPostSent error:", error);
+      console.error("getOwlPostSent error:", { characterId, error });
       return [];
     }
     if (!data || data.length === 0) {
       console.warn("No owl post sent messages found for character", { characterId, data });
+    } else {
+      console.log(`Loaded ${data.length} owl post sent messages for character`, { characterId });
     }
     return toCamel(data || []);
   }
@@ -1187,18 +1248,26 @@ export class DatabaseStorage implements IStorage {
       .insert([{ sender_character_id: senderCharacterId, recipient_character_id: recipientCharacterId, subject, content, is_read: false, sent_at: new Date() }])
       .select()
       .single();
-    if (error) throw new Error(error.message);
+    if (error) {
+      console.error("sendOwlPostMessage error:", { senderCharacterId, recipientCharacterId, error });
+      throw new Error(error.message);
+    }
+    console.log("Owl post message sent", { senderCharacterId, recipientCharacterId, subject });
     return toCamel(data);
   }
 
   async markOwlPostMessageRead(messageId: number, characterId: number): Promise<boolean> {
-    // Zprávu může označit jako přečtenou pouze příjemce
     const { error } = await supabase
       .from('owl_post_messages')
       .update({ is_read: true, read_at: new Date() })
       .eq('id', messageId)
       .eq('recipient_character_id', characterId);
-    return !error;
+    if (error) {
+      console.error("markOwlPostMessageRead error:", { messageId, characterId, error });
+      return false;
+    }
+    console.log("Owl post message marked as read", { messageId, characterId });
+    return true;
   }
 
   async getOwlPostMessage(messageId: number): Promise<OwlPostMessage | undefined> {
