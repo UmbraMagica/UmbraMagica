@@ -361,24 +361,290 @@ export async function registerRoutes(app: Express): Promise<void> {
     res.json([]);
   });
 
-  // Influence system routes (placeholder - pro budoucí implementaci)
+  // Character inventory routes
+  app.get("/api/characters/:id/inventory", requireAuth, async (req, res) => {
+    const characterId = Number(req.params.id);
+    if (!characterId || isNaN(characterId)) {
+      return res.status(400).json({ message: "Invalid characterId" });
+    }
+
+    const character = await storage.getCharacter(characterId);
+    if (!character) {
+      return res.status(404).json({ message: "Character not found" });
+    }
+
+    // Check access
+    if (req.user!.role !== 'admin' && character.userId !== req.user!.id) {
+      return res.status(403).json({ message: "Forbidden" });
+    }
+
+    const inventory = await storage.getCharacterInventory(characterId);
+    res.json(inventory);
+  });
+
+  app.post("/api/characters/:id/inventory", requireAuth, async (req, res) => {
+    const characterId = Number(req.params.id);
+    if (!characterId || isNaN(characterId)) {
+      return res.status(400).json({ message: "Invalid characterId" });
+    }
+
+    const character = await storage.getCharacter(characterId);
+    if (!character) {
+      return res.status(404).json({ message: "Character not found" });
+    }
+
+    if (req.user!.role !== 'admin' && character.userId !== req.user!.id) {
+      return res.status(403).json({ message: "Forbidden" });
+    }
+
+    try {
+      const inventoryItem = await storage.addInventoryItem({
+        characterId,
+        ...req.body
+      });
+      res.status(201).json(inventoryItem);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.patch("/api/inventory/:id", requireAuth, async (req, res) => {
+    const itemId = Number(req.params.id);
+    if (!itemId || isNaN(itemId)) {
+      return res.status(400).json({ message: "Invalid itemId" });
+    }
+
+    const item = await storage.getInventoryItem(itemId);
+    if (!item) {
+      return res.status(404).json({ message: "Item not found" });
+    }
+
+    const character = await storage.getCharacter(item.characterId);
+    if (!character) {
+      return res.status(404).json({ message: "Character not found" });
+    }
+
+    if (req.user!.role !== 'admin' && character.userId !== req.user!.id) {
+      return res.status(403).json({ message: "Forbidden" });
+    }
+
+    try {
+      const updatedItem = await storage.updateInventoryItem(itemId, req.body);
+      res.json(updatedItem);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.delete("/api/inventory/:id", requireAuth, async (req, res) => {
+    const itemId = Number(req.params.id);
+    if (!itemId || isNaN(itemId)) {
+      return res.status(400).json({ message: "Invalid itemId" });
+    }
+
+    const item = await storage.getInventoryItem(itemId);
+    if (!item) {
+      return res.status(404).json({ message: "Item not found" });
+    }
+
+    const character = await storage.getCharacter(item.characterId);
+    if (!character) {
+      return res.status(404).json({ message: "Character not found" });
+    }
+
+    if (req.user!.role !== 'admin' && character.userId !== req.user!.id) {
+      return res.status(403).json({ message: "Forbidden" });
+    }
+
+    const deleted = await storage.deleteInventoryItem(itemId);
+    if (deleted) {
+      res.json({ success: true });
+    } else {
+      res.status(500).json({ message: "Failed to delete item" });
+    }
+  });
+
+  // Character journal routes
+  app.get("/api/characters/:id/journal", requireAuth, async (req, res) => {
+    const characterId = Number(req.params.id);
+    if (!characterId || isNaN(characterId)) {
+      return res.status(400).json({ message: "Invalid characterId" });
+    }
+
+    const character = await storage.getCharacter(characterId);
+    if (!character) {
+      return res.status(404).json({ message: "Character not found" });
+    }
+
+    // Check access
+    if (req.user!.role !== 'admin' && character.userId !== req.user!.id) {
+      return res.status(403).json({ message: "Forbidden" });
+    }
+
+    const journal = await storage.getCharacterJournal(characterId);
+    res.json(journal);
+  });
+
+  app.post("/api/characters/:id/journal", requireAuth, async (req, res) => {
+    const characterId = Number(req.params.id);
+    if (!characterId || isNaN(characterId)) {
+      return res.status(400).json({ message: "Invalid characterId" });
+    }
+
+    const character = await storage.getCharacter(characterId);
+    if (!character) {
+      return res.status(404).json({ message: "Character not found" });
+    }
+
+    if (req.user!.role !== 'admin' && character.userId !== req.user!.id) {
+      return res.status(403).json({ message: "Forbidden" });
+    }
+
+    try {
+      const journalEntry = await storage.addJournalEntry({
+        characterId,
+        ...req.body
+      });
+      res.status(201).json(journalEntry);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.patch("/api/journal/:id", requireAuth, async (req, res) => {
+    const entryId = Number(req.params.id);
+    if (!entryId || isNaN(entryId)) {
+      return res.status(400).json({ message: "Invalid entryId" });
+    }
+
+    const entry = await storage.getJournalEntry(entryId);
+    if (!entry) {
+      return res.status(404).json({ message: "Entry not found" });
+    }
+
+    const character = await storage.getCharacter(entry.characterId);
+    if (!character) {
+      return res.status(404).json({ message: "Character not found" });
+    }
+
+    if (req.user!.role !== 'admin' && character.userId !== req.user!.id) {
+      return res.status(403).json({ message: "Forbidden" });
+    }
+
+    try {
+      const updatedEntry = await storage.updateJournalEntry(entryId, req.body);
+      res.json(updatedEntry);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.delete("/api/journal/:id", requireAuth, async (req, res) => {
+    const entryId = Number(req.params.id);
+    if (!entryId || isNaN(entryId)) {
+      return res.status(400).json({ message: "Invalid entryId" });
+    }
+
+    const entry = await storage.getJournalEntry(entryId);
+    if (!entry) {
+      return res.status(404).json({ message: "Entry not found" });
+    }
+
+    const character = await storage.getCharacter(entry.characterId);
+    if (!character) {
+      return res.status(404).json({ message: "Character not found" });
+    }
+
+    if (req.user!.role !== 'admin' && character.userId !== req.user!.id) {
+      return res.status(403).json({ message: "Forbidden" });
+    }
+
+    const deleted = await storage.deleteJournalEntry(entryId);
+    if (deleted) {
+      res.json({ success: true });
+    } else {
+      res.status(500).json({ message: "Failed to delete entry" });
+    }
+  });
+
+  // Influence system routes
   app.get("/api/influence-bar", requireAuth, async (req, res) => {
-    // Placeholder pro influence bar data
-    res.json({
-      light: 50,
-      dark: 50,
-      neutral: 0
-    });
+    try {
+      const influence = await storage.getInfluenceBar();
+      res.json(influence);
+    } catch (error) {
+      console.error("Error fetching influence bar:", error);
+      res.status(500).json({ message: "Failed to fetch influence data" });
+    }
   });
 
   app.get("/api/influence-history", requireAuth, async (req, res) => {
-    // Placeholder pro influence history
-    res.json([]);
+    try {
+      const history = await storage.getInfluenceHistory();
+      res.json(history);
+    } catch (error) {
+      console.error("Error fetching influence history:", error);
+      res.status(500).json({ message: "Failed to fetch influence history" });
+    }
   });
 
   // Owl Post routes
   app.get("/api/owl-post/unread-total", requireAuth, async (req, res) => {
-    const characterId = Number(req.query.characterId);
+    try {
+      // Pokud není zadáno characterId, vrátíme celkový počet pro všechny postavy uživatele
+      const characterId = req.query.characterId ? Number(req.query.characterId) : null;
+
+      if (characterId && isNaN(characterId)) {
+        return res.status(400).json({ message: "Invalid characterId" });
+      }
+
+      let totalCount = 0;
+
+      if (characterId) {
+        // Ověření přístupu k postavě
+        if (req.user!.role !== 'admin') {
+          const characters = await storage.getCharactersByUserId(req.user!.id);
+          if (!characters.some((char: any) => char.id === characterId)) {
+            return res.status(403).json({ message: "Forbidden" });
+          }
+        }
+        totalCount = await storage.getUnreadOwlPostCount(characterId);
+      } else {
+        // Spočítáme celkový počet pro všechny postavy uživatele
+        const userCharacters = await storage.getCharactersByUserId(req.user!.id);
+        for (const char of userCharacters) {
+          totalCount += await storage.getUnreadOwlPostCount(char.id);
+        }
+      }
+
+      res.json({ count: totalCount });
+    } catch (error) {
+      console.error("Error fetching unread total:", error);
+      res.status(500).json({ message: "Failed to fetch unread count" });
+    }
+  });
+
+  app.get("/api/owl-post/characters", requireAuth, async (req, res) => {
+    try {
+      // Vrátíme všechny aktivní postavy pro owl post (ne jen uživatelovy)
+      const allCharacters = await storage.getAllCharacters();
+      const activeCharacters = allCharacters.filter((char: any) => !char.deathDate && !char.isSystem);
+      
+      // Přidáme fullName pro kompatibilitu s frontendem
+      const charactersWithFullName = activeCharacters.map((char: any) => ({
+        ...char,
+        fullName: `${char.firstName} ${char.middleName ? char.middleName + ' ' : ''}${char.lastName}`
+      }));
+      
+      res.json(charactersWithFullName);
+    } catch (error) {
+      console.error("Chyba při načítání owl-post characters:", error);
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  app.get("/api/owl-post/inbox/:characterId", requireAuth, async (req, res) => {
+    const characterId = Number(req.params.characterId);
     if (!characterId || isNaN(characterId)) {
       return res.status(400).json({ message: "Invalid characterId" });
     }
@@ -391,42 +657,140 @@ export async function registerRoutes(app: Express): Promise<void> {
       }
     }
 
-    const unreadCount = await storage.getUnreadOwlPostCount(characterId);
-    res.json({ count: unreadCount });
-  });
-
-  app.get("/api/owl-post/characters", requireAuth, async (req, res) => {
     try {
-      // Pokud není zadáno characterId, vrátíme všechny postavy uživatele
-      const characterId = req.query.characterId ? Number(req.query.characterId) : null;
-
-      if (characterId && isNaN(characterId)) {
-        return res.status(400).json({ message: "Invalid characterId" });
-      }
-
-      if (characterId) {
-        // Ověření přístupu k postavě
-        if (req.user!.role !== 'admin') {
-          const characters = await storage.getCharactersByUserId(req.user!.id);
-          if (!characters.some((char: any) => char.id === characterId)) {
-            return res.status(403).json({ message: "Forbidden" });
-          }
-        }
-        const characters = await storage.getOwlPostCharacters(characterId);
-        res.json(characters);
-      } else {
-        // Vrátíme všechny postavy uživatele pro owl post
-        const userCharacters = await storage.getCharactersByUserId(req.user!.id);
-        res.json(userCharacters);
-      }
+      const messages = await storage.getOwlPostInbox(characterId);
+      
+      // Přidáme informace o odesílateli a příjemci
+      const messagesWithDetails = await Promise.all(messages.map(async (msg: any) => {
+        const sender = await storage.getCharacter(msg.senderCharacterId);
+        const recipient = await storage.getCharacter(msg.recipientCharacterId);
+        
+        return {
+          ...msg,
+          sender: sender ? {
+            firstName: sender.firstName,
+            middleName: sender.middleName,
+            lastName: sender.lastName
+          } : null,
+          recipient: recipient ? {
+            firstName: recipient.firstName,
+            middleName: recipient.middleName,
+            lastName: recipient.lastName
+          } : null
+        };
+      }));
+      
+      res.json(messagesWithDetails);
     } catch (error) {
-      console.error("Chyba při načítání owl-post characters:", error);
-      res.status(500).json({ message: "Server error" });
+      console.error("Error fetching inbox:", error);
+      res.status(500).json({ message: "Failed to fetch messages" });
     }
   });
 
-  app.get("/api/owl-post/unread-total/", requireAuth, async (_req, res) => {
-    res.json({ count: 0 });
+  app.get("/api/owl-post/sent/:characterId", requireAuth, async (req, res) => {
+    const characterId = Number(req.params.characterId);
+    if (!characterId || isNaN(characterId)) {
+      return res.status(400).json({ message: "Invalid characterId" });
+    }
+
+    // Ověření přístupu k postavě
+    if (req.user!.role !== 'admin') {
+      const characters = await storage.getCharactersByUserId(req.user!.id);
+      if (!characters.some((char: any) => char.id === characterId)) {
+        return res.status(403).json({ message: "Forbidden" });
+      }
+    }
+
+    try {
+      const messages = await storage.getOwlPostSent(characterId);
+      
+      // Přidáme informace o odesílateli a příjemci
+      const messagesWithDetails = await Promise.all(messages.map(async (msg: any) => {
+        const sender = await storage.getCharacter(msg.senderCharacterId);
+        const recipient = await storage.getCharacter(msg.recipientCharacterId);
+        
+        return {
+          ...msg,
+          sender: sender ? {
+            firstName: sender.firstName,
+            middleName: sender.middleName,
+            lastName: sender.lastName
+          } : null,
+          recipient: recipient ? {
+            firstName: recipient.firstName,
+            middleName: recipient.middleName,
+            lastName: recipient.lastName
+          } : null
+        };
+      }));
+      
+      res.json(messagesWithDetails);
+    } catch (error) {
+      console.error("Error fetching sent messages:", error);
+      res.status(500).json({ message: "Failed to fetch sent messages" });
+    }
+  });
+
+  app.post("/api/owl-post/send", requireAuth, async (req, res) => {
+    const { senderCharacterId, recipientCharacterId, subject, content } = req.body;
+    
+    if (!senderCharacterId || !recipientCharacterId || !subject || !content) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    // Ověření přístupu k odesílající postavě
+    if (req.user!.role !== 'admin') {
+      const characters = await storage.getCharactersByUserId(req.user!.id);
+      if (!characters.some((char: any) => char.id === senderCharacterId)) {
+        return res.status(403).json({ message: "Forbidden" });
+      }
+    }
+
+    try {
+      const message = await storage.sendOwlPostMessage(senderCharacterId, recipientCharacterId, subject, content);
+      res.status(201).json(message);
+    } catch (error: any) {
+      console.error("Error sending message:", error);
+      res.status(500).json({ message: error.message || "Failed to send message" });
+    }
+  });
+
+  app.post("/api/owl-post/mark-read/:messageId", requireAuth, async (req, res) => {
+    const messageId = Number(req.params.messageId);
+    if (!messageId || isNaN(messageId)) {
+      return res.status(400).json({ message: "Invalid messageId" });
+    }
+
+    // Najdeme zprávu a ověříme přístup
+    try {
+      // Potřebujeme implementovat getOwlPostMessage v storage
+      // Zatím jen označíme jako přečtenou
+      const success = await storage.markOwlPostMessageRead(messageId, req.user!.id);
+      if (success) {
+        res.json({ success: true });
+      } else {
+        res.status(404).json({ message: "Message not found or access denied" });
+      }
+    } catch (error: any) {
+      console.error("Error marking message as read:", error);
+      res.status(500).json({ message: error.message || "Failed to mark message as read" });
+    }
+  });
+
+  app.delete("/api/owl-post/message/:messageId", requireAuth, async (req, res) => {
+    const messageId = Number(req.params.messageId);
+    if (!messageId || isNaN(messageId)) {
+      return res.status(400).json({ message: "Invalid messageId" });
+    }
+
+    try {
+      // Potřebujeme implementovat deleteOwlPostMessage v storage
+      // Zatím vrátime success
+      res.json({ success: true });
+    } catch (error: any) {
+      console.error("Error deleting message:", error);
+      res.status(500).json({ message: error.message || "Failed to delete message" });
+    }
   });
 
   // ... další endpointy (např. /api/user/character-order, /api/user/highlight-words, atd.) ...

@@ -303,6 +303,10 @@ export class DatabaseStorage implements IStorage {
     return toCamel(data);
   }
 
+  async getCharacterById(id: number): Promise<Character | undefined> {
+    return this.getCharacter(id);
+  }
+
   async getCharactersByUserId(userId: number): Promise<Character[]> {
     const { data, error } = await supabase.from('characters').select('*').eq('user_id', userId).order('created_at', { ascending: false });
     if (error) return [];
@@ -1054,7 +1058,17 @@ export class DatabaseStorage implements IStorage {
       .eq('recipient_character_id', characterId)
       .order('sent_at', { ascending: false });
     if (error) return [];
-    return data || [];
+    return toCamel(data || []);
+  }
+
+  async getOwlPostSent(characterId: number): Promise<OwlPostMessage[]> {
+    const { data, error } = await supabase
+      .from('owl_post_messages')
+      .select('*')
+      .eq('sender_character_id', characterId)
+      .order('sent_at', { ascending: false });
+    if (error) return [];
+    return toCamel(data || []);
   }
 
   async sendOwlPostMessage(senderCharacterId: number, recipientCharacterId: number, subject: string, content: string): Promise<OwlPostMessage> {
@@ -1062,9 +1076,9 @@ export class DatabaseStorage implements IStorage {
       .from('owl_post_messages')
       .insert([{ sender_character_id: senderCharacterId, recipient_character_id: recipientCharacterId, subject, content, is_read: false, sent_at: new Date() }])
       .select()
-      .maybeSingle();
+      .single();
     if (error) throw new Error(error.message);
-    return data;
+    return toCamel(data);
   }
 
   async markOwlPostMessageRead(messageId: number, characterId: number): Promise<boolean> {
@@ -1074,6 +1088,24 @@ export class DatabaseStorage implements IStorage {
       .update({ is_read: true, read_at: new Date() })
       .eq('id', messageId)
       .eq('recipient_character_id', characterId);
+    return !error;
+  }
+
+  async getOwlPostMessage(messageId: number): Promise<OwlPostMessage | undefined> {
+    const { data, error } = await supabase
+      .from('owl_post_messages')
+      .select('*')
+      .eq('id', messageId)
+      .single();
+    if (error) return undefined;
+    return toCamel(data);
+  }
+
+  async deleteOwlPostMessage(messageId: number): Promise<boolean> {
+    const { error } = await supabase
+      .from('owl_post_messages')
+      .delete()
+      .eq('id', messageId);
     return !error;
   }
 }
