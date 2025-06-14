@@ -518,7 +518,7 @@ export default function Home() {
 
 
             {/* Influence Bar */}
-            <Card className="bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 border-slate-200 dark:border-slate-700">
+            <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700">
               <CardContent className="p-6">
                 <h3 className="text-xl font-semibold text-foreground mb-4 flex items-center">
                   <div className="text-2xl mr-3">⚔️</div>

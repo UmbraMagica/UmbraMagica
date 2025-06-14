@@ -192,6 +192,16 @@ export default function Ollivanders() {
     await apiFetch(`${API_URL}/api/characters/${selectedCharacter.id}/create-custom-wand`, { method: 'POST' });
   }
 
+  // Najdi načítání hůlky postavy, např.:
+  const { data: characterWand, isLoading: wandLoading } = useQuery({
+    queryKey: [`/api/characters/${selectedCharacter?.id}/wand`],
+    enabled: !!selectedCharacter?.id,
+    queryFn: async () => {
+      if (!selectedCharacter?.id) return null;
+      return apiFetch(`${API_URL}/api/characters/${selectedCharacter.id}/wand`);
+    },
+  });
+
   if (!user || !selectedCharacter) {
     return (
       <div className="container mx-auto p-6">
