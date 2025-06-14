@@ -33,9 +33,8 @@ import OwlPost from "@/pages/owl-post";
 import NotFound from "@/pages/not-found";
 import { SelectedCharacterProvider } from "@/contexts/SelectedCharacterContext";
 
-
-function Router() {
-  const { user, isLoading } = useAuth();
+function Router({ user, userCharacters }: { user: any, userCharacters: any[] }) {
+  const isLoading = false;
 
   if (isLoading) {
     return (
@@ -49,49 +48,51 @@ function Router() {
   }
 
   return (
-    <Switch>
-      {!user ? (
-        <>
-          <Route path="/" component={Landing} />
-          <Route path="/login" component={Landing} />
-          <Route path="/registration" component={Registration} />
-        </>
-      ) : (
-        <>
-          <Route path="/" component={Home} />
-          <Route path="/admin" component={Admin} />
-          <Route path="/admin/archive" component={AdminArchive} />
-          <Route path="/admin/spells" component={AdminSpells} />
-          <Route path="/admin/spells/character/:characterId" component={AdminCharacterSpells} />
-          <Route path="/admin/wand-components" component={AdminWandComponents} />
-          <Route path="/admin/characters/:characterId" component={CharacterEditFixedNav} />
-          <Route path="/home" component={Home} />
-          <Route path="/character/edit" component={CharacterEditFixedNav} />
-          <Route path="/character-edit/:characterId" component={CharacterEditFixedNav} />
-          <Route path="/settings" component={UserSettings} />
-          <Route path="/user-settings" component={UserSettings} />
-          <Route path="/chat" component={ChatCategories} />
-          <Route path="/chat-categories" component={ChatCategories} />
-          <Route path="/chat/list" component={ChatList} />
-          <Route path="/chat/room/:roomId" component={ChatRoom} />
-          <Route path="/chat-debug" component={ChatDebug} />
-          <Route path="/chat-test" component={ChatRoomSimpleTest} />
-          <Route path="/characters" component={CharactersList} />
-          <Route path="/characters/:id" component={CharacterProfile} />
-          <Route path="/characters/:id/edit" component={CharacterEditFixedNav} />
-          <Route path="/characters/:id/history" component={CharacterHistory} />
-          <Route path="/character/:id" component={CharacterProfile} />
-          <Route path="/characters/:characterId/inventory" component={CharacterInventory} />
-          <Route path="/characters/:characterId/journal" component={CharacterJournal} />
-          <Route path="/characters/:id/spells" component={CharacterSpells} />
-          <Route path="/my-spells" component={MySpells} />
-          <Route path="/cemetery" component={Cemetery} />
-          <Route path="/ollivanders" component={Ollivanders} />
-          <Route path="/owl-post" component={OwlPost} />
-        </>
-      )}
-      <Route component={NotFound} />
-    </Switch>
+    <SelectedCharacterProvider userCharacters={userCharacters}>
+      <Switch>
+        {!user ? (
+          <>
+            <Route path="/" component={Landing} />
+            <Route path="/login" component={Landing} />
+            <Route path="/registration" component={Registration} />
+          </>
+        ) : (
+          <>
+            <Route path="/" component={Home} />
+            <Route path="/admin" component={Admin} />
+            <Route path="/admin/archive" component={AdminArchive} />
+            <Route path="/admin/spells" component={AdminSpells} />
+            <Route path="/admin/spells/character/:characterId" component={AdminCharacterSpells} />
+            <Route path="/admin/wand-components" component={AdminWandComponents} />
+            <Route path="/admin/characters/:characterId" component={CharacterEditFixedNav} />
+            <Route path="/home" component={Home} />
+            <Route path="/character/edit" component={CharacterEditFixedNav} />
+            <Route path="/character-edit/:characterId" component={CharacterEditFixedNav} />
+            <Route path="/settings" component={UserSettings} />
+            <Route path="/user-settings" component={UserSettings} />
+            <Route path="/chat" component={ChatCategories} />
+            <Route path="/chat-categories" component={ChatCategories} />
+            <Route path="/chat/list" component={ChatList} />
+            <Route path="/chat/room/:roomId" component={ChatRoom} />
+            <Route path="/chat-debug" component={ChatDebug} />
+            <Route path="/chat-test" component={ChatRoomSimpleTest} />
+            <Route path="/characters" component={CharactersList} />
+            <Route path="/characters/:id" component={CharacterProfile} />
+            <Route path="/characters/:id/edit" component={CharacterEditFixedNav} />
+            <Route path="/characters/:id/history" component={CharacterHistory} />
+            <Route path="/character/:id" component={CharacterProfile} />
+            <Route path="/characters/:characterId/inventory" component={CharacterInventory} />
+            <Route path="/characters/:characterId/journal" component={CharacterJournal} />
+            <Route path="/characters/:id/spells" component={CharacterSpells} />
+            <Route path="/my-spells" component={MySpells} />
+            <Route path="/cemetery" component={Cemetery} />
+            <Route path="/ollivanders" component={Ollivanders} />
+            <Route path="/owl-post" component={OwlPost} />
+          </>
+        )}
+        <Route component={NotFound} />
+      </Switch>
+    </SelectedCharacterProvider>
   );
 }
 
@@ -103,9 +104,7 @@ function App() {
       <ThemeProvider defaultTheme="dark">
         <TooltipProvider>
           <Toaster />
-          <SelectedCharacterProvider userCharacters={userCharacters}>
-            <Router />
-          </SelectedCharacterProvider>
+          <Router user={user} userCharacters={userCharacters} />
         </TooltipProvider>
       </ThemeProvider>
     </QueryClientProvider>
