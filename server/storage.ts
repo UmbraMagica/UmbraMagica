@@ -191,10 +191,10 @@ export interface IStorage {
   deleteWand(wandId: number): Promise<boolean>;
   generateRandomWand(characterId: number): Promise<Wand>;
   getAllWandComponents(): Promise<{
-    woods: { name: string; shortDescription: string; longDescription: string }[];
-    cores: { name: string; category: string; description: string }[];
-    lengths: { name: string; description: string }[];
-    flexibilities: { name: string; description: string }[];
+    woods: { name: string; shortDescription: string; longDescription: string; availableForRandom?: boolean }[];
+    cores: { name: string; category: string; description: string; availableForRandom?: boolean }[];
+    lengths: { name: string; description: string; availableForRandom?: boolean }[];
+    flexibilities: { name: string; description: string; availableForRandom?: boolean }[];
   }>;
   migrateExistingWandsToInventory(): Promise<number>;
   updateWandComponents(components: {
@@ -265,7 +265,13 @@ export class DatabaseStorage implements IStorage {
       query = query.eq('is_system', false);
     }
     const { data, error } = await query;
-    if (error) return [];
+    if (error) {
+      console.error("getAllUsers error:", error);
+      return [];
+    }
+    if (!data || data.length === 0) {
+      console.warn("No users found", { data });
+    }
     return toCamel(data || []);
   }
 
@@ -309,7 +315,13 @@ export class DatabaseStorage implements IStorage {
 
   async getCharactersByUserId(userId: number): Promise<Character[]> {
     const { data, error } = await supabase.from('characters').select('*').eq('user_id', userId).order('created_at', { ascending: false });
-    if (error) return [];
+    if (error) {
+      console.error("getCharactersByUserId error:", { userId, error });
+      return [];
+    }
+    if (!data || data.length === 0) {
+      console.warn("No characters found for user", { userId, data });
+    }
     return toCamel(data || []);
   }
 
@@ -757,8 +769,14 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getDeadCharacters(): Promise<Character[]> {
-    const { data, error } = await supabase.from('characters').select('*').not('death_date', 'is', null).order('death_date', { ascending: false }).order('created_at', { ascending: false });
-    if (error) return [];
+    const { data, error } = await supabase.from('characters').select('*').not('death_date', 'is', null);
+    if (error) {
+      console.error("getDeadCharacters error:", error);
+      return [];
+    }
+    if (!data || data.length === 0) {
+      console.warn("No dead characters found", { data });
+    }
     return toCamel(data || []);
   }
 
@@ -917,8 +935,14 @@ export class DatabaseStorage implements IStorage {
 
   // Character journal operations
   async getCharacterJournal(characterId: number): Promise<JournalEntry[]> {
-    const { data, error } = await supabase.from('characterJournal').select('*').eq('character_id', characterId);
-    if (error) return [];
+    const { data, error } = await supabase.from('character_journal').select('*').eq('character_id', characterId);
+    if (error) {
+      console.error("getCharacterJournal error:", error);
+      return [];
+    }
+    if (!data || data.length === 0) {
+      console.warn("No journal entries found for character", { characterId, data });
+    }
     return toCamel(data || []);
   }
 
@@ -975,13 +999,31 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllWandComponents(): Promise<{
-    woods: { name: string; shortDescription: string; longDescription: string }[];
-    cores: { name: string; category: string; description: string }[];
-    lengths: { name: string; description: string }[];
-    flexibilities: { name: string; description: string }[];
+    woods: { name: string; shortDescription: string; longDescription: string; availableForRandom?: boolean }[];
+    cores: { name: string; category: string; description: string; availableForRandom?: boolean }[];
+    lengths: { name: string; description: string; availableForRandom?: boolean }[];
+    flexibilities: { name: string; description: string; availableForRandom?: boolean }[];
   }> {
-    // Implementation needed
-    throw new Error("Method not implemented");
+    const { data: woods = [], error: woodsError } = await supabase.from('wand_woods').select('*');
+    const { data: cores = [], error: coresError } = await supabase.from('wand_cores').select('*');
+    const { data: lengths = [], error: lengthsError } = await supabase.from('wand_lengths').select('*');
+    const { data: flexibilities = [], error: flexError } = await supabase.from('wand_flexibilities').select('*');
+
+    if (woodsError || coresError || lengthsError || flexError) {
+      console.error("Wand components fetch error:", { woodsError, coresError, lengthsError, flexError });
+      return { woods: [], cores: [], lengths: [], flexibilities: [] };
+    }
+    if (!woods.length) console.warn("No data found in wand_woods", { woods });
+    if (!cores.length) console.warn("No data found in wand_cores", { cores });
+    if (!lengths.length) console.warn("No data found in wand_lengths", { lengths });
+    if (!flexibilities.length) console.warn("No data found in wand_flexibilities", { flexibilities });
+
+    return {
+      woods: woods.map(toCamel),
+      cores: cores.map(toCamel),
+      lengths: lengths.map(toCamel),
+      flexibilities: flexibilities.map(toCamel),
+    };
   }
 
   async migrateExistingWandsToInventory(): Promise<number> {
@@ -1034,6 +1076,9 @@ export class DatabaseStorage implements IStorage {
       if (error) {
         console.error("Error fetching influence history:", error);
         return [];
+      }
+      if (!data || data.length === 0) {
+        console.warn("No influence history found", { data });
       }
       return toCamel(data || []);
     } catch (error) {
@@ -1110,7 +1155,13 @@ export class DatabaseStorage implements IStorage {
       .select('*')
       .eq('recipient_character_id', characterId)
       .order('sent_at', { ascending: false });
-    if (error) return [];
+    if (error) {
+      console.error("getOwlPostInbox error:", error);
+      return [];
+    }
+    if (!data || data.length === 0) {
+      console.warn("No owl post inbox messages found for character", { characterId, data });
+    }
     return toCamel(data || []);
   }
 
@@ -1120,7 +1171,13 @@ export class DatabaseStorage implements IStorage {
       .select('*')
       .eq('sender_character_id', characterId)
       .order('sent_at', { ascending: false });
-    if (error) return [];
+    if (error) {
+      console.error("getOwlPostSent error:", error);
+      return [];
+    }
+    if (!data || data.length === 0) {
+      console.warn("No owl post sent messages found for character", { characterId, data });
+    }
     return toCamel(data || []);
   }
 
