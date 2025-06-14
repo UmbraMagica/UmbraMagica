@@ -11,7 +11,7 @@
     "db:push": "drizzle-kit push",
     "client": "vite --config vite.config.ts",
     "build:client": "cd client && npm install && npm run build",
-    "postbuild:client": "rm -rf server/public && mkdir -p server/public && cp -r client/dist/* server/public/",
+    "postbuild:client": "rm -rf dist/public && mkdir -p dist/public && cp -r client/dist/* dist/public/",
     "build:server": "esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist"
   },
   "dependencies": {
