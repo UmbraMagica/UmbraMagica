@@ -79,19 +79,20 @@ function OwlPost() {
     queryFn: getQueryFn({ on401: "throw" }),
   });
 
-  // Get first alive character as default
-  const firstAliveCharacter = userCharacters.find((char: any) => !char.deathDate);
-  
-  // Get character from URL parameter if provided
+  // Get character selection with priority: URL > selected > localStorage > active > first alive
   const characterFromUrl = characterIdFromUrl ? 
     userCharacters.find((char: any) => char.id === parseInt(characterIdFromUrl)) : null;
   
-  // Načti postavu z localStorage pokud není v URL
-  const characterIdFromStorage = !characterIdFromUrl ? localStorage.getItem('selectedOwlPostCharacterId') : null;
+  // Načti postavu z localStorage (používej selectedCharacterId stejně jako home page)
+  const characterIdFromStorage = !characterIdFromUrl ? localStorage.getItem('selectedCharacterId') : null;
   const characterFromStorage = characterIdFromStorage ? userCharacters.find((char: any) => char.id === parseInt(characterIdFromStorage)) : null;
+  
+  // Get active character and first alive character as fallbacks
+  const activeCharacterFromData = userCharacters.find((char: any) => char.isActive && !char.deathDate);
+  const firstAliveCharacter = userCharacters.find((char: any) => !char.deathDate);
 
-  // Use selected character, character from URL, from storage, or first alive character
-  const activeCharacter = selectedCharacter || characterFromUrl || characterFromStorage || firstAliveCharacter;
+  // Use selected character, character from URL, from storage, active character, or first alive character
+  const activeCharacter = selectedCharacter || characterFromUrl || characterFromStorage || activeCharacterFromData || firstAliveCharacter;
 
   // Get all characters for owl post
   const { data: owlPostCharacters = [] } = useQuery({
@@ -240,13 +241,13 @@ function OwlPost() {
     },
   });
 
-  // Ulož výběr postavy do localStorage při změně
+  // Ulož výběr postavy do localStorage při změně (stejný klíč jako home page)
   const handleCharacterChange = (value: string) => {
     console.log("[OwlPost] handleCharacterChange na:", value);
     const selectedChar = userCharacters.find((char: any) => char.id === parseInt(value));
     if (selectedChar) {
       setSelectedCharacter(selectedChar);
-      localStorage.setItem('selectedOwlPostCharacterId', selectedChar.id.toString());
+      localStorage.setItem('selectedCharacterId', selectedChar.id.toString());
       console.log("[OwlPost] Nastaven selectedCharacter:", selectedChar);
     }
   };

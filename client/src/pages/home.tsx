@@ -106,7 +106,7 @@ export default function Home() {
           return;
         }
       }
-      
+
       // If no saved character or character is dead, use first alive character
       if (firstAliveCharacter && !displayedCharacter) {
         setDisplayedCharacter(firstAliveCharacter);
@@ -190,7 +190,7 @@ export default function Home() {
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-4">
               <div className="text-xl font-bold text-accent">Umbra Magica</div>
-              
+
               {/* Desktop Navigation */}
               <div className="hidden md:flex items-center space-x-2">
                 <Button variant="ghost" className="text-foreground hover:text-accent" onClick={handleHomeClick}>
@@ -291,7 +291,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-        
+
         {/* Mobile Menu */}
         {isMenuOpen && (
           <div className="md:hidden bg-card border-t border-border">
@@ -387,7 +387,7 @@ export default function Home() {
                       </div>
                     </div>
                   </Button>
-                  
+
                   <Button 
                     variant={currentDisplayedCharacter && (characterWand === null || characterWand === undefined) ? "default" : "ghost"}
                     className={`w-full justify-start text-left h-auto p-3 ${
@@ -479,7 +479,7 @@ export default function Home() {
                       </div>
                     </div>
                   </Button>
-                  
+
                   <Button 
                     variant="ghost"
                     className="w-full justify-start text-left h-auto p-3 hover:bg-green-500/20"
@@ -537,7 +537,7 @@ export default function Home() {
                       return apiFetch(`${import.meta.env.VITE_API_URL}/api/influence-bar`);
                     },
                   });
-                  
+
                   const { data: influenceHistory } = useQuery({
                     queryKey: ['/api/influence-history'],
                     enabled: !!user,
@@ -575,7 +575,7 @@ export default function Home() {
                           <div className="w-3 h-3 bg-blue-600 rounded-full ml-2"></div>
                         </div>
                       </div>
-                      
+
                       <Dialog>
                         <DialogTrigger asChild>
                           <div className="relative w-full h-6 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden cursor-pointer hover:ring-2 hover:ring-slate-400 transition-all">
@@ -638,7 +638,7 @@ export default function Home() {
                           </div>
                         </DialogContent>
                       </Dialog>
-                      
+
                       <div className="text-xs text-center text-muted-foreground">
                         Klikněte na lištu pro zobrazení historie změn
                       </div>
@@ -736,7 +736,7 @@ export default function Home() {
                     </p>
                     <p className="text-xs text-muted-foreground mt-1">31. prosince 1926 • Admin</p>
                   </div>
-                  
+
                   <div className="border-l-4 border-blue-500 pl-4">
                     <div className="flex items-center justify-between">
                       <h4 className="font-medium text-foreground">Vánoční události</h4>
@@ -752,7 +752,7 @@ export default function Home() {
                     </p>
                     <p className="text-xs text-muted-foreground mt-1">20. prosince 1926 • Professor McGonagall</p>
                   </div>
-                  
+
                   <div className="border-l-4 border-green-500 pl-4">
                     <div className="flex items-center justify-between">
                       <h4 className="font-medium text-foreground">Nové lokace k průzkumu</h4>
@@ -785,7 +785,7 @@ export default function Home() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => setLocation("/character/edit")}
+                      onClick={() => setLocation(`/character/edit?characterId=${currentDisplayedCharacter.id}`)}
                       className="text-muted-foreground hover:text-foreground"
                       disabled={!currentDisplayedCharacter?.id}
                     >
@@ -969,7 +969,7 @@ export default function Home() {
             </Card>
           </div>
         </div>
-        
+
         {/* Cemetery access at the bottom */}
         <div className="mt-8 pt-4 border-t border-border text-center">
           <Button variant="ghost" className="text-muted-foreground hover:text-foreground" onClick={() => setLocation('/cemetery')}>

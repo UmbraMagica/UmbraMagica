@@ -57,11 +57,14 @@ export default function Ollivanders() {
         }
       }
       
-      // If no saved character, use first alive character
+      // If no saved character, use active character first, then first alive character
+      const activeCharacter = userCharacters.find((char: any) => char.isActive && !char.deathDate);
       const firstAliveCharacter = userCharacters.find((char: any) => !char.deathDate);
-      if (firstAliveCharacter && !selectedCharacter) {
-        setSelectedCharacter(firstAliveCharacter);
-        localStorage.setItem('selectedCharacterId', firstAliveCharacter.id.toString());
+      const characterToUse = activeCharacter || firstAliveCharacter;
+      
+      if (characterToUse && !selectedCharacter) {
+        setSelectedCharacter(characterToUse);
+        localStorage.setItem('selectedCharacterId', characterToUse.id.toString());
       }
     }
   }, [userCharacters]);
