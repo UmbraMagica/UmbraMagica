@@ -46,6 +46,28 @@ export function useAuth() {
 
       const userData = await response.json();
       console.log('[useAuth] Loaded user data:', userData);
+      
+      // Pokud user nemá characters property, načti je zvlášť
+      if (userData && !userData.characters) {
+        try {
+          const charactersResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/characters`, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          });
+          if (charactersResponse.ok) {
+            const characters = await charactersResponse.json();
+            userData.characters = characters;
+          } else {
+            userData.characters = [];
+          }
+        } catch (error) {
+          console.error('[useAuth] Failed to fetch characters:', error);
+          userData.characters = [];
+        }
+      }
+      
       return userData;
     },
     retry: false,

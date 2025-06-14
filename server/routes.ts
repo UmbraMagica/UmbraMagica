@@ -602,6 +602,17 @@ export async function registerRoutes(app: Express): Promise<void> {
     }
   });
 
+  // Characters endpoint - hlavní endpoint pro načítání postav uživatele
+  app.get("/api/characters", requireAuth, async (req, res) => {
+    try {
+      const characters = await storage.getCharactersByUserId(req.user!.id);
+      res.json(characters);
+    } catch (error) {
+      console.error("Error fetching user characters:", error);
+      res.status(500).json({ message: "Failed to fetch characters" });
+    }
+  });
+
   // Influence system routes - fixed with proper error handling
   app.get("/api/influence-bar", requireAuth, async (req, res) => {
     try {
@@ -667,13 +678,7 @@ export async function registerRoutes(app: Express): Promise<void> {
   // Owl Post routes
   app.get("/api/owl-post/unread-total", requireAuth, async (req, res) => {
     try {
-      // Pokud není zadáno characterId, vrátíme celkový počet pro všechny postavy uživatele
-      const characterId = req.query.characterId ? Number(req.query.characterId) : null;
-
-      // Pouze pokud je characterId zadané a je neplatné
-      if (req.query.characterId && (characterId === null || isNaN(characterId))) {
-        return res.status(400).json({ message: "Invalid characterId" });
-      }
+      // Vrátíme celkový počet pro všechny postavy uživatele (bez parametru characterId)
 
       let totalCount = 0;
 
