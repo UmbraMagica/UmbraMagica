@@ -79,24 +79,25 @@ export interface IStorage {
   updateUserPassword(id: number, hashedPassword: string): Promise<void>;
   updateUserEmail(id: number, email: string): Promise<void>;
   updateUserSettings(id: number, settings: { characterOrder?: string; highlightWords?: string; highlightColor?: string; narratorColor?: string }): Promise<void>;
-  
+
   // Character operations
   getCharacter(id: number): Promise<Character | undefined>;
   getCharactersByUserId(userId: number): Promise<Character[]>;
   createCharacter(character: InsertCharacter): Promise<Character>;
   updateCharacter(id: number, updates: Partial<InsertCharacter>): Promise<Character | undefined>;
+  getAllCharacters(): Promise<Character[]>;
 
-  
+
   // Invite code operations
   getInviteCode(code: string): Promise<InviteCode | undefined>;
   getAllInviteCodes(): Promise<InviteCode[]>;
   createInviteCode(code: InsertInviteCode): Promise<InviteCode>;
   useInviteCode(code: string, userId: number): Promise<boolean>;
-  
+
   // Authentication
   validateUser(username: string, password: string): Promise<User | null>;
   hashPassword(password: string): Promise<string>;
-  
+
   // Chat category operations
   getChatCategory(id: number): Promise<ChatCategory | undefined>;
   getChatCategoryByName(name: string): Promise<ChatCategory | undefined>;
@@ -105,7 +106,7 @@ export interface IStorage {
   deleteChatCategory(id: number): Promise<boolean>;
   getAllChatCategories(): Promise<ChatCategory[]>;
   getChatCategoriesWithChildren(): Promise<(ChatCategory & { children: ChatCategory[], rooms: ChatRoom[] })[]>;
-  
+
   // Chat operations
   getChatRoom(id: number): Promise<ChatRoom | undefined>;
   getChatRoomByName(name: string): Promise<ChatRoom | undefined>;
@@ -115,18 +116,18 @@ export interface IStorage {
   getAllChatRooms(): Promise<ChatRoom[]>;
   getChatRoomsByCategory(categoryId: number): Promise<ChatRoom[]>;
   validateRoomPassword(roomId: number, password: string): Promise<boolean>;
-  
+
   // Message operations
   getMessage(id: number): Promise<Message | undefined>;
   getMessagesByRoom(roomId: number, limit?: number, offset?: number): Promise<(Message & { character: { firstName: string; middleName?: string | null; lastName: string; avatar?: string | null } })[]>;
   createMessage(message: InsertMessage): Promise<Message>;
   deleteMessage(id: number): Promise<boolean>;
   updateMessageCharacter(messageId: number, characterId: number): Promise<void>;
-  
+
   // Archive operations
   archiveMessages(roomId: number, beforeDate?: Date): Promise<number>;
   getArchivedMessages(roomId: number, limit?: number, offset?: number): Promise<ArchivedMessage[]>;
-  
+
   // Additional message operations
   deleteAllMessages(): Promise<void>;
   clearRoomMessages(roomId: number): Promise<number>;
@@ -134,7 +135,7 @@ export interface IStorage {
   getArchiveDatesWithCounts(roomId: number): Promise<{ date: string; count: number }[]>;
   getArchivedMessagesByDate(roomId: number, archiveDate: string, limit?: number, offset?: number): Promise<ArchivedMessage[]>;
   getLastMessageByCharacter(characterId: number): Promise<Message | undefined>;
-  
+
   // Character request operations
   createCharacterRequest(request: InsertCharacterRequest): Promise<CharacterRequest>;
   getCharacterRequestsByUserId(userId: number): Promise<CharacterRequest[]>;
@@ -144,18 +145,18 @@ export interface IStorage {
   getPendingCharacterRequests(): Promise<(CharacterRequest & { user: { username: string; email: string } })[]>;
   approveCharacterRequest(requestId: number, adminId: number, reviewNote?: string): Promise<Character>;
   rejectCharacterRequest(requestId: number, adminId: number, reviewNote: string): Promise<CharacterRequest>;
-  
+
   // Admin activity log operations
   logAdminActivity(activity: InsertAdminActivityLog): Promise<AdminActivityLog>;
   getAdminActivityLog(limit?: number, offset?: number): Promise<(AdminActivityLog & { admin: { username: string }; targetUser?: { username: string } })[]>;
-  
+
   // Multi-character operations
-  
+
   // Cemetery operations
   killCharacter(characterId: number, deathReason: string, adminId: number): Promise<Character | undefined>;
   reviveCharacter(characterId: number): Promise<Character | undefined>;
   getDeadCharacters(): Promise<Character[]>;
-  
+
   // Spell operations
   getAllSpells(): Promise<Spell[]>;
   getSpell(id: number): Promise<Spell | undefined>;
@@ -163,26 +164,26 @@ export interface IStorage {
   createSpell(spell: InsertSpell): Promise<Spell>;
   updateSpell(id: number, updates: Partial<InsertSpell>): Promise<Spell | undefined>;
   deleteSpell(id: number): Promise<boolean>;
-  
+
   // Character spell operations
   getCharacterSpells(characterId: number): Promise<(CharacterSpell & { spell: Spell })[]>;
   addSpellToCharacter(characterId: number, spellId: number): Promise<CharacterSpell>;
   removeSpellFromCharacter(characterId: number, spellId: number): Promise<boolean>;
-  
+
   // Character inventory operations
   getCharacterInventory(characterId: number): Promise<InventoryItem[]>;
   getInventoryItem(id: number): Promise<InventoryItem | undefined>;
   addInventoryItem(item: InsertInventoryItem): Promise<InventoryItem>;
   updateInventoryItem(id: number, updates: Partial<InsertInventoryItem>): Promise<InventoryItem | undefined>;
   deleteInventoryItem(id: number): Promise<boolean>;
-  
+
   // Character journal operations
   getCharacterJournal(characterId: number): Promise<JournalEntry[]>;
   getJournalEntry(id: number): Promise<JournalEntry | undefined>;
   addJournalEntry(entry: InsertJournalEntry): Promise<JournalEntry>;
   updateJournalEntry(id: number, updates: Partial<InsertJournalEntry>): Promise<JournalEntry | undefined>;
   deleteJournalEntry(id: number): Promise<boolean>;
-  
+
   // Wand operations
   getCharacterWand(characterId: number): Promise<Wand | undefined>;
   createWand(wand: InsertWand): Promise<Wand>;
@@ -202,7 +203,7 @@ export interface IStorage {
     lengths: { name: string; description: string }[];
     flexibilities: { name: string; description: string }[];
   }): Promise<void>;
-  
+
   // Influence operations
   getInfluenceBar(): Promise<{ grindelwaldPoints: number; dumbledorePoints: number }>;
   getInfluenceHistory(): Promise<any[]>;
@@ -317,7 +318,7 @@ export class DatabaseStorage implements IStorage {
   async updateCharacter(id: number, updates: Partial<InsertCharacter>): Promise<Character | undefined> {
     // Převod camelCase na snake_case pro databázi
     const dbUpdates: any = { updated_at: new Date() };
-    
+
     if (updates.characterHistory !== undefined) dbUpdates.character_history = updates.characterHistory;
     if (updates.showHistoryToOthers !== undefined) dbUpdates.show_history_to_others = updates.showHistoryToOthers;
     if (updates.firstName !== undefined) dbUpdates.first_name = updates.firstName;
@@ -331,7 +332,7 @@ export class DatabaseStorage implements IStorage {
     if (updates.height !== undefined) dbUpdates.height = updates.height;
     if (updates.weight !== undefined) dbUpdates.weight = updates.weight;
     if (updates.isActive !== undefined) dbUpdates.is_active = updates.isActive;
-    
+
     const { data, error } = await supabase.from('characters').update(dbUpdates).eq('id', id).select().single();
     if (error) {
       console.error('Database error in updateCharacter:', error);
@@ -344,6 +345,16 @@ export class DatabaseStorage implements IStorage {
     const { data, error } = await supabase.from('characters').select('*').eq('first_name', firstName).eq('last_name', lastName).single();
     if (error) return undefined;
     return toCamel(data);
+  }
+
+  async getAllCharacters(includeSystem = false): Promise<Character[]> {
+    let query = supabase.from('characters').select('*');
+    if (!includeSystem) {
+      query = query.eq('is_system', false);
+    }
+    const { data, error } = await query;
+    if (error) return [];
+    return toCamel(data || []);
   }
 
   // Authentication and invite codes remain same...
@@ -899,7 +910,7 @@ export class DatabaseStorage implements IStorage {
     const { error } = await supabase.from('characterInventory').delete().eq('id', id);
     return !error;
   }
-  
+
   // Character journal operations
   async getCharacterJournal(characterId: number): Promise<JournalEntry[]> {
     const { data, error } = await supabase.from('characterJournal').select('*').eq('character_id', characterId);
@@ -929,7 +940,7 @@ export class DatabaseStorage implements IStorage {
     const { error } = await supabase.from('characterJournal').delete().eq('id', id);
     return !error;
   }
-  
+
   // Wand operations
   async getCharacterWand(characterId: number): Promise<Wand | undefined> {
     const { data, error } = await supabase.from('wands').select('*').eq('character_id', characterId).single();
@@ -983,7 +994,7 @@ export class DatabaseStorage implements IStorage {
     // Implementation needed
     throw new Error("Method not implemented");
   }
-  
+
   // Influence operations
   async getInfluenceBar(): Promise<{ grindelwaldPoints: number; dumbledorePoints: number }> {
     // TODO: Implementace podle skutečné logiky/databáze
@@ -1008,15 +1019,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   // ... existující kód ...
-  async getAllCharacters(includeSystem = false): Promise<Character[]> {
-    let query = supabase.from('characters').select('*');
-    if (!includeSystem) {
-      query = query.eq('is_system', false);
-    }
-    const { data, error } = await query;
-    if (error) return [];
-    return toCamel(data || []);
-  }
+
   // ... existující kód ...
   async assignHousingAdminToSystemUser() {
     // Najdi postavu Správa ubytování

@@ -276,72 +276,73 @@ export async function registerRoutes(app: Express): Promise<void> {
     res.json(null);
   });
 
-  // Seznam všech postav uživatele (pro kompatibilitu)
-  app.get("/api/characters", requireAuth, async (req, res) => {
-    const characters = await storage.getCharactersByUserId(req.user!.id);
-    res.json({ characters });
-  });
-  app.get("/api/characters/", requireAuth, async (req, res) => {
-    const characters = await storage.getCharactersByUserId(req.user!.id);
-    res.json({ characters });
-  });
-
-  // Detail postavy
+  // Character routes
   app.get("/api/characters/:id", requireAuth, async (req, res) => {
     const characterId = Number(req.params.id);
     if (!characterId || isNaN(characterId)) {
-      return res.status(400).json({ message: "Invalid characterId" });
+      return res.status(400).json({ message: "Neplatné characterId" });
     }
-    
-    const character = await storage.getCharacter(characterId);
+
+    const character = await storage.getCharacterById(characterId);
     if (!character) {
-      return res.status(404).json({ message: "Character not found" });
+      return res.status(404).json({ message: "Postava nenalezena" });
     }
-    
-    // Ověř přístup k postavě
-    if (req.user!.role !== 'admin' && character.userId !== req.user!.id) {
-      return res.status(403).json({ message: "Forbidden" });
-    }
-    
-    // Přidej informace o uživateli
-    const user = await storage.getUser(character.userId);
-    res.json({
-      ...character,
-      user: {
-        username: user?.username || 'Unknown',
-        email: user?.email || 'Unknown'
+
+    // Admin může přistupovat ke všem postavám
+    if (req.user!.role !== 'admin') {
+      // Uživatel může přistupovat pouze ke svým postavám
+      if (character.userId !== req.user!.id) {
+        return res.status(403).json({ message: "Zakázáno" });
       }
-    });
+    }
+
+    res.json(character);
+  });
+
+  // Endpoint pro seznam všech postav (bez parametrů)
+  app.get("/api/characters", requireAuth, async (req, res) => {
+    try {
+      if (req.user!.role === 'admin') {
+        const allCharacters = await storage.getAllCharacters();
+        res.json({ characters: allCharacters });
+      } else {
+        const userCharacters = await storage.getCharactersByUserId(req.user!.id);
+        res.json({ characters: userCharacters });
+      }
+    } catch (error) {
+      console.error("Chyba při načítání postav:", error);
+      res.status(500).json({ message: "Chyba serveru" });
+    }
   });
 
   // Aktualizace historie postavy
   app.put("/api/characters/:id/history", requireAuth, async (req, res) => {
     const characterId = Number(req.params.id);
     const { history, showHistoryToOthers } = req.body;
-    
+
     if (!characterId || isNaN(characterId)) {
       return res.status(400).json({ message: "Invalid characterId" });
     }
-    
+
     const character = await storage.getCharacter(characterId);
     if (!character) {
       return res.status(404).json({ message: "Character not found" });
     }
-    
+
     // Ověř přístup k postavě
     if (req.user!.role !== 'admin' && character.userId !== req.user!.id) {
       return res.status(403).json({ message: "Forbidden" });
     }
-    
+
     const updatedCharacter = await storage.updateCharacter(characterId, {
       characterHistory: history,
       showHistoryToOthers: showHistoryToOthers
     });
-    
+
     if (!updatedCharacter) {
       return res.status(500).json({ message: "Failed to update character" });
     }
-    
+
     res.json(updatedCharacter);
   });
 
@@ -360,40 +361,70 @@ export async function registerRoutes(app: Express): Promise<void> {
     res.json([]);
   });
 
-  // Influence bar (mock)
-  app.get("/api/influence-bar", requireAuth, async (_req, res) => {
-    console.log("HIT /api/influence-bar");
-    res.json({ grindelwaldPoints: 50, dumbledorePoints: 50 });
+  // Influence system routes (placeholder - pro budoucí implementaci)
+  app.get("/api/influence-bar", requireAuth, async (req, res) => {
+    // Placeholder pro influence bar data
+    res.json({
+      light: 50,
+      dark: 50,
+      neutral: 0
+    });
   });
 
-  app.get("/api/influence-bar/", requireAuth, async (_req, res) => {
-    console.log("HIT /api/influence-bar/");
-    res.json({ grindelwaldPoints: 50, dumbledorePoints: 50 });
-  });
-
-  // Influence history (mock)
-  app.get("/api/influence-history", requireAuth, async (_req, res) => {
-    console.log("HIT /api/influence-history");
+  app.get("/api/influence-history", requireAuth, async (req, res) => {
+    // Placeholder pro influence history
     res.json([]);
   });
 
-  app.get("/api/influence-history/", requireAuth, async (_req, res) => {
-    console.log("HIT /api/influence-history/");
-    res.json([]);
+  // Owl Post routes
+  app.get("/api/owl-post/unread-total", requireAuth, async (req, res) => {
+    const characterId = Number(req.query.characterId);
+    if (!characterId || isNaN(characterId)) {
+      return res.status(400).json({ message: "Invalid characterId" });
+    }
+
+    // Ověření přístupu k postavě
+    if (req.user!.role !== 'admin') {
+      const characters = await storage.getCharactersByUserId(req.user!.id);
+      if (!characters.some((char: any) => char.id === characterId)) {
+        return res.status(403).json({ message: "Forbidden" });
+      }
+    }
+
+    const unreadCount = await storage.getUnreadOwlPostCount(characterId);
+    res.json({ count: unreadCount });
   });
 
-  // Seznam postav pro poštu (zatím prázdné)
-  app.get("/api/owl-post/characters", requireAuth, async (_req, res) => {
-    res.json([]);
-  });
-  app.get("/api/owl-post/characters/", requireAuth, async (_req, res) => {
-    res.json([]);
+  app.get("/api/owl-post/characters", requireAuth, async (req, res) => {
+    try {
+      // Pokud není zadáno characterId, vrátíme všechny postavy uživatele
+      const characterId = req.query.characterId ? Number(req.query.characterId) : null;
+
+      if (characterId && isNaN(characterId)) {
+        return res.status(400).json({ message: "Invalid characterId" });
+      }
+
+      if (characterId) {
+        // Ověření přístupu k postavě
+        if (req.user!.role !== 'admin') {
+          const characters = await storage.getCharactersByUserId(req.user!.id);
+          if (!characters.some((char: any) => char.id === characterId)) {
+            return res.status(403).json({ message: "Forbidden" });
+          }
+        }
+        const characters = await storage.getOwlPostCharacters(characterId);
+        res.json(characters);
+      } else {
+        // Vrátíme všechny postavy uživatele pro owl post
+        const userCharacters = await storage.getCharactersByUserId(req.user!.id);
+        res.json(userCharacters);
+      }
+    } catch (error) {
+      console.error("Chyba při načítání owl-post characters:", error);
+      res.status(500).json({ message: "Server error" });
+    }
   });
 
-  // Celkový počet nepřečtených zpráv (zatím 0)
-  app.get("/api/owl-post/unread-total", requireAuth, async (_req, res) => {
-    res.json({ count: 0 });
-  });
   app.get("/api/owl-post/unread-total/", requireAuth, async (_req, res) => {
     res.json({ count: 0 });
   });
