@@ -298,7 +298,7 @@ export async function registerRoutes(app: Express): Promise<void> {
 
   // Chat místnosti (zatím prázdné)
   app.get("/api/chat/rooms", requireAuth, async (_req, res) => {
-import type { Express, Request, Response, NextFunction } from "express";
+import { Express, Request, Response, NextFunction } from "express";
 import { createServer } from "http";
 import { WebSocketServer } from "ws";
 import { storage } from "./storage";
