@@ -1,0 +1,59 @@
+
+Search
+
+Live tail
+GMT+2
+
+Menu
+==> Cloning from https://github.com/UmbraMagica/UmbraMagica
+==> Checking out commit 55563d4841aa066015e72963b1b15e1403c4e406 in branch main
+==> Using Node.js version 22.14.0 (default)
+==> Docs on specifying a Node.js version: https://render.com/docs/node-version
+==> Using Bun version 1.1.0 (default)
+==> Docs on specifying a bun version: https://render.com/docs/bun-version
+==> Running build command '  npm install && npm run build'...
+added 559 packages, and audited 560 packages in 10s
+75 packages are looking for funding
+  run `npm fund` for details
+9 vulnerabilities (1 low, 7 moderate, 1 high)
+To address issues that do not require attention, run:
+  npm audit fix
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+Run `npm audit` for details.
+> umbra-magica@1.0.0 build
+> esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+  dist/index.js  69.9kb
+⚡ Done in 7ms
+==> Uploading build...
+==> Uploaded in 5.5s. Compression took 4.1s
+==> Build successful 🎉
+==> Deploying...
+==> No open ports detected, continuing to scan...
+==> Docs on specifying a port: https://render.com/docs/web-services#port-binding
+==> Running '     node dist/index.js'
+registerRoutes: konec
+9:44:08 AM [express] serving on port 10000
+[DEBUG] HEAD /
+==> Your service is live 🎉
+[DEBUG] GET /
+[DEBUG] GET /api/auth/user
+9:44:28 AM [express] GET /api/auth/user 304 in 1693ms :: {"id":5,"username":"Casey","email":"caseylo…
+[DEBUG] GET /api/characters/7/wand
+[DEBUG] GET /api/characters/online
+9:44:28 AM [express] GET /api/characters/online 304 in 1ms :: []
+[DEBUG] GET /api/characters/6/wand
+[DEBUG] GET /api/characters/6/last-chat
+9:44:28 AM [express] GET /api/characters/6/last-chat 304 in 1ms
+[DEBUG] GET /api/owl-post/unread-count/7
+[DEBUG] GET /api/characters/all
+[DEBUG] GET /api/characters/7/last-chat
+9:44:28 AM [express] GET /api/characters/7/last-chat 304 in 2ms
+9:44:28 AM [express] GET /api/characters/7/wand 304 in 196ms :: {"id":3,"characterId":7,"wood":"Boro…
+9:44:29 AM [express] GET /api/characters/all 304 in 227ms :: {"characters":[{"id":7,"userId":5,"firs…
+[DEBUG] GET /api/owl-post/unread-count/6
+9:44:29 AM [express] GET /api/owl-post/unread-count/7 304 in 591ms :: {"count":0}
+9:44:29 AM [express] GET /api/characters/6/wand 304 in 647ms :: {"id":6,"characterId":6,"wood":"Topo…
+9:44:29 AM [express] GET /api/owl-post/unread-count/6 304 in 559ms :: {"count":0}
+[DEBUG] GET /api/characters/6
+9:44:32 AM [express] GET /api/characters/6 200 in 36ms
