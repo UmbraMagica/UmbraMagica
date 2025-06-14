@@ -1,0 +1,164 @@
+
+Search
+
+Live tail
+GMT+2
+
+Menu
+==> Cloning from https://github.com/UmbraMagica/UmbraMagica
+==> Checking out commit 0e086d695f9d22f84a4bf7a0750fe80291c49034 in branch main
+==> Using Node.js version 22.14.0 (default)
+==> Docs on specifying a Node.js version: https://render.com/docs/node-version
+==> Using Bun version 1.1.0 (default)
+==> Docs on specifying a bun version: https://render.com/docs/bun-version
+==> Running build command '  npm install && npm run build'...
+added 559 packages, and audited 560 packages in 10s
+75 packages are looking for funding
+  run `npm fund` for details
+9 vulnerabilities (1 low, 7 moderate, 1 high)
+To address issues that do not require attention, run:
+  npm audit fix
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+Run `npm audit` for details.
+> umbra-magica@1.0.0 build
+> esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+  dist/index.js  91.3kb
+⚡ Done in 33ms
+==> Uploading build...
+==> Uploaded in 6.1s. Compression took 3.5s
+==> Build successful 🎉
+==> Deploying...
+==> Running '     node dist/index.js'
+registerRoutes: konec
+10:40:15 AM [express] serving on port 10000
+[DEBUG] HEAD /
+==> Your service is live 🎉
+[DEBUG] GET /
+[DEBUG] GET /api/auth/user
+10:41:30 AM [express] GET /api/auth/user 304 in 1687ms :: {"id":5,"username":"Casey","email":"caseylo…
+[DEBUG] GET /api/characters/7/wand
+[DEBUG] GET /api/owl-post/unread-count/6
+[DEBUG] GET /api/characters/online
+10:41:30 AM [express] GET /api/characters/online 304 in 2ms :: []
+[DEBUG] GET /api/influence-history
+[DEBUG] GET /api/characters/6/wand
+[DEBUG] GET /api/characters/7/last-chat
+10:41:30 AM [express] GET /api/characters/7/last-chat 304 in 2ms
+[DEBUG] GET /api/influence-bar
+[DEBUG] GET /api/characters/all
+[DEBUG] GET /api/owl-post/unread-count/7
+10:41:30 AM [express] GET /api/characters/7/wand 304 in 239ms :: {"id":3,"characterId":7,"wood":"Boro…
+[DEBUG] GET /api/characters/6/last-chat
+10:41:30 AM [express] GET /api/characters/6/last-chat 304 in 2ms
+10:41:31 AM [express] GET /api/owl-post/unread-count/6 304 in 399ms :: {"count":0}
+Error fetching influence history: {
+  code: '42P01',
+  details: null,
+  hint: null,
+  message: 'relation "public.influence_history" does not exist'
+}
+10:41:31 AM [express] GET /api/influence-history 304 in 413ms :: []
+10:41:31 AM [express] GET /api/characters/6/wand 304 in 330ms :: {"id":6,"characterId":6,"wood":"Topo…
+No influence_bar record found, creating default: relation "public.influence_bar" does not exist
+10:41:31 AM [express] GET /api/owl-post/unread-count/7 304 in 320ms :: {"count":0}
+[API] /api/characters/all - User 5 has 2 characters
+10:41:31 AM [express] GET /api/characters/all 304 in 411ms :: {"characters":[{"id":7,"userId":5,"firs…
+Error creating influence bar: {}
+10:41:31 AM [express] GET /api/influence-bar 304 in 606ms :: {"grindelwaldPoints":50,"dumbledorePoint…
+[DEBUG] GET /api/chat/rooms
+10:41:33 AM [express] GET /api/chat/rooms 304 in 1ms :: []
+[DEBUG] GET /api/chat/categories
+10:41:33 AM [express] GET /api/chat/categories 304 in 1ms :: []
+[DEBUG] GET /api/wand-components
+10:41:37 AM [express] GET /api/wand-components 304 in 1ms :: {"woods":[],"cores":[],"lengths":[],"fle…
+[DEBUG] GET /api/auth/user
+10:41:37 AM [express] GET /api/auth/user 304 in 414ms :: {"id":5,"username":"Casey","email":"caseylot…
+[DEBUG] GET /api/characters/6/wand
+10:41:39 AM [express] GET /api/characters/6/wand 304 in 199ms :: {"id":6,"characterId":6,"wood":"Topo…
+[DEBUG] POST /api/auth/login
+getUserByUsername: {
+  username: 'Casey',
+  data: {
+    id: 5,
+    username: 'Casey',
+    email: 'caseylottebenett@gmail.com',
+    password: '$2b$10$/0E4W5VSCEqr6y7hv5quY.bNZmSohdQawWyEm/5GPO/iHqXVKtgF.',
+    role: 'admin',
+    created_at: '2025-05-30T06:47:39.331+00:00',
+    updated_at: '2025-06-08T14:46:54.271+00:00',
+    is_banned: false,
+    ban_reason: null,
+    banned_at: null,
+    is_system: false,
+    character_order: '[6,7]',
+    highlight_words: 'Kira',
+    highlight_color: 'blue',
+    can_narrate: false,
+    narrator_color: 'pink'
+  },
+  error: null
+}
+validateUser - user: {
+  id: 5,
+  username: 'Casey',
+  email: 'caseylottebenett@gmail.com',
+  password: '$2b$10$/0E4W5VSCEqr6y7hv5quY.bNZmSohdQawWyEm/5GPO/iHqXVKtgF.',
+  role: 'admin',
+  createdAt: '2025-05-30T06:47:39.331+00:00',
+  updatedAt: '2025-06-08T14:46:54.271+00:00',
+  isBanned: false,
+  banReason: null,
+  bannedAt: null,
+  isSystem: false,
+  characterOrder: '[6,7]',
+  highlightWords: 'Kira',
+  highlightColor: 'blue',
+  canNarrate: false,
+  narratorColor: 'pink'
+}
+validateUser - isValidPassword: true hash: $2b$10$/0E4W5VSCEqr6y7hv5quY.bNZmSohdQawWyEm/5GPO/iHqXVKtgF. input: Twilight0
+10:42:04 AM [express] POST /api/auth/login 200 in 779ms :: {"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpX…
+[DEBUG] GET /api/auth/user
+10:42:05 AM [express] GET /api/auth/user 304 in 403ms :: {"id":5,"username":"Casey","email":"caseylot…
+[DEBUG] GET /api/influence-bar
+[DEBUG] GET /api/characters/7/wand
+[DEBUG] GET /api/characters/6/wand
+[DEBUG] GET /api/influence-history
+[DEBUG] GET /api/characters/all
+[DEBUG] GET /api/characters/7/last-chat
+10:42:05 AM [express] GET /api/characters/7/last-chat 304 in 1ms
+[DEBUG] GET /api/characters/online
+10:42:05 AM [express] GET /api/characters/online 304 in 2ms :: []
+[DEBUG] GET /api/characters/6/last-chat
+10:42:05 AM [express] GET /api/characters/6/last-chat 304 in 2ms
+No influence_bar record found, creating default: relation "public.influence_bar" does not exist
+10:42:06 AM [express] GET /api/characters/6/wand 304 in 218ms :: {"id":6,"characterId":6,"wood":"Topo…
+10:42:06 AM [express] GET /api/characters/7/wand 304 in 228ms :: {"id":3,"characterId":7,"wood":"Boro…
+[API] /api/characters/all - User 5 has 2 characters
+10:42:06 AM [express] GET /api/characters/all 304 in 290ms :: {"characters":[{"id":7,"userId":5,"firs…
+[DEBUG] GET /api/owl-post/unread-count/7
+Error creating influence bar: {}
+10:42:06 AM [express] GET /api/influence-bar 304 in 419ms :: {"grindelwaldPoints":50,"dumbledorePoint…
+10:42:06 AM [express] GET /api/owl-post/unread-count/7 304 in 195ms :: {"count":0}
+Error fetching influence history: {
+  code: '42P01',
+  details: null,
+  hint: null,
+  message: 'relation "public.influence_history" does not exist'
+}
+10:42:06 AM [express] GET /api/influence-history 304 in 586ms :: []
+[DEBUG] GET /api/owl-post/unread-count/6
+10:42:06 AM [express] GET /api/owl-post/unread-count/6 304 in 209ms :: {"count":0}
+[DEBUG] GET /api/owl-post/unread-total
+10:42:14 AM [express] GET /api/owl-post/unread-total 400 in 2ms :: {"message":"Invalid characterId"}
+[DEBUG] GET /api/owl-post/characters
+10:42:14 AM [express] GET /api/owl-post/characters 400 in 1ms :: {"message":"Invalid characterId"}
+[DEBUG] GET /api/wand-components
+10:42:18 AM [express] GET /api/wand-components 304 in 2ms :: {"woods":[],"cores":[],"lengths":[],"fle…
+[DEBUG] GET /api/characters/6/wand
+10:42:20 AM [express] GET /api/characters/6/wand 304 in 218ms :: {"id":6,"characterId":6,"wood":"Topo…
+[DEBUG] GET /api/chat/rooms
+10:42:21 AM [express] GET /api/chat/rooms 304 in 1ms :: []
+[DEBUG] GET /api/chat/categories
+10:42:21 AM [express] GET /api/chat/categories 304 in 2ms :: []
