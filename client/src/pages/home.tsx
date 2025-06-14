@@ -40,6 +40,7 @@ import { calculateGameAge } from "@/lib/gameDate";
 import { CharacterAvatar } from "@/components/CharacterAvatar";
 import { MoonPhase } from "@/components/MoonPhase";
 import { apiFetch } from "@/lib/queryClient";
+import { useSelectedCharacter } from "@/contexts/SelectedCharacterContext";
 
 interface OnlineCharacter {
   id: number;
@@ -58,7 +59,7 @@ export default function Home() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [location, setLocation] = useLocation();
-  const [displayedCharacter, setDisplayedCharacter] = useState<any>(null);
+  const { selectedCharacter, changeCharacter } = useSelectedCharacter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleHomeClick = () => {
@@ -95,7 +96,6 @@ export default function Home() {
   const activeCharacter = Array.isArray(userCharacters) ? userCharacters.find((char: any) => char.isActive && !char.deathDate) : null;
   // Fallback to first alive character if no active character is set
   const firstAliveCharacter = Array.isArray(userCharacters) ? userCharacters.find((char: any) => !char.deathDate) : null;
-  const currentDisplayedCharacter = displayedCharacter || activeCharacter || firstAliveCharacter;
 
   // Load character from localStorage on component mount
   useEffect(() => {
@@ -104,44 +104,38 @@ export default function Home() {
       if (savedCharacterId) {
         const savedCharacter = userCharacters.find((char: any) => char.id === parseInt(savedCharacterId));
         if (savedCharacter && !savedCharacter.deathDate) {
-          setDisplayedCharacter(savedCharacter);
+          changeCharacter(savedCharacter);
           return;
         }
       }
 
       // If no saved character or character is dead, use first alive character
-      if (firstAliveCharacter && !displayedCharacter) {
-        setDisplayedCharacter(firstAliveCharacter);
+      if (firstAliveCharacter && !selectedCharacter) {
+        changeCharacter(firstAliveCharacter);
         localStorage.setItem('selectedCharacterId', firstAliveCharacter.id.toString());
       }
     }
-  }, [userCharacters, firstAliveCharacter]);
-
-  // Function to change the displayed character
-  const setCurrentDisplayedCharacter = (character: any) => {
-    setDisplayedCharacter(character);
-    localStorage.setItem('selectedCharacterId', character.id.toString());
-  };
+  }, [userCharacters, firstAliveCharacter, changeCharacter]);
 
   // Get displayed character's wand (for the character currently being viewed)
   const { data: characterWand } = useQuery({
-    queryKey: [`/api/characters/${currentDisplayedCharacter?.id}/wand`],
-    enabled: !!currentDisplayedCharacter?.id,
+    queryKey: [`/api/characters/${selectedCharacter?.id}/wand`],
+    enabled: !!selectedCharacter?.id,
     queryFn: async () => {
-      if (!currentDisplayedCharacter?.id) return null;
-      return apiFetch(`${API_URL}/api/characters/${currentDisplayedCharacter.id}/wand`);
+      if (!selectedCharacter?.id) return null;
+      return apiFetch(`${API_URL}/api/characters/${selectedCharacter.id}/wand`);
     },
   });
 
   // Get unread owl post count for current character
   const { data: unreadOwlPostData } = useQuery({
-    queryKey: ["/api/owl-post/unread-count", currentDisplayedCharacter?.id],
-    enabled: !!currentDisplayedCharacter?.id,
+    queryKey: ["/api/owl-post/unread-count", selectedCharacter?.id],
+    enabled: !!selectedCharacter?.id,
     refetchInterval: 30000, // Refresh every 30 seconds
     queryFn: async () => {
-      if (!currentDisplayedCharacter?.id) return { count: 0 };
+      if (!selectedCharacter?.id) return { count: 0 };
       const token = localStorage.getItem('jwt_token');
-      const response = await fetch(`${API_URL}/api/owl-post/unread-count/${currentDisplayedCharacter.id}`, {
+      const response = await fetch(`${API_URL}/api/owl-post/unread-count/${selectedCharacter.id}`, {
         credentials: 'include',
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
@@ -157,15 +151,15 @@ export default function Home() {
 
   // Get character's last used chat room
   const { data: lastChatRoom } = useQuery({
-    queryKey: [`/api/characters/${currentDisplayedCharacter?.id}/last-chat`],
-    enabled: !!currentDisplayedCharacter?.id,
+    queryKey: [`/api/characters/${selectedCharacter?.id}/last-chat`],
+    enabled: !!selectedCharacter?.id,
     queryFn: async () => {
-      if (!currentDisplayedCharacter?.id) return null;
-      return apiFetch(`${API_URL}/api/characters/${currentDisplayedCharacter.id}/last-chat`);
+      if (!selectedCharacter?.id) return null;
+      return apiFetch(`${API_URL}/api/characters/${selectedCharacter.id}/last-chat`);
     },
   });
 
-  const characterAge = currentDisplayedCharacter ? calculateGameAge(currentDisplayedCharacter.birthDate) : 0;
+  const characterAge = selectedCharacter ? calculateGameAge(selectedCharacter.birthDate) : 0;
 
   const handleLogout = async () => {
     try {
@@ -244,22 +238,22 @@ export default function Home() {
               {/* Character Selector */}
               {userCharacters && Array.isArray(userCharacters) && userCharacters.length > 0 && (
                 <Select
-                  value={currentDisplayedCharacter?.id?.toString() || ""}
+                  value={selectedCharacter?.id?.toString() || ""}
                   onValueChange={(value) => {
                     const selectedChar = userCharacters.find((char: any) => char.id === parseInt(value));
                     if (selectedChar) {
-                      setDisplayedCharacter(selectedChar);
+                      changeCharacter(selectedChar);
                       localStorage.setItem('selectedCharacterId', selectedChar.id.toString());
                     }
                   }}
                 >
                   <SelectTrigger className="w-[200px]">
                     <SelectValue placeholder="Vyberte postavu">
-                      {currentDisplayedCharacter ? (
+                      {selectedCharacter ? (
                         <div className="flex items-center gap-2">
-                          <CharacterAvatar character={currentDisplayedCharacter} size="sm" />
+                          <CharacterAvatar character={selectedCharacter} size="sm" />
                           <span className="truncate">
-                            {currentDisplayedCharacter.firstName} {currentDisplayedCharacter.lastName}
+                            {selectedCharacter.firstName} {selectedCharacter.lastName}
                           </span>
                         </div>
                       ) : (
@@ -329,7 +323,7 @@ export default function Home() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Urgent Wand Warning for characters without wands */}
-        {currentDisplayedCharacter && (characterWand === null || characterWand === undefined) && (
+        {selectedCharacter && (characterWand === null || characterWand === undefined) && (
           <div className="mb-6">
             <Card className="bg-gradient-to-r from-amber-500/20 to-orange-500/20 border-amber-400/50 border-2 shadow-lg">
               <CardContent className="p-6">
@@ -340,7 +334,7 @@ export default function Home() {
                     </div>
                     <div>
                       <h3 className="text-xl font-bold text-amber-300 mb-1">
-                        {currentDisplayedCharacter?.firstName} potřebuje hůlku!
+                        {selectedCharacter?.firstName} potřebuje hůlku!
                       </h3>
                       <p className="text-amber-200/80">
                         Bez hůlky nemůžete sesílat kouzla. Navštivte Ollivandera a získejte svou první hůlku.
@@ -391,9 +385,9 @@ export default function Home() {
                   </Button>
 
                   <Button 
-                    variant={currentDisplayedCharacter && (characterWand === null || characterWand === undefined) ? "default" : "ghost"}
+                    variant={selectedCharacter && (characterWand === null || characterWand === undefined) ? "default" : "ghost"}
                     className={`w-full justify-start text-left h-auto p-3 ${
-                      currentDisplayedCharacter && (characterWand === null || characterWand === undefined)
+                      selectedCharacter && (characterWand === null || characterWand === undefined)
                         ? "bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/50 animate-pulse" 
                         : "hover:bg-purple-500/20"
                     }`}
@@ -401,19 +395,19 @@ export default function Home() {
                   >
                     <div className="flex items-center space-x-3">
                       <Wand2 className={`h-5 w-5 ${
-                        currentDisplayedCharacter && (characterWand === null || characterWand === undefined) ? "text-amber-300" : "text-amber-400"
+                        selectedCharacter && (characterWand === null || characterWand === undefined) ? "text-amber-300" : "text-amber-400"
                       }`} />
                       <div>
                         <div className={`font-medium ${
-                          currentDisplayedCharacter && (characterWand === null || characterWand === undefined) ? "text-amber-200" : ""
+                          selectedCharacter && (characterWand === null || characterWand === undefined) ? "text-amber-200" : ""
                         }`}>
                           U Ollivandera
-                          {currentDisplayedCharacter && (characterWand === null || characterWand === undefined) && " ⚠️"}
+                          {selectedCharacter && (characterWand === null || characterWand === undefined) && " ⚠️"}
                         </div>
                         <div className={`text-xs ${
-                          currentDisplayedCharacter && (characterWand === null || characterWand === undefined) ? "text-amber-300/80" : "text-muted-foreground"
+                          selectedCharacter && (characterWand === null || characterWand === undefined) ? "text-amber-300/80" : "text-muted-foreground"
                         }`}>
-                          {currentDisplayedCharacter && (characterWand === null || characterWand === undefined) ? "POTŘEBUJETE HŮLKU!" : "Získat hůlku"}
+                          {selectedCharacter && (characterWand === null || characterWand === undefined) ? "POTŘEBUJETE HŮLKU!" : "Získat hůlku"}
                         </div>
                       </div>
                     </div>
@@ -422,7 +416,7 @@ export default function Home() {
                   <Button 
                     variant="ghost"
                     className="w-full justify-start text-left h-auto p-3 hover:bg-purple-500/20 relative"
-                    onClick={() => setLocation(`/owl-post?character=${currentDisplayedCharacter?.id || ''}`)}
+                    onClick={() => setLocation(`/owl-post?character=${selectedCharacter?.id || ''}`)}
                   >
                     <div className="flex items-center space-x-3">
                       <div className="relative">
@@ -776,7 +770,7 @@ export default function Home() {
           </div>
 
           <div className="space-y-8">
-            {currentDisplayedCharacter && (
+            {selectedCharacter && (
               <Card className="bg-card border-border">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-4">
@@ -787,24 +781,24 @@ export default function Home() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => setLocation(`/character/edit?characterId=${currentDisplayedCharacter.id}`)}
+                      onClick={() => setLocation(`/character/edit?characterId=${selectedCharacter.id}`)}
                       className="text-muted-foreground hover:text-foreground"
-                      disabled={!currentDisplayedCharacter?.id}
+                      disabled={!selectedCharacter?.id}
                     >
                       <Settings className="h-4 w-4" />
                     </Button>
                   </div>
                   <div className="text-center">
                     <div className="mx-auto mb-3 flex justify-center">
-                      <CharacterAvatar character={currentDisplayedCharacter} size="lg" />
+                      <CharacterAvatar character={selectedCharacter} size="lg" />
                     </div>
                     <h4 
                       className="font-bold text-xl text-foreground cursor-pointer hover:text-accent transition-colors font-serif"
-                      onClick={() => setLocation(`/characters/${currentDisplayedCharacter.id}`)}
+                      onClick={() => setLocation(`/characters/${selectedCharacter.id}`)}
                     >
-                      {currentDisplayedCharacter.firstName}
-                      {currentDisplayedCharacter.middleName && ` ${currentDisplayedCharacter.middleName}`}
-                      {` ${currentDisplayedCharacter.lastName}`}
+                      {selectedCharacter.firstName}
+                      {selectedCharacter.middleName && ` ${selectedCharacter.middleName}`}
+                      {` ${selectedCharacter.lastName}`}
                     </h4>
                     <p className="text-sm text-muted-foreground">{characterAge} let</p>
                     <div className="mt-3 space-y-2">

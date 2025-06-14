@@ -12,6 +12,7 @@ import { useLocation } from "wouter";
 import { CharacterAvatar } from "@/components/CharacterAvatar";
 import type { Wand } from "@shared/types";
 import { apiFetch } from "@/lib/queryClient";
+import { useSelectedCharacter } from "@/contexts/SelectedCharacterContext";
 
 const API_URL = import.meta.env.VITE_API_URL || '';
 
@@ -19,8 +20,8 @@ export default function Ollivanders() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { selectedCharacter, changeCharacter } = useSelectedCharacter();
   const [showWandDetails, setShowWandDetails] = useState(false);
-  const [selectedCharacter, setSelectedCharacter] = useState<any>(null);
   
   // Custom wand creation state
   const [customWand, setCustomWand] = useState({
@@ -47,30 +48,6 @@ export default function Ollivanders() {
   const userCharacters = Array.isArray(allCharacters) ? allCharacters.filter((char: any) => !char.deathDate && !char.isSystem) : [];
   const activeCharacter = userCharacters.find((char: any) => char.isActive);
   
-  // Load character from localStorage (same as home page)
-  useEffect(() => {
-    if (userCharacters && userCharacters.length > 0) {
-      const savedCharacterId = localStorage.getItem('selectedCharacterId');
-      if (savedCharacterId) {
-        const savedCharacter = userCharacters.find((char: any) => char.id === parseInt(savedCharacterId));
-        if (savedCharacter && !savedCharacter.deathDate) {
-          setSelectedCharacter(savedCharacter);
-          return;
-        }
-      }
-      
-      // If no saved character, use active character first, then first alive character
-      const activeCharacter = userCharacters.find((char: any) => char.isActive && !char.deathDate);
-      const firstAliveCharacter = userCharacters.find((char: any) => !char.deathDate);
-      const characterToUse = activeCharacter || firstAliveCharacter;
-      
-      if (characterToUse && !selectedCharacter) {
-        setSelectedCharacter(characterToUse);
-        localStorage.setItem('selectedCharacterId', characterToUse.id.toString());
-      }
-    }
-  }, [userCharacters]);
-
   // Debug: log načítání všech postav
   useEffect(() => {
     if (allCharacters) {
@@ -90,57 +67,11 @@ export default function Ollivanders() {
     console.log("[Ollivanders] handleCharacterChange na:", characterId);
     const selectedChar = userCharacters.find((char: any) => char.id === parseInt(characterId));
     if (selectedChar) {
-      setSelectedCharacter(selectedChar);
-      localStorage.setItem('selectedCharacterId', selectedChar.id.toString());
+      changeCharacter(selectedChar);
       console.log("[Ollivanders] Nastaven selectedCharacter:", selectedChar);
       queryClient.invalidateQueries({ queryKey: [`/api/characters/${selectedChar.id}/wand`] });
     }
   };
-
-  const mainCharacter = selectedCharacter || activeCharacter;
-
-  // Function to refresh cache
-  const refreshData = () => {
-    queryClient.invalidateQueries({ queryKey: ['/api/characters'] });
-    queryClient.removeQueries({ queryKey: ['/api/characters'] }); // Force complete removal
-    // Invalidate all wand queries for any character
-    queryClient.invalidateQueries({ 
-      predicate: (query) => {
-        const key = query.queryKey[0];
-        return typeof key === 'string' && key.includes('/api/characters/') && key.includes('/wand');
-      }
-    });
-  };
-
-  // Refresh cache when selected character changes
-  useEffect(() => {
-    if (selectedCharacter) {
-      queryClient.invalidateQueries({ queryKey: [`/api/characters/${selectedCharacter.id}/wand`] });
-    }
-  }, [selectedCharacter, queryClient]);
-
-  // Auto-refresh when component mounts to ensure fresh data
-  useEffect(() => {
-    refreshData();
-  }, []);
-
-  // Get currently selected character's wand
-  const { data: characterWand, isLoading: wandLoading } = useQuery<Wand | null>({
-    queryKey: [`/api/characters/${mainCharacter?.id}/wand`],
-    enabled: !!mainCharacter?.id && mainCharacter.id !== undefined,
-    staleTime: 0, // Force fresh data
-    gcTime: 0     // Don't cache (TanStack Query v5)
-  });
-
-  console.log('Ollivanders - Character wand query key:', `/api/characters/${mainCharacter?.id}/wand`);
-  console.log('Ollivanders - Character wand data:', characterWand);
-
-  // Debug: log načítání hůlky
-  useEffect(() => {
-    if (mainCharacter?.id && characterWand !== undefined) {
-      console.log("[Ollivanders] Načítám hůlku pro postavu:", mainCharacter.id, characterWand);
-    }
-  }, [mainCharacter?.id, characterWand]);
 
   // Get wand components for manual selection
   const { data: wandComponents } = useQuery<{
@@ -164,17 +95,17 @@ export default function Ollivanders() {
 
   // Debug: log načítání hůlky
   useEffect(() => {
-    if (mainCharacter?.id) {
-      console.log("[Ollivanders] Načítám hůlku pro postavu:", mainCharacter.id);
+    if (selectedCharacter?.id) {
+      console.log("[Ollivanders] Načítám hůlku pro postavu:", selectedCharacter.id);
     }
-  }, [mainCharacter?.id]);
+  }, [selectedCharacter?.id]);
 
   // Visit Ollivanders mutation (random wand)
   const visitOllivandersMutation = useMutation({
     mutationFn: async () => {
-      if (!mainCharacter?.id) throw new Error("No character selected");
-      console.log("[Ollivanders] Posílám požadavek na návštěvu Ollivandera pro postavu:", mainCharacter.id);
-      const response = await fetch(`${API_URL}/api/characters/${mainCharacter.id}/visit-ollivanders`, {
+      if (!selectedCharacter?.id) throw new Error("No character selected");
+      console.log("[Ollivanders] Posílám požadavek na návštěvu Ollivandera pro postavu:", selectedCharacter.id);
+      const response = await fetch(`${API_URL}/api/characters/${selectedCharacter.id}/visit-ollivanders`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -195,9 +126,9 @@ export default function Ollivanders() {
       console.log("[Ollivanders] Návštěva Ollivandera úspěšná, nová hůlka:", newWand);
       toast({
         title: "Gratulujeme!",
-        description: `${mainCharacter?.firstName} získal novou hůlku od pana Ollivandera!`
+        description: `${selectedCharacter?.firstName} získal novou hůlku od pana Ollivandera!`
       });
-      queryClient.invalidateQueries({ queryKey: [`/api/characters/${mainCharacter?.id}/wand`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/characters/${selectedCharacter?.id}/wand`] });
     },
     onError: (error) => {
       console.error("[Ollivanders] Chyba při návštěvě Ollivandera (mutace):", error);
@@ -212,9 +143,9 @@ export default function Ollivanders() {
   // Create custom wand mutation
   const createCustomWandMutation = useMutation({
     mutationFn: async () => {
-      if (!mainCharacter?.id) throw new Error("No character selected");
-      console.log("[Ollivanders] Posílám požadavek na tvorbu vlastní hůlky pro postavu:", mainCharacter.id, customWand);
-      const response = await fetch(`${API_URL}/api/characters/${mainCharacter.id}/create-custom-wand`, {
+      if (!selectedCharacter?.id) throw new Error("No character selected");
+      console.log("[Ollivanders] Posílám požadavek na tvorbu vlastní hůlky pro postavu:", selectedCharacter.id, customWand);
+      const response = await fetch(`${API_URL}/api/characters/${selectedCharacter.id}/create-custom-wand`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -236,9 +167,9 @@ export default function Ollivanders() {
       console.log("[Ollivanders] Vlastní hůlka úspěšně vytvořena:", newWand);
       toast({
         title: "Hůlka vytvořena!",
-        description: `${mainCharacter?.firstName} má novou vlastní hůlku!`
+        description: `${selectedCharacter?.firstName} má novou vlastní hůlku!`
       });
-      queryClient.invalidateQueries({ queryKey: [`/api/characters/${mainCharacter?.id}/wand`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/characters/${selectedCharacter?.id}/wand`] });
     },
     onError: (error) => {
       console.error("[Ollivanders] Chyba při tvorbě vlastní hůlky (mutace):", error);
@@ -252,16 +183,16 @@ export default function Ollivanders() {
 
   // Přepis dalších fetch volání na apiFetch
   async function visitOllivanders() {
-    if (!mainCharacter) return;
-    await apiFetch(`${API_URL}/api/characters/${mainCharacter.id}/visit-ollivanders`, { method: 'POST' });
+    if (!selectedCharacter) return;
+    await apiFetch(`${API_URL}/api/characters/${selectedCharacter.id}/visit-ollivanders`, { method: 'POST' });
   }
 
   async function createCustomWand() {
-    if (!mainCharacter) return;
-    await apiFetch(`${API_URL}/api/characters/${mainCharacter.id}/create-custom-wand`, { method: 'POST' });
+    if (!selectedCharacter) return;
+    await apiFetch(`${API_URL}/api/characters/${selectedCharacter.id}/create-custom-wand`, { method: 'POST' });
   }
 
-  if (!user || !mainCharacter) {
+  if (!user || !selectedCharacter) {
     return (
       <div className="container mx-auto p-6">
         <div className="text-center">
@@ -272,7 +203,7 @@ export default function Ollivanders() {
   }
 
   // If character is dead, they can't visit
-  if (mainCharacter.deathDate) {
+  if (selectedCharacter.deathDate) {
     return (
       <div className="container mx-auto p-6">
         <Card>
@@ -314,16 +245,16 @@ export default function Ollivanders() {
         {/* Character Info + roletka pro výběr postavy */}
         {userCharacters.length > 1 && (
           <Select
-            value={mainCharacter?.id?.toString() || ""}
+            value={selectedCharacter?.id?.toString() || ""}
             onValueChange={handleCharacterChange}
           >
             <SelectTrigger className="w-[200px]">
               <SelectValue placeholder="Vyberte postavu">
-                {mainCharacter ? (
+                {selectedCharacter ? (
                   <div className="flex items-center gap-2">
-                    <CharacterAvatar character={mainCharacter} size="sm" />
+                    <CharacterAvatar character={selectedCharacter} size="sm" />
                     <span className="truncate">
-                      {mainCharacter.firstName} {mainCharacter.lastName}
+                      {selectedCharacter.firstName} {selectedCharacter.lastName}
                     </span>
                   </div>
                 ) : (
@@ -345,13 +276,13 @@ export default function Ollivanders() {
             </SelectContent>
           </Select>
         )}
-        {userCharacters.length === 1 && mainCharacter && (
+        {userCharacters.length === 1 && selectedCharacter && (
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <span>Postava:</span>
             <div className="flex items-center gap-2">
-              <CharacterAvatar character={mainCharacter} size="sm" />
+              <CharacterAvatar character={selectedCharacter} size="sm" />
               <span className="font-medium text-foreground">
-                {mainCharacter.firstName} {mainCharacter.lastName}
+                {selectedCharacter.firstName} {selectedCharacter.lastName}
               </span>
             </div>
           </div>

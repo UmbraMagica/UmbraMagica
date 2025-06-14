@@ -19,6 +19,7 @@ import { z } from "zod";
 import { formatDistanceToNow } from "date-fns";
 import { cs } from "date-fns/locale";
 import { apiFetch, getQueryFn, getAuthToken } from "@/lib/queryClient";
+import { useSelectedCharacter } from "@/contexts/SelectedCharacterContext";
 
 const API_URL = import.meta.env.VITE_API_URL || '';
 
@@ -68,11 +69,7 @@ function OwlPost() {
   const [selectedMessage, setSelectedMessage] = useState<OwlPostMessage | null>(null);
   const [isReplyOpen, setIsReplyOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCharacter, setSelectedCharacter] = useState<any>(null);
-
-  // Get character ID from URL parameter
-  const urlParams = new URLSearchParams(window.location.search);
-  const characterIdFromUrl = urlParams.get('character');
+  const { selectedCharacter, changeCharacter } = useSelectedCharacter();
 
   // Get user's characters
   const { data: userCharacters = [] } = useQuery<any[]>({
@@ -80,21 +77,6 @@ function OwlPost() {
     enabled: !!user,
     queryFn: getQueryFn({ on401: "throw" }),
   });
-
-  // Get character selection with priority: URL > selected > localStorage > active > first alive
-  const characterFromUrl = characterIdFromUrl ? 
-    userCharacters.find((char: any) => char.id === parseInt(characterIdFromUrl)) : null;
-  
-  // Načti postavu z localStorage (používej selectedCharacterId stejně jako home page)
-  const characterIdFromStorage = !characterIdFromUrl ? localStorage.getItem('selectedCharacterId') : null;
-  const characterFromStorage = characterIdFromStorage ? userCharacters.find((char: any) => char.id === parseInt(characterIdFromStorage)) : null;
-  
-  // Get active character and first alive character as fallbacks
-  const activeCharacterFromData = userCharacters.find((char: any) => char.isActive && !char.deathDate);
-  const firstAliveCharacter = userCharacters.find((char: any) => !char.deathDate);
-
-  // Use selected character, character from URL, from storage, active character, or first alive character
-  const activeCharacter = selectedCharacter || characterFromUrl || characterFromStorage || activeCharacterFromData || firstAliveCharacter;
 
   // Get all characters for owl post
   const { data: owlPostCharacters = [] } = useQuery({
@@ -107,22 +89,22 @@ function OwlPost() {
 
   // Get inbox messages
   const { data: inboxMessages = [] } = useQuery<OwlPostMessage[]>({
-    queryKey: [`/api/owl-post/inbox/${activeCharacter?.id}`],
-    enabled: !!activeCharacter,
+    queryKey: [`/api/owl-post/inbox/${selectedCharacter?.id}`],
+    enabled: !!selectedCharacter,
     queryFn: getQueryFn({ on401: "throw" }),
   });
 
   // Get sent messages
   const { data: sentMessages = [] } = useQuery<OwlPostMessage[]>({
-    queryKey: [`/api/owl-post/sent/${activeCharacter?.id}`],
-    enabled: !!activeCharacter,
+    queryKey: [`/api/owl-post/sent/${selectedCharacter?.id}`],
+    enabled: !!selectedCharacter,
     queryFn: getQueryFn({ on401: "throw" }),
   });
 
   // Get unread count
   const { data: unreadData } = useQuery<{ count: number }>({
-    queryKey: [`/api/owl-post/unread-count/${activeCharacter?.id}`],
-    enabled: !!activeCharacter,
+    queryKey: [`/api/owl-post/unread-count/${selectedCharacter?.id}`],
+    enabled: !!selectedCharacter,
     queryFn: getQueryFn({ on401: "throw" }),
   });
 
@@ -162,7 +144,7 @@ function OwlPost() {
       form.reset();
       replyForm.reset();
       // Invalidate queries to refresh the data
-      queryClient.invalidateQueries({ queryKey: [`/api/owl-post/sent/${activeCharacter?.id}`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/owl-post/sent/${selectedCharacter?.id}`] });
       queryClient.invalidateQueries({ queryKey: [`/api/owl-post/inbox`] });
       queryClient.invalidateQueries({ queryKey: [`/api/owl-post/unread-count`] });
     },
@@ -188,9 +170,9 @@ function OwlPost() {
     onSuccess: () => {
       toast({ title: "Zpráva byla úspěšně smazána!" });
       // Invalidate queries to refresh the data
-      queryClient.invalidateQueries({ queryKey: [`/api/owl-post/sent/${activeCharacter?.id}`] });
-      queryClient.invalidateQueries({ queryKey: [`/api/owl-post/inbox/${activeCharacter?.id}`] });
-      queryClient.invalidateQueries({ queryKey: [`/api/owl-post/unread-count/${activeCharacter?.id}`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/owl-post/sent/${selectedCharacter?.id}`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/owl-post/inbox/${selectedCharacter?.id}`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/owl-post/unread-count/${selectedCharacter?.id}`] });
     },
     onError: () => {
       toast({ title: "Chyba při mazání zprávy", variant: "destructive" });
@@ -216,9 +198,9 @@ function OwlPost() {
     },
     onSuccess: () => {
       // Invalidate specific queries for current character
-      if (activeCharacter?.id) {
-        queryClient.invalidateQueries({ queryKey: [`/api/owl-post/inbox/${activeCharacter.id}`] });
-        queryClient.invalidateQueries({ queryKey: [`/api/owl-post/unread-count/${activeCharacter.id}`] });
+      if (selectedCharacter?.id) {
+        queryClient.invalidateQueries({ queryKey: [`/api/owl-post/inbox/${selectedCharacter.id}`] });
+        queryClient.invalidateQueries({ queryKey: [`/api/owl-post/unread-count/${selectedCharacter.id}`] });
         queryClient.invalidateQueries({ queryKey: ["/api/owl-post/unread-total"] });
       }
       // Also invalidate general queries for backward compatibility
@@ -243,20 +225,9 @@ function OwlPost() {
     },
   });
 
-  // Ulož výběr postavy do localStorage při změně (stejný klíč jako home page)
-  const handleCharacterChange = (value: string) => {
-    console.log("[OwlPost] handleCharacterChange na:", value);
-    const selectedChar = userCharacters.find((char: any) => char.id === parseInt(value));
-    if (selectedChar) {
-      setSelectedCharacter(selectedChar);
-      localStorage.setItem('selectedCharacterId', selectedChar.id.toString());
-      console.log("[OwlPost] Nastaven selectedCharacter:", selectedChar);
-    }
-  };
-
   // Debug: log při odpovědi na zprávu
   const handleReply = (message: OwlPostMessage) => {
-    console.log("[OwlPost] Odpovídám na zprávu:", message, "pro postavu:", activeCharacter?.id);
+    console.log("[OwlPost] Odpovídám na zprávu:", message, "pro postavu:", selectedCharacter?.id);
     setSelectedMessage(message);
     replyForm.setValue("recipientCharacterId", message.senderCharacterId);
     replyForm.setValue("subject", message.subject.startsWith("Re: ") ? message.subject : `Re: ${message.subject}`);
@@ -266,11 +237,11 @@ function OwlPost() {
 
   // Debug: log při odeslání zprávy
   const onSubmit = (data: MessageForm) => {
-    console.log("[OwlPost] Odesílám zprávu od postavy:", activeCharacter?.id, "na adresáta:", data.recipientCharacterId, "data:", data);
-    if (!activeCharacter) return;
+    console.log("[OwlPost] Odesílám zprávu od postavy:", selectedCharacter?.id, "na adresáta:", data.recipientCharacterId, "data:", data);
+    if (!selectedCharacter) return;
     sendMessageMutation.mutate({
       ...data,
-      senderCharacterId: activeCharacter.id,
+      senderCharacterId: selectedCharacter.id,
     }, {
       onSuccess: (resp) => console.log("[OwlPost] Zpráva úspěšně odeslána, odpověď:", resp),
       onError: (err) => console.error("[OwlPost] Chyba při odesílání zprávy:", err)
@@ -278,10 +249,10 @@ function OwlPost() {
   };
 
   const onReplySubmit = (data: MessageForm) => {
-    if (!activeCharacter) return;
+    if (!selectedCharacter) return;
     sendMessageMutation.mutate({
       ...data,
-      senderCharacterId: activeCharacter.id,
+      senderCharacterId: selectedCharacter.id,
     });
   };
 
@@ -309,14 +280,14 @@ function OwlPost() {
 
   // Debug: log aktivní postavu při načítání inboxu/sentu
   useEffect(() => {
-    if (activeCharacter) {
-      console.log("[OwlPost] Načítám inbox/sent pro postavu:", activeCharacter.id, activeCharacter);
+    if (selectedCharacter) {
+      console.log("[OwlPost] Načítám inbox/sent pro postavu:", selectedCharacter.id, selectedCharacter);
     }
-  }, [activeCharacter]);
+  }, [selectedCharacter]);
 
   // Debug: log při otevření zprávy
   const handleOpenMessage = (message: OwlPostMessage) => {
-    console.log("[OwlPost] Otevírám zprávu:", message, "pro postavu:", activeCharacter?.id);
+    console.log("[OwlPost] Otevírám zprávu:", message, "pro postavu:", selectedCharacter?.id);
     setSelectedMessage(message);
     if (!message.isRead) {
       console.log("[OwlPost] Označuji zprávu jako přečtenou:", message.id);
@@ -357,7 +328,7 @@ function OwlPost() {
     return <div>Přihlaste se prosím</div>;
   }
 
-  if (!firstAliveCharacter) {
+  if (!selectedCharacter) {
     return (
       <div className="container mx-auto p-6 max-w-4xl">
         <div className="text-center py-8">
@@ -393,12 +364,12 @@ function OwlPost() {
         <Bird className="h-8 w-8 text-amber-600" />
         <div>
           <h1 className="text-3xl font-bold">Soví pošta</h1>
-          {activeCharacter && (
+          {selectedCharacter && (
             <div className="flex items-center gap-2 text-sm">
               <span className="text-muted-foreground">Aktivní postava:</span>
               <Select 
-                value={activeCharacter?.id?.toString() || ""} 
-                onValueChange={handleCharacterChange}
+                value={selectedCharacter?.id?.toString() || ""} 
+                onValueChange={changeCharacter}
               >
                 <SelectTrigger className="w-40 h-7 text-xs">
                   <SelectValue />

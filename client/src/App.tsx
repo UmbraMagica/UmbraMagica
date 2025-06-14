@@ -31,6 +31,7 @@ import Cemetery from "@/pages/cemetery";
 import Ollivanders from "@/pages/ollivanders";
 import OwlPost from "@/pages/owl-post";
 import NotFound from "@/pages/not-found";
+import { SelectedCharacterProvider } from "@/contexts/SelectedCharacterContext";
 
 
 function Router() {
@@ -95,12 +96,16 @@ function Router() {
 }
 
 function App() {
+  const { user } = useAuth();
+  const userCharacters = user?.characters || [];
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="dark">
         <TooltipProvider>
           <Toaster />
-          <Router />
+          <SelectedCharacterProvider userCharacters={userCharacters}>
+            <Router />
+          </SelectedCharacterProvider>
         </TooltipProvider>
       </ThemeProvider>
     </QueryClientProvider>
