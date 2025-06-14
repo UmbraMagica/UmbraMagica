@@ -602,7 +602,7 @@ export async function registerRoutes(app: Express): Promise<void> {
     }
   });
 
-  // Influence system routes
+  // Influence system routes - fixed with proper error handling
   app.get("/api/influence-bar", requireAuth, async (req, res) => {
     try {
       const influence = await storage.getInfluenceBar();
@@ -670,7 +670,8 @@ export async function registerRoutes(app: Express): Promise<void> {
       // Pokud není zadáno characterId, vrátíme celkový počet pro všechny postavy uživatele
       const characterId = req.query.characterId ? Number(req.query.characterId) : null;
 
-      if (characterId && isNaN(characterId)) {
+      // Pouze pokud je characterId zadané a je neplatné
+      if (req.query.characterId && (characterId === null || isNaN(characterId))) {
         return res.status(400).json({ message: "Invalid characterId" });
       }
 

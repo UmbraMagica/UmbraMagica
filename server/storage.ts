@@ -1003,7 +1003,8 @@ export class DatabaseStorage implements IStorage {
   async getInfluenceBar(): Promise<{ grindelwaldPoints: number; dumbledorePoints: number }> {
     try {
       const { data, error } = await supabase.from('influence_bar').select('*').single();
-      if (error || !data) {
+      if (error) {
+        console.log("No influence_bar record found, creating default:", error.message);
         // Vytvoř výchozí záznam pokud neexistuje
         const { data: newData, error: createError } = await supabase
           .from('influence_bar')
