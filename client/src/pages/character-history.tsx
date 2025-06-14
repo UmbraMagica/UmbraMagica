@@ -33,6 +33,8 @@ interface Character {
   };
 }
 
+const API_URL = import.meta.env.VITE_API_URL || '';
+
 export default function CharacterHistory() {
   const { id } = useParams();
   const [, setLocation] = useLocation();
@@ -74,7 +76,7 @@ export default function CharacterHistory() {
   // History update mutation
   const updateHistoryMutation = useMutation({
     mutationFn: async (data: { history: string; showHistoryToOthers: boolean }) => {
-      return await apiRequest('PUT', `${import.meta.env.VITE_API_URL}/api/characters/${id}/history`, data);
+      return await apiRequest('PUT', `${API_URL}/api/characters/${id}/history`, data);
     },
     onSuccess: () => {
       toast({

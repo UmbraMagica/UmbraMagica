@@ -41,6 +41,8 @@ const MAGICAL_SCHOOLS = [
   "Domácí vzdělávání"
 ];
 
+const API_URL = import.meta.env.VITE_API_URL || '';
+
 export default function CharacterEditFixedNav() {
   const { user } = useAuth();
   const { toast } = useToast();
@@ -150,7 +152,7 @@ export default function CharacterEditFixedNav() {
   const updateCharacterMutation = useMutation({
     mutationFn: async (data: Partial<UserEditForm> | Partial<AdminEditForm>) => {
       if (!characterId) throw new Error("No character ID");
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/characters/${characterId}`, {
+      const response = await fetch(`${API_URL}/api/characters/${characterId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -195,7 +197,7 @@ export default function CharacterEditFixedNav() {
     (async () => {
       setLoading(true);
       try {
-        const data = await apiFetch(`${import.meta.env.VITE_API_URL}/api/characters/${characterId}`);
+        const data = await apiFetch(`${API_URL}/api/characters/${characterId}`);
         setCharacter(data);
       } catch (e) {
         setCharacter(null);

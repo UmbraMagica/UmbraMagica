@@ -36,6 +36,7 @@ interface ChatMessage {
 
 const MAX_MESSAGE_LENGTH = 5000;
 const MIN_MESSAGE_LENGTH = 1;
+const API_URL = import.meta.env.VITE_API_URL || '';
 
 export default function ChatRoom() {
   const { roomId } = useParams<{ roomId: string }>();
@@ -73,7 +74,7 @@ export default function ChatRoom() {
     queryKey: ["/api/influence-bar"],
     enabled: !!user,
     queryFn: async () => {
-      return apiFetch(`${import.meta.env.VITE_API_URL}/api/influence-bar`);
+      return apiFetch(`${API_URL}/api/influence-bar`);
     },
   });
 
@@ -82,7 +83,7 @@ export default function ChatRoom() {
     queryKey: ["/api/influence-history"],
     enabled: !!user,
     queryFn: async () => {
-      return apiFetch(`${import.meta.env.VITE_API_URL}/api/influence-history`);
+      return apiFetch(`${API_URL}/api/influence-history`);
     },
   });
 
@@ -125,7 +126,7 @@ export default function ChatRoom() {
   // Archive messages mutation
   const archiveMessagesMutation = useMutation({
     mutationFn: async (roomId: number) => {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/chat/rooms/${roomId}/archive`, {
+      const response = await fetch(`${API_URL}/api/chat/rooms/${roomId}/archive`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -213,7 +214,7 @@ export default function ChatRoom() {
     if (!currentRoomId) return;
     
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/chat/rooms/${currentRoomId}/export`, {
+      const response = await fetch(`${API_URL}/api/chat/rooms/${currentRoomId}/export`, {
         credentials: 'include',
       });
       

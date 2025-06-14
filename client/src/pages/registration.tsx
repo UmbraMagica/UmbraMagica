@@ -10,6 +10,8 @@ import { ArrowRight, ArrowLeft, Check, User, CheckCircle, XCircle, Loader2 } fro
 import { apiRequest } from "@/lib/queryClient";
 import { calculateGameAge } from "@/lib/gameDate";
 
+const API_URL = import.meta.env.VITE_API_URL || '';
+
 export default function Registration() {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
@@ -54,7 +56,7 @@ export default function Registration() {
     setUsernameStatus('checking');
     const timeoutId = setTimeout(async () => {
       try {
-        const response = await apiRequest("GET", `${import.meta.env.VITE_API_URL}/api/auth/check-username?username=${encodeURIComponent(formData.username)}`);
+        const response = await apiRequest("GET", `${API_URL}/api/auth/check-username?username=${encodeURIComponent(formData.username)}`);
         const data = await response.json();
         setUsernameStatus(data.available ? 'available' : 'taken');
       } catch (error) {

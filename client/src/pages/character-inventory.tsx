@@ -18,6 +18,8 @@ import { z } from "zod";
 import { ArrowLeft, Plus, Edit, Trash2, Package, Star, Coins } from "lucide-react";
 import { Link } from "wouter";
 
+const API_URL = import.meta.env.VITE_API_URL || '';
+
 const inventoryItemSchema = z.object({
   itemName: z.string().min(1, "Název předmětu je povinný").max(100),
   itemDescription: z.string().optional(),
@@ -102,7 +104,7 @@ export default function CharacterInventory() {
   // Add inventory item mutation
   const addItemMutation = useMutation({
     mutationFn: async (data: InventoryItemForm) => {
-      const response = await apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/characters/${characterId}/inventory`, data);
+      const response = await apiRequest("POST", `${API_URL}/api/characters/${characterId}/inventory`, data);
       return response.json();
     },
     onSuccess: () => {
@@ -126,7 +128,7 @@ export default function CharacterInventory() {
   // Update inventory item mutation
   const updateItemMutation = useMutation({
     mutationFn: async ({ itemId, data }: { itemId: number; data: Partial<InventoryItemForm> }) => {
-      const response = await apiRequest("PATCH", `${import.meta.env.VITE_API_URL}/api/inventory/${itemId}`, data);
+      const response = await apiRequest("PATCH", `${API_URL}/api/inventory/${itemId}`, data);
       return response.json();
     },
     onSuccess: () => {
@@ -150,7 +152,7 @@ export default function CharacterInventory() {
   // Delete inventory item mutation
   const deleteItemMutation = useMutation({
     mutationFn: async (itemId: number) => {
-      const response = await apiRequest("DELETE", `${import.meta.env.VITE_API_URL}/api/inventory/${itemId}`);
+      const response = await apiRequest("DELETE", `${API_URL}/api/inventory/${itemId}`);
       return response.json();
     },
     onSuccess: () => {

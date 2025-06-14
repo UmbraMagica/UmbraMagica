@@ -40,6 +40,8 @@ interface Character {
   };
 }
 
+const API_URL = import.meta.env.VITE_API_URL || '';
+
 export default function CharacterProfile() {
   const { id } = useParams();
   const [, setLocation] = useLocation();
@@ -61,7 +63,7 @@ export default function CharacterProfile() {
     enabled: !!id && !!user,
     queryFn: async () => {
       const token = localStorage.getItem('jwt_token');
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/characters/${id}`, {
+      const response = await fetch(`${API_URL}/api/characters/${id}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -84,7 +86,7 @@ export default function CharacterProfile() {
   const updateHistoryMutation = useMutation({
     mutationFn: async (data: { history: string; showHistoryToOthers: boolean }) => {
       const token = localStorage.getItem('jwt_token');
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/characters/${id}/history`, {
+      const response = await fetch(`${API_URL}/api/characters/${id}/history`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,

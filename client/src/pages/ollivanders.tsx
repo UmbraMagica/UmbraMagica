@@ -13,6 +13,8 @@ import { CharacterAvatar } from "@/components/CharacterAvatar";
 import type { Wand } from "@shared/types";
 import { apiFetch } from "@/lib/queryClient";
 
+const API_URL = import.meta.env.VITE_API_URL || '';
+
 export default function Ollivanders() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
@@ -31,7 +33,7 @@ export default function Ollivanders() {
 
   // Get current user and characters
   const { data: user } = useQuery({
-    queryKey: [`${import.meta.env.VITE_API_URL}/api/auth/user`]
+    queryKey: [`${API_URL}/api/auth/user`]
   });
 
   const { data: allCharacters = [] } = useQuery({
@@ -149,7 +151,7 @@ export default function Ollivanders() {
   }>({
     queryKey: ['/api/wand-components'],
     queryFn: async () => {
-      return apiFetch(`${import.meta.env.VITE_API_URL}/api/wand-components`);
+      return apiFetch(`${API_URL}/api/wand-components`);
     },
   });
 
@@ -172,7 +174,7 @@ export default function Ollivanders() {
     mutationFn: async () => {
       if (!mainCharacter?.id) throw new Error("No character selected");
       console.log("[Ollivanders] Posílám požadavek na návštěvu Ollivandera pro postavu:", mainCharacter.id);
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/characters/${mainCharacter.id}/visit-ollivanders`, {
+      const response = await fetch(`${API_URL}/api/characters/${mainCharacter.id}/visit-ollivanders`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -212,7 +214,7 @@ export default function Ollivanders() {
     mutationFn: async () => {
       if (!mainCharacter?.id) throw new Error("No character selected");
       console.log("[Ollivanders] Posílám požadavek na tvorbu vlastní hůlky pro postavu:", mainCharacter.id, customWand);
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/characters/${mainCharacter.id}/create-custom-wand`, {
+      const response = await fetch(`${API_URL}/api/characters/${mainCharacter.id}/create-custom-wand`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -251,12 +253,12 @@ export default function Ollivanders() {
   // Přepis dalších fetch volání na apiFetch
   async function visitOllivanders() {
     if (!mainCharacter) return;
-    await apiFetch(`${import.meta.env.VITE_API_URL}/api/characters/${mainCharacter.id}/visit-ollivanders`, { method: 'POST' });
+    await apiFetch(`${API_URL}/api/characters/${mainCharacter.id}/visit-ollivanders`, { method: 'POST' });
   }
 
   async function createCustomWand() {
     if (!mainCharacter) return;
-    await apiFetch(`${import.meta.env.VITE_API_URL}/api/characters/${mainCharacter.id}/create-custom-wand`, { method: 'POST' });
+    await apiFetch(`${API_URL}/api/characters/${mainCharacter.id}/create-custom-wand`, { method: 'POST' });
   }
 
   if (!user || !mainCharacter) {

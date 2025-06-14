@@ -20,6 +20,8 @@ import { formatDistanceToNow } from "date-fns";
 import { cs } from "date-fns/locale";
 import { apiFetch, getQueryFn, getAuthToken } from "@/lib/queryClient";
 
+const API_URL = import.meta.env.VITE_API_URL || '';
+
 // Message form schema
 const messageSchema = z.object({
   recipientCharacterId: z.number().min(1, "Vyberte adresáta"),
@@ -99,7 +101,7 @@ function OwlPost() {
     queryKey: ["/api/owl-post/characters"],
     enabled: !!user,
     queryFn: async () => {
-      return apiFetch(`${import.meta.env.VITE_API_URL}/api/owl-post/characters`);
+      return apiFetch(`${API_URL}/api/owl-post/characters`);
     },
   });
 
@@ -129,7 +131,7 @@ function OwlPost() {
     queryKey: ["/api/owl-post/unread-total"],
     enabled: !!user,
     queryFn: async () => {
-      return apiFetch(`${import.meta.env.VITE_API_URL}/api/owl-post/unread-total`);
+      return apiFetch(`${API_URL}/api/owl-post/unread-total`);
     },
   });
 
@@ -139,7 +141,7 @@ function OwlPost() {
   const sendMessageMutation = useMutation({
     mutationFn: async (data: MessageForm & { senderCharacterId: number }) => {
       const token = getAuthToken();
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/owl-post/send`, {
+      const response = await fetch(`${API_URL}/api/owl-post/send`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -173,7 +175,7 @@ function OwlPost() {
   const deleteMessageMutation = useMutation({
     mutationFn: async (messageId: number) => {
       const token = getAuthToken();
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/owl-post/message/${messageId}`, {
+      const response = await fetch(`${API_URL}/api/owl-post/message/${messageId}`, {
         method: "DELETE",
         headers: token ? { Authorization: `Bearer ${token}` } : {},
         credentials: "include",
@@ -199,7 +201,7 @@ function OwlPost() {
   const markAsReadMutation = useMutation({
     mutationFn: async (messageId: number) => {
       const token = getAuthToken();
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/owl-post/mark-read/${messageId}`, {
+      const response = await fetch(`${API_URL}/api/owl-post/mark-read/${messageId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

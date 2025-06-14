@@ -51,6 +51,8 @@ interface CharacterRequest {
   createdAt: string;
 }
 
+const API_URL = import.meta.env.VITE_API_URL || '';
+
 export default function UserSettings() {
   const { user } = useAuth();
   const { toast } = useToast();
@@ -108,7 +110,7 @@ export default function UserSettings() {
   // Delete housing request mutation
   const deleteHousingRequestMutation = useMutation({
     mutationFn: (requestId: number) => 
-      apiRequest("DELETE", `${import.meta.env.VITE_API_URL}/api/housing-requests/${requestId}`),
+      apiRequest("DELETE", `${API_URL}/api/housing-requests/${requestId}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/housing-requests/my"] });
       toast({
@@ -128,10 +130,10 @@ export default function UserSettings() {
   // Character order mutation
   const updateCharacterOrderMutation = useMutation({
     mutationFn: (order: number[]) => 
-      apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/user/character-order`, { characterOrder: order }),
+      apiRequest("POST", `${API_URL}/api/user/character-order`, { characterOrder: order }),
     onSuccess: () => {
       // Invalidate user data to reflect changes
-      queryClient.invalidateQueries({ queryKey: [`${import.meta.env.VITE_API_URL}/api/auth/user`] });
+      queryClient.invalidateQueries({ queryKey: [`${API_URL}/api/auth/user`] });
       toast({
         title: "Pořadí postav uloženo",
         description: "Vaše nastavení pořadí postav bylo úspěšně uloženo",
@@ -149,7 +151,7 @@ export default function UserSettings() {
   // Highlight words mutation
   const updateHighlightWordsMutation = useMutation({
     mutationFn: (data: { words: string; color: string }) => 
-      apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/user/highlight-words`, { 
+      apiRequest("POST", `${API_URL}/api/user/highlight-words`, { 
         highlightWords: data.words,
         highlightColor: data.color 
       }),
@@ -158,7 +160,7 @@ export default function UserSettings() {
       setHighlightWords(variables.words);
       setHighlightColor(variables.color);
       // Invalidate user data to refresh the cache
-      queryClient.invalidateQueries({ queryKey: [`${import.meta.env.VITE_API_URL}/api/auth/user`] });
+      queryClient.invalidateQueries({ queryKey: [`${API_URL}/api/auth/user`] });
       toast({
         title: "Zvýrazňovaná slova uložena",
         description: "Vaše nastavení zvýrazňování slov bylo úspěšně uloženo",
@@ -176,14 +178,14 @@ export default function UserSettings() {
   // Narrator color mutation
   const updateNarratorColorMutation = useMutation({
     mutationFn: (data: { color: string }) => 
-      apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/user/narrator-color`, { 
+      apiRequest("POST", `${API_URL}/api/user/narrator-color`, { 
         narratorColor: data.color 
       }),
     onSuccess: (data, variables) => {
       // Update local state immediately
       setNarratorColor(variables.color);
       // Invalidate user data to refresh the cache
-      queryClient.invalidateQueries({ queryKey: [`${import.meta.env.VITE_API_URL}/api/auth/user`] });
+      queryClient.invalidateQueries({ queryKey: [`${API_URL}/api/auth/user`] });
       toast({
         title: "Barva vypravěče uložena",
         description: "Vaše nastavení barvy vypravěče bylo úspěšně uloženo",
@@ -295,7 +297,7 @@ export default function UserSettings() {
   // Create character request mutation
   const createRequestMutation = useMutation({
     mutationFn: async (data: CharacterRequestForm) => {
-      const response = await apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/character-requests`, data);
+      const response = await apiRequest("POST", `${API_URL}/api/character-requests`, data);
       return response.json();
     },
     onSuccess: () => {
@@ -319,7 +321,7 @@ export default function UserSettings() {
   // Delete character request mutation
   const deleteRequestMutation = useMutation({
     mutationFn: async (requestId: number) => {
-      const response = await apiRequest("DELETE", `${import.meta.env.VITE_API_URL}/api/character-requests/${requestId}`);
+      const response = await apiRequest("DELETE", `${API_URL}/api/character-requests/${requestId}`);
       return response.json();
     },
     onSuccess: () => {
@@ -341,7 +343,7 @@ export default function UserSettings() {
   // Create housing request mutation
   const createHousingRequestMutation = useMutation({
     mutationFn: async (data: HousingRequestForm) => {
-      const response = await apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/housing-requests`, data);
+      const response = await apiRequest("POST", `${API_URL}/api/housing-requests`, data);
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || "Nepodařilo se odeslat žádost o bydlení");
@@ -371,7 +373,7 @@ export default function UserSettings() {
   // Change password mutation
   const changePasswordMutation = useMutation({
     mutationFn: async (data: { currentPassword: string; newPassword: string }) => {
-      const response = await apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/auth/change-password`, data);
+      const response = await apiRequest("POST", `${API_URL}/api/auth/change-password`, data);
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || "Nepodařilo se změnit heslo");
@@ -398,7 +400,7 @@ export default function UserSettings() {
   // Change email mutation
   const changeEmailMutation = useMutation({
     mutationFn: async (data: { newEmail: string; confirmPassword: string }) => {
-      const response = await apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/auth/change-email`, data);
+      const response = await apiRequest("POST", `${API_URL}/api/auth/change-email`, data);
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || "Nepodařilo se změnit email");
@@ -412,7 +414,7 @@ export default function UserSettings() {
       });
       setEmailForm({ newEmail: '', confirmPassword: '' });
       setShowEmailForm(false);
-      queryClient.invalidateQueries({ queryKey: [`${import.meta.env.VITE_API_URL}/api/auth/user`] });
+      queryClient.invalidateQueries({ queryKey: [`${API_URL}/api/auth/user`] });
     },
     onError: (error: any) => {
       toast({

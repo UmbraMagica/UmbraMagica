@@ -51,6 +51,8 @@ interface OnlineCharacter {
   avatar?: string | null;
 }
 
+const API_URL = import.meta.env.VITE_API_URL || '';
+
 export default function Home() {
   const { user, logout } = useAuth();
   const { toast } = useToast();
@@ -72,7 +74,7 @@ export default function Home() {
     queryKey: ["/api/characters/online"],
     enabled: !!user,
     queryFn: async () => {
-      return apiFetch(`${import.meta.env.VITE_API_URL}/api/characters/online`);
+      return apiFetch(`${API_URL}/api/characters/online`);
     },
   });
 
@@ -84,7 +86,7 @@ export default function Home() {
     queryKey: ["/api/characters/all"],
     enabled: !!user,
     queryFn: async () => {
-      const data = await apiFetch(`${import.meta.env.VITE_API_URL}/api/characters/all`);
+      const data = await apiFetch(`${API_URL}/api/characters/all`);
       return data.characters || [];
     },
   });
@@ -127,7 +129,7 @@ export default function Home() {
     enabled: !!currentDisplayedCharacter?.id,
     queryFn: async () => {
       if (!currentDisplayedCharacter?.id) return null;
-      return apiFetch(`${import.meta.env.VITE_API_URL}/api/characters/${currentDisplayedCharacter.id}/wand`);
+      return apiFetch(`${API_URL}/api/characters/${currentDisplayedCharacter.id}/wand`);
     },
   });
 
@@ -139,7 +141,7 @@ export default function Home() {
     queryFn: async () => {
       if (!currentDisplayedCharacter?.id) return { count: 0 };
       const token = localStorage.getItem('jwt_token');
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/owl-post/unread-count/${currentDisplayedCharacter.id}`, {
+      const response = await fetch(`${API_URL}/api/owl-post/unread-count/${currentDisplayedCharacter.id}`, {
         credentials: 'include',
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
@@ -159,7 +161,7 @@ export default function Home() {
     enabled: !!currentDisplayedCharacter?.id,
     queryFn: async () => {
       if (!currentDisplayedCharacter?.id) return null;
-      return apiFetch(`${import.meta.env.VITE_API_URL}/api/characters/${currentDisplayedCharacter.id}/last-chat`);
+      return apiFetch(`${API_URL}/api/characters/${currentDisplayedCharacter.id}/last-chat`);
     },
   });
 
@@ -534,7 +536,7 @@ export default function Home() {
                     enabled: !!user,
                     staleTime: 30000, // Refresh every 30 seconds
                     queryFn: async () => {
-                      return apiFetch(`${import.meta.env.VITE_API_URL}/api/influence-bar`);
+                      return apiFetch(`${API_URL}/api/influence-bar`);
                     },
                   });
 
@@ -543,7 +545,7 @@ export default function Home() {
                     enabled: !!user,
                     staleTime: 30000,
                     queryFn: async () => {
-                      return apiFetch(`${import.meta.env.VITE_API_URL}/api/influence-history`);
+                      return apiFetch(`${API_URL}/api/influence-history`);
                     },
                   });
 

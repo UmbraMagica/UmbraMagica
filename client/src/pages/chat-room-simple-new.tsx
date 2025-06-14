@@ -42,6 +42,8 @@ interface ChatMessage {
   };
 }
 
+const API_URL = import.meta.env.VITE_API_URL || '';
+
 // Function to highlight words in message content
 function renderMessageWithHighlight(content: string, highlightWords?: string, highlightColor?: string) {
   if (!highlightWords || !highlightWords.trim()) {
@@ -133,7 +135,7 @@ export default function ChatRoom() {
   const { data: messages = [], isLoading: messagesLoading } = useQuery<ChatMessage[]>({
     queryKey: ["/api/chat/rooms", currentRoomId, "messages"],
     queryFn: () =>
-      fetch(`${import.meta.env.VITE_API_URL}/api/chat/rooms/${currentRoomId}/messages`).then(res => res.json()),
+      fetch(`${API_URL}/api/chat/rooms/${currentRoomId}/messages`).then(res => res.json()),
     enabled: !!currentRoomId,
     refetchInterval: 5000,
     staleTime: 0, // Always consider data stale
@@ -404,7 +406,7 @@ export default function ChatRoom() {
       // If spell is selected, cast it with the message (even if message is empty)
       if (selectedSpell) {
         try {
-          const response = await fetch(`${import.meta.env.VITE_API_URL}/api/game/cast-spell`, {
+          const response = await fetch(`${API_URL}/api/game/cast-spell`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -440,7 +442,7 @@ export default function ChatRoom() {
           content: messageInput.trim(),
           messageType: isNarratorMode ? 'narrator' : 'text'
         };
-        await apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/chat/messages`, messageData);
+        await apiRequest("POST", `${API_URL}/api/chat/messages`, messageData);
         setMessageInput("");
       }
     } catch (error: any) {
@@ -497,7 +499,7 @@ export default function ChatRoom() {
     if (!currentCharacter || !currentRoomId) return;
 
     try {
-      await apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/game/dice-roll`, {
+      await apiRequest("POST", `${API_URL}/api/game/dice-roll`, {
         roomId: currentRoomId,
         characterId: currentCharacter.id
       });
@@ -514,7 +516,7 @@ export default function ChatRoom() {
     if (!currentCharacter || !currentRoomId) return;
 
     try {
-      await apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/game/coin-flip`, {
+      await apiRequest("POST", `${API_URL}/api/game/coin-flip`, {
         roomId: currentRoomId,
         characterId: currentCharacter.id
       });
@@ -540,7 +542,7 @@ export default function ChatRoom() {
     if (!currentRoomId || !narratorMessage.trim()) return;
 
     try {
-      await apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/chat/narrator-message`, {
+      await apiRequest("POST", `${API_URL}/api/chat/narrator-message`, {
         roomId: currentRoomId,
         content: narratorMessage.trim()
       });
@@ -565,7 +567,7 @@ export default function ChatRoom() {
     if (!currentRoomId) return;
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/rooms/${currentRoomId}/download`, {
+      const response = await fetch(`${API_URL}/api/rooms/${currentRoomId}/download`, {
         credentials: "include",
       });
       
@@ -601,7 +603,7 @@ export default function ChatRoom() {
     if (!currentRoomId || user?.role !== 'admin') return;
 
     try {
-      const response = await apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/chat/rooms/${currentRoomId}/archive`);
+      const response = await apiRequest("POST", `${API_URL}/api/chat/rooms/${currentRoomId}/archive`);
       const data = await response.json();
       
       toast({
@@ -610,7 +612,7 @@ export default function ChatRoom() {
       });
       
       // Refresh messages
-      queryClient.invalidateQueries({ queryKey: [`${import.meta.env.VITE_API_URL}/api/chat/rooms/${currentRoomId}/messages`] });
+      queryClient.invalidateQueries({ queryKey: [`${API_URL}/api/chat/rooms/${currentRoomId}/messages`] });
     } catch (error) {
       toast({
         title: "Chyba",
@@ -629,11 +631,11 @@ export default function ChatRoom() {
 
     try {
       // First archive messages
-      const archiveResponse = await apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/chat/rooms/${currentRoomId}/archive`);
+      const archiveResponse = await apiRequest("POST", `${API_URL}/api/chat/rooms/${currentRoomId}/archive`);
       const archiveData = await archiveResponse.json();
       
       // Then clear visible messages
-      const clearResponse = await apiRequest("DELETE", `${import.meta.env.VITE_API_URL}/api/admin/rooms/${currentRoomId}/clear`);
+      const clearResponse = await apiRequest("DELETE", `${API_URL}/api/admin/rooms/${currentRoomId}/clear`);
       const clearData = await clearResponse.json();
       
       toast({
@@ -642,7 +644,7 @@ export default function ChatRoom() {
       });
       
       // Refresh messages
-      queryClient.invalidateQueries({ queryKey: [`${import.meta.env.VITE_API_URL}/api/chat/rooms/${currentRoomId}/messages`] });
+      queryClient.invalidateQueries({ queryKey: [`${API_URL}/api/chat/rooms/${currentRoomId}/messages`] });
       setLocalMessages([]);
     } catch (error) {
       toast({
@@ -675,7 +677,7 @@ export default function ChatRoom() {
     if (!currentRoom) return;
     
     try {
-      await apiRequest("PATCH", `${import.meta.env.VITE_API_URL}/api/admin/chat/rooms/${currentRoom.id}`, {
+      await apiRequest("PATCH", `${API_URL}/api/admin/chat/rooms/${currentRoom.id}`, {
         longDescription: editedDescription
       });
       
@@ -700,7 +702,7 @@ export default function ChatRoom() {
     if (!currentRoom) return;
     
     try {
-      await apiRequest("PATCH", `${import.meta.env.VITE_API_URL}/api/admin/chat/rooms/${currentRoom.id}`, {
+      await apiRequest("PATCH", `${API_URL}/api/admin/chat/rooms/${currentRoom.id}`, {
         name: editedName
       });
       
@@ -936,7 +938,7 @@ export default function ChatRoom() {
                         <Button
                           onClick={() => {
                             if (confirm('Opravdu chcete smazat tuto vypravěčskou zprávu?')) {
-                              apiRequest("DELETE", `${import.meta.env.VITE_API_URL}/api/chat/messages/${message.id}`)
+                              apiRequest("DELETE", `${API_URL}/api/chat/messages/${message.id}`)
                                 .then(() => {
                                   queryClient.invalidateQueries({ queryKey: ["/api/chat/rooms", currentRoomId, "messages"] });
                                   toast({
@@ -973,7 +975,7 @@ export default function ChatRoom() {
                           onChange={(e) => {
                             const newCharacterId = parseInt(e.target.value);
                             if (newCharacterId !== message.characterId) {
-                              apiRequest("PATCH", `${import.meta.env.VITE_API_URL}/api/chat/messages/${message.id}/character`, {
+                              apiRequest("PATCH", `${API_URL}/api/chat/messages/${message.id}/character`, {
                                 characterId: newCharacterId
                               })
                                 .then(() => {

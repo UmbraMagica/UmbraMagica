@@ -10,6 +10,8 @@ import { useLocation } from "wouter";
 import { useState } from "react";
 import { apiRequest } from "@/lib/queryClient";
 
+const API_URL = import.meta.env.VITE_API_URL || '';
+
 export default function CharacterSpells() {
   const [, params] = useRoute("/characters/:id/spells");
   const [, setLocation] = useLocation();
@@ -39,7 +41,7 @@ export default function CharacterSpells() {
   // Add spell to character
   const addSpellMutation = useMutation({
     mutationFn: async (spellId: number) => {
-      const response = await apiRequest("POST", `${import.meta.env.VITE_API_URL}/api/characters/${characterId}/spells`, { spellId });
+      const response = await apiRequest("POST", `${API_URL}/api/characters/${characterId}/spells`, { spellId });
       return response.json();
     },
     onSuccess: () => {
@@ -62,7 +64,7 @@ export default function CharacterSpells() {
   // Remove spell from character
   const removeSpellMutation = useMutation({
     mutationFn: async (spellId: number) => {
-      const response = await apiRequest("DELETE", `${import.meta.env.VITE_API_URL}/api/characters/${characterId}/spells/${spellId}`);
+      const response = await apiRequest("DELETE", `${API_URL}/api/characters/${characterId}/spells/${spellId}`);
       return response.json();
     },
     onSuccess: () => {

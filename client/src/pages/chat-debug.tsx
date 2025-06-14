@@ -2,6 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
+const API_URL = import.meta.env.VITE_API_URL || '';
+
 export default function ChatDebug() {
   const { user } = useAuth();
 
@@ -10,7 +12,7 @@ export default function ChatDebug() {
     enabled: !!user,
     queryFn: async () => {
       const token = localStorage.getItem('jwt_token');
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/characters`, {
+      const response = await fetch(`${API_URL}/api/characters`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'

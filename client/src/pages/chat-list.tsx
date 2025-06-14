@@ -17,6 +17,8 @@ interface ChatRoom {
   createdAt: string;
 }
 
+const API_URL = import.meta.env.VITE_API_URL || '';
+
 export default function ChatList() {
   const { user } = useAuth();
   const [, setLocation] = useLocation();
@@ -52,7 +54,7 @@ export default function ChatList() {
   // Mutation for updating room description
   const updateRoomMutation = useMutation({
     mutationFn: async ({ roomId, description }: { roomId: number; description: string }) => {
-      return apiRequest("PATCH", `${import.meta.env.VITE_API_URL}/api/chat/rooms/${roomId}`, { description });
+      return apiRequest("PATCH", `${API_URL}/api/chat/rooms/${roomId}`, { description });
     },
     onSuccess: () => {
       toast({

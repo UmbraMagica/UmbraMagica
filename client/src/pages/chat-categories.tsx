@@ -31,6 +31,8 @@ interface ChatRoom {
   sortOrder: number;
 }
 
+const API_URL = import.meta.env.VITE_API_URL || '';
+
 function SubCategoryCollapsible({ subCategory }: { subCategory: ChatCategory }) {
   const [isOpen, setIsOpen] = useState(false);
   const [, setLocation] = useLocation();
@@ -53,7 +55,7 @@ function SubCategoryCollapsible({ subCategory }: { subCategory: ChatCategory }) 
     if (!passwordDialog.roomId) return;
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/chat/rooms/${passwordDialog.roomId}/verify-password`, {
+      const response = await fetch(`${API_URL}/api/chat/rooms/${passwordDialog.roomId}/verify-password`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -260,7 +262,7 @@ export default function ChatCategories() {
     queryKey: ["/api/chat/categories"],
     queryFn: async () => {
       const token = localStorage.getItem('jwt_token');
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/chat/categories`, {
+      const response = await fetch(`${API_URL}/api/chat/categories`, {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
       if (!response.ok) {
@@ -279,7 +281,7 @@ export default function ChatCategories() {
     queryKey: ["/api/chat/rooms"],
     queryFn: async () => {
       const token = localStorage.getItem('jwt_token');
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/chat/rooms`, {
+      const response = await fetch(`${API_URL}/api/chat/rooms`, {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
       if (!response.ok) {
