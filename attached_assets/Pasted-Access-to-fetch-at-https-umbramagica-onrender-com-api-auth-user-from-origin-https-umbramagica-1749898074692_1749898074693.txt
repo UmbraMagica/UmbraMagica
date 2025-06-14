@@ -1,0 +1,255 @@
+Access to fetch at 'https://umbramagica.onrender.com/api/auth/user' from origin 'https://umbramagica-1.onrender.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.Nechte si tuto chybu vysvětlit
+umbramagica.onrender.com/api/auth/user:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDNechte si tuto chybu vysvětlit
+index-DbD0FUr4.js:437 Landing component rendered
+index-DbD0FUr4.js:437 Login function: function
+index-DbD0FUr4.js:437 isLoginPending: false
+umbramagica-1.onrender.com/:1 Access to fetch at 'https://umbramagica.onrender.com/api/auth/user' from origin 'https://umbramagica-1.onrender.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.Nechte si tuto chybu vysvětlit
+umbramagica.onrender.com/api/auth/user:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDNechte si tuto chybu vysvětlit
+index-DbD0FUr4.js:437 Landing component rendered
+index-DbD0FUr4.js:437 Login function: function
+index-DbD0FUr4.js:437 isLoginPending: false
+umbramagica-1.onrender.com/:1 Access to fetch at 'https://umbramagica.onrender.com/api/auth/user' from origin 'https://umbramagica-1.onrender.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.Nechte si tuto chybu vysvětlit
+umbramagica.onrender.com/api/auth/user:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDNechte si tuto chybu vysvětlit
+index-DbD0FUr4.js:437 Landing component rendered
+index-DbD0FUr4.js:437 Login function: function
+index-DbD0FUr4.js:437 isLoginPending: false
+umbramagica-1.onrender.com/:1 Access to fetch at 'https://umbramagica.onrender.com/api/auth/user' from origin 'https://umbramagica-1.onrender.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.Nechte si tuto chybu vysvětlit
+umbramagica.onrender.com/api/auth/user:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDNechte si tuto chybu vysvětlit
+index-DbD0FUr4.js:437 Landing component rendered
+index-DbD0FUr4.js:437 Login function: function
+index-DbD0FUr4.js:437 isLoginPending: false
+umbramagica-1.onrender.com/:1 Access to fetch at 'https://umbramagica.onrender.com/api/auth/user' from origin 'https://umbramagica-1.onrender.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.Nechte si tuto chybu vysvětlit
+umbramagica.onrender.com/api/auth/user:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDNechte si tuto chybu vysvětlit
+index-DbD0FUr4.js:437 Landing component rendered
+index-DbD0FUr4.js:437 Login function: function
+index-DbD0FUr4.js:437 isLoginPending: false
+index-DbD0FUr4.js:437 [useAuth] Loaded user data: Object
+umbramagica-1.onrender.com/:1 Access to fetch at 'https://umbramagica.onrender.com/api/owl-post/unread-count/7' from origin 'https://umbramagica-1.onrender.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.Nechte si tuto chybu vysvětlit
+umbramagica.onrender.com/api/owl-post/unread-count/7:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDNechte si tuto chybu vysvětlit
+umbramagica-1.onrender.com/:1 Access to fetch at 'https://umbramagica.onrender.com/api/characters/7/last-chat' from origin 'https://umbramagica-1.onrender.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.Nechte si tuto chybu vysvětlit
+umbramagica.onrender.com/api/characters/7/last-chat:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDNechte si tuto chybu vysvětlit
+umbramagica-1.onrender.com/:1 Access to fetch at 'https://umbramagica.onrender.com/api/characters/7/wand' from origin 'https://umbramagica-1.onrender.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.Nechte si tuto chybu vysvětlit
+umbramagica.onrender.com/api/characters/7/wand:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDNechte si tuto chybu vysvětlit
+umbramagica-1.onrender.com/:1 Access to fetch at 'https://umbramagica.onrender.com/api/characters/all' from origin 'https://umbramagica-1.onrender.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.Nechte si tuto chybu vysvětlit
+umbramagica.onrender.com/api/characters/all:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDNechte si tuto chybu vysvětlit
+umbramagica-1.onrender.com/:1 Access to fetch at 'https://umbramagica.onrender.com/api/owl-post/unread-count/6' from origin 'https://umbramagica-1.onrender.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.Nechte si tuto chybu vysvětlit
+umbramagica.onrender.com/api/owl-post/unread-count/6:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDNechte si tuto chybu vysvětlit
+umbramagica-1.onrender.com/:1 Access to fetch at 'https://umbramagica.onrender.com/api/characters/6/wand' from origin 'https://umbramagica-1.onrender.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.Nechte si tuto chybu vysvětlit
+umbramagica.onrender.com/api/characters/6/wand:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDNechte si tuto chybu vysvětlit
+umbramagica-1.onrender.com/:1 Access to fetch at 'https://umbramagica.onrender.com/api/influence-history' from origin 'https://umbramagica-1.onrender.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.Nechte si tuto chybu vysvětlit
+umbramagica.onrender.com/api/influence-history:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDNechte si tuto chybu vysvětlit
+umbramagica-1.onrender.com/:1 Access to fetch at 'https://umbramagica.onrender.com/api/influence-bar' from origin 'https://umbramagica-1.onrender.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.Nechte si tuto chybu vysvětlit
+umbramagica.onrender.com/api/influence-bar:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDNechte si tuto chybu vysvětlit
+umbramagica-1.onrender.com/:1 Access to fetch at 'https://umbramagica.onrender.com/api/characters/6/last-chat' from origin 'https://umbramagica-1.onrender.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.Nechte si tuto chybu vysvětlit
+umbramagica.onrender.com/api/characters/6/last-chat:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDNechte si tuto chybu vysvětlit
+/chat:1 Access to fetch at 'https://umbramagica.onrender.com/api/chat/categories' from origin 'https://umbramagica-1.onrender.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.Nechte si tuto chybu vysvětlit
+umbramagica.onrender.com/api/chat/categories:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDNechte si tuto chybu vysvětlit
+/chat:1 Access to fetch at 'https://umbramagica.onrender.com/api/chat/rooms' from origin 'https://umbramagica-1.onrender.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.Nechte si tuto chybu vysvětlit
+umbramagica.onrender.com/api/chat/rooms:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDNechte si tuto chybu vysvětlit
+umbramagica-1.onrender.com/:1 Access to fetch at 'https://umbramagica.onrender.com/api/characters/all' from origin 'https://umbramagica-1.onrender.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.Nechte si tuto chybu vysvětlit
+umbramagica.onrender.com/api/characters/all:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDNechte si tuto chybu vysvětlit
+umbramagica-1.onrender.com/:1 Access to fetch at 'https://umbramagica.onrender.com/api/influence-bar' from origin 'https://umbramagica-1.onrender.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.Nechte si tuto chybu vysvětlit
+umbramagica.onrender.com/api/influence-bar:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDNechte si tuto chybu vysvětlit
+umbramagica-1.onrender.com/:1 Access to fetch at 'https://umbramagica.onrender.com/api/characters/6/last-chat' from origin 'https://umbramagica-1.onrender.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.Nechte si tuto chybu vysvětlit
+umbramagica.onrender.com/api/characters/6/last-chat:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDNechte si tuto chybu vysvětlit
+umbramagica-1.onrender.com/:1 Access to fetch at 'https://umbramagica.onrender.com/api/characters/6/wand' from origin 'https://umbramagica-1.onrender.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.Nechte si tuto chybu vysvětlit
+umbramagica.onrender.com/api/characters/6/wand:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDNechte si tuto chybu vysvětlit
+umbramagica-1.onrender.com/:1 Access to fetch at 'https://umbramagica.onrender.com/api/owl-post/unread-count/6' from origin 'https://umbramagica-1.onrender.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.Nechte si tuto chybu vysvětlit
+umbramagica.onrender.com/api/owl-post/unread-count/6:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDNechte si tuto chybu vysvětlit
+umbramagica-1.onrender.com/:1 Access to fetch at 'https://umbramagica.onrender.com/api/influence-history' from origin 'https://umbramagica-1.onrender.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.Nechte si tuto chybu vysvětlit
+umbramagica.onrender.com/api/influence-history:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDNechte si tuto chybu vysvětlit
+index-DbD0FUr4.js:490 [OwlPost] Načteno userCharacters: Array(0)
+index-DbD0FUr4.js:490 [OwlPost] Načteno owlPostCharacters: Array(0)
+index-DbD0FUr4.js:490 [OwlPost] Načten inboxMessages: Array(0)
+index-DbD0FUr4.js:490 [OwlPost] Načten sentMessages: Array(0)
+index-DbD0FUr4.js:490 [OwlPost] Načteno userCharacters: Array(0)
+index-DbD0FUr4.js:490 [OwlPost] Načteno owlPostCharacters: Array(0)
+index-DbD0FUr4.js:490 [OwlPost] Načten inboxMessages: Array(0)
+index-DbD0FUr4.js:490 [OwlPost] Načten sentMessages: Array(0)
+/owl-post?character=6:1 Access to fetch at 'https://umbramagica.onrender.com/api/owl-post/characters' from origin 'https://umbramagica-1.onrender.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.Nechte si tuto chybu vysvětlit
+umbramagica.onrender.com/api/owl-post/characters:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDNechte si tuto chybu vysvětlit
+/owl-post?character=6:1 Access to fetch at 'https://umbramagica.onrender.com/api/owl-post/unread-total' from origin 'https://umbramagica-1.onrender.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.Nechte si tuto chybu vysvětlit
+umbramagica.onrender.com/api/owl-post/unread-total:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDNechte si tuto chybu vysvětlit
+/api/characters:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()Nechte si tuto chybu vysvětlit
+index-DbD0FUr4.js:57 JSON Parse Error: SyntaxError: Unexpected token 'N', "Not Found
+" is not valid JSON
+index-DbD0FUr4.js:57 Error Response Text: Not Found
+
+umbramagica-1.onrender.com/:1 Access to fetch at 'https://umbramagica.onrender.com/api/characters/6/wand' from origin 'https://umbramagica-1.onrender.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.Nechte si tuto chybu vysvětlit
+umbramagica.onrender.com/api/characters/6/wand:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDNechte si tuto chybu vysvětlit
+umbramagica-1.onrender.com/:1 Access to fetch at 'https://umbramagica.onrender.com/api/influence-bar' from origin 'https://umbramagica-1.onrender.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.Nechte si tuto chybu vysvětlit
+umbramagica.onrender.com/api/influence-bar:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDNechte si tuto chybu vysvětlit
+umbramagica-1.onrender.com/:1 Access to fetch at 'https://umbramagica.onrender.com/api/characters/all' from origin 'https://umbramagica-1.onrender.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.Nechte si tuto chybu vysvětlit
+umbramagica.onrender.com/api/characters/all:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDNechte si tuto chybu vysvětlit
+umbramagica-1.onrender.com/:1 Access to fetch at 'https://umbramagica.onrender.com/api/owl-post/unread-count/6' from origin 'https://umbramagica-1.onrender.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.Nechte si tuto chybu vysvětlit
+umbramagica.onrender.com/api/owl-post/unread-count/6:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDNechte si tuto chybu vysvětlit
+umbramagica-1.onrender.com/:1 Access to fetch at 'https://umbramagica.onrender.com/api/influence-history' from origin 'https://umbramagica-1.onrender.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.Nechte si tuto chybu vysvětlit
+umbramagica.onrender.com/api/influence-history:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDNechte si tuto chybu vysvětlit
+umbramagica-1.onrender.com/:1 Access to fetch at 'https://umbramagica.onrender.com/api/characters/6/last-chat' from origin 'https://umbramagica-1.onrender.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.Nechte si tuto chybu vysvětlit
+umbramagica.onrender.com/api/characters/6/last-chat:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDNechte si tuto chybu vysvětlit
+/characters/6:1 Access to fetch at 'https://umbramagica.onrender.com/api/characters/6' from origin 'https://umbramagica-1.onrender.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.Nechte si tuto chybu vysvětlit
+umbramagica.onrender.com/api/characters/6:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDNechte si tuto chybu vysvětlit
+umbramagica-1.onrender.com/:1 Access to fetch at 'https://umbramagica.onrender.com/api/owl-post/unread-count/6' from origin 'https://umbramagica-1.onrender.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.Nechte si tuto chybu vysvětlit
+umbramagica.onrender.com/api/owl-post/unread-count/6:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDNechte si tuto chybu vysvětlit
+umbramagica-1.onrender.com/:1 Access to fetch at 'https://umbramagica.onrender.com/api/characters/6/last-chat' from origin 'https://umbramagica-1.onrender.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.Nechte si tuto chybu vysvětlit
+umbramagica.onrender.com/api/characters/6/last-chat:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDNechte si tuto chybu vysvětlit
+umbramagica-1.onrender.com/:1 Access to fetch at 'https://umbramagica.onrender.com/api/influence-bar' from origin 'https://umbramagica-1.onrender.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.Nechte si tuto chybu vysvětlit
+umbramagica.onrender.com/api/influence-bar:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDNechte si tuto chybu vysvětlit
+umbramagica-1.onrender.com/:1 Access to fetch at 'https://umbramagica.onrender.com/api/characters/6/wand' from origin 'https://umbramagica-1.onrender.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.Nechte si tuto chybu vysvětlit
+umbramagica.onrender.com/api/characters/6/wand:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDNechte si tuto chybu vysvětlit
+umbramagica-1.onrender.com/:1 Access to fetch at 'https://umbramagica.onrender.com/api/influence-history' from origin 'https://umbramagica-1.onrender.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.Nechte si tuto chybu vysvětlit
+umbramagica.onrender.com/api/influence-history:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDNechte si tuto chybu vysvětlit
+umbramagica-1.onrender.com/:1 Access to fetch at 'https://umbramagica.onrender.com/api/characters/all' from origin 'https://umbramagica-1.onrender.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.Nechte si tuto chybu vysvětlit
+umbramagica.onrender.com/api/characters/all:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDNechte si tuto chybu vysvětlit
+/api/characters:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()Nechte si tuto chybu vysvětlit
+index-DbD0FUr4.js:57 JSON Parse Error: SyntaxError: Unexpected token 'N', "Not Found
+" is not valid JSON
+index-DbD0FUr4.js:57 Error Response Text: Not Found
+
+umbramagica-1.onrender.com/:1 Access to fetch at 'https://umbramagica.onrender.com/api/owl-post/unread-count/6' from origin 'https://umbramagica-1.onrender.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.Nechte si tuto chybu vysvětlit
+umbramagica.onrender.com/api/owl-post/unread-count/6:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDNechte si tuto chybu vysvětlit
+umbramagica-1.onrender.com/:1 Access to fetch at 'https://umbramagica.onrender.com/api/influence-bar' from origin 'https://umbramagica-1.onrender.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.Nechte si tuto chybu vysvětlit
+umbramagica.onrender.com/api/influence-bar:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDNechte si tuto chybu vysvětlit
+umbramagica-1.onrender.com/:1 Access to fetch at 'https://umbramagica.onrender.com/api/characters/6/last-chat' from origin 'https://umbramagica-1.onrender.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.Nechte si tuto chybu vysvětlit
+umbramagica.onrender.com/api/characters/6/last-chat:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDNechte si tuto chybu vysvětlit
+umbramagica-1.onrender.com/:1 Access to fetch at 'https://umbramagica.onrender.com/api/characters/6/wand' from origin 'https://umbramagica-1.onrender.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.Nechte si tuto chybu vysvětlit
+umbramagica.onrender.com/api/characters/6/wand:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDNechte si tuto chybu vysvětlit
+umbramagica-1.onrender.com/:1 Access to fetch at 'https://umbramagica.onrender.com/api/characters/all' from origin 'https://umbramagica-1.onrender.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.Nechte si tuto chybu vysvětlit
+umbramagica.onrender.com/api/characters/all:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDNechte si tuto chybu vysvětlit
+umbramagica-1.onrender.com/:1 Access to fetch at 'https://umbramagica.onrender.com/api/influence-history' from origin 'https://umbramagica-1.onrender.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.Nechte si tuto chybu vysvětlit
+umbramagica.onrender.com/api/influence-history:1 
+            
+            
+           Failed to load resource: net::ERR_FAILEDNechte si tuto chybu vysvětlit
