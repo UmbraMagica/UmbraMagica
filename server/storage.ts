@@ -1143,37 +1143,43 @@ export class DatabaseStorage implements IStorage {
 
   async setInfluence(grindelwaldPoints: number, dumbledorePoints: number, userId: number): Promise<void> {
     try {
+      const now = new Date().toISOString();
+
       // Aktualizuj nebo vytvoř záznam v influence_bar
       const { error } = await supabase
         .from('influence_bar')
-        .upsert([{ 
+        .upsert([{
           id: 1, // Předpokládáme pouze jeden řádek
-          grindelwald_points: grindelwaldPoints, 
+          grindelwald_points: grindelwaldPoints,
           dumbledore_points: dumbledorePoints,
-          updated_at: new Date()
-        }]);
+          updated_at: now
+        }], {
+          onConflict: ['id']
+        });
+
       if (error) {
         console.error("Error setting influence:", error);
         throw error;
       }
+
       // Zapiš změnu do influence_history
       const { error: histError } = await supabase
         .from('influence_history')
-        .insert([{ 
+        .insert([{
           change_type: 'manual',
           grindelwald_points: grindelwaldPoints,
           dumbledore_points: dumbledorePoints,
-          admin_user_id: userId,
-          created_at: new Date()
+          changed_by: userId,
+          changed_at: now
         }]);
+
       if (histError) {
-        console.error("Error writing to influence_history:", histError);
-      } else {
-        console.log("Influence history record created", { grindelwaldPoints, dumbledorePoints, userId });
+        console.error("Error logging influence history:", histError);
       }
-    } catch (error) {
-      console.error("Error setting influence:", error);
-      throw error;
+
+    } catch (err) {
+      console.error("setInfluence error:", err);
+      throw err;
     }
   }
 
