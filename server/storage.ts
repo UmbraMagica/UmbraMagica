@@ -1142,46 +1142,51 @@ export class DatabaseStorage implements IStorage {
   }
 
   async setInfluence(grindelwaldPoints: number, dumbledorePoints: number, userId: number): Promise<void> {
-    try {
-      const now = new Date().toISOString();
+  const now = new Date().toISOString();
 
-      // Aktualizuj nebo vytvoř záznam v influence_bar
-      const { error } = await supabase
-        .from('influence_bar')
-        .upsert([{
-          id: 1, // Předpokládáme pouze jeden řádek
-          grindelwald_points: grindelwaldPoints,
-          dumbledore_points: dumbledorePoints,
-          updated_at: now
-        }], {
-          onConflict: ['id']
-        });
+  // Získej původní body
+  const { data: existing, error: readError } = await supabase
+    .from('influence_bar')
+    .select('grindelwald_points, dumbledore_points')
+    .eq('id', 1)
+    .single();
 
-      if (error) {
-        console.error("Error setting influence:", error);
-        throw error;
-      }
+  const previousTotal = existing
+    ? (existing.grindelwald_points + existing.dumbledore_points)
+    : 0;
+  const newTotal = grindelwaldPoints + dumbledorePoints;
 
-      // Zapiš změnu do influence_history
-      const { error: histError } = await supabase
-        .from('influence_history')
-        .insert([{
-          change_type: 'manual',
-          grindelwald_points: grindelwaldPoints,
-          dumbledore_points: dumbledorePoints,
-          changed_by: userId,
-          changed_at: now
-        }]);
+  // Aktualizuj influence_bar
+  const { error: updateError } = await supabase
+    .from('influence_bar')
+    .upsert([{
+      id: 1,
+      grindelwald_points: grindelwaldPoints,
+      dumbledore_points: dumbledorePoints,
+      updated_at: now
+    }], { onConflict: ['id'] });
 
-      if (histError) {
-        console.error("Error logging influence history:", histError);
-      }
-
-    } catch (err) {
-      console.error("setInfluence error:", err);
-      throw err;
-    }
+  if (updateError) {
+    console.error("Error updating influence_bar:", updateError);
+    throw updateError;
   }
+
+  // Zapiš změnu do history
+  const { error: histError } = await supabase
+    .from('influence_history')
+    .insert([{
+      change_type: 'manual',
+      points_changed: newTotal - previousTotal,
+      previous_total: previousTotal,
+      new_total: newTotal,
+      admin_id: userId,
+      created_at: now
+    }]);
+
+  if (histError) {
+    console.error("Error inserting influence_history:", histError);
+  }
+}
 
   // ... existující kód ...
 
