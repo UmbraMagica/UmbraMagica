@@ -875,6 +875,17 @@ export async function registerRoutes(app: Express): Promise<void> {
     }
   });
 
+  // Seznam všech uživatelů (pouze pro adminy)
+  app.get("/api/admin/users", requireAdmin, async (req, res) => {
+    try {
+      const users = await storage.getAllUsers();
+      res.json(users);
+    } catch (error) {
+      console.error("Chyba při načítání uživatelů:", error);
+      res.status(500).json({ message: "Chyba serveru" });
+    }
+  });
+
   // ... další endpointy (např. /api/user/character-order, /api/user/highlight-words, atd.) ...
   // Všude používej pouze req.user!.id a req.user!.role
   // ŽÁDNÉ req.session, req.cookies, SessionData, debug endpointy na session/cookie!
