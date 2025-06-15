@@ -243,14 +243,18 @@ export async function registerRoutes(app: Express): Promise<void> {
     }
   });
 
-  // Seznam všech postav uživatele
+  // Seznam všech postav (pro adminy všechny, pro uživatele jen jejich)
   app.get("/api/characters/all", requireAuth, async (req, res) => {
     try {
-      const characters = await storage.getCharactersByUserId(req.user!.id);
-      console.log(`[API] /api/characters/all - User ${req.user!.id} has ${characters.length} characters`);
+      let characters;
+      if (req.user!.role === 'admin') {
+        characters = await storage.getAllCharacters();
+      } else {
+        characters = await storage.getCharactersByUserId(req.user!.id);
+      }
       res.json({ characters });
     } catch (error) {
-      console.error("Error fetching user characters:", error);
+      console.error("Error fetching characters:", error);
       res.status(500).json({ message: "Failed to fetch characters" });
     }
   });
