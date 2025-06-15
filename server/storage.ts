@@ -387,11 +387,18 @@ export class DatabaseStorage implements IStorage {
     return toCamel(data || []);
   }
 
-  async createInviteCode(insertInviteCode: InsertInviteCode): Promise<InviteCode> {
-    const { data, error } = await supabase.from('inviteCodes').insert([insertInviteCode]).select().single();
-    if (error) throw new Error(error.message);
-    return data;
-  }
+async createInviteCode(insertInviteCode: InsertInviteCode): Promise<InviteCode> {
+  const { data, error } = await supabase
+    .from('invite_codes')
+    .insert([insertInviteCode])
+    .select()
+    .single();
+
+  if (error) throw new Error(error.message);
+  if (!data) throw new Error("Insert returned no data.");
+
+  return data;
+}
 
   async useInviteCode(code: string, userId: number): Promise<boolean> {
     const { error } = await supabase.from('inviteCodes').update({ isUsed: true, usedBy: userId, usedAt: new Date() }).eq('code', code);
