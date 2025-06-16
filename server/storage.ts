@@ -209,7 +209,7 @@ export interface IStorage {
   getInfluenceBar(): Promise<{ grindelwaldPoints: number; dumbledorePoints: number }>;
   getInfluenceHistory(): Promise<any[]>;
   adjustInfluence(side: 'grindelwald' | 'dumbledore', points: number, userId: number): Promise<void>;
-  setInfluence(grindelwaldPoints: number, dumbledorePoints: number, userId: number, reason: string = ""): Promise<void>;
+  setInfluence(grindelwaldPoints: number, dumbledorePoints: number, userId: number, reason: string): Promise<void>;
 
   // Přidávám implementaci chybějící funkce pro admin rozhraní
   getPendingHousingRequests(): Promise<HousingRequest[]>;
@@ -1261,7 +1261,7 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
-  async setInfluence(grindelwaldPoints: number, dumbledorePoints: number, userId: number, reason: string = ""): Promise<void> {
+  async setInfluence(grindelwaldPoints: number, dumbledorePoints: number, userId: number, reason: string): Promise<void> {
     const now = new Date().toISOString();
 
     // Získej původní body
