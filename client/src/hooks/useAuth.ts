@@ -36,7 +36,7 @@ export function useAuth() {
         }
       });
 
-      if (response.status === 401) {
+      if (response.status === 401 || response.status === 404) {
         localStorage.removeItem('jwt_token');
         return null;
       }
