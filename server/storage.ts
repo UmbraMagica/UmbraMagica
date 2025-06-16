@@ -1294,7 +1294,7 @@ export class DatabaseStorage implements IStorage {
   async sendOwlPostMessage(senderCharacterId: number, recipientCharacterId: number, subject: string, content: string): Promise<OwlPostMessage> {
     const { data, error } = await supabase
       .from('owl_post_messages')
-      .insert([{ sender_character_id: senderCharacterId, recipient_character_id: recipientCharacterId, subject, content, is_read: false, sent_at: new Date() }])
+      .insert([{ sender_character_id: senderCharacterId, recipient_characterId: recipientCharacterId, subject, content, is_read: false, sent_at: new Date() }])
       .select()
       .single();
     if (error) {

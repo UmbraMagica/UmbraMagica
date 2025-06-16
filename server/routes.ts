@@ -386,9 +386,15 @@ export async function registerRoutes(app: Express): Promise<void> {
     res.json(updatedCharacter);
   });
 
-  // Komponenty pro tvorbu hůlek (zatím prázdné)
+  // Komponenty pro tvorbu hůlek
   app.get("/api/wand-components", requireAuth, async (_req, res) => {
-    res.json({ woods: [], cores: [], lengths: [], flexibilities: [] });
+    try {
+      const components = await storage.getWandComponents();
+      res.json(components);
+    } catch (error) {
+      console.error("Error fetching wand components:", error);
+      res.status(500).json({ message: "Failed to fetch wand components" });
+    }
   });
 
   // Chat kategorie (zatím prázdné)
