@@ -928,6 +928,24 @@ export async function registerRoutes(app: Express): Promise<void> {
     }
   });
 
+  // --- ADMIN: Reset hesla uživatele ---
+  app.post("/api/admin/users/:id/reset-password", requireAdmin, async (req, res) => {
+    const userId = Number(req.params.id);
+    if (!userId || isNaN(userId)) {
+      return res.status(400).json({ message: "Invalid user id" });
+    }
+    try {
+      // Vygeneruj nové náhodné heslo (např. 10 znaků)
+      const newPassword = Math.random().toString(36).slice(-10);
+      const hashedPassword = await storage.hashPassword(newPassword);
+      await storage.resetUserPassword(userId, hashedPassword);
+      res.json({ newPassword });
+    } catch (error) {
+      console.error("Chyba při resetu hesla:", error);
+      res.status(500).json({ message: "Nepodařilo se resetovat heslo", error: error?.message || error });
+    }
+  });
+
   // ... další endpointy (např. /api/user/character-order, /api/user/highlight-words, atd.) ...
   // Všude používej pouze req.user!.id a req.user!.role
   // ŽÁDNÉ req.session, req.cookies, SessionData, debug endpointy na session/cookie!

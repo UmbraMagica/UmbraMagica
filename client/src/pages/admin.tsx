@@ -282,10 +282,7 @@ export default function Admin() {
         });
         return;
       }
-      toast({
-        title: "Úspěch",
-        description: `Heslo bylo resetováno. Nové dočasné heslo: ${data.newPassword}`,
-      });
+      setResetPasswordResult({ open: true, password: data.newPassword });
     },
     onError: (error: any) => {
       toast({
@@ -3012,6 +3009,21 @@ export default function Admin() {
               </Button>
             </div>
           </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialog pro zobrazení nového hesla po resetu */}
+      <Dialog open={resetPasswordResult.open} onOpenChange={open => setResetPasswordResult(r => ({ ...r, open }))}
+        className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <DialogContent className="bg-card p-6 rounded-lg max-w-md w-full mx-4">
+          <DialogHeader>
+            <DialogTitle>Nové dočasné heslo</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-2">
+            <Label htmlFor="reset-password-result">Zkopírujte nové heslo a pošlete uživateli:</Label>
+            <Input id="reset-password-result" value={resetPasswordResult.password} readOnly onFocus={e => e.target.select()} />
+          </div>
+          <Button onClick={() => setResetPasswordResult({ open: false, password: "" })} className="mt-4 w-full">Zavřít</Button>
         </DialogContent>
       </Dialog>
     </div>
