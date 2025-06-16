@@ -890,6 +890,21 @@ export async function registerRoutes(app: Express): Promise<void> {
     }
   });
 
+  // --- ADMIN: Vytváření invite kódů ---
+  app.post("/api/admin/invite-codes", requireAdmin, async (req, res) => {
+    try {
+      const { code } = req.body;
+      if (!code) {
+        return res.status(400).json({ message: "Chybí kód" });
+      }
+      const newInvite = await storage.createInviteCode({ code });
+      res.status(200).json(newInvite);
+    } catch (error) {
+      console.error("Chyba při vytváření invite kódu:", error);
+      res.status(500).json({ message: "Chyba při vytváření invite kódu" });
+    }
+  });
+
   // ... další endpointy (např. /api/user/character-order, /api/user/highlight-words, atd.) ...
   // Všude používej pouze req.user!.id a req.user!.role
   // ŽÁDNÉ req.session, req.cookies, SessionData, debug endpointy na session/cookie!
