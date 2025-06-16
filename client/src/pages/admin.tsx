@@ -156,11 +156,19 @@ export default function Admin() {
   const [editRoomIsPublic, setEditRoomIsPublic] = useState(true);
 
   // Data queries
-  const { data: users = [] } = useQuery<AdminUser[]>({
+  const token = localStorage.getItem('jwt_token');
+  const { data: users = [], error: usersError } = useQuery<AdminUser[]>({
     queryKey: [`${API_URL}/api/users`],
     staleTime: 30000,
+    enabled: !!token,
   });
-  const { data: allCharacters = [] } = useQuery({ queryKey: [`${API_URL}/api/characters/all`] });
+  const { data: allCharacters = [], error: charactersError, isLoading: isCharactersLoading } = useQuery({
+    queryKey: [`${API_URL}/api/characters/all`],
+    enabled: !!token,
+    onError: (err) => {
+      console.error('Chyba při načítání postav:', err);
+    },
+  });
   const { data: characterRequests = [] } = useQuery({ queryKey: [`${API_URL}/api/admin/character-requests`] });
   const { data: housingRequests = [] } = useQuery({ queryKey: [`${API_URL}/api/admin/housing-requests`] });
   const { data: adminActivityLog = [] } = useQuery({ queryKey: [`${API_URL}/api/admin/activity-log`] });
@@ -1592,7 +1600,22 @@ export default function Admin() {
                       </div>
                     </div>
                   ))}
-                  {nonSystemCharacters.filter((c: any) => !c.deathDate).length === 0 && (
+                  {!token && (
+                    <div className="text-center text-red-500 py-8">
+                      Nejste přihlášeni. Přihlaste se znovu.
+                    </div>
+                  )}
+                  {charactersError && (
+                    <div className="text-center text-red-500 py-8">
+                      Chyba při načítání postav: {charactersError.message || 'Neznámá chyba'}
+                    </div>
+                  )}
+                  {isCharactersLoading && (
+                    <div className="text-center text-muted-foreground py-8">
+                      Načítám postavy...
+                    </div>
+                  )}
+                  {Array.isArray(nonSystemCharacters) && nonSystemCharacters.filter((c: any) => !c.deathDate).length === 0 && !isCharactersLoading && !charactersError && token && (
                     <div className="text-center text-muted-foreground py-8">
                       Žádné živé postavy
                     </div>
