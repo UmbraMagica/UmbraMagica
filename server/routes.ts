@@ -969,6 +969,18 @@ export async function registerRoutes(app: Express): Promise<void> {
     }
   });
 
+  // --- ADMIN: Uložení komponent hůlek ---
+  app.put("/api/admin/wand-components", requireAdmin, async (req, res) => {
+    try {
+      const { woods, cores, lengths, flexibilities } = req.body;
+      await storage.updateWandComponents({ woods, cores, lengths, flexibilities });
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Chyba při ukládání komponent hůlek:", error);
+      res.status(500).json({ message: "Nepodařilo se uložit komponenty hůlek", error: error?.message || error });
+    }
+  });
+
   // ... další endpointy (např. /api/user/character-order, /api/user/highlight-words, atd.) ...
   // Všude používej pouze req.user!.id a req.user!.role
   // ŽÁDNÉ req.session, req.cookies, SessionData, debug endpointy na session/cookie!
