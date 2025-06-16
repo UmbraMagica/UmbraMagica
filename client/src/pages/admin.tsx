@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { 
   Crown, 
@@ -165,10 +165,15 @@ export default function Admin() {
   const { data: allCharacters = [], error: charactersError, isLoading: isCharactersLoading } = useQuery({
     queryKey: [`${API_URL}/api/characters/all`],
     enabled: !!token,
-    onError: (err) => {
-      console.error('Chyba při načítání postav:', err);
-    },
   });
+
+  // Logování chyb při načítání postav
+  useEffect(() => {
+    if (charactersError) {
+      console.error('Chyba při načítání postav:', charactersError);
+    }
+  }, [charactersError]);
+
   const { data: characterRequests = [] } = useQuery({ queryKey: [`${API_URL}/api/admin/character-requests`] });
   const { data: housingRequests = [] } = useQuery({ queryKey: [`${API_URL}/api/admin/housing-requests`] });
   const { data: adminActivityLog = [] } = useQuery({ queryKey: [`${API_URL}/api/admin/activity-log`] });
@@ -181,12 +186,18 @@ export default function Admin() {
 
   // Stats calculations
   // Filter out system characters (not users)
-  const nonSystemCharacters = Array.isArray(allCharacters) ? allCharacters.filter((c: any) => !c.isSystem) : [];
+  const nonSystemCharacters = Array.isArray(allCharacters)
+    ? allCharacters.filter((c: any) => !(c.isSystem ?? c.is_system))
+    : [];
+
+  const liveCharacters = nonSystemCharacters.filter(
+    (character: any) => !(character.deathDate ?? character.death_date)
+  );
 
   const stats = {
     totalUsers: Array.isArray(users) ? users.filter((u: any) => !u.isSystem).length : 0,
     adminUsers: Array.isArray(users) ? users.filter((u: any) => u.role === 'admin' && !u.isSystem).length : 0,
-    activeCharacters: nonSystemCharacters.filter((c: any) => !c.deathDate && c.isActive).length,
+    activeCharacters: liveCharacters.length,
     deadCharacters: nonSystemCharacters.filter((c: any) => c.deathDate).length,
     onlineNow: (onlineUsersData as any)?.count || 0,
     pendingRequests: (Array.isArray(characterRequests) ? characterRequests.length : 0) + (Array.isArray(housingRequests) ? housingRequests.length : 0),
@@ -1534,9 +1545,7 @@ export default function Admin() {
             {!isCharacterManagementCollapsed && (
               <CardContent>
                 <div className="space-y-3 max-h-96 overflow-y-auto">
-                  {nonSystemCharacters
-                    .filter((character: any) => !character.deathDate)
-                    .map((character: any) => (
+                  {liveCharacters.map((character: any) => (
                     <div key={character.id} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
                       <div className="flex items-center space-x-3">
                         {character.avatar ? (
@@ -1605,6 +1614,11 @@ export default function Admin() {
                       Nejste přihlášeni. Přihlaste se znovu.
                     </div>
                   )}
+                  {liveCharacters.length === 0 && !isCharactersLoading && !charactersError && token && (
+                    <div className="text-center text-muted-foreground py-8">
+                      Žádné živé postavy
+                    </div>
+                  )}
                   {charactersError && (
                     <div className="text-center text-red-500 py-8">
                       Chyba při načítání postav: {charactersError.message || 'Neznámá chyba'}
@@ -1613,11 +1627,6 @@ export default function Admin() {
                   {isCharactersLoading && (
                     <div className="text-center text-muted-foreground py-8">
                       Načítám postavy...
-                    </div>
-                  )}
-                  {Array.isArray(nonSystemCharacters) && nonSystemCharacters.filter((c: any) => !c.deathDate).length === 0 && !isCharactersLoading && !charactersError && token && (
-                    <div className="text-center text-muted-foreground py-8">
-                      Žádné živé postavy
                     </div>
                   )}
                 </div>
