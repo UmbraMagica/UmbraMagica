@@ -1154,25 +1154,6 @@ export class DatabaseStorage implements IStorage {
       console.error('Error fetching wand components:', error);
       throw new Error('Failed to fetch wand components');
     }
-  }order('sort_order'),
-        supabase.from('wand_flexibilities').select('*').order('name'),
-      ]);
-
-      if (woods.error) console.error('Error fetching wand_woods:', woods.error);
-      if (cores.error) console.error('Error fetching wand_cores:', cores.error);
-      if (lengths.error) console.error('Error fetching wand_lengths:', lengths.error);
-      if (flexibilities.error) console.error('Error fetching wand_flexibilities:', flexibilities.error);
-
-      return {
-        woods: (woods.data || []).map(toCamel),
-        cores: (cores.data || []).map(toCamel),
-        lengths: (lengths.data || []).map(toCamel),
-        flexibilities: (flexibilities.data || []).map(toCamel),
-      };
-    } catch (error) {
-      console.error('Error in getWandComponents:', error);
-      throw error;
-    }
   }
 
   async migrateExistingWandsToInventory(): Promise<number> {
