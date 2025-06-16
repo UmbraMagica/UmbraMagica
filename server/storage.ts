@@ -1089,6 +1089,7 @@ export class DatabaseStorage implements IStorage {
         acquired_at: new Date().toISOString()
       };
 
+      console.log("Wand data being inserted:", wandData);
       const { data, error } = await supabase.from('wands').insert([wandData]).select().single();
       if (error) throw error;
 

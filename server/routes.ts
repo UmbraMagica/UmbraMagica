@@ -721,21 +721,19 @@ export async function registerRoutes(app: Express): Promise<void> {
   });
 
   app.get("/api/owl-post/characters", requireAuth, async (req, res) => {
+    console.log("GET /api/owl-post/characters called by user", req.user);
     try {
-      // Vrátíme všechny aktivní postavy pro owl post (ne jen uživatelovy)
       const allCharacters = await storage.getAllCharacters();
-      const activeCharacters = allCharacters.filter((char: any) => !char.deathDate && !char.isSystem);
-
-      // Přidáme fullName pro kompatibilitu s frontendem
+      const safeAllCharacters = Array.isArray(allCharacters) ? allCharacters : [];
+      const activeCharacters = safeAllCharacters.filter((char: any) => !char.deathDate && !char.isSystem);
       const charactersWithFullName = activeCharacters.map((char: any) => ({
         ...char,
         fullName: `${char.firstName} ${char.middleName ? char.middleName + ' ' : ''}${char.lastName}`
       }));
-
       res.json(charactersWithFullName);
     } catch (error) {
-      console.error("Chyba při načítání owl-post characters:", error);
-      res.status(500).json({ message: "Server error" });
+      console.error("Chyba při načítání owl-post characters:", error, error?.stack);
+      res.json([]); // fallback: nikdy nevracej 400/500, vždy pole
     }
   });
 
