@@ -231,10 +231,11 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    const { data, error } = await supabase.from('users').select('*').eq('username', username).single();
-    console.log('getUserByUsername:', { username, data, error });
+    const { data, error } = await supabase.from('users').select('*').ilike('username', username);
+    const user = Array.isArray(data) && data.length > 0 ? data[0] : null;
+    console.log('getUserByUsername:', { username, user, error });
     if (error) return undefined;
-    return toCamel(data);
+    return user ? toCamel(user) : undefined;
   }
 
   async getUserByEmail(email: string): Promise<User | undefined> {
@@ -1313,7 +1314,7 @@ export class DatabaseStorage implements IStorage {
   // ... existující kód ...
   async assignHousingAdminToSystemUser() {
     // Najdi postavu Správa ubytování
-    const [character] = await supabase.from('characters').select('*').eq('firstName', 'Správa').eq('lastName', 'ubytování').single();
+    const { data: character } = await supabase.from('characters').select('*').eq('firstName', 'Správa').eq('lastName', 'ubytování').single();
     if (character) {
       await supabase.from('characters').update({ userId: 6, is_system: true }).eq('id', character.id);
     }
