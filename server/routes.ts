@@ -660,7 +660,7 @@ export async function registerRoutes(app: Express): Promise<void> {
       const newGrindelwaldPoints = changeType === 'grindelwald' ? newTotal : currentData.grindelwaldPoints;
       const newDumbledorePoints = changeType === 'dumbledore' ? newTotal : currentData.dumbledorePoints;
 
-      await storage.setInfluence(newGrindelwaldPoints, newDumbledorePoints, req.user!.id);
+      await storage.setInfluence(newGrindelwaldPoints, newDumbledorePoints, req.user!.id, reason);
 
       res.json({ message: "Influence adjusted successfully" });
     } catch (error) {
@@ -677,7 +677,7 @@ export async function registerRoutes(app: Express): Promise<void> {
       }
 
       const resetValues = type === "0:0" ? { grindelwald: 0, dumbledore: 0 } : { grindelwald: 50, dumbledore: 50 };
-      await storage.setInfluence(resetValues.grindelwald, resetValues.dumbledore, req.user!.id);
+      await storage.setInfluence(resetValues.grindelwald, resetValues.dumbledore, req.user!.id, "reset");
 
       res.json({ message: "Influence reset successfully" });
     } catch (error) {
@@ -689,10 +689,12 @@ export async function registerRoutes(app: Express): Promise<void> {
   // Owl Post routes
   app.get("/api/owl-post/unread-total", requireAuth, async (req, res) => {
     try {
-      // Vrátíme celkový počet pro všechny postavy uživatele (bez parametru characterId)
       let totalCount = 0;
       const characterIdParam = req.query.characterId;
       const characterId = characterIdParam ? Number(characterIdParam) : undefined;
+      if (characterIdParam && (isNaN(characterId) || characterId <= 0)) {
+        return res.status(400).json({ message: "Invalid characterId" });
+      }
       if (characterId) {
         // Ověření přístupu k postavě
         if (req.user!.role !== 'admin') {
@@ -703,8 +705,10 @@ export async function registerRoutes(app: Express): Promise<void> {
         }
         totalCount = await storage.getUnreadOwlPostCount(characterId);
       } else {
-        // Spočítáme celkový počet pro všechny postavy uživatele
         const userCharacters = await storage.getCharactersByUserId(req.user!.id);
+        if (!userCharacters || userCharacters.length === 0) {
+          return res.json({ count: 0 });
+        }
         for (const char of userCharacters) {
           totalCount += await storage.getUnreadOwlPostCount(char.id);
         }
