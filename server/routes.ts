@@ -885,6 +885,28 @@ export async function registerRoutes(app: Express): Promise<void> {
     }
   });
 
+  // Wand components route for admin interface
+  app.get("/api/admin/wand-components", requireAdmin, async (req, res) => {
+    try {
+      const components = await storage.getAllWandComponents();
+      res.json(components);
+    } catch (error) {
+      console.error("Error fetching wand components:", error);
+      res.status(500).json({ message: "Failed to fetch wand components" });
+    }
+  });
+
+  app.post("/api/admin/wand-components", requireAdmin, async (req, res) => {
+    try {
+      const { components } = req.body;
+      await storage.updateWandComponents(components);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error updating wand components:", error);
+      res.status(500).json({ message: "Failed to update wand components" });
+    }
+  });
+
   // Seznam všech uživatelů (pouze pro adminy)
   app.get("/api/admin/users", requireAdmin, async (req, res) => {
     try {
