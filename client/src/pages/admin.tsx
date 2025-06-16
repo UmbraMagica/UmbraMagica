@@ -168,6 +168,13 @@ export default function Admin() {
     enabled: !!token,
   });
 
+  // Po změně tokenu automaticky refetchni postavy
+  useEffect(() => {
+    if (token) {
+      queryClient.invalidateQueries({ queryKey: [`${API_URL}/api/characters/all`] });
+    }
+  }, [token, queryClient]);
+
   // Logování chyb při načítání postav
   useEffect(() => {
     if (charactersError) {
@@ -259,9 +266,22 @@ export default function Admin() {
   const resetPasswordMutation = useMutation({
     mutationFn: async (userId: number) => {
       const res = await apiRequest("POST", `${API_URL}/api/admin/users/${userId}/reset-password`, {});
-      return res.json(); // Oprava: rozparsovat odpověď
+      const contentType = res.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        const text = await res.text();
+        throw new Error(text || "API nevrátilo JSON");
+      }
+      return res.json();
     },
     onSuccess: (data: any) => {
+      if (!data || !data.newPassword) {
+        toast({
+          title: "Chyba",
+          description: "API nevrátilo nové heslo.",
+          variant: "destructive",
+        });
+        return;
+      }
       toast({
         title: "Úspěch",
         description: `Heslo bylo resetováno. Nové dočasné heslo: ${data.newPassword}`,
