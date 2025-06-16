@@ -743,10 +743,12 @@ export const influenceBar = pgTable("influence_bar", {
 
 export const influenceHistory = pgTable("influence_history", {
   id: serial("id").primaryKey(),
-  grindelwaldPoints: integer("grindelwald_points").notNull(),
-  dumbledorePoints: integer("dumbledore_points").notNull(),
-  changeBy: integer("change_by").references(() => users.id),
+  changeType: varchar("change_type", { length: 20 }).notNull(),
+  pointsChanged: integer("points_changed").notNull(),
+  previousTotal: integer("previous_total").notNull(),
+  newTotal: integer("new_total").notNull(),
   reason: text("reason"),
+  adminId: integer("admin_id").references(() => users.id),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
