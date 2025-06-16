@@ -44,6 +44,7 @@ function requireAuth(req: any, res: any, next: any) {
     return res.status(401).json({ message: "Invalid token" });
   }
   req.user = payload;
+  console.log("Decoded JWT user:", req.user);
   next();
 }
 
