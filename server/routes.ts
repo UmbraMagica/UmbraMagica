@@ -658,7 +658,7 @@ export async function registerRoutes(app: Express): Promise<void> {
       const newTotal = Math.max(0, previousTotal + points);
 
       const newGrindelwaldPoints = changeType === 'grindelwald' ? newTotal : currentData.grindelwaldPoints;
-      newDumbledorePoints = changeType === 'dumbledore' ? newTotal : currentData.dumbledorePoints;
+      const newDumbledorePoints = changeType === 'dumbledore' ? newTotal : currentData.dumbledorePoints;
 
       await storage.setInfluence(newGrindelwaldPoints, newDumbledorePoints, req.user!.id);
 
