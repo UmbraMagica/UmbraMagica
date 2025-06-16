@@ -1,0 +1,113 @@
+[useAuth] Loaded user data: {id: 1, username: 'TesterAdmin', email: 'admin@test.cz', role: 'admin', characters: Array(5)}
+index-CwphibGc.js:57 
+            
+            
+           GET https://umbra-dev.onrender.com/api/wand-components 500 (Internal Server Error)
+(anonymní) @ index-CwphibGc.js:57
+i @ index-CwphibGc.js:57
+k @ index-CwphibGc.js:57
+start @ index-CwphibGc.js:57
+fetch @ index-CwphibGc.js:57
+Fc @ index-CwphibGc.js:57
+onSubscribe @ index-CwphibGc.js:57
+subscribe @ index-CwphibGc.js:57
+(anonymní) @ index-CwphibGc.js:57
+Nw @ index-CwphibGc.js:48
+su @ index-CwphibGc.js:48
+j1 @ index-CwphibGc.js:48
+la @ index-CwphibGc.js:48
+j1 @ index-CwphibGc.js:48
+la @ index-CwphibGc.js:48
+j1 @ index-CwphibGc.js:48
+la @ index-CwphibGc.js:48
+j1 @ index-CwphibGc.js:48
+la @ index-CwphibGc.js:48
+j1 @ index-CwphibGc.js:48
+la @ index-CwphibGc.js:48
+j1 @ index-CwphibGc.js:48
+la @ index-CwphibGc.js:48
+j1 @ index-CwphibGc.js:48
+la @ index-CwphibGc.js:48
+j1 @ index-CwphibGc.js:48
+la @ index-CwphibGc.js:48
+j1 @ index-CwphibGc.js:48
+la @ index-CwphibGc.js:48
+j1 @ index-CwphibGc.js:48
+la @ index-CwphibGc.js:48
+j1 @ index-CwphibGc.js:48
+la @ index-CwphibGc.js:48
+j1 @ index-CwphibGc.js:48
+la @ index-CwphibGc.js:48
+j1 @ index-CwphibGc.js:48
+la @ index-CwphibGc.js:48
+j1 @ index-CwphibGc.js:48
+la @ index-CwphibGc.js:48
+j1 @ index-CwphibGc.js:48
+la @ index-CwphibGc.js:48
+j1 @ index-CwphibGc.js:48
+la @ index-CwphibGc.js:48
+j1 @ index-CwphibGc.js:48
+U1 @ index-CwphibGc.js:48
+Um @ index-CwphibGc.js:48
+P1 @ index-CwphibGc.js:48
+Mb @ index-CwphibGc.js:48
+Db @ index-CwphibGc.js:48
+E1 @ index-CwphibGc.js:48
+Lb @ index-CwphibGc.js:48
+nu @ index-CwphibGc.js:48
+I1 @ index-CwphibGc.js:48
+(anonymní) @ index-CwphibGc.js:48
+setTimeout
+$A @ index-CwphibGc.js:57
+l @ index-CwphibGc.js:57
+batch @ index-CwphibGc.js:57
+Za @ index-CwphibGc.js:57
+setData @ index-CwphibGc.js:57
+onSuccess @ index-CwphibGc.js:57
+f @ index-CwphibGc.js:57
+Promise.then
+k @ index-CwphibGc.js:57
+start @ index-CwphibGc.js:57
+fetch @ index-CwphibGc.js:57
+Fc @ index-CwphibGc.js:57
+onSubscribe @ index-CwphibGc.js:57
+subscribe @ index-CwphibGc.js:57
+(anonymní) @ index-CwphibGc.js:57
+Nw @ index-CwphibGc.js:48
+su @ index-CwphibGc.js:48
+j1 @ index-CwphibGc.js:48
+la @ index-CwphibGc.js:48
+j1 @ index-CwphibGc.js:48
+la @ index-CwphibGc.js:48
+j1 @ index-CwphibGc.js:48
+la @ index-CwphibGc.js:48
+j1 @ index-CwphibGc.js:48
+la @ index-CwphibGc.js:48
+j1 @ index-CwphibGc.js:48
+la @ index-CwphibGc.js:48
+j1 @ index-CwphibGc.js:48
+la @ index-CwphibGc.js:48
+j1 @ index-CwphibGc.js:48
+la @ index-CwphibGc.js:48
+j1 @ index-CwphibGc.js:48
+la @ index-CwphibGc.js:48
+j1 @ index-CwphibGc.js:48
+la @ index-CwphibGc.js:48
+j1 @ index-CwphibGc.js:48
+la @ index-CwphibGc.js:48
+j1 @ index-CwphibGc.js:48
+U1 @ index-CwphibGc.js:48
+Um @ index-CwphibGc.js:48
+Lb @ index-CwphibGc.js:48
+nu @ index-CwphibGc.js:48
+P1 @ index-CwphibGc.js:48
+Mb @ index-CwphibGc.js:48
+Db @ index-CwphibGc.js:48
+E1 @ index-CwphibGc.js:48
+F1 @ index-CwphibGc.js:48
+K @ index-CwphibGc.js:25Nechte si tuto chybu vysvětlit
+index-CwphibGc.js:57 API Error Response: {message: 'Failed to fetch wand components'}
+index-CwphibGc.js:57 JSON Parse Error: Error: Failed to fetch wand components
+    at E2 (index-CwphibGc.js:57:44028)
+    at async index-CwphibGc.js:57:44707
+index-CwphibGc.js:57 Error Response Text: {"message":"Failed to fetch wand components"}
