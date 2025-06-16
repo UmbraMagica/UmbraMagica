@@ -652,16 +652,16 @@ export async function registerRoutes(app: Express): Promise<void> {
       if (!changeType || !points || !reason) {
         return res.status(400).json({ message: "Missing required fields" });
       }
-      
+
       const currentData = await storage.getInfluenceBar();
       const previousTotal = changeType === 'grindelwald' ? currentData.grindelwaldPoints : currentData.dumbledorePoints;
       const newTotal = Math.max(0, previousTotal + points);
-      
+
       const newGrindelwaldPoints = changeType === 'grindelwald' ? newTotal : currentData.grindelwaldPoints;
       const newDumbledorePoints = changeType === 'dumbledore' ? newTotal : currentData.dumbledorePoints;
-      
+
       await storage.setInfluence(newGrindelwaldPoints, newDumbledorePoints, req.user!.id);
-      
+
       res.json({ message: "Influence adjusted successfully" });
     } catch (error) {
       console.error("Error adjusting influence:", error);
@@ -675,10 +675,10 @@ export async function registerRoutes(app: Express): Promise<void> {
       if (!type || (type !== "0:0" && type !== "50:50")) {
         return res.status(400).json({ message: "Reset type must be '0:0' or '50:50'" });
       }
-      
+
       const resetValues = type === "0:0" ? { grindelwald: 0, dumbledore: 0 } : { grindelwald: 50, dumbledore: 50 };
       await storage.setInfluence(resetValues.grindelwald, resetValues.dumbledore, req.user!.id);
-      
+
       res.json({ message: "Influence reset successfully" });
     } catch (error) {
       console.error("Error resetting influence:", error);
@@ -721,13 +721,13 @@ export async function registerRoutes(app: Express): Promise<void> {
       // Vrátíme všechny aktivní postavy pro owl post (ne jen uživatelovy)
       const allCharacters = await storage.getAllCharacters();
       const activeCharacters = allCharacters.filter((char: any) => !char.deathDate && !char.isSystem);
-      
+
       // Přidáme fullName pro kompatibilitu s frontendem
       const charactersWithFullName = activeCharacters.map((char: any) => ({
         ...char,
         fullName: `${char.firstName} ${char.middleName ? char.middleName + ' ' : ''}${char.lastName}`
       }));
-      
+
       res.json(charactersWithFullName);
     } catch (error) {
       console.error("Chyba při načítání owl-post characters:", error);
@@ -751,12 +751,12 @@ export async function registerRoutes(app: Express): Promise<void> {
 
     try {
       const messages = await storage.getOwlPostInbox(characterId);
-      
+
       // Přidáme informace o odesílateli a příjemci
       const messagesWithDetails = await Promise.all(messages.map(async (msg: any) => {
         const sender = await storage.getCharacter(msg.senderCharacterId);
         const recipient = await storage.getCharacter(msg.recipientCharacterId);
-        
+
         return {
           ...msg,
           sender: sender ? {
@@ -771,7 +771,7 @@ export async function registerRoutes(app: Express): Promise<void> {
           } : null
         };
       }));
-      
+
       res.json(messagesWithDetails);
     } catch (error) {
       console.error("Error fetching inbox:", error);
@@ -795,12 +795,12 @@ export async function registerRoutes(app: Express): Promise<void> {
 
     try {
       const messages = await storage.getOwlPostSent(characterId);
-      
+
       // Přidáme informace o odesílateli a příjemci
       const messagesWithDetails = await Promise.all(messages.map(async (msg: any) => {
         const sender = await storage.getCharacter(msg.senderCharacterId);
         const recipient = await storage.getCharacter(msg.recipientCharacterId);
-        
+
         return {
           ...msg,
           sender: sender ? {
@@ -815,7 +815,7 @@ export async function registerRoutes(app: Express): Promise<void> {
           } : null
         };
       }));
-      
+
       res.json(messagesWithDetails);
     } catch (error) {
       console.error("Error fetching sent messages:", error);
@@ -825,7 +825,7 @@ export async function registerRoutes(app: Express): Promise<void> {
 
   app.post("/api/owl-post/send", requireAuth, async (req, res) => {
     const { senderCharacterId, recipientCharacterId, subject, content } = req.body;
-    
+
     if (!senderCharacterId || !recipientCharacterId || !subject || !content) {
       return res.status(400).json({ message: "Missing required fields" });
     }
@@ -984,6 +984,109 @@ export async function registerRoutes(app: Express): Promise<void> {
     } catch (error) {
       console.error("Chyba při ukládání komponent hůlek:", error);
       res.status(500).json({ message: "Nepodařilo se uložit komponenty hůlek", error: error?.message || error });
+    }
+  });
+
+  // Get all wand components
+  app.get('/api/wand-components', async (req, res) => {
+    try {
+      const components = await storage.getAllWandComponents();
+      res.json(components);
+    } catch (error: any) {
+      console.error('Error fetching wand components:', error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Visit Ollivanders (get random wand)
+  app.post('/api/characters/:id/visit-ollivanders', requireAuth, async (req, res) => {
+    try {
+      const characterId = parseInt(req.params.id);
+      const userId = (req as any).user.id;
+
+      // Check if character belongs to user
+      const character = await storage.getCharacterById(characterId);
+      if (!character || character.userId !== userId) {
+        return res.status(403).json({ error: "Character not found or access denied" });
+      }
+
+      // Check if character already has a wand
+      const existingWand = await storage.getWandByCharacterId(characterId);
+      if (existingWand) {
+        return res.status(400).json({ error: "Character already has a wand" });
+      }
+
+      const wand = await storage.generateRandomWand(characterId);
+      res.json(wand);
+    } catch (error: any) {
+      console.error('Error visiting Ollivanders:', error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Create custom wand
+  app.post('/api/characters/:id/create-custom-wand', requireAuth, async (req, res) => {
+    try {
+      const characterId = parseInt(req.params.id);
+      const userId = (req as any).user.id;
+      const { wood, core, length, flexibility, description } = req.body;
+
+      // Check if character belongs to user
+      const character = await storage.getCharacterById(characterId);
+      if (!character || character.userId !== userId) {
+        return res.status(403).json({ error: "Character not found or access denied" });
+      }
+
+      // Check if character already has a wand
+      const existingWand = await storage.getWandByCharacterId(characterId);
+      if (existingWand) {
+        return res.status(400).json({ error: "Character already has a wand" });
+      }
+
+      // Validate required fields
+      if (!wood || !core || !length || !flexibility) {
+        return res.status(400).json({ error: "All wand components are required" });
+      }
+
+      const wandData = {
+        character_id: characterId,
+        wood,
+        core,
+        length,
+        flexibility,
+        description: description || `A ${length} wand made of ${wood} wood with a ${core} core, ${flexibility}`,
+        acquired_at: new Date().toISOString()
+      };
+
+      const wand = await storage.createWand(wandData);
+      res.json(wand);
+    } catch (error: any) {
+      console.error('Error creating custom wand:', error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Get character's wand
+  app.get('/api/characters/:id/wand', requireAuth, async (req, res) => {
+    try {
+      const characterId = parseInt(req.params.id);
+      const userId = (req as any).user.id;
+
+      // Check if character belongs to user
+      const character = await storage.getCharacterById(characterId);
+      if (!character || character.userId !== userId) {
+        return res.status(403).json({ error: "Character not found or access denied" });
+      }
+
+      const wand = await storage.getWandByCharacterId(characterId);
+      if (!wand) {
+        return res.status(404).json({ error: "Character has no wand" });
+      }
+
+      res.json(wand);
+    } catch (error: any) {
+      console.error('Error fetching character wand:', error);
+      res.status(500).json({ error: error.message });
     }
   });
 

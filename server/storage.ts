@@ -1058,8 +1058,53 @@ export class DatabaseStorage implements IStorage {
   }
 
   async generateRandomWand(characterId: number): Promise<Wand> {
-    // Implementation needed
-    throw new Error("Method not implemented");
+    try {
+      const components = await this.getAllWandComponents();
+      
+      // Filter only components available for random selection
+      const availableWoods = components.woods.filter(w => w.availableForRandom !== false);
+      const availableCores = components.cores.filter(c => c.availableForRandom !== false);
+      const availableLengths = components.lengths.filter(l => l.availableForRandom !== false);
+      const availableFlexibilities = components.flexibilities.filter(f => f.availableForRandom !== false);
+
+      if (availableWoods.length === 0 || availableCores.length === 0 || 
+          availableLengths.length === 0 || availableFlexibilities.length === 0) {
+        throw new Error("Not enough components available for random generation");
+      }
+
+      // Random selection
+      const randomWood = availableWoods[Math.floor(Math.random() * availableWoods.length)];
+      const randomCore = availableCores[Math.floor(Math.random() * availableCores.length)];
+      const randomLength = availableLengths[Math.floor(Math.random() * availableLengths.length)];
+      const randomFlexibility = availableFlexibilities[Math.floor(Math.random() * availableFlexibilities.length)];
+
+      const wandData = {
+        character_id: characterId,
+        wood: randomWood.name,
+        core: randomCore.name,
+        length: randomLength.name,
+        flexibility: randomFlexibility.name,
+        description: `A ${randomLength.name} wand made of ${randomWood.name} wood with a ${randomCore.name} core, ${randomFlexibility.name}`,
+        acquired_at: new Date().toISOString()
+      };
+
+      const { data, error } = await supabase.from('wands').insert([wandData]).select().single();
+      if (error) throw error;
+      
+      return {
+        id: data.id,
+        characterId: data.character_id,
+        wood: data.wood,
+        core: data.core,
+        length: data.length,
+        flexibility: data.flexibility,
+        description: data.description,
+        acquiredAt: data.acquired_at
+      };
+    } catch (error: any) {
+      console.error('Error generating random wand:', error);
+      throw new Error('Failed to generate random wand');
+    }
   }
 
   async getAllWandComponents(): Promise<{
@@ -1073,6 +1118,43 @@ export class DatabaseStorage implements IStorage {
         supabase.from('wand_woods').select('*').order('name'),
         supabase.from('wand_cores').select('*').order('name'),
         supabase.from('wand_lengths').select('*').order('sort_order'),
+        supabase.from('wand_flexibilities').select('*').order('name')
+      ]);
+
+      if (woods.error) throw woods.error;
+      if (cores.error) throw cores.error;
+      if (lengths.error) throw lengths.error;
+      if (flexibilities.error) throw flexibilities.error;
+
+      return {
+        woods: woods.data?.map(wood => ({
+          name: wood.name,
+          shortDescription: wood.short_description || '',
+          longDescription: wood.long_description || '',
+          availableForRandom: wood.available_for_random
+        })) || [],
+        cores: cores.data?.map(core => ({
+          name: core.name,
+          category: core.category || '',
+          description: core.description || '',
+          availableForRandom: core.available_for_random
+        })) || [],
+        lengths: lengths.data?.map(length => ({
+          name: length.name,
+          description: length.description || '',
+          availableForRandom: length.available_for_random
+        })) || [],
+        flexibilities: flexibilities.data?.map(flex => ({
+          name: flex.name,
+          description: flex.description || '',
+          availableForRandom: flex.available_for_random
+        })) || []
+      };
+    } catch (error) {
+      console.error('Error fetching wand components:', error);
+      throw new Error('Failed to fetch wand components');
+    }
+  }order('sort_order'),
         supabase.from('wand_flexibilities').select('*').order('name'),
       ]);
 
