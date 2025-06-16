@@ -160,11 +160,11 @@ export default function ChatRoom() {
   // Initialize chat character when entering chat room
   useEffect(() => {
     // Filter only alive characters (not in cemetery) and exclude system characters
-    const filteredCharacters = allUserCharacters.filter((char: any) => {
+    const filteredCharacters = Array.isArray(allUserCharacters) ? allUserCharacters.filter((char: any) => {
       const isAlive = !char.deathDate;
       const isNotSystem = !char.isSystem;
       return isAlive && isNotSystem;
-    });
+    }) : [];
     
     // Sort characters according to user's preferred order
     const userCharacters = (() => {
@@ -310,7 +310,11 @@ export default function ChatRoom() {
   // Removed automatic scrolling - chat stays at top showing newest messages
 
   // Filter and sort characters - moved to useEffect above
-  const filteredCharacters = allUserCharacters.filter((char: any) => !char.deathDate && !char.isSystem);
+  const filteredCharacters = Array.isArray(allUserCharacters) ? allUserCharacters.filter((char: any) => {
+    const isAlive = !char.deathDate;
+    const isNotSystem = !char.isSystem;
+    return isAlive && isNotSystem;
+  }) : [];
   const userCharacters = (() => {
     if (!user?.characterOrder || !Array.isArray(user.characterOrder)) {
       return filteredCharacters;

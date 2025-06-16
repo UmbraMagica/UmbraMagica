@@ -16,7 +16,7 @@ export default function ChatRoomSimpleTest() {
   });
 
   // Filter characters (remove dead and system characters)
-  const userCharacters = allUserCharacters.filter((char: any) => !char.deathDate && !char.isSystem);
+  const userCharacters = Array.isArray(allUserCharacters) ? allUserCharacters.filter((char: any) => !char.deathDate && !char.isSystem) : [];
 
   // Simple access check
   const canAccess = user?.role === 'admin' || userCharacters.length > 0;

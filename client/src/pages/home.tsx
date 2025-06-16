@@ -118,13 +118,19 @@ export default function Home() {
   }, [userCharacters, firstAliveCharacter, changeCharacter]);
 
   // Get displayed character's wand (for the character currently being viewed)
-  const { data: characterWand } = useQuery({
+  const { data: characterWand, error: wandError } = useQuery({
     queryKey: [`/api/characters/${selectedCharacter?.id}/wand`],
-    enabled: !!selectedCharacter?.id,
     queryFn: async () => {
-      if (!selectedCharacter?.id) return null;
-      return apiFetch(`${API_URL}/api/characters/${selectedCharacter.id}/wand`);
+      try {
+        const res = await apiFetch(`${API_URL}/api/characters/${selectedCharacter.id}/wand`);
+        // Pokud endpoint vrátí 404 nebo není JSON, vrať null
+        if (!res || res.status === 404) return null;
+        return res;
+      } catch (e) {
+        return null;
+      }
     },
+    enabled: !!selectedCharacter?.id,
   });
 
   // Get unread owl post count for current character

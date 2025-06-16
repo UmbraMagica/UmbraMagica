@@ -339,15 +339,15 @@ function OwlPost() {
     );
   }
 
-  const filteredInboxMessages = inboxMessages.filter(message =>
+  const filteredInboxMessages = Array.isArray(inboxMessages) ? inboxMessages.filter(message =>
     message.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
     (message.sender && formatSenderName(message.sender).toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  ) : [];
 
-  const filteredSentMessages = sentMessages.filter(message =>
+  const filteredSentMessages = Array.isArray(sentMessages) ? sentMessages.filter(message =>
     message.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
     (message.recipient && formatRecipientName(message.recipient).toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  ) : [];
 
   return (
     <div className="container mx-auto p-6 max-w-6xl">

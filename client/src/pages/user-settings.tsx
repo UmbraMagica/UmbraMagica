@@ -250,7 +250,7 @@ export default function UserSettings() {
   });
 
   // Filter only alive characters (not in cemetery) and exclude system characters
-  const userCharacters = allUserCharacters.filter((char: any) => !char.deathDate && !char.isSystem);
+  const userCharacters = Array.isArray(allUserCharacters) ? allUserCharacters.filter((char: any) => !char.deathDate && !char.isSystem) : [];
 
   // Initialize user settings from user data
   useEffect(() => {

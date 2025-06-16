@@ -44,7 +44,7 @@ export default function Ollivanders() {
     gcTime: 0     // Don't cache
   });
 
-  // Get user's alive characters and find the active one
+  // Oprava bezpečného filtru postav
   const userCharacters = Array.isArray(allCharacters) ? allCharacters.filter((char: any) => !char.deathDate && !char.isSystem) : [];
   const activeCharacter = userCharacters.find((char: any) => char.isActive);
   
