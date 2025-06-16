@@ -1073,7 +1073,7 @@ AllWandComponents(): Promise<{
       const [woods, cores, lengths, flexibilities] = await Promise.all([
         supabase.from('wand_woods').select('*').order('name'),
         supabase.from('wand_cores').select('*').order('name'),
-        supabase.from('wand_lengths').select('*').order('name'),
+        supabase.from('wand_lengths').select('*').order('sort_order'),
         supabase.from('wand_flexibilities').select('*').order('name'),
       ]);
 
