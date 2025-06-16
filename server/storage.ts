@@ -1062,8 +1062,7 @@ export class DatabaseStorage implements IStorage {
     throw new Error("Method not implemented");
   }
 
-  async get<replit_final_file>
-AllWandComponents(): Promise<{
+  async getAllWandComponents(): Promise<{
     woods: { name: string; shortDescription: string; longDescription: string; availableForRandom?: boolean }[];
     cores: { name: string; category: string; description: string; availableForRandom?: boolean }[];
     lengths: { name: string; description: string; availableForRandom?: boolean }[];
