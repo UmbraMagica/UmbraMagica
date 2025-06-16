@@ -674,7 +674,6 @@ export class DatabaseStorage implements IStorage {
   // Character request operations
   async createCharacterRequest(request: InsertCharacterRequest): Promise<CharacterRequest> {
     const { data, error } = await supabase.from('characterRequests').insert([request]).select().single();
-```
     if (error) throw new Error(error.message);
     return data;
   }
