@@ -376,32 +376,32 @@ export class DatabaseStorage implements IStorage {
 
   // Authentication and invite codes remain same...
   async getInviteCode(code: string): Promise<InviteCode | undefined> {
-    const { data, error } = await supabase.from('inviteCodes').select('*').eq('code', code).single();
+    const { data, error } = await supabase.from('invite_codes').select('*').eq('code', code).single();
     if (error) return undefined;
     return data;
   }
 
   async getAllInviteCodes(): Promise<InviteCode[]> {
-    const { data, error } = await supabase.from('inviteCodes').select('*').order('created_at', { ascending: false });
+    const { data, error } = await supabase.from('invite_codes').select('*').order('created_at', { ascending: false });
     if (error) return [];
     return toCamel(data || []);
   }
 
-async createInviteCode(insertInviteCode: InsertInviteCode): Promise<InviteCode> {
-  const { data, error } = await supabase
-    .from('invite_codes')
-    .insert([insertInviteCode])
-    .select()
-    .single();
+  async createInviteCode(insertInviteCode: InsertInviteCode): Promise<InviteCode> {
+    const { data, error } = await supabase
+      .from('invite_codes')
+      .insert([insertInviteCode])
+      .select()
+      .single();
 
-  if (error) throw new Error(error.message);
-  if (!data) throw new Error("Insert returned no data.");
+    if (error) throw new Error(error.message);
+    if (!data) throw new Error("Insert returned no data.");
 
-  return data;
-}
+    return data;
+  }
 
   async useInviteCode(code: string, userId: number): Promise<boolean> {
-    const { error } = await supabase.from('inviteCodes').update({ isUsed: true, usedBy: userId, usedAt: new Date() }).eq('code', code);
+    const { error } = await supabase.from('invite_codes').update({ isUsed: true, usedBy: userId, usedAt: new Date() }).eq('code', code);
     return !error;
   }
 
