@@ -367,10 +367,18 @@ export class DatabaseStorage implements IStorage {
   async getAllCharacters(includeSystem = false): Promise<Character[]> {
     let query = supabase.from('characters').select('*');
     if (!includeSystem) {
-      query = query.eq('is_system', false);
+      query = query.or('is_system.eq.false,is_system.is.null');
     }
     const { data, error } = await query;
-    if (error) return [];
+    if (error) {
+      console.error("getAllCharacters error:", error);
+      return [];
+    }
+    if (!data || data.length === 0) {
+      console.warn("No characters found", { data });
+    } else {
+      console.log(`Loaded ${data.length} characters`, { data });
+    }
     return toCamel(data || []);
   }
 
