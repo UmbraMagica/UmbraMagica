@@ -79,6 +79,7 @@ export interface IStorage {
   updateUserPassword(id: number, hashedPassword: string): Promise<void>;
   updateUserEmail(id: number, email: string): Promise<void>;
   updateUserSettings(id: number, settings: { characterOrder?: string; highlightWords?: string; highlightColor?: string; narratorColor?: string }): Promise<void>;
+  getUserById(id: number): Promise<User | undefined>;
 
   // Character operations
   getCharacter(id: number): Promise<Character | undefined>;
@@ -301,6 +302,12 @@ export class DatabaseStorage implements IStorage {
     if (settings.narratorColor !== undefined) snakeSettings.narrator_color = settings.narratorColor;
     snakeSettings.updated_at = new Date();
     await supabase.from('users').update(snakeSettings).eq('id', id);
+  }
+
+  async getUserById(id: number): Promise<User | undefined> {
+    const { data, error } = await supabase.from('users').select('*').eq('id', id).single();
+    if (error) return undefined;
+    return data as User;
   }
 
   // Character operations

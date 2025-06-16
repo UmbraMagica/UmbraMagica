@@ -946,6 +946,29 @@ export async function registerRoutes(app: Express): Promise<void> {
     }
   });
 
+  // --- Změna hesla uživatele ---
+  app.post("/api/auth/change-password", requireAuth, async (req, res) => {
+    const userId = req.user!.id;
+    const { currentPassword, newPassword } = req.body;
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ message: "Chybí aktuální nebo nové heslo" });
+    }
+    try {
+      // Ověř aktuální heslo
+      const user = await storage.getUser(userId);
+      if (!user) return res.status(404).json({ message: "Uživatel nenalezen" });
+      const isValid = await storage.validateUser(user.username, currentPassword);
+      if (!isValid) return res.status(401).json({ message: "Aktuální heslo je špatně" });
+      // Ulož nové heslo
+      const hashedPassword = await storage.hashPassword(newPassword);
+      await storage.updateUserPassword(userId, hashedPassword);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Chyba při změně hesla:", error);
+      res.status(500).json({ message: "Nepodařilo se změnit heslo", error: error?.message || error });
+    }
+  });
+
   // ... další endpointy (např. /api/user/character-order, /api/user/highlight-words, atd.) ...
   // Všude používej pouze req.user!.id a req.user!.role
   // ŽÁDNÉ req.session, req.cookies, SessionData, debug endpointy na session/cookie!
