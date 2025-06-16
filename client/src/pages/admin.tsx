@@ -990,6 +990,9 @@ export default function Admin() {
       });
   };
 
+  // Stav pro dialog s novým heslem po resetu
+  const [resetPasswordResult, setResetPasswordResult] = useState<{ open: boolean; password: string }>({ open: false, password: "" });
+
   if (!user || user.role !== 'admin') {
     return (
       <div className="flex items-center justify-center min-h-screen">
