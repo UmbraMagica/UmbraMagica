@@ -1156,6 +1156,37 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
+  async getAllWandComponents(): Promise<{
+    woods: WandWood[];
+    cores: WandCore[];
+    lengths: WandLength[];
+    flexibilities: WandFlexibility[];
+  }> {
+    try {
+      const [woods, cores, lengths, flexibilities] = await Promise.all([
+        supabase.from('wand_woods').select('*').order('sort_order'),
+        supabase.from('wand_cores').select('*').order('sort_order'),
+        supabase.from('wand_lengths').select('*').order('sort_order'),
+        supabase.from('wand_flexibilities').select('*').order('name'),
+      ]);
+
+      if (woods.error) console.error('Error fetching wand_woods:', woods.error);
+      if (cores.error) console.error('Error fetching wand_cores:', cores.error);
+      if (lengths.error) console.error('Error fetching wand_lengths:', lengths.error);
+      if (flexibilities.error) console.error('Error fetching wand_flexibilities:', flexibilities.error);
+
+      return {
+        woods: (woods.data || []).map(toCamel),
+        cores: (cores.data || []).map(toCamel),
+        lengths: (lengths.data || []).map(toCamel),
+        flexibilities: (flexibilities.data || []).map(toCamel),
+      };
+    } catch (error) {
+      console.error('Error in getAllWandComponents:', error);
+      throw error;
+    }
+  }
+
   async migrateExistingWandsToInventory(): Promise<number> {
     // Implementation needed
     throw new Error("Method not implemented");
