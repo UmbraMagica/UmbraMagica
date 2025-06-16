@@ -199,10 +199,10 @@ export interface IStorage {
   }>;
   migrateExistingWandsToInventory(): Promise<number>;
   updateWandComponents(components: {
-    woods: { name: string; shortDescription: string; longDescription: string }[];
-    cores: { name: string; category: string; description: string }[];
-    lengths: { name: string; description: string }[];
-    flexibilities: { name: string; description: string }[];
+    woods: { name: string; shortDescription: string; longDescription: string; availableForRandom?: boolean }[];
+    cores: { name: string; category: string; description: string; availableForRandom?: boolean }[];
+    lengths: { name: string; description: string; availableForRandom?: boolean }[];
+    flexibilities: { name: string; description: string; availableForRandom?: boolean }[];
   }): Promise<void>;
 
   // Influence operations
@@ -1096,13 +1096,29 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateWandComponents(components: {
-    woods: { name: string; shortDescription: string; longDescription: string }[];
-    cores: { name: string; category: string; description: string }[];
-    lengths: { name: string; description: string }[];
-    flexibilities: { name: string; description: string }[];
+    woods: { name: string; shortDescription: string; longDescription: string; availableForRandom?: boolean }[];
+    cores: { name: string; category: string; description: string; availableForRandom?: boolean }[];
+    lengths: { name: string; description: string; availableForRandom?: boolean }[];
+    flexibilities: { name: string; description: string; availableForRandom?: boolean }[];
   }): Promise<void> {
-    // Implementation needed
-    throw new Error("Method not implemented");
+    // Smaž všechny existující záznamy
+    await supabase.from('wand_woods').delete().neq('id', 0);
+    await supabase.from('wand_cores').delete().neq('id', 0);
+    await supabase.from('wand_lengths').delete().neq('id', 0);
+    await supabase.from('wand_flexibilities').delete().neq('id', 0);
+    // Vlož nové položky
+    if (components.woods.length > 0) {
+      await supabase.from('wand_woods').insert(components.woods);
+    }
+    if (components.cores.length > 0) {
+      await supabase.from('wand_cores').insert(components.cores);
+    }
+    if (components.lengths.length > 0) {
+      await supabase.from('wand_lengths').insert(components.lengths);
+    }
+    if (components.flexibilities.length > 0) {
+      await supabase.from('wand_flexibilities').insert(components.flexibilities);
+    }
   }
 
   // Influence operations
