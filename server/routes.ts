@@ -252,7 +252,7 @@ export async function registerRoutes(app: Express): Promise<void> {
       } else {
         characters = await storage.getCharactersByUserId(req.user!.id);
       }
-      res.json({ characters });
+      res.json(characters);
     } catch (error) {
       console.error("Error fetching characters:", error);
       res.status(500).json({ message: "Failed to fetch characters" });
@@ -902,6 +902,28 @@ export async function registerRoutes(app: Express): Promise<void> {
     } catch (error) {
       console.error("Chyba při vytváření invite kódu:", error);
       res.status(500).json({ message: "Chyba při vytváření invite kódu" });
+    }
+  });
+
+  // --- ADMIN: Získání všech invite kódů ---
+  app.get("/api/admin/invite-codes", requireAdmin, async (req, res) => {
+    try {
+      const codes = await storage.getAllInviteCodes();
+      res.json(codes);
+    } catch (error) {
+      console.error("Chyba při načítání invite kódů:", error);
+      res.status(500).json({ message: "Chyba při načítání invite kódů", error: error?.message || error });
+    }
+  });
+
+  // Seznam všech uživatelů (pro adminy, pro kompatibilitu s frontendem)
+  app.get("/api/users", requireAdmin, async (req, res) => {
+    try {
+      const users = await storage.getAllUsers();
+      res.json(users);
+    } catch (error) {
+      console.error("Chyba při načítání uživatelů:", error);
+      res.status(500).json({ message: "Chyba serveru", error: error?.message || error });
     }
   });
 
