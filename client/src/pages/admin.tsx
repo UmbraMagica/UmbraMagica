@@ -1,6 +1,6 @@
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest, getQueryFn } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -164,6 +164,7 @@ export default function Admin() {
   });
   const { data: allCharacters = [], error: charactersError, isLoading: isCharactersLoading } = useQuery({
     queryKey: [`${API_URL}/api/characters/all`],
+    queryFn: getQueryFn({ on401: "throw" }),
     enabled: !!token,
   });
 
