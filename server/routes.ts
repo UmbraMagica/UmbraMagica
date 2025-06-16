@@ -683,9 +683,9 @@ export async function registerRoutes(app: Express): Promise<void> {
   app.get("/api/owl-post/unread-total", requireAuth, async (req, res) => {
     try {
       // Vrátíme celkový počet pro všechny postavy uživatele (bez parametru characterId)
-
       let totalCount = 0;
-
+      const characterIdParam = req.query.characterId;
+      const characterId = characterIdParam ? Number(characterIdParam) : undefined;
       if (characterId) {
         // Ověření přístupu k postavě
         if (req.user!.role !== 'admin') {
@@ -702,7 +702,6 @@ export async function registerRoutes(app: Express): Promise<void> {
           totalCount += await storage.getUnreadOwlPostCount(char.id);
         }
       }
-
       res.json({ count: totalCount });
     } catch (error) {
       console.error("Error fetching unread total:", error);
@@ -882,11 +881,12 @@ export async function registerRoutes(app: Express): Promise<void> {
   // Seznam všech uživatelů (pouze pro adminy)
   app.get("/api/admin/users", requireAdmin, async (req, res) => {
     try {
-      const users = await storage.getAllUsers();
+      const includeSystem = req.query.includeSystem === "true";
+      const users = await storage.getAllUsers(includeSystem);
       res.json(users);
     } catch (error) {
       console.error("Chyba při načítání uživatelů:", error);
-      res.status(500).json({ message: "Chyba serveru" });
+      res.status(500).json({ message: "Chyba serveru", error: error?.message || error });
     }
   });
 
