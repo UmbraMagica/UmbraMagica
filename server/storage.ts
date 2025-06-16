@@ -1062,32 +1062,36 @@ export class DatabaseStorage implements IStorage {
     throw new Error("Method not implemented");
   }
 
-  async getAllWandComponents(): Promise<{
+  async get<replit_final_file>
+AllWandComponents(): Promise<{
     woods: { name: string; shortDescription: string; longDescription: string; availableForRandom?: boolean }[];
     cores: { name: string; category: string; description: string; availableForRandom?: boolean }[];
     lengths: { name: string; description: string; availableForRandom?: boolean }[];
     flexibilities: { name: string; description: string; availableForRandom?: boolean }[];
   }> {
-    const { data: woods, error: woodsError } = await supabase.from('wand_woods').select('*');
-    const { data: cores, error: coresError } = await supabase.from('wand_cores').select('*');
-    const { data: lengths, error: lengthsError } = await supabase.from('wand_lengths').select('*');
-    const { data: flexibilities, error: flexError } = await supabase.from('wand_flexibilities').select('*');
+    try {
+      const [woods, cores, lengths, flexibilities] = await Promise.all([
+        supabase.from('wand_woods').select('*').order('name'),
+        supabase.from('wand_cores').select('*').order('name'),
+        supabase.from('wand_lengths').select('*').order('name'),
+        supabase.from('wand_flexibilities').select('*').order('name'),
+      ]);
 
-    if (woodsError || coresError || lengthsError || flexError) {
-      console.error("Wand components fetch error:", { woodsError, coresError, lengthsError, flexError });
-      return { woods: [], cores: [], lengths: [], flexibilities: [] };
+      if (woods.error) console.error('Error fetching wand_woods:', woods.error);
+      if (cores.error) console.error('Error fetching wand_cores:', cores.error);
+      if (lengths.error) console.error('Error fetching wand_lengths:', lengths.error);
+      if (flexibilities.error) console.error('Error fetching wand_flexibilities:', flexibilities.error);
+
+      return {
+        woods: (woods.data || []).map(toCamel),
+        cores: (cores.data || []).map(toCamel),
+        lengths: (lengths.data || []).map(toCamel),
+        flexibilities: (flexibilities.data || []).map(toCamel),
+      };
+    } catch (error) {
+      console.error('Error in getWandComponents:', error);
+      throw error;
     }
-    if (!woods || woods.length === 0) console.warn("No data found in wand_woods", { woods });
-    if (!cores || cores.length === 0) console.warn("No data found in wand_cores", { cores });
-    if (!lengths || lengths.length === 0) console.warn("No data found in wand_lengths", { lengths });
-    if (!flexibilities || flexibilities.length === 0) console.warn("No data found in wand_flexibilities", { flexibilities });
-
-    return {
-      woods: (woods || []).map(toCamel),
-      cores: (cores || []).map(toCamel),
-      lengths: (lengths || []).map(toCamel),
-      flexibilities: (flexibilities || []).map(toCamel),
-    };
   }
 
   async migrateExistingWandsToInventory(): Promise<number> {
@@ -1095,29 +1099,50 @@ export class DatabaseStorage implements IStorage {
     throw new Error("Method not implemented");
   }
 
-  async updateWandComponents(components: {
-    woods: { name: string; shortDescription: string; longDescription: string; availableForRandom?: boolean }[];
-    cores: { name: string; category: string; description: string; availableForRandom?: boolean }[];
-    lengths: { name: string; description: string; availableForRandom?: boolean }[];
-    flexibilities: { name: string; description: string; availableForRandom?: boolean }[];
-  }): Promise<void> {
-    // Smaž všechny existující záznamy
-    await supabase.from('wand_woods').delete().neq('id', 0);
-    await supabase.from('wand_cores').delete().neq('id', 0);
-    await supabase.from('wand_lengths').delete().neq('id', 0);
-    await supabase.from('wand_flexibilities').delete().neq('id', 0);
-    // Vlož nové položky
-    if (components.woods.length > 0) {
-      await supabase.from('wand_woods').insert(components.woods);
-    }
-    if (components.cores.length > 0) {
-      await supabase.from('wand_cores').insert(components.cores);
-    }
-    if (components.lengths.length > 0) {
-      await supabase.from('wand_lengths').insert(components.lengths);
-    }
-    if (components.flexibilities.length > 0) {
-      await supabase.from('wand_flexibilities').insert(components.flexibilities);
+  async updateWandComponents(components: { woods?: { name: string; shortDescription: string; longDescription: string; availableForRandom?: boolean; id?: number }[]; cores?: { name: string; category: string; description: string; availableForRandom?: boolean; id?: number }[]; lengths?: { name: string; description: string; availableForRandom?: boolean; id?: number }[]; flexibilities?: { name: string; description: string; availableForRandom?: boolean; id?: number }[] }): Promise<void> {
+    try {
+      if (components.woods) {
+        for (const wood of components.woods) {
+          if (wood.id) {
+            await supabase.from('wand_woods').update(toSnake(wood)).eq('id', wood.id);
+          } else {
+            await supabase.from('wand_woods').insert([toSnake(wood)]);
+          }
+        }
+      }
+
+      if (components.cores) {
+        for (const core of components.cores) {
+          if (core.id) {
+            await supabase.from('wand_cores').update(toSnake(core)).eq('id', core.id);
+          } else {
+            await supabase.from('wand_cores').insert([toSnake(core)]);
+          }
+        }
+      }
+
+      if (components.lengths) {
+        for (const length of components.lengths) {
+          if (length.id) {
+            await supabase.from('wand_lengths').update(toSnake(length)).eq('id', length.id);
+          } else {
+            await supabase.from('wand_lengths').insert([toSnake(length)]);
+          }
+        }
+      }
+
+      if (components.flexibilities) {
+        for (const flexibility of components.flexibilities) {
+          if (flexibility.id) {
+            await supabase.from('wand_flexibilities').update(toSnake(flexibility)).eq('id', flexibility.id);
+          } else {
+            await supabase.from('wand_flexibilities').insert([toSnake(flexibility)]);
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error updating wand components:', error);
+      throw error;
     }
   }
 
@@ -1294,7 +1319,7 @@ export class DatabaseStorage implements IStorage {
   async sendOwlPostMessage(senderCharacterId: number, recipientCharacterId: number, subject: string, content: string): Promise<OwlPostMessage> {
     const { data, error } = await supabase
       .from('owl_post_messages')
-      .insert([{ sender_character_id: senderCharacterId, recipient_characterId: recipientCharacterId, subject, content, is_read: false, sent_at: new Date() }])
+      .insert([{ sender_character_id: senderCharacterId, recipientCharacterId: recipientCharacterId, subject, content, is_read: false, sent_at: new Date() }])
       .select()
       .single();
     if (error) {
@@ -1342,14 +1367,27 @@ export const storage = new DatabaseStorage();
 
 // Utilita pro převod snake_case na camelCase
 function toCamel(obj: any): any {
-  if (Array.isArray(obj)) return obj.map(toCamel);
-  if (obj && typeof obj === 'object') {
-    return Object.fromEntries(
-      Object.entries(obj).map(([k, v]) => [
-        k.replace(/_([a-z])/g, (_, c) => c.toUpperCase()),
-        toCamel(v)
-      ])
-    );
+  if (Array.isArray(obj)) {
+    return obj.map(toCamel);
+  } else if (obj !== null && obj.constructor === Object) {
+    return Object.keys(obj).reduce((result, key) => {
+      const camelKey = key.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
+      result[camelKey] = toCamel(obj[key]);
+      return result;
+    }, {} as any);
+  }
+  return obj;
+}
+
+function toSnake(obj: any): any {
+  if (Array.isArray(obj)) {
+    return obj.map(toSnake);
+  } else if (obj !== null && obj.constructor === Object) {
+    return Object.keys(obj).reduce((result, key) => {
+      const snakeKey = key.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+      result[snakeKey] = toSnake(obj[key]);
+      return result;
+    }, {} as any);
   }
   return obj;
 }
