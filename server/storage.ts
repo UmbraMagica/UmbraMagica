@@ -199,10 +199,10 @@ export interface IStorage {
   }>;
   migrateExistingWandsToInventory(): Promise<number>;
   updateWandComponents(components: {
-    woods: { name: string; shortDescription: string; longDescription: string; availableForRandom?: boolean }[];
-    cores: { name: string; category: string; description: string; availableForRandom?: boolean }[];
-    lengths: { name: string; description: string; availableForRandom?: boolean }[];
-    flexibilities: { name: string; description: string; availableForRandom?: boolean }[];
+    woods: { name: string; shortDescription: string; longDescription: string; availableForRandom?: boolean; id?: number }[];
+    cores: { name: string; category: string; description: string; availableForRandom?: boolean; id?: number }[];
+    lengths: { name: string; description: string; availableForRandom?: boolean; id?: number }[];
+    flexibilities: { name: string; description: string; availableForRandom?: boolean; id?: number }[]
   }): Promise<void>;
 
   // Influence operations
@@ -673,6 +673,7 @@ export class DatabaseStorage implements IStorage {
   // Character request operations
   async createCharacterRequest(request: InsertCharacterRequest): Promise<CharacterRequest> {
     const { data, error } = await supabase.from('characterRequests').insert([request]).select().single();
+```
     if (error) throw new Error(error.message);
     return data;
   }
@@ -887,7 +888,7 @@ export class DatabaseStorage implements IStorage {
         name: "Lumos",
         description: "Rozsvítí konec hůlky jako svítilnu",
         effect: "Rozsvítí konec hůlky jako svítilnu.",
-        category: "Kouzelné formule", 
+        category: "Kouzelné formule",
         type: "Základní",
         targetType: "self" as const,
       },
@@ -1060,15 +1061,15 @@ export class DatabaseStorage implements IStorage {
   async generateRandomWand(characterId: number): Promise<Wand> {
     try {
       const components = await this.getAllWandComponents();
-      
+
       // Filter only components available for random selection
       const availableWoods = components.woods.filter(w => w.availableForRandom !== false);
       const availableCores = components.cores.filter(c => c.availableForRandom !== false);
       const availableLengths = components.lengths.filter(l => l.availableForRandom !== false);
       const availableFlexibilities = components.flexibilities.filter(f => f.availableForRandom !== false);
 
-      if (availableWoods.length === 0 || availableCores.length === 0 || 
-          availableLengths.length === 0 || availableFlexibilities.length === 0) {
+      if (availableWoods.length === 0 || availableCores.length === 0 ||
+        availableLengths.length === 0 || availableFlexibilities.length === 0) {
         throw new Error("Not enough components available for random generation");
       }
 
@@ -1090,7 +1091,7 @@ export class DatabaseStorage implements IStorage {
 
       const { data, error } = await supabase.from('wands').insert([wandData]).select().single();
       if (error) throw error;
-      
+
       return {
         id: data.id,
         characterId: data.character_id,
@@ -1261,51 +1262,51 @@ export class DatabaseStorage implements IStorage {
   }
 
   async setInfluence(grindelwaldPoints: number, dumbledorePoints: number, userId: number): Promise<void> {
-  const now = new Date().toISOString();
+    const now = new Date().toISOString();
 
-  // Získej původní body
-  const { data: existing, error: readError } = await supabase
-    .from('influence_bar')
-    .select('grindelwald_points, dumbledore_points')
-    .eq('id', 1)
-    .single();
+    // Získej původní body
+    const { data: existing, error: readError } = await supabase
+      .from('influence_bar')
+      .select('grindelwald_points, dumbledore_points')
+      .eq('id', 1)
+      .single();
 
-  const previousTotal = existing
-    ? (existing.grindelwald_points + existing.dumbledore_points)
-    : 0;
-  const newTotal = grindelwaldPoints + dumbledorePoints;
+    const previousTotal = existing
+      ? (existing.grindelwald_points + existing.dumbledore_points)
+      : 0;
+    const newTotal = grindelwaldPoints + dumbledorePoints;
 
-  // Aktualizuj influence_bar
-  const { error: updateError } = await supabase
-    .from('influence_bar')
-    .upsert([{
-      id: 1,
-      grindelwald_points: grindelwaldPoints,
-      dumbledore_points: dumbledorePoints,
-      updated_at: now
-    }], { onConflict: ['id'] });
+    // Aktualizuj influence_bar
+    const { error: updateError } = await supabase
+      .from('influence_bar')
+      .upsert([{
+        id: 1,
+        grindelwald_points: grindelwaldPoints,
+        dumbledore_points: dumbledorePoints,
+        updated_at: now
+      }], { onConflict: ['id'] });
 
-  if (updateError) {
-    console.error("Error updating influence_bar:", updateError);
-    throw updateError;
+    if (updateError) {
+      console.error("Error updating influence_bar:", updateError);
+      throw updateError;
+    }
+
+    // Zapiš změnu do history
+    const { error: histError } = await supabase
+      .from('influence_history')
+      .insert([{
+        change_type: 'manual',
+        points_changed: newTotal - previousTotal,
+        previous_total: previousTotal,
+        new_total: newTotal,
+        admin_id: userId,
+        created_at: now
+      }]);
+
+    if (histError) {
+      console.error("Error inserting influence_history:", histError);
+    }
   }
-
-  // Zapiš změnu do history
-  const { error: histError } = await supabase
-    .from('influence_history')
-    .insert([{
-      change_type: 'manual',
-      points_changed: newTotal - previousTotal,
-      previous_total: previousTotal,
-      new_total: newTotal,
-      admin_id: userId,
-      created_at: now
-    }]);
-
-  if (histError) {
-    console.error("Error inserting influence_history:", histError);
-  }
-}
 
   // ... existující kód ...
 

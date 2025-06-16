@@ -658,7 +658,7 @@ export async function registerRoutes(app: Express): Promise<void> {
       const newTotal = Math.max(0, previousTotal + points);
 
       const newGrindelwaldPoints = changeType === 'grindelwald' ? newTotal : currentData.grindelwaldPoints;
-      const newDumbledorePoints = changeType === 'dumbledore' ? newTotal : currentData.dumbledorePoints;
+      newDumbledorePoints = changeType === 'dumbledore' ? newTotal : currentData.dumbledorePoints;
 
       await storage.setInfluence(newGrindelwaldPoints, newDumbledorePoints, req.user!.id);
 
@@ -780,7 +780,7 @@ export async function registerRoutes(app: Express): Promise<void> {
   });
 
   app.get("/api/owl-post/sent/:characterId", requireAuth, async (req, res) => {
-    const characterId = Number(req.params.characterId);
+    const characterId =Number(req.params.characterId);
     if (!characterId || isNaN(characterId)) {
       return res.status(400).json({ message: "Invalid characterId" });
     }
@@ -987,8 +987,6 @@ export async function registerRoutes(app: Express): Promise<void> {
     }
   });
 
-  
-
   // Visit Ollivanders (get random wand)
   app.post('/api/characters/:id/visit-ollivanders', requireAuth, async (req, res) => {
     try {
@@ -996,7 +994,7 @@ export async function registerRoutes(app: Express): Promise<void> {
       const userId = req.user!.id;
 
       // Check if character belongs to user
-      const character = await storage.getCharacter(characterId);
+      const character = await storage.getCharacterById(characterId);
       if (!character || character.userId !== userId) {
         return res.status(403).json({ error: "Character not found or access denied" });
       }
@@ -1023,7 +1021,7 @@ export async function registerRoutes(app: Express): Promise<void> {
       const { wood, core, length, flexibility, description } = req.body;
 
       // Check if character belongs to user
-      const character = await storage.getCharacter(characterId);
+      const character = await storage.getCharacterById(characterId);
       if (!character || character.userId !== userId) {
         return res.status(403).json({ error: "Character not found or access denied" });
       }
@@ -1040,13 +1038,13 @@ export async function registerRoutes(app: Express): Promise<void> {
       }
 
       const wandData = {
-        characterId,
+        characterId: characterId,
         wood,
         core,
         length,
         flexibility,
         description: description || `A ${length} wand made of ${wood} wood with a ${core} core, ${flexibility}`,
-        acquiredAt: new Date().toISOString()
+        acquiredAt: new Date()
       };
 
       const wand = await storage.createWand(wandData);
@@ -1057,6 +1055,31 @@ export async function registerRoutes(app: Express): Promise<void> {
     }
   });
 
+  // Get character's wand
+  app.get('/api/characters/:id/wand', requireAuth, async (req, res) => {
+    try {
+      const characterId = parseInt(req.params.id);
+      const userId = req.user!.id;
+
+      // Check if character belongs to user or is admin
+      if (req.user!.role !== 'admin') {
+        const character = await storage.getCharacterById(characterId);
+        if (!character || character.userId !== userId) {
+          return res.status(403).json({ error: "Character not found or access denied" });
+        }
+      }
+
+      const wand = await storage.getCharacterWand(characterId);
+      if (!wand) {
+        return res.status(404).json({ error: "Character has no wand" });
+      }
+
+      res.json(wand);
+    } catch (error: any) {
+      console.error('Error fetching character wand:', error);
+      res.status(500).json({ error: error.message });
+    }
+  });
   // ... další endpointy (např. /api/user/character-order, /api/user/highlight-words, atd.) ...
   // Všude používej pouze req.user!.id a req.user!.role
   // ŽÁDNÉ req.session, req.cookies, SessionData, debug endpointy na session/cookie!
