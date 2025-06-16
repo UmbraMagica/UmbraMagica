@@ -1108,55 +1108,6 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllWandComponents(): Promise<{
-    woods: { name: string; shortDescription: string; longDescription: string; availableForRandom?: boolean }[];
-    cores: { name: string; category: string; description: string; availableForRandom?: boolean }[];
-    lengths: { name: string; description: string; availableForRandom?: boolean }[];
-    flexibilities: { name: string; description: string; availableForRandom?: boolean }[];
-  }> {
-    try {
-      const [woods, cores, lengths, flexibilities] = await Promise.all([
-        supabase.from('wand_woods').select('*').order('name'),
-        supabase.from('wand_cores').select('*').order('name'),
-        supabase.from('wand_lengths').select('*').order('sort_order'),
-        supabase.from('wand_flexibilities').select('*').order('name')
-      ]);
-
-      if (woods.error) throw woods.error;
-      if (cores.error) throw cores.error;
-      if (lengths.error) throw lengths.error;
-      if (flexibilities.error) throw flexibilities.error;
-
-      return {
-        woods: woods.data?.map(wood => ({
-          name: wood.name,
-          shortDescription: wood.short_description || '',
-          longDescription: wood.long_description || '',
-          availableForRandom: wood.available_for_random
-        })) || [],
-        cores: cores.data?.map(core => ({
-          name: core.name,
-          category: core.category || '',
-          description: core.description || '',
-          availableForRandom: core.available_for_random
-        })) || [],
-        lengths: lengths.data?.map(length => ({
-          name: length.name,
-          description: length.description || '',
-          availableForRandom: length.available_for_random
-        })) || [],
-        flexibilities: flexibilities.data?.map(flex => ({
-          name: flex.name,
-          description: flex.description || '',
-          availableForRandom: flex.available_for_random
-        })) || []
-      };
-    } catch (error) {
-      console.error('Error fetching wand components:', error);
-      throw new Error('Failed to fetch wand components');
-    }
-  }
-
-  async getAllWandComponents(): Promise<{
     woods: WandWood[];
     cores: WandCore[];
     lengths: WandLength[];
@@ -1170,10 +1121,22 @@ export class DatabaseStorage implements IStorage {
         supabase.from('wand_flexibilities').select('*').order('name'),
       ]);
 
-      if (woods.error) console.error('Error fetching wand_woods:', woods.error);
-      if (cores.error) console.error('Error fetching wand_cores:', cores.error);
-      if (lengths.error) console.error('Error fetching wand_lengths:', lengths.error);
-      if (flexibilities.error) console.error('Error fetching wand_flexibilities:', flexibilities.error);
+      if (woods.error) {
+        console.error('Error fetching wand_woods:', woods.error);
+        throw woods.error;
+      }
+      if (cores.error) {
+        console.error('Error fetching wand_cores:', cores.error);
+        throw cores.error;
+      }
+      if (lengths.error) {
+        console.error('Error fetching wand_lengths:', lengths.error);
+        throw lengths.error;
+      }
+      if (flexibilities.error) {
+        console.error('Error fetching wand_flexibilities:', flexibilities.error);
+        throw flexibilities.error;
+      }
 
       return {
         woods: (woods.data || []).map(toCamel),

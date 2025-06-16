@@ -389,7 +389,7 @@ export async function registerRoutes(app: Express): Promise<void> {
   // Komponenty pro tvorbu hůlek
   app.get("/api/wand-components", requireAuth, async (_req, res) => {
     try {
-      const components = await storage.getWandComponents();
+      const components = await storage.getAllWandComponents();
       res.json(components);
     } catch (error) {
       console.error("Error fetching wand components:", error);
@@ -987,31 +987,22 @@ export async function registerRoutes(app: Express): Promise<void> {
     }
   });
 
-  // Get all wand components
-  app.get('/api/wand-components', async (req, res) => {
-    try {
-      const components = await storage.getAllWandComponents();
-      res.json(components);
-    } catch (error: any) {
-      console.error('Error fetching wand components:', error);
-      res.status(500).json({ error: error.message });
-    }
-  });
+  
 
   // Visit Ollivanders (get random wand)
   app.post('/api/characters/:id/visit-ollivanders', requireAuth, async (req, res) => {
     try {
       const characterId = parseInt(req.params.id);
-      const userId = (req as any).user.id;
+      const userId = req.user!.id;
 
       // Check if character belongs to user
-      const character = await storage.getCharacterById(characterId);
+      const character = await storage.getCharacter(characterId);
       if (!character || character.userId !== userId) {
         return res.status(403).json({ error: "Character not found or access denied" });
       }
 
       // Check if character already has a wand
-      const existingWand = await storage.getWandByCharacterId(characterId);
+      const existingWand = await storage.getCharacterWand(characterId);
       if (existingWand) {
         return res.status(400).json({ error: "Character already has a wand" });
       }
@@ -1028,17 +1019,17 @@ export async function registerRoutes(app: Express): Promise<void> {
   app.post('/api/characters/:id/create-custom-wand', requireAuth, async (req, res) => {
     try {
       const characterId = parseInt(req.params.id);
-      const userId = (req as any).user.id;
+      const userId = req.user!.id;
       const { wood, core, length, flexibility, description } = req.body;
 
       // Check if character belongs to user
-      const character = await storage.getCharacterById(characterId);
+      const character = await storage.getCharacter(characterId);
       if (!character || character.userId !== userId) {
         return res.status(403).json({ error: "Character not found or access denied" });
       }
 
       // Check if character already has a wand
-      const existingWand = await storage.getWandByCharacterId(characterId);
+      const existingWand = await storage.getCharacterWand(characterId);
       if (existingWand) {
         return res.status(400).json({ error: "Character already has a wand" });
       }
@@ -1049,43 +1040,19 @@ export async function registerRoutes(app: Express): Promise<void> {
       }
 
       const wandData = {
-        character_id: characterId,
+        characterId,
         wood,
         core,
         length,
         flexibility,
         description: description || `A ${length} wand made of ${wood} wood with a ${core} core, ${flexibility}`,
-        acquired_at: new Date().toISOString()
+        acquiredAt: new Date().toISOString()
       };
 
       const wand = await storage.createWand(wandData);
       res.json(wand);
     } catch (error: any) {
       console.error('Error creating custom wand:', error);
-      res.status(500).json({ error: error.message });
-    }
-  });
-
-  // Get character's wand
-  app.get('/api/characters/:id/wand', requireAuth, async (req, res) => {
-    try {
-      const characterId = parseInt(req.params.id);
-      const userId = (req as any).user.id;
-
-      // Check if character belongs to user
-      const character = await storage.getCharacterById(characterId);
-      if (!character || character.userId !== userId) {
-        return res.status(403).json({ error: "Character not found or access denied" });
-      }
-
-      const wand = await storage.getWandByCharacterId(characterId);
-      if (!wand) {
-        return res.status(404).json({ error: "Character has no wand" });
-      }
-
-      res.json(wand);
-    } catch (error: any) {
-      console.error('Error fetching character wand:', error);
       res.status(500).json({ error: error.message });
     }
   });
