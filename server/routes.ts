@@ -7,7 +7,7 @@ import { z } from "zod";
 import multer from "multer";
 import sharp from "sharp";
 import jwt from 'jsonwebtoken';
-import { supabase } from "./supabase";
+import { supabase } from "./supabaseClient";
 
 // JWT payload do req.user
 declare module 'express-serve-static-core' {
