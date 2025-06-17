@@ -226,7 +226,7 @@ export interface IStorage {
     characterId: number,
     itemType: string,
     itemId: number,
-    price: number = 0
+    price?: number
   ): Promise<void>;
 }
 
@@ -1453,7 +1453,7 @@ export class DatabaseStorage implements IStorage {
     characterId: number,
     itemType: string,
     itemId: number,
-    price: number = 0
+    price?: number
   ) {
     const item: InsertInventoryItem = {
       characterId,
@@ -1462,7 +1462,7 @@ export class DatabaseStorage implements IStorage {
       quantity: 1,
       category: itemType.charAt(0).toUpperCase() + itemType.slice(1),
       rarity: 'Common',
-      value: price,
+      value: price || 0,
       isEquipped: false,
       notes: '',
     };
