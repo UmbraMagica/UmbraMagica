@@ -1369,12 +1369,13 @@ export class DatabaseStorage implements IStorage {
         new_total: newTotal,
         reason,
         admin_id: userId,
-        side: changedSide,
+        side: changedSide ?? 'reset',
         created_at: now
       }]);
 
     if (histError) {
       console.error("Error inserting influence_history:", histError);
+      throw histError;
     }
   }
 

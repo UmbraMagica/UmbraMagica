@@ -56,6 +56,15 @@ const categoryIcons = {
   Other: "📦",
 };
 
+const ITEM_TYPE_OPTIONS = [
+  { value: "wand", label: "Hůlka" },
+  { value: "book", label: "Knihy" },
+  { value: "potion", label: "Lektvary" },
+  { value: "artifact", label: "Magické artefakty" },
+  { value: "plant", label: "Rostliny" },
+  { value: "other", label: "Ostatní" }
+];
+
 export default function CharacterInventory() {
   const { characterId } = useParams();
   const [, setLocation] = useLocation();
@@ -274,7 +283,18 @@ export default function CharacterInventory() {
                       <FormItem>
                         <FormLabel>Typ předmětu</FormLabel>
                         <FormControl>
-                          <Input {...field} />
+                          <Select value={field.value} onValueChange={field.onChange}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="-- Vyber typ předmětu --" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {ITEM_TYPE_OPTIONS.map((option) => (
+                                <SelectItem key={option.value} value={option.value}>
+                                  {option.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
