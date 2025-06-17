@@ -25,12 +25,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { apiRequest } from "@/lib/queryClient";
 
 const ITEM_TYPE_OPTIONS = [
-  { value: "wand", label: "Hůlka" },
-  { value: "book", label: "Knihy" },
-  { value: "potion", label: "Lektvary" },
-  { value: "artifact", label: "Magické artefakty" },
-  { value: "plant", label: "Rostliny" },
-  { value: "other", label: "Ostatní" }
+  { value: "book", label: "Kniha" },
+  { value: "potion", label: "Lektvar" },
+  { value: "artifact", label: "Magický artefakt" },
+  { value: "plant", label: "Rostlina" },
+  { value: "other", label: "Ostatní" },
 ];
 
 const RARITY_OPTIONS = [
@@ -228,6 +227,9 @@ export function AddInventoryItemDialog({ characterId }: { characterId: number })
 function CharacterInventory() {
   const { characterId } = useParams();
   const id = characterId ? Number(characterId) : undefined;
+  const navigateToProfile = () => {
+    window.location.href = `/characters/${characterId}`;
+  };
 
   // Načtení inventáře postavy
   const { data: inventory = [], isLoading, error } = useQuery<any[]>({
@@ -242,6 +244,9 @@ function CharacterInventory() {
 
   return (
     <div className="p-4 max-w-2xl mx-auto">
+      <Button variant="outline" className="mb-4" onClick={navigateToProfile}>
+        ← Zpět na profil postavy
+      </Button>
       <h1 className="text-2xl font-bold mb-4">Inventář postavy</h1>
       {id && <AddInventoryItemDialog characterId={id} />}
       <div className="mt-8">

@@ -443,6 +443,14 @@ export async function registerRoutes(app: Express): Promise<void> {
       return res.status(403).json({ message: "Forbidden" });
     }
 
+    // Debug log payload
+    console.log("Inventory POST payload:", req.body);
+
+    // Zákaz přidání hůlky ručně
+    if (req.body.item_type === 'wand') {
+      return res.status(403).json({ message: "Nelze přidat hůlku ručně do inventáře." });
+    }
+
     // Přijímáme všechna pole
     const { item_type, item_id, price, category, quantity, rarity, description, notes } = req.body;
     if (!item_type || !item_id) {
