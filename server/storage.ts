@@ -209,7 +209,7 @@ export interface IStorage {
   getInfluenceBar(): Promise<{ grindelwaldPoints: number; dumbledorePoints: number }>;
   getInfluenceHistory(): Promise<any[]>;
   adjustInfluence(side: 'grindelwald' | 'dumbledore', points: number, userId: number): Promise<void>;
-  setInfluence(grindelwaldPoints: number, dumbledorePoints: number, userId: number, reason: string): Promise<void>;
+  setInfluence(grindelwaldPoints: number, dumbledorePoints: number, userId: number, reason: string, side?: 'grindelwald' | 'dumbledore'): Promise<void>;
 
   // Přidávám implementaci chybějící funkce pro admin rozhraní
   getPendingHousingRequests(): Promise<HousingRequest[]>;
@@ -1315,14 +1315,14 @@ export class DatabaseStorage implements IStorage {
       const current = await this.getInfluenceBar();
       const newGrindelwaldPoints = side === 'grindelwald' ? current.grindelwaldPoints + points : current.grindelwaldPoints;
       const newDumbledorePoints = side === 'dumbledore' ? current.dumbledorePoints + points : current.dumbledorePoints;
-      await this.setInfluence(newGrindelwaldPoints, newDumbledorePoints, userId);
+      await this.setInfluence(newGrindelwaldPoints, newDumbledorePoints, userId, '', side);
     } catch (error) {
       console.error("Error adjusting influence:", error);
       throw error;
     }
   }
 
-  async setInfluence(grindelwaldPoints: number, dumbledorePoints: number, userId: number, reason: string): Promise<void> {
+  async setInfluence(grindelwaldPoints: number, dumbledorePoints: number, userId: number, reason: string, side?: 'grindelwald' | 'dumbledore'): Promise<void> {
     const now = new Date().toISOString();
 
     // Získej původní body
@@ -1352,6 +1352,13 @@ export class DatabaseStorage implements IStorage {
       throw updateError;
     }
 
+    // Urči komu byly body přičteny
+    let changedSide: 'grindelwald' | 'dumbledore' | null = side || null;
+    if (!changedSide && existing) {
+      if (grindelwaldPoints > existing.grindelwald_points) changedSide = 'grindelwald';
+      else if (dumbledorePoints > existing.dumbledore_points) changedSide = 'dumbledore';
+    }
+
     // Zapiš změnu do history
     const { error: histError } = await supabase
       .from('influence_history')
@@ -1362,6 +1369,7 @@ export class DatabaseStorage implements IStorage {
         new_total: newTotal,
         reason,
         admin_id: userId,
+        side: changedSide,
         created_at: now
       }]);
 
