@@ -21,31 +21,21 @@ import { Link } from "wouter";
 const API_URL = import.meta.env.VITE_API_URL || '';
 
 const inventoryItemSchema = z.object({
-  itemName: z.string().min(1, "Název předmětu je povinný").max(100),
-  itemDescription: z.string().optional(),
-  quantity: z.number().min(1, "Množství musí být alespoň 1").default(1),
-  category: z.enum(["Wand", "Potion", "Book", "Clothes", "Jewelry", "Tool", "Other"]),
-  rarity: z.enum(["Common", "Uncommon", "Rare", "Epic", "Legendary"]).default("Common"),
-  value: z.number().min(0, "Hodnota nemůže být záporná").default(0),
-  isEquipped: z.boolean().default(false),
-  notes: z.string().optional(),
+  item_type: z.string().min(1, "Typ předmětu je povinný"),
+  item_id: z.number().min(1, "ID předmětu je povinné"),
+  price: z.number().optional(),
 });
 
 type InventoryItemForm = z.infer<typeof inventoryItemSchema>;
 
 interface InventoryItem {
   id: number;
-  characterId: number;
-  itemName: string;
-  itemDescription?: string;
-  quantity: number;
-  category: string;
-  rarity: string;
-  value: number;
-  isEquipped: boolean;
-  notes?: string;
-  acquiredAt: string;
-  createdAt: string;
+  character_id: number;
+  item_type: string;
+  item_id: number;
+  price: number;
+  acquired_at: string;
+  created_at: string;
 }
 
 const rarityColors = {
@@ -90,21 +80,21 @@ export default function CharacterInventory() {
   const form = useForm<InventoryItemForm>({
     resolver: zodResolver(inventoryItemSchema),
     defaultValues: {
-      itemName: "",
-      itemDescription: "",
-      quantity: 1,
-      category: "Other",
-      rarity: "Common",
-      value: 0,
-      isEquipped: false,
-      notes: "",
+      item_type: "",
+      item_id: 0,
+      price: 0,
     },
   });
 
   // Add inventory item mutation
   const addItemMutation = useMutation({
     mutationFn: async (data: InventoryItemForm) => {
-      const response = await apiRequest("POST", `${API_URL}/api/characters/${characterId}/inventory`, data);
+      console.log("Sending to inventory:", data);  // Debug log
+      const response = await apiRequest("POST", `${API_URL}/api/characters/${characterId}/inventory`, {
+        item_type: data.item_type,
+        item_id: data.item_id,
+        price: data.price
+      });
       return response.json();
     },
     onSuccess: () => {
@@ -182,14 +172,9 @@ export default function CharacterInventory() {
   const handleEdit = (item: InventoryItem) => {
     setEditingItem(item);
     form.reset({
-      itemName: item.itemName,
-      itemDescription: item.itemDescription || "",
-      quantity: item.quantity,
-      category: item.category as any,
-      rarity: item.rarity as any,
-      value: item.value,
-      isEquipped: item.isEquipped,
-      notes: item.notes || "",
+      item_type: item.item_type,
+      item_id: item.item_id,
+      price: item.price,
     });
     setIsAddDialogOpen(true);
   };
@@ -198,6 +183,28 @@ export default function CharacterInventory() {
     setEditingItem(null);
     setIsAddDialogOpen(false);
     form.reset();
+  };
+
+  // Helper function to add wand to inventory
+  const addWandToInventory = async (wandId: number) => {
+    try {
+      await apiRequest("POST", `${API_URL}/api/characters/${characterId}/inventory`, {
+        item_type: "wand",
+        item_id: wandId,
+        price: 7
+      });
+      queryClient.invalidateQueries({ queryKey: [`/api/characters/${characterId}/inventory`] });
+      toast({
+        title: "Hůlka přidána",
+        description: "Hůlka byla úspěšně přidána do inventáře.",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Chyba",
+        description: error.message || "Nepodařilo se přidat hůlku do inventáře",
+        variant: "destructive",
+      });
+    }
   };
 
   if (!character) {
@@ -216,14 +223,14 @@ export default function CharacterInventory() {
 
   // Group inventory by category
   const inventoryByCategory = inventory.reduce((acc, item) => {
-    if (!acc[item.category]) {
-      acc[item.category] = [];
+    if (!acc[item.item_type]) {
+      acc[item.item_type] = [];
     }
-    acc[item.category].push(item);
+    acc[item.item_type].push(item);
     return acc;
   }, {} as Record<string, InventoryItem[]>);
 
-  const totalValue = inventory.reduce((sum, item) => sum + (item.value * item.quantity), 0);
+  const totalValue = inventory.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const totalItems = inventory.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
@@ -262,10 +269,10 @@ export default function CharacterInventory() {
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                   <FormField
                     control={form.control}
-                    name="itemName"
+                    name="item_type"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Název předmětu</FormLabel>
+                        <FormLabel>Typ předmětu</FormLabel>
                         <FormControl>
                           <Input {...field} />
                         </FormControl>
@@ -276,102 +283,16 @@ export default function CharacterInventory() {
                   
                   <FormField
                     control={form.control}
-                    name="category"
+                    name="item_id"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Kategorie</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="Wand">🪄 Hůlka</SelectItem>
-                            <SelectItem value="Potion">🧪 Lektvar</SelectItem>
-                            <SelectItem value="Book">📚 Kniha</SelectItem>
-                            <SelectItem value="Clothes">👕 Oblečení</SelectItem>
-                            <SelectItem value="Jewelry">💍 Šperky</SelectItem>
-                            <SelectItem value="Tool">🔧 Nástroj</SelectItem>
-                            <SelectItem value="Other">📦 Ostatní</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="quantity"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Množství</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="number"
-                              {...field}
-                              onChange={(e) => field.onChange(parseInt(e.target.value) || 1)}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="value"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Hodnota (galleony)</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="number"
-                              {...field}
-                              onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <FormField
-                    control={form.control}
-                    name="rarity"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Vzácnost</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="Common">Běžný</SelectItem>
-                            <SelectItem value="Uncommon">Neobvyklý</SelectItem>
-                            <SelectItem value="Rare">Vzácný</SelectItem>
-                            <SelectItem value="Epic">Epický</SelectItem>
-                            <SelectItem value="Legendary">Legendární</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="itemDescription"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Popis (volitelný)</FormLabel>
+                        <FormLabel>ID předmětu</FormLabel>
                         <FormControl>
-                          <Textarea {...field} />
+                          <Input
+                            type="number"
+                            {...field}
+                            onChange={(e) => field.onChange(parseInt(e.target.value) || 1)}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -380,12 +301,16 @@ export default function CharacterInventory() {
 
                   <FormField
                     control={form.control}
-                    name="notes"
+                    name="price"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Poznámky (volitelné)</FormLabel>
+                        <FormLabel>Cena (galleony)</FormLabel>
                         <FormControl>
-                          <Textarea {...field} />
+                          <Input
+                            type="number"
+                            {...field}
+                            onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -490,7 +415,7 @@ export default function CharacterInventory() {
                     <Card key={item.id} className="relative">
                       <CardContent className="p-4">
                         <div className="flex justify-between items-start mb-2">
-                          <h4 className="font-semibold text-lg">{item.itemName}</h4>
+                          <h4 className="font-semibold text-lg">{item.item_type}</h4>
                           {canEdit && (
                             <div className="flex space-x-1">
                               <Button
@@ -512,8 +437,8 @@ export default function CharacterInventory() {
                         </div>
                         
                         <div className="flex items-center space-x-2 mb-2">
-                          <Badge className={rarityColors[item.rarity as keyof typeof rarityColors]}>
-                            {item.rarity}
+                          <Badge className={rarityColors[item.item_type as keyof typeof rarityColors]}>
+                            {item.item_type}
                           </Badge>
                           {item.quantity > 1 && (
                             <Badge variant="outline">x{item.quantity}</Badge>
@@ -523,21 +448,9 @@ export default function CharacterInventory() {
                           )}
                         </div>
                         
-                        {item.itemDescription && (
-                          <p className="text-sm text-muted-foreground mb-2">
-                            {item.itemDescription}
-                          </p>
-                        )}
-                        
-                        {item.value > 0 && (
+                        {item.price > 0 && (
                           <p className="text-sm font-medium text-yellow-600">
-                            {item.value * item.quantity} G
-                          </p>
-                        )}
-                        
-                        {item.notes && (
-                          <p className="text-xs text-muted-foreground mt-2 italic">
-                            {item.notes}
+                            {item.price * item.quantity} G
                           </p>
                         )}
                       </CardContent>

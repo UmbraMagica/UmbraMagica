@@ -120,6 +120,22 @@ export default function Ollivanders() {
       }
       const data = await response.json();
       console.log("[Ollivanders] Odpověď z API:", data);
+
+      // Add wand to inventory
+      await fetch(`${API_URL}/api/characters/${selectedCharacter.id}/inventory`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(localStorage.getItem('jwt_token') ? { Authorization: `Bearer ${localStorage.getItem('jwt_token')}` } : {}),
+        },
+        body: JSON.stringify({
+          item_type: 'wand',
+          item_id: data.id,
+          price: 7
+        }),
+        credentials: 'include'
+      });
+
       return data;
     },
     onSuccess: (newWand) => {
@@ -129,6 +145,7 @@ export default function Ollivanders() {
         description: `${selectedCharacter?.firstName} získal novou hůlku od pana Ollivandera!`
       });
       queryClient.invalidateQueries({ queryKey: [`/api/characters/${selectedCharacter?.id}/wand`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/characters/${selectedCharacter?.id}/inventory`] });
     },
     onError: (error) => {
       console.error("[Ollivanders] Chyba při návštěvě Ollivandera (mutace):", error);
@@ -161,6 +178,22 @@ export default function Ollivanders() {
       }
       const data = await response.json();
       console.log("[Ollivanders] Odpověď z API:", data);
+
+      // Add wand to inventory
+      await fetch(`${API_URL}/api/characters/${selectedCharacter.id}/inventory`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(localStorage.getItem('jwt_token') ? { Authorization: `Bearer ${localStorage.getItem('jwt_token')}` } : {}),
+        },
+        body: JSON.stringify({
+          item_type: 'wand',
+          item_id: data.id,
+          price: 7
+        }),
+        credentials: 'include'
+      });
+
       return data;
     },
     onSuccess: (newWand) => {
@@ -170,6 +203,7 @@ export default function Ollivanders() {
         description: `${selectedCharacter?.firstName} má novou vlastní hůlku!`
       });
       queryClient.invalidateQueries({ queryKey: [`/api/characters/${selectedCharacter?.id}/wand`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/characters/${selectedCharacter?.id}/inventory`] });
     },
     onError: (error) => {
       console.error("[Ollivanders] Chyba při tvorbě vlastní hůlky (mutace):", error);
