@@ -387,17 +387,6 @@ export default function CharacterProfile() {
                   <Wand2 className="h-4 w-4 mr-2" />
                   Moje kouzla
                 </Button>
-                {canEdit && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-full justify-start"
-                    onClick={() => setLocation(`/characters/${character.id}/history`)}
-                  >
-                    <FileText className="h-4 w-4 mr-2" />
-                    Historie postavy
-                  </Button>
-                )}
               </div>
             </CardContent>
           </Card>

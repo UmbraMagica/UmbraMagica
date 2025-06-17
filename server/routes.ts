@@ -443,16 +443,29 @@ export async function registerRoutes(app: Express): Promise<void> {
       return res.status(403).json({ message: "Forbidden" });
     }
 
-    console.log('Received inventory POST body:', req.body);
+    // Přijímáme všechna pole
+    const { item_type, item_id, price, category, quantity, rarity, description, notes } = req.body;
+    if (!item_type || !item_id) {
+      return res.status(400).json({ message: 'Missing item_type or item_id' });
+    }
 
     try {
-      const { item_type, item_id, price } = req.body;
-      if (!item_type || !item_id) {
-        return res.status(400).json({ message: 'Missing item_type or item_id' });
-      }
-      const inventoryItem = await storage.addItemToInventory(characterId, item_type, item_id, price);
-      res.status(201).json(inventoryItem);
-    } catch (error: any) {
+      const item = await storage.addInventoryItem({
+        character_id: characterId,
+        item_type,
+        item_id,
+        price: price ?? 0,
+        category: category ?? null,
+        quantity: quantity ?? 1,
+        rarity: rarity ?? null,
+        description: description ?? null,
+        notes: notes ?? null,
+        acquired_at: new Date().toISOString(),
+        is_equipped: false,
+        created_at: new Date().toISOString(),
+      });
+      res.status(201).json(item);
+    } catch (error) {
       res.status(400).json({ message: error.message });
     }
   });
