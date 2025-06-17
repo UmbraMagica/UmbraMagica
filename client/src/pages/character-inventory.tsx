@@ -34,16 +34,11 @@ const ITEM_TYPE_OPTIONS = [
 ];
 
 const RARITY_OPTIONS = [
-  { value: "common", label: "Běžná" },
-  { value: "uncommon", label: "Neobvyklá" },
-  { value: "rare", label: "Vzácná" },
-  { value: "epic", label: "Epická" },
-  { value: "legendary", label: "Legendární" },
-  { value: "common_en", label: "Common" },
-  { value: "uncommon_en", label: "Uncommon" },
-  { value: "rare_en", label: "Rare" },
-  { value: "epic_en", label: "Epic" },
-  { value: "legendary_en", label: "Legendary" },
+  { value: "common", label: "Běžná / Common" },
+  { value: "uncommon", label: "Neobvyklá / Uncommon" },
+  { value: "rare", label: "Vzácná / Rare" },
+  { value: "epic", label: "Epická / Epic" },
+  { value: "legendary", label: "Legendární / Legendary" },
 ];
 
 const inventoryItemSchema = z.object({
