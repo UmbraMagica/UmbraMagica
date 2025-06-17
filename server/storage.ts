@@ -220,6 +220,14 @@ export interface IStorage {
   getOwlPostSent(characterId: number): Promise<OwlPostMessage[]>;
   sendOwlPostMessage(senderCharacterId: number, recipientCharacterId: number, subject: string, content: string): Promise<OwlPostMessage>;
   markOwlPostMessageRead(messageId: number, characterId: number): Promise<boolean>;
+
+  // Přidání předmětu do inventáře včetně ceny
+  addItemToInventory(
+    characterId: number,
+    itemType: string,
+    itemId: number,
+    price: number = 0
+  ): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -1053,6 +1061,7 @@ export class DatabaseStorage implements IStorage {
     };
     const { data, error } = await supabase.from('wands').insert([wandToInsert]).select().single();
     if (error) throw new Error(error.message);
+    await this.addItemToInventory(data.character_id, 'wand', data.id, 7);
     return {
       id: data.id,
       character_id: data.character_id,
@@ -1110,7 +1119,7 @@ export class DatabaseStorage implements IStorage {
       console.log("Wand data being inserted:", wandData);
       const { data, error } = await supabase.from('wands').insert([wandData]).select().single();
       if (error) throw error;
-
+      await this.addItemToInventory(characterId, 'wand', data.id, 7);
       return {
         id: data.id,
         character_id: data.character_id,
@@ -1437,6 +1446,31 @@ export class DatabaseStorage implements IStorage {
       .delete()
       .eq('id', messageId);
     return !error;
+  }
+
+  // Přidání předmětu do inventáře včetně ceny
+  async addItemToInventory(
+    characterId: number,
+    itemType: string,
+    itemId: number,
+    price: number = 0
+  ) {
+    const item: InsertInventoryItem = {
+      characterId,
+      itemName: itemType === 'wand' ? 'Hůlka' : itemType,
+      itemDescription: '',
+      quantity: 1,
+      category: itemType.charAt(0).toUpperCase() + itemType.slice(1),
+      rarity: 'Common',
+      value: price,
+      isEquipped: false,
+      notes: '',
+    };
+    const { error } = await supabase.from('characterInventory').insert([item]);
+    if (error) {
+      console.error('Error adding item to inventory:', error);
+      throw new Error('Failed to add item to inventory');
+    }
   }
 }
 
