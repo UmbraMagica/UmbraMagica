@@ -20,10 +20,21 @@ import { Link } from "wouter";
 
 const API_URL = import.meta.env.VITE_API_URL || '';
 
+const RARITY_OPTIONS = [
+  { value: "Common", label: "Běžný" },
+  { value: "Rare", label: "Vzácný" },
+  { value: "Legendary", label: "Legendární" }
+];
+
 const inventoryItemSchema = z.object({
   item_type: z.string().min(1, "Typ předmětu je povinný"),
   item_id: z.number().min(1, "ID předmětu je povinné"),
-  price: z.number().optional(),
+  price: z.number().min(0, "Cena musí být 0 nebo vyšší"),
+  quantity: z.number().min(1, "Množství musí být alespoň 1").default(1),
+  category: z.string().min(1, "Kategorie je povinná"),
+  rarity: z.enum(["Common", "Rare", "Legendary"]),
+  description: z.string().optional(),
+  notes: z.string().optional(),
 });
 
 type InventoryItemForm = z.infer<typeof inventoryItemSchema>;
@@ -92,18 +103,18 @@ export default function CharacterInventory() {
       item_type: "",
       item_id: 0,
       price: 0,
+      quantity: 1,
+      category: "",
+      rarity: "Common",
+      description: "",
+      notes: "",
     },
   });
 
   // Add inventory item mutation
   const addItemMutation = useMutation({
     mutationFn: async (data: InventoryItemForm) => {
-      console.log("Sending to inventory:", data);  // Debug log
-      const response = await apiRequest("POST", `${API_URL}/api/characters/${characterId}/inventory`, {
-        item_type: data.item_type,
-        item_id: data.item_id,
-        price: data.price
-      });
+      const response = await apiRequest("POST", `${API_URL}/api/characters/${characterId}/inventory`, data);
       return response.json();
     },
     onSuccess: () => {
@@ -184,6 +195,11 @@ export default function CharacterInventory() {
       item_type: item.item_type,
       item_id: item.item_id,
       price: item.price,
+      quantity: item.quantity,
+      category: item.category,
+      rarity: item.rarity,
+      description: item.description,
+      notes: item.notes,
     });
     setIsAddDialogOpen(true);
   };
@@ -283,7 +299,12 @@ export default function CharacterInventory() {
                       <FormItem>
                         <FormLabel>Typ předmětu</FormLabel>
                         <FormControl>
-                          <Select value={field.value} onValueChange={field.onChange}>
+                          <Select value={field.value} onValueChange={(val) => {
+                            field.onChange(val);
+                            // Nastav kategorii automaticky podle typu
+                            const found = ITEM_TYPE_OPTIONS.find(opt => opt.value === val);
+                            if (found) form.setValue("category", found.label);
+                          }}>
                             <SelectTrigger>
                               <SelectValue placeholder="-- Vyber typ předmětu --" />
                             </SelectTrigger>
@@ -331,6 +352,91 @@ export default function CharacterInventory() {
                             {...field}
                             onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
                           />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="quantity"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Množství</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            {...field}
+                            onChange={(e) => field.onChange(parseInt(e.target.value) || 1)}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="category"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Kategorie</FormLabel>
+                        <FormControl>
+                          <Input {...field} readOnly />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="rarity"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Vzácnost</FormLabel>
+                        <FormControl>
+                          <Select value={field.value} onValueChange={field.onChange}>
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {RARITY_OPTIONS.map((option) => (
+                                <SelectItem key={option.value} value={option.value}>
+                                  {option.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="description"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Popis</FormLabel>
+                        <FormControl>
+                          <Textarea {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="notes"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Poznámka</FormLabel>
+                        <FormControl>
+                          <Textarea {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
