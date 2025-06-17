@@ -88,18 +88,20 @@ function OwlPost() {
   });
 
   // Get inbox messages
-  const { data: inboxMessages = [] } = useQuery<OwlPostMessage[]>({
+  const { data: inboxMessagesRaw = [] } = useQuery<OwlPostMessage[]>({
     queryKey: [`/api/owl-post/inbox/${selectedCharacter?.id}`],
     enabled: !!selectedCharacter,
     queryFn: getQueryFn({ on401: "throw" }),
   });
+  const inboxMessages = Array.isArray(inboxMessagesRaw) ? inboxMessagesRaw : [];
 
   // Get sent messages
-  const { data: sentMessages = [] } = useQuery<OwlPostMessage[]>({
+  const { data: sentMessagesRaw = [] } = useQuery<OwlPostMessage[]>({
     queryKey: [`/api/owl-post/sent/${selectedCharacter?.id}`],
     enabled: !!selectedCharacter,
     queryFn: getQueryFn({ on401: "throw" }),
   });
+  const sentMessages = Array.isArray(sentMessagesRaw) ? sentMessagesRaw : [];
 
   // Get unread count
   const { data: unreadData } = useQuery<{ count: number }>({

@@ -402,7 +402,7 @@ function CharacterInventory() {
   };
 
   // Načtení inventáře postavy
-  const { data: inventory = [], isLoading, error } = useQuery<any[]>({
+  const { data: inventoryRaw, isLoading, error } = useQuery<any[]>({
     queryKey: ["characterInventory", id],
     queryFn: async () => {
       if (!id) return [];
@@ -411,6 +411,7 @@ function CharacterInventory() {
     },
     enabled: !!id,
   });
+  const inventory = Array.isArray(inventoryRaw) ? inventoryRaw : [];
 
   // Statistiky inventáře
   const inventoryStats = {
