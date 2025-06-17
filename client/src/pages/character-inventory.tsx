@@ -204,3 +204,5 @@ export function AddInventoryItemDialog({ characterId }: { characterId: number })
     </Dialog>
   );
 }
+
+export default CharacterInventory;
