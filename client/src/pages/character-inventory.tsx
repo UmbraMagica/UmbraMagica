@@ -1,4 +1,3 @@
-
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -137,7 +136,7 @@ export function AddInventoryItemDialog({ characterId }: { characterId: number })
                         if (found) form.setValue("category", found.label);
                         form.setValue("item_id", 1);
                       }}
-                      value={field.value}
+                      value={field.value || ""}
                     >
                       <FormControl>
                         <SelectTrigger>
@@ -166,7 +165,7 @@ export function AddInventoryItemDialog({ characterId }: { characterId: number })
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Vzácnost</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value || ""}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Vyber vzácnost" />
@@ -193,7 +192,7 @@ export function AddInventoryItemDialog({ characterId }: { characterId: number })
                 <FormItem>
                   <FormLabel>Název předmětu</FormLabel>
                   <FormControl>
-                    <Input placeholder="Např. Neviditelný plášť" {...field} />
+                    <Input placeholder="Např. Neviditelný plášť" {...field} value={field.value || ""} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -211,6 +210,7 @@ export function AddInventoryItemDialog({ characterId }: { characterId: number })
                       placeholder="Popis předmětu, jeho vlastnosti a účinky..." 
                       rows={3}
                       {...field} 
+                      value={field.value || ""}
                     />
                   </FormControl>
                   <FormMessage />
@@ -226,7 +226,7 @@ export function AddInventoryItemDialog({ characterId }: { characterId: number })
                   <FormItem>
                     <FormLabel>Množství</FormLabel>
                     <FormControl>
-                      <Input type="number" min="1" {...field} />
+                      <Input type="number" min="1" {...field} value={field.value || ""} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -244,6 +244,7 @@ export function AddInventoryItemDialog({ characterId }: { characterId: number })
                         type="number" 
                         min="0"
                         {...field} 
+                        value={field.value || ""}
                         onChange={e => field.onChange(Number(e.target.value))} 
                       />
                     </FormControl>
@@ -264,6 +265,7 @@ export function AddInventoryItemDialog({ characterId }: { characterId: number })
                       placeholder="Dodatečné poznámky k předmětu..." 
                       rows={2}
                       {...field} 
+                      value={field.value || ""}
                     />
                   </FormControl>
                   <FormMessage />
