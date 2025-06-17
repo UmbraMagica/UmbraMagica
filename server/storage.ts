@@ -1456,17 +1456,12 @@ export class DatabaseStorage implements IStorage {
     price?: number
   ) {
     const item: InsertInventoryItem = {
-      characterId,
-      itemName: itemType === 'wand' ? 'Hůlka' : itemType,
-      itemDescription: '',
-      quantity: 1,
-      category: itemType.charAt(0).toUpperCase() + itemType.slice(1),
-      rarity: 'Common',
-      value: price || 0,
-      isEquipped: false,
-      notes: '',
+      character_id: characterId,
+      item_type: itemType,
+      item_id: itemId,
+      price: price || 0,
     };
-    const { error } = await supabase.from('characterInventory').insert([item]);
+    const { error } = await supabase.from('character_inventory').insert([item]);
     if (error) {
       console.error('Error adding item to inventory:', error);
       throw new Error('Failed to add item to inventory');

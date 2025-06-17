@@ -443,11 +443,14 @@ export async function registerRoutes(app: Express): Promise<void> {
       return res.status(403).json({ message: "Forbidden" });
     }
 
+    console.log('Received inventory POST body:', req.body);
+
     try {
-      const inventoryItem = await storage.addInventoryItem({
-        characterId,
-        ...req.body
-      });
+      const { item_type, item_id, price } = req.body;
+      if (!item_type || !item_id) {
+        return res.status(400).json({ message: 'Missing item_type or item_id' });
+      }
+      const inventoryItem = await storage.addItemToInventory(characterId, item_type, item_id, price);
       res.status(201).json(inventoryItem);
     } catch (error: any) {
       res.status(400).json({ message: error.message });
@@ -465,7 +468,7 @@ export async function registerRoutes(app: Express): Promise<void> {
       return res.status(404).json({ message: "Item not found" });
     }
 
-    const character = await storage.getCharacter(item.characterId);
+    const character = await storage.getCharacter(item.character_id);
     if (!character) {
       return res.status(404).json({ message: "Character not found" });
     }
@@ -493,7 +496,7 @@ export async function registerRoutes(app: Express): Promise<void> {
       return res.status(404).json({ message: "Item not found" });
     }
 
-    const character = await storage.getCharacter(item.characterId);
+    const character = await storage.getCharacter(item.character_id);
     if (!character) {
       return res.status(404).json({ message: "Character not found" });
     }

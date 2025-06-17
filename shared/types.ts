@@ -91,3 +91,14 @@ export type Wand = {
   description?: string;
   acquired_at: string;
 };
+
+export type InventoryItem = {
+  id: number;
+  character_id: number;
+  item_type: string;
+  item_id: number;
+  acquired_at: string;
+  price: number;
+};
+
+export type InsertInventoryItem = Omit<InventoryItem, 'id' | 'acquired_at'> & { acquired_at?: string };

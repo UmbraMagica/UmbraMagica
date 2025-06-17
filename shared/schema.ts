@@ -294,17 +294,11 @@ export const wandsRelations = relations(wands, ({ one }) => ({
 // Character Inventory table
 export const characterInventory = pgTable("character_inventory", {
   id: serial("id").primaryKey(),
-  characterId: serial("character_id").references(() => characters.id).notNull(),
-  itemName: varchar("item_name", { length: 100 }).notNull(),
-  itemDescription: text("item_description"),
-  quantity: integer("quantity").default(1).notNull(),
-  category: varchar("category", { length: 50 }).notNull(), // "Wand", "Potion", "Book", "Clothes", "Other"
-  rarity: varchar("rarity", { length: 20 }).default("Common").notNull(), // "Common", "Uncommon", "Rare", "Epic", "Legendary"
-  value: integer("value").default(0), // Value in galleons/sickles/knuts
-  isEquipped: boolean("is_equipped").default(false).notNull(),
-  notes: text("notes"), // Additional notes about the item
-  acquiredAt: timestamp("acquired_at").defaultNow().notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+  character_id: integer("character_id").references(() => characters.id).notNull(),
+  item_type: varchar("item_type", { length: 50 }).notNull(),
+  item_id: integer("item_id").notNull(),
+  acquired_at: timestamp("acquired_at").defaultNow().notNull(),
+  price: integer("price").default(0),
 });
 
 // Character Journal/Diary table
@@ -355,7 +349,7 @@ export const housingRequests = pgTable("housing_requests", {
 // Inventory relations
 export const characterInventoryRelations = relations(characterInventory, ({ one }) => ({
   character: one(characters, {
-    fields: [characterInventory.characterId],
+    fields: [characterInventory.character_id],
     references: [characters.id],
   }),
 }));
@@ -367,8 +361,6 @@ export const characterJournalRelations = relations(characterJournal, ({ one }) =
     references: [characters.id],
   }),
 }));
-
-
 
 // Housing requests relations
 export const housingRequestsRelations = relations(housingRequests, ({ one }) => ({
@@ -504,8 +496,6 @@ export const insertAdminActivityLogSchema = createInsertSchema(adminActivityLog)
   targetRequestId: true,
   details: true,
 });
-
-
 
 export const insertHousingRequestSchema = createInsertSchema(housingRequests).pick({
   characterId: true,
@@ -649,26 +639,20 @@ export const wandSchema = z.object({
 });
 
 export const insertInventoryItemSchema = createInsertSchema(characterInventory).pick({
-  characterId: true,
-  itemName: true,
-  itemDescription: true,
-  quantity: true,
-  category: true,
-  rarity: true,
-  value: true,
-  isEquipped: true,
-  notes: true,
+  character_id: true,
+  item_type: true,
+  item_id: true,
+  acquired_at: true,
+  price: true,
 });
 
 export const inventoryItemSchema = z.object({
-  itemName: z.string().min(1, "Název předmětu je povinný").max(100),
-  itemDescription: z.string().optional(),
-  quantity: z.number().min(1, "Množství musí být alespoň 1").default(1),
-  category: z.enum(["Wand", "Potion", "Book", "Clothes", "Jewelry", "Tool", "Other"]),
-  rarity: z.enum(["Common", "Uncommon", "Rare", "Epic", "Legendary"]).default("Common"),
-  value: z.number().min(0, "Hodnota nemůže být záporná").default(0),
-  isEquipped: z.boolean().default(false),
-  notes: z.string().optional(),
+  item_type: z.string().min(1, "Název předmětu je povinný").max(50),
+  item_id: z.number().min(1, "ID předmětu musí být alespoň 1"),
+  acquired_at: z.string().refine(date => !isNaN(Date.parse(date)), {
+    message: "Neplatný formát data"
+  }),
+  price: z.number().min(0, "Hodnota nemůže být záporná").default(0),
 });
 
 export const insertJournalEntrySchema = createInsertSchema(characterJournal).pick({
