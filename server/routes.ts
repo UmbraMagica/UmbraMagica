@@ -7,6 +7,7 @@ import { z } from "zod";
 import multer from "multer";
 import sharp from "sharp";
 import jwt from 'jsonwebtoken';
+import { supabase } from "./supabase";
 
 // JWT payload do req.user
 declare module 'express-serve-static-core' {
@@ -429,53 +430,62 @@ export async function registerRoutes(app: Express): Promise<void> {
   });
 
   app.post("/api/characters/:id/inventory", requireAuth, async (req, res) => {
-    const characterId = Number(req.params.id);
-    if (!characterId || isNaN(characterId)) {
-      return res.status(400).json({ message: "Invalid characterId" });
-    }
-
-    const character = await storage.getCharacter(characterId);
-    if (!character) {
-      return res.status(404).json({ message: "Character not found" });
-    }
-
-    if (req.user!.role !== 'admin' && character.userId !== req.user!.id) {
-      return res.status(403).json({ message: "Forbidden" });
-    }
-
-    // Debug log payload
-    console.log("Inventory POST payload:", req.body);
-
-    const { item_type, item_id, price, item_name, quantity, rarity, description, notes, category } = req.body;
-    const missing = [];
-    if (!item_type) missing.push('item_type');
-    if (!item_id) missing.push('item_id');
-    if (price === undefined || price === null) missing.push('price');
-    // Pokud je v DB category NOT NULL, nastavíme default
-    const safeCategory = category ?? 'Magický předmět';
-    if (missing.length > 0) {
-      return res.status(400).json({ message: `Missing required fields: ${missing.join(', ')}` });
-    }
-
     try {
-      const item = await storage.addInventoryItem({
-        character_id: characterId,
+      const character_id = parseInt(req.params.id, 10);
+      const {
         item_type,
         item_id,
-        price: Number(price),
-        category: safeCategory,
-        quantity: quantity ?? 1,
-        rarity: rarity ?? null,
-        description: description ?? null,
-        notes: notes ?? '',
-        item_name: item_name ?? null,
-        acquired_at: new Date().toISOString(),
-        is_equipped: false,
-        created_at: new Date().toISOString(),
-      });
-      res.status(201).json(item);
-    } catch (error) {
-      res.status(400).json({ message: error.message });
+        price,
+        item_name,
+        quantity,
+        rarity,
+        description,
+        notes,
+        category,
+      } = req.body;
+
+      console.log("Inventory POST payload:", req.body);
+
+      // Kontrola povinných polí
+      if (!item_type || price === undefined || isNaN(Number(price)) || !category) {
+        return res.status(400).json({
+          message: 'Missing required fields: item_type, price, or category',
+        });
+      }
+
+      // Zákaz přidání hůlky ručně
+      if (item_type === 'wand') {
+        return res.status(403).json({ message: "Nelze přidat hůlku ručně do inventáře." });
+      }
+
+      // Zápis do databáze
+      const { data, error } = await supabase.from('character_inventory').insert([
+        {
+          character_id,
+          item_type,
+          item_id: item_id ?? null,
+          price: Number(price),
+          item_name: item_name ?? null,
+          quantity: quantity ?? 1,
+          rarity: rarity ?? null,
+          description: description ?? null,
+          notes: notes || null,
+          category,
+          acquired_at: new Date().toISOString(),
+          is_equipped: false,
+          created_at: new Date().toISOString(),
+        }
+      ]).select().single();
+
+      if (error) {
+        console.error("Inventory INSERT error:", error);
+        return res.status(500).json({ message: "DB insert error", error: error.message });
+      }
+
+      res.status(200).json({ success: true, item: data });
+    } catch (err) {
+      console.error("Inventory INSERT error (catch):", err);
+      res.status(500).json({ message: "Server error", error: err.message });
     }
   });
 
