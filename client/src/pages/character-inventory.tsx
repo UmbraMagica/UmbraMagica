@@ -21,9 +21,16 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { ITEM_TYPE_OPTIONS } from "@/lib/constants";
-import { insertInventoryItem } from "@/lib/requests/inventory";
-import type { InsertInventoryItem } from "@/lib/types";
+import { apiRequest } from "@/lib/queryClient";
+
+const ITEM_TYPE_OPTIONS = [
+  { value: "wand", label: "Hůlka" },
+  { value: "book", label: "Knihy" },
+  { value: "potion", label: "Lektvary" },
+  { value: "artifact", label: "Magické artefakty" },
+  { value: "plant", label: "Rostliny" },
+  { value: "other", label: "Ostatní" }
+];
 
 const inventoryItemSchema = z.object({
   item_type: z.string(),
@@ -53,7 +60,7 @@ export function AddInventoryItemDialog({ characterId }: { characterId: number })
   });
 
   const mutation = useMutation({
-    mutationFn: (data: InsertInventoryItem) => insertInventoryItem(characterId, data),
+    mutationFn: (data: InventoryItemForm) => apiRequest("POST", `/api/characters/${characterId}/inventory`, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["characterInventory", characterId] });
       setOpen(false);
