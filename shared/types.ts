@@ -83,11 +83,11 @@ export type Spell = {
 
 export type Wand = {
   id: number;
-  characterId: number;
+  character_id: number;
   wood: string;
   core: string;
   length: string;
   flexibility: string;
   description?: string;
-  acquiredAt: string;
+  acquired_at: string;
 };

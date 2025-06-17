@@ -1042,9 +1042,27 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createWand(wand: InsertWand): Promise<Wand> {
-    const { data, error } = await supabase.from('wands').insert([wand]).select().single();
+    const wandToInsert = {
+      character_id: wand.character_id,
+      wood: wand.wood,
+      core: wand.core,
+      length: wand.length,
+      flexibility: wand.flexibility,
+      description: wand.description,
+      acquired_at: wand.acquired_at || new Date().toISOString()
+    };
+    const { data, error } = await supabase.from('wands').insert([wandToInsert]).select().single();
     if (error) throw new Error(error.message);
-    return data;
+    return {
+      id: data.id,
+      character_id: data.character_id,
+      wood: data.wood,
+      core: data.core,
+      length: data.length,
+      flexibility: data.flexibility,
+      description: data.description,
+      acquired_at: data.acquired_at
+    };
   }
 
   async updateWand(wandId: number, updates: Partial<InsertWand>): Promise<Wand | undefined> {
@@ -1095,13 +1113,13 @@ export class DatabaseStorage implements IStorage {
 
       return {
         id: data.id,
-        characterId: data.character_id,
+        character_id: data.character_id,
         wood: data.wood,
         core: data.core,
         length: data.length,
         flexibility: data.flexibility,
         description: data.description,
-        acquiredAt: data.acquired_at
+        acquired_at: data.acquired_at
       };
     } catch (error: any) {
       console.error('Error generating random wand:', error);

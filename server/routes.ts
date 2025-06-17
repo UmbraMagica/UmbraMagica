@@ -1062,13 +1062,13 @@ export async function registerRoutes(app: Express): Promise<void> {
       }
 
       const wandData = {
-        characterId: characterId,
+        character_id: characterId,
         wood,
         core,
         length,
         flexibility,
         description: description || `A ${length} wand made of ${wood} wood with a ${core} core, ${flexibility}`,
-        acquiredAt: new Date()
+        acquired_at: new Date().toISOString()
       };
 
       const wand = await storage.createWand(wandData);

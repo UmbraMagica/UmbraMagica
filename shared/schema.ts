@@ -258,13 +258,13 @@ export const characterSpells = pgTable("character_spells", {
 // Wands table
 export const wands = pgTable("wands", {
   id: serial("id").primaryKey(),
-  characterId: serial("character_id").references(() => characters.id).unique(), // One wand per character
+  character_id: serial("character_id").references(() => characters.id).unique(), // One wand per character
   wood: varchar("wood", { length: 50 }).notNull(),
   core: varchar("core", { length: 100 }).notNull(),
   length: varchar("length", { length: 20 }).notNull(),
   flexibility: varchar("flexibility", { length: 50 }).notNull(),
   description: text("description"),
-  acquiredAt: timestamp("acquired_at").defaultNow().notNull(),
+  acquired_at: timestamp("acquired_at").defaultNow().notNull(),
 });
 
 // Spell relations
@@ -286,7 +286,7 @@ export const characterSpellsRelations = relations(characterSpells, ({ one }) => 
 // Wand relations
 export const wandsRelations = relations(wands, ({ one }) => ({
   character: one(characters, {
-    fields: [wands.characterId],
+    fields: [wands.character_id],
     references: [characters.id],
   }),
 }));
@@ -632,7 +632,7 @@ export const spellSchema = z.object({
 });
 
 export const insertWandSchema = createInsertSchema(wands).pick({
-  characterId: true,
+  character_id: true,
   wood: true,
   core: true,
   length: true,
