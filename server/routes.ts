@@ -676,7 +676,7 @@ export async function registerRoutes(app: Express): Promise<void> {
       const newGrindelwaldPoints = changeType === 'grindelwald' ? newTotal : currentData.grindelwaldPoints;
       const newDumbledorePoints = changeType === 'dumbledore' ? newTotal : currentData.dumbledorePoints;
 
-      await storage.setInfluence(newGrindelwaldPoints, newDumbledorePoints, req.user!.id, reason);
+      await storage.setInfluence(newGrindelwaldPoints, newDumbledorePoints, req.user!.id, reason, changeType);
 
       res.json({ message: "Influence adjusted successfully" });
     } catch (error) {
@@ -693,7 +693,7 @@ export async function registerRoutes(app: Express): Promise<void> {
       }
 
       const resetValues = type === "0:0" ? { grindelwald: 0, dumbledore: 0 } : { grindelwald: 50, dumbledore: 50 };
-      await storage.setInfluence(resetValues.grindelwald, resetValues.dumbledore, req.user!.id, "reset");
+      await storage.setInfluence(resetValues.grindelwald, resetValues.dumbledore, req.user!.id, "reset", null);
 
       res.json({ message: "Influence reset successfully" });
     } catch (error) {
