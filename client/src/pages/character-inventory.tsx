@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { PlusCircle } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -31,6 +31,19 @@ const ITEM_TYPE_OPTIONS = [
   { value: "artifact", label: "Magické artefakty" },
   { value: "plant", label: "Rostliny" },
   { value: "other", label: "Ostatní" }
+];
+
+const RARITY_OPTIONS = [
+  { value: "common", label: "Běžná" },
+  { value: "uncommon", label: "Neobvyklá" },
+  { value: "rare", label: "Vzácná" },
+  { value: "epic", label: "Epická" },
+  { value: "legendary", label: "Legendární" },
+  { value: "common_en", label: "Common" },
+  { value: "uncommon_en", label: "Uncommon" },
+  { value: "rare_en", label: "Rare" },
+  { value: "epic_en", label: "Epic" },
+  { value: "legendary_en", label: "Legendary" },
 ];
 
 const inventoryItemSchema = z.object({
@@ -145,7 +158,7 @@ export function AddInventoryItemDialog({ characterId }: { characterId: number })
                 <FormItem>
                   <FormLabel>Cena (v galeonech)</FormLabel>
                   <FormControl>
-                    <Input type="number" {...field} />
+                    <Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -172,9 +185,20 @@ export function AddInventoryItemDialog({ characterId }: { characterId: number })
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Vzácnost</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Např. vzácný, běžný..." {...field} />
-                  </FormControl>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Vyber vzácnost" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {RARITY_OPTIONS.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
@@ -210,15 +234,45 @@ function CharacterInventory() {
   const { characterId } = useParams();
   const id = characterId ? Number(characterId) : undefined;
 
+  // Načtení inventáře postavy
+  const { data: inventory = [], isLoading, error } = useQuery<any[]>({
+    queryKey: ["characterInventory", id],
+    queryFn: async () => {
+      if (!id) return [];
+      const res = await apiRequest("GET", `/api/characters/${id}/inventory`);
+      return res.json();
+    },
+    enabled: !!id,
+  });
+
   return (
-    <div className="p-4">
+    <div className="p-4 max-w-2xl mx-auto">
       <h1 className="text-2xl font-bold mb-4">Inventář postavy</h1>
-      {id ? (
-        <AddInventoryItemDialog characterId={id} />
-      ) : (
-        <div className="text-red-500">Chybí ID postavy v URL.</div>
-      )}
-      <div className="mt-8 text-muted-foreground">Zde bude seznam položek inventáře...</div>
+      {id && <AddInventoryItemDialog characterId={id} />}
+      <div className="mt-8">
+        {isLoading ? (
+          <div>Načítám inventář...</div>
+        ) : error ? (
+          <div className="text-red-500">Chyba při načítání inventáře.</div>
+        ) : inventory.length === 0 ? (
+          <div className="text-muted-foreground">Inventář je prázdný.</div>
+        ) : (
+          <ul className="space-y-4">
+            {inventory.map((item) => (
+              <li key={item.id} className="border rounded p-4 bg-card">
+                <div className="font-semibold">{item.item_name || item.item_type}</div>
+                {item.description && <div className="text-sm text-muted-foreground">{item.description}</div>}
+                <div className="flex flex-wrap gap-4 mt-2 text-sm">
+                  <span>Množství: {item.quantity}</span>
+                  {item.price !== undefined && <span>Cena: {item.price} galeonů</span>}
+                  {item.rarity && <span>Vzácnost: {item.rarity}</span>}
+                </div>
+                {item.notes && <div className="mt-2 text-xs text-muted-foreground">Poznámka: {item.notes}</div>}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
   );
 }
