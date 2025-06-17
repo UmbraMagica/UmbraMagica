@@ -6,6 +6,7 @@ import { PlusCircle } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useParams } from "wouter";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -202,6 +203,23 @@ export function AddInventoryItemDialog({ characterId }: { characterId: number })
         </DialogFooter>
       </DialogContent>
     </Dialog>
+  );
+}
+
+function CharacterInventory() {
+  const { characterId } = useParams();
+  const id = characterId ? Number(characterId) : undefined;
+
+  return (
+    <div className="p-4">
+      <h1 className="text-2xl font-bold mb-4">Inventář postavy</h1>
+      {id ? (
+        <AddInventoryItemDialog characterId={id} />
+      ) : (
+        <div className="text-red-500">Chybí ID postavy v URL.</div>
+      )}
+      <div className="mt-8 text-muted-foreground">Zde bude seznam položek inventáře...</div>
+    </div>
   );
 }
 
