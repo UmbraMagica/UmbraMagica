@@ -71,8 +71,26 @@ export function AddInventoryItemDialog({ characterId }: { characterId: number })
     },
   });
 
+  const getCategoryLabel = (type) => {
+    const found = ITEM_TYPE_OPTIONS.find(opt => opt.value === type);
+    return found ? found.label : '';
+  };
+
   const mutation = useMutation({
-    mutationFn: (data: InventoryItemForm) => apiRequest("POST", `/api/characters/${characterId}/inventory`, data),
+    mutationFn: (data: InventoryItemForm) => {
+      const payload = {
+        item_type: data.item_type,
+        item_id: data.item_id,
+        price: data.price,
+        item_name: data.item_name || '',
+        description: data.description || '',
+        rarity: data.rarity || '',
+        quantity: data.quantity || 1,
+        notes: data.notes || '',
+        category: getCategoryLabel(data.item_type),
+      };
+      return apiRequest("POST", `/api/characters/${characterId}/inventory`, payload);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["characterInventory", characterId] });
       setOpen(false);

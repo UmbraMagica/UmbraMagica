@@ -446,15 +446,15 @@ export async function registerRoutes(app: Express): Promise<void> {
     // Debug log payload
     console.log("Inventory POST payload:", req.body);
 
-    // Zákaz přidání hůlky ručně
-    if (req.body.item_type === 'wand') {
-      return res.status(403).json({ message: "Nelze přidat hůlku ručně do inventáře." });
-    }
-
-    // Přijímáme všechna pole
-    const { item_type, item_id, price, category, quantity, rarity, description, notes } = req.body;
-    if (!item_type || !item_id) {
-      return res.status(400).json({ message: 'Missing item_type or item_id' });
+    const { item_type, item_id, price, item_name, quantity, rarity, description, notes, category } = req.body;
+    const missing = [];
+    if (!item_type) missing.push('item_type');
+    if (!item_id) missing.push('item_id');
+    if (price === undefined || price === null) missing.push('price');
+    // Pokud je v DB category NOT NULL, nastavíme default
+    const safeCategory = category ?? 'Magický předmět';
+    if (missing.length > 0) {
+      return res.status(400).json({ message: `Missing required fields: ${missing.join(', ')}` });
     }
 
     try {
@@ -462,12 +462,13 @@ export async function registerRoutes(app: Express): Promise<void> {
         character_id: characterId,
         item_type,
         item_id,
-        price: price ?? 0,
-        category: category ?? null,
+        price: Number(price),
+        category: safeCategory,
         quantity: quantity ?? 1,
         rarity: rarity ?? null,
         description: description ?? null,
-        notes: notes ?? null,
+        notes: notes ?? '',
+        item_name: item_name ?? null,
         acquired_at: new Date().toISOString(),
         is_equipped: false,
         created_at: new Date().toISOString(),
