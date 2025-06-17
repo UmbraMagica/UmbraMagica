@@ -172,7 +172,7 @@ export interface IStorage {
   removeSpellFromCharacter(characterId: number, spellId: number): Promise<boolean>;
 
   // Character inventory operations
-  getCharacterInventory(characterId: number): Promise<InventoryItem[]>;
+  getCharacterInventory(characterId: number): Promise<any[]>;
   getInventoryItem(id: number): Promise<InventoryItem | undefined>;
   addInventoryItem(item: InsertInventoryItem): Promise<InventoryItem>;
   updateInventoryItem(id: number, updates: Partial<InsertInventoryItem>): Promise<InventoryItem | undefined>;
@@ -946,10 +946,43 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Character inventory operations
-  async getCharacterInventory(characterId: number): Promise<InventoryItem[]> {
-    const { data, error } = await supabase.from('characterInventory').select('*').eq('character_id', characterId);
-    if (error) return [];
-    return toCamel(data || []);
+  async getCharacterInventory(characterId: number): Promise<any[]> {
+    // Získáme všechny položky inventáře
+    const { data: inventory, error } = await supabase
+      .from('characterInventory')
+      .select('*')
+      .eq('character_id', characterId);
+    if (error || !inventory) return [];
+
+    // Najdeme všechny wand itemy a jejich ID
+    const wandItems = inventory.filter(item => item.item_type === 'wand');
+    const wandIds = wandItems.map(item => item.item_id);
+    let wandsMap: Record<number, any> = {};
+    if (wandIds.length > 0) {
+      const { data: wands, error: wandError } = await supabase
+        .from('wands')
+        .select('id, wood, core, length, flexibility, description')
+        .in('id', wandIds);
+      if (wands) {
+        wandsMap = Object.fromEntries(wands.map(w => [w.id, w]));
+      }
+    }
+
+    // Přidáme wand detaily k příslušným položkám
+    const result = inventory.map(item => {
+      if (item.item_type === 'wand' && wandsMap[item.item_id]) {
+        return {
+          ...item,
+          wand_wood: wandsMap[item.item_id].wood,
+          wand_core: wandsMap[item.item_id].core,
+          wand_length: wandsMap[item.item_id].length,
+          wand_flexibility: wandsMap[item.item_id].flexibility,
+          wand_description: wandsMap[item.item_id].description,
+        };
+      }
+      return item;
+    });
+    return toCamel(result);
   }
 
   async getInventoryItem(id: number): Promise<InventoryItem | undefined> {
