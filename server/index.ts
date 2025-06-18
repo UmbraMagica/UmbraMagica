@@ -5,6 +5,8 @@ import { setupVite, serveStatic, log } from "./vite";
 import supabaseRoutes from "./routes/supabase.js";
 import { Pool } from 'pg';
 import cors from 'cors';
+import characterInventoryRoutes from "./routes/characterInventory";
+
 
 const app = express();
 app.set('trust proxy', 1);
@@ -90,6 +92,7 @@ app.use((err, req, res, next) => {
   }
 });
 
+app.use("/api/characters", characterInventoryRoutes);
 (async () => {
   await registerRoutes(app);
 
