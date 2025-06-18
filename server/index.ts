@@ -15,10 +15,11 @@ app.enable('strict routing', false);
 // CORS pouze pro vývoj
 if (process.env.NODE_ENV !== "production") {
   app.use(cors({
-    origin: [
-      'http://localhost:5173',
-      'http://localhost:5000'
-    ],
+   origin: [
+  'http://localhost:5173',
+  'http://localhost:5000',
+  'https://umbra-dev.onrender.com', // ← přidej toto
+],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
