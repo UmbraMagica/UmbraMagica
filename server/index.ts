@@ -8,10 +8,11 @@ import cors from 'cors';
 import characterInventoryRoutes from "./routes/characterInventory";
 
 const app = express();
+console.log("NODE_ENV:", process.env.NODE_ENV); // 🪵 pro debug
 app.set('trust proxy', 1);
 app.enable('strict routing', false);
 
-// CORS pro vývoj i produkci
+// ✅ CORS pro vývoj i produkci
 app.use(cors({
   origin: [
     'http://localhost:5173',
@@ -20,13 +21,13 @@ app.use(cors({
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'x-user-id'],
 }));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Globální logování všech requestů
+// 🔍 Logování requestů
 app.use((req, res, next) => {
   console.log(`[DEBUG] ${req.method} ${req.path}`);
   next();
@@ -60,12 +61,12 @@ app.use((req, res, next) => {
   next();
 });
 
-// Testovací endpoint
+// ✅ Test
 app.get('/api/test', (req: Request, res: Response) => {
   res.json({ message: 'Backend funguje!' });
 });
 
-// Debug routy
+// 🧪 Debug – seznam rout
 app.get('/api/debug/routes', (req, res) => {
   res.json({
     routes: app._router.stack
@@ -74,7 +75,10 @@ app.get('/api/debug/routes', (req, res) => {
   });
 });
 
-// Error handler
+// 📦 Inventář
+app.use("/api/characters", characterInventoryRoutes);
+
+// 🔥 Chyby
 app.use((err, req, res, next) => {
   console.error('[DEBUG][ERROR]', {
     message: err.message,
@@ -87,9 +91,6 @@ app.use((err, req, res, next) => {
     res.status(err.status || 500).json({ message: err.message || 'Internal Server Error' });
   }
 });
-
-// Inventory routy
-app.use("/api/characters", characterInventoryRoutes);
 
 (async () => {
   await registerRoutes(app);
@@ -112,7 +113,7 @@ app.use("/api/characters", characterInventoryRoutes);
     log(`serving on port ${port}`);
   });
 
-  // 404 fallback
+  // 🧱 404 fallback
   app.use('/api/*', (req, res) => {
     res.status(404).json({ message: 'Not Found', url: req.originalUrl });
   });
