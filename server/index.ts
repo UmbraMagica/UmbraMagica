@@ -1,24 +1,14 @@
 import 'dotenv/config';
-import express, { type Request, Response, NextFunction } from "express";
-import { registerRoutes } from "./routes";
-import { setupVite, serveStatic, log } from "./vite";
-import supabaseRoutes from "./routes/supabase.js";
-import { Pool } from 'pg';
-import cors from 'cors';
-import characterInventoryRoutes from "./routes/characterInventory";
+import express from "express";
+import cors from "cors";
 
 const app = express();
-console.log("NODE_ENV:", process.env.NODE_ENV); // 🪵 pro debug
 app.set('trust proxy', 1);
 app.enable('strict routing', false);
 
-// ✅ CORS pro vývoj i produkci
+// CORS musí být hned za express() – a být aktivní vždy
 app.use(cors({
-  origin: [
-    'http://localhost:5173',
-    'http://localhost:5000',
-    'https://umbra-dev.onrender.com',
-  ],
+  origin: true, // <– dynamicky povolí jakýkoli origin z přicházejícího požadavku
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'x-user-id'],
@@ -27,7 +17,7 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// 🔍 Logování requestů
+// Logování requestů
 app.use((req, res, next) => {
   console.log(`[DEBUG] ${req.method} ${req.path}`);
   next();
