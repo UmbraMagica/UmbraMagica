@@ -98,7 +98,7 @@ app.use((err, req, res, next) => {
     serveStatic(app);
   }
 
-  const port = Number(process.env.PORT) || 5000;
+  const port = Number(process.env.PORT);
   app.listen(port, "0.0.0.0", () => {
     log(`serving on port ${port}`);
   });
