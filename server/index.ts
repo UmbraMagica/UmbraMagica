@@ -17,6 +17,8 @@ app.use(cors({
     'https://umbramagica.onrender.com',   // pro případy self-calls
     'http://localhost:5173',              // development
     'http://localhost:5000'               // development
+    'https://umbra-dev.onrender.com',
+
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
