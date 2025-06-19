@@ -19,11 +19,15 @@ export function log(message: string, source = "express") {
 }
 
 export async function setupVite(app: Express, server: Server) {
-  const serverOptions = {
-    middlewareMode: true,
-    hmr: { server },
-    allowedHosts: ["*"],
-  };
+ const serverOptions = {
+  middlewareMode: true,
+  hmr: { server },
+  allowedHosts: [
+    "localhost",
+    "umbra-dev.onrender.com",
+    "umbramagica.onrender.com",
+  ],
+};
 
   const vite = await createViteServer({
     configFile: false,
