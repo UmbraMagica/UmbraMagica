@@ -8,7 +8,10 @@ app.enable('strict routing', false);
 
 // CORS musí být hned za express() – a být aktivní vždy
 app.use(cors({
-  origin: true, // <– dynamicky povolí jakýkoli origin z přicházejícího požadavku
+  origin: [
+    'https://umbra-dev.onrender.com', // přidat frontend
+    'http://localhost:5173' // zachovat pro vývoj
+  ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'x-user-id'],
