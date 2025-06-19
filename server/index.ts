@@ -10,19 +10,17 @@ const app = express();
 app.set('trust proxy', 1);
 app.enable('strict routing', false);
 
-// CORS configuration for frontend
 app.use(cors({
   origin: [
-    'https://umbramagica-1.onrender.com', // frontend doména
-    'https://umbramagica.onrender.com',   // pro případy self-calls
-    'http://localhost:5173',              // development
-    'http://localhost:5000'               // development
-    'https://umbra-dev.onrender.com',
-
+    'https://umbramagica-1.onrender.com',     // frontend doména
+    'https://umbramagica.onrender.com',       // pro případy self-calls
+    'http://localhost:5173',                  // development
+    'http://localhost:5000',                  // development
+    'https://umbra-dev.onrender.com',         // <- správně, uzavřený string a čárka
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'x-user-id'],
 }));
 
 app.use(express.json());
