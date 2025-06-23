@@ -1,7 +1,6 @@
 import 'dotenv/config';
 import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
-import characterInventoryRoutes from "./routes/characterInventory";
 import { registerRoutes } from "./routes";
 import { log } from "./vite";
 import { setupVite, serveStatic } from "./vite";
@@ -72,8 +71,7 @@ app.get('/api/debug/routes', (req, res) => {
   });
 });
 
-// 📦 Inventář
-app.use("/api/characters", characterInventoryRoutes);
+// Inventory routes are now handled in routes.ts
 
 // 🔥 Chyby
 app.use((err, req, res, next) => {
