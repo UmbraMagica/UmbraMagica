@@ -61,7 +61,35 @@ function requireAdmin(req: any, res: any, next: any) {
 export async function registerRoutes(app: Express): Promise<void> {
   // HTTP a WebSocket server
   const httpServer = createServer(app);
-  const wss = new WebSocketServer({ server: httpServer, path: '/ws' });
+  const wss = new WebSocketServer({ 
+    server: httpServer, 
+    path: '/ws',
+    verifyClient: (info) => {
+      try {
+        const url = new URL(info.req.url!, `http://${info.req.headers.host}`);
+        const token = url.searchParams.get('token');
+        
+        if (!token) {
+          console.log('WebSocket: No token provided');
+          return false;
+        }
+
+        const payload = verifyJwt(token);
+        if (!payload) {
+          console.log('WebSocket: Invalid token');
+          return false;
+        }
+
+        // Store user info for later use
+        (info.req as any).user = payload;
+        console.log('WebSocket: Authentication successful for user', payload.username);
+        return true;
+      } catch (error) {
+        console.error('WebSocket authentication error:', error);
+        return false;
+      }
+    }
+  });
 
   // Multer config pro uploady
   const upload = multer({

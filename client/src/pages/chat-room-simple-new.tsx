@@ -1,4 +1,3 @@
-
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
@@ -401,11 +400,12 @@ export default function ChatRoom() {
       // If spell is selected, cast it with the message (even if message is empty)
       if (selectedSpell) {
         try {
+          const token = localStorage.getItem('jwt_token');
           const response = await fetch(`${API_URL}/api/game/cast-spell`, {
             method: "POST",
             headers: { 
               "Content-Type": "application/json",
-              "Authorization": `Bearer ${localStorage.getItem('jwt_token')}`
+              "Authorization": `Bearer ${token}`
             },
             body: JSON.stringify({
               roomId: currentRoomId,
@@ -434,11 +434,12 @@ export default function ChatRoom() {
         }
       } else if (messageInput.trim()) {
         // Send regular message only if there's content
+        const token = localStorage.getItem('jwt_token');
         const response = await fetch(`${API_URL}/api/chat/messages`, {
           method: "POST",
           headers: { 
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${localStorage.getItem('jwt_token')}`
+            "Authorization": `Bearer ${token}`
           },
           body: JSON.stringify({
             roomId: currentRoomId,
@@ -509,11 +510,12 @@ export default function ChatRoom() {
     if (!currentCharacter || !currentRoomId) return;
 
     try {
+      const token = localStorage.getItem('jwt_token');
       const response = await fetch(`${API_URL}/api/game/dice-roll`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem('jwt_token')}`
+          "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify({
           roomId: currentRoomId,
@@ -543,11 +545,12 @@ export default function ChatRoom() {
     if (!currentCharacter || !currentRoomId) return;
 
     try {
+      const token = localStorage.getItem('jwt_token');
       const response = await fetch(`${API_URL}/api/game/coin-flip`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem('jwt_token')}`
+          "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify({
           roomId: currentRoomId,
@@ -586,11 +589,12 @@ export default function ChatRoom() {
     if (!currentRoomId || !narratorMessage.trim()) return;
 
     try {
+      const token = localStorage.getItem('jwt_token');
       const response = await fetch(`${API_URL}/api/chat/narrator-message`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem('jwt_token')}`
+          "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify({
           roomId: currentRoomId,
@@ -623,9 +627,10 @@ export default function ChatRoom() {
     if (!currentRoomId) return;
 
     try {
+      const token = localStorage.getItem('jwt_token');
       const response = await fetch(`${API_URL}/api/rooms/${currentRoomId}/download`, {
         headers: {
-          "Authorization": `Bearer ${localStorage.getItem('jwt_token')}`
+          "Authorization": `Bearer ${token}`
         },
         credentials: "include",
       });
@@ -662,11 +667,12 @@ export default function ChatRoom() {
     if (!currentRoomId || user?.role !== 'admin') return;
 
     try {
+      const token = localStorage.getItem('jwt_token');
       const response = await fetch(`${API_URL}/api/chat/rooms/${currentRoomId}/archive`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem('jwt_token')}`
+          "Authorization": `Bearer ${token}`
         },
         credentials: "include",
       });
@@ -702,11 +708,12 @@ export default function ChatRoom() {
 
     try {
       // First archive messages
+      const token = localStorage.getItem('jwt_token');
       const archiveResponse = await fetch(`${API_URL}/api/chat/rooms/${currentRoomId}/archive`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem('jwt_token')}`
+          "Authorization": `Bearer ${token}`
         },
         credentials: "include",
       });
@@ -722,7 +729,7 @@ export default function ChatRoom() {
         method: "DELETE",
         headers: { 
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem('jwt_token')}`
+          "Authorization": `Bearer ${token}`
         },
         credentials: "include",
       });
@@ -772,11 +779,12 @@ export default function ChatRoom() {
     if (!currentRoom) return;
 
     try {
+      const token = localStorage.getItem('jwt_token');
       const response = await fetch(`${API_URL}/api/admin/chat/rooms/${currentRoom.id}`, {
         method: "PATCH",
         headers: { 
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem('jwt_token')}`
+          "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify({
           longDescription: editedDescription
@@ -809,11 +817,12 @@ export default function ChatRoom() {
     if (!currentRoom) return;
 
     try {
+      const token = localStorage.getItem('jwt_token');
       const response = await fetch(`${API_URL}/api/admin/chat/rooms/${currentRoom.id}`, {
         method: "PATCH",
         headers: { 
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem('jwt_token')}`
+          "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify({
           name: editedName
@@ -1057,10 +1066,11 @@ export default function ChatRoom() {
                         <Button
                           onClick={() => {
                             if (confirm('Opravdu chcete smazat tuto vypravěčskou zprávu?')) {
+                              const token = localStorage.getItem('jwt_token');
                               fetch(`${API_URL}/api/chat/messages/${message.id}`, {
                                 method: "DELETE",
                                 headers: {
-                                  "Authorization": `Bearer ${localStorage.getItem('jwt_token')}`
+                                  "Authorization": `Bearer ${token}`
                                 },
                                 credentials: "include",
                               })
@@ -1100,11 +1110,12 @@ export default function ChatRoom() {
                           onChange={(e) => {
                             const newCharacterId = parseInt(e.target.value);
                             if (newCharacterId !== message.characterId) {
+                              const token = localStorage.getItem('jwt_token');
                               fetch(`${API_URL}/api/chat/messages/${message.id}/character`, {
                                 method: "PATCH",
                                 headers: { 
                                   "Content-Type": "application/json",
-                                  "Authorization": `Bearer ${localStorage.getItem('jwt_token')}`
+                                  "Authorization": `Bearer ${token}`
                                 },
                                 body: JSON.stringify({
                                   characterId: newCharacterId
