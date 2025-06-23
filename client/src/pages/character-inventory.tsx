@@ -404,11 +404,23 @@ const CharacterInventoryPage = () => {
   });
 
   // Načtení inventáře
-  const { data: inventory = [], isLoading: inventoryLoading } = useQuery<InventoryItem[]>({
+  const { data: inventoryData, isLoading: inventoryLoading, error: inventoryError } = useQuery<InventoryItem[]>({
     queryKey: ["characterInventory", characterId],
-    queryFn: () => apiRequest("GET", `/api/characters/${characterId}/inventory`),
+    queryFn: async () => {
+      try {
+        const result = await apiRequest("GET", `/api/characters/${characterId}/inventory`);
+        // Zajistíme, že vždy vrátíme pole
+        return Array.isArray(result) ? result : [];
+      } catch (error) {
+        console.error('Error loading inventory:', error);
+        return [];
+      }
+    },
     enabled: !!characterId,
   });
+
+  // Zajistíme, že inventory je vždy pole
+  const inventory = Array.isArray(inventoryData) ? inventoryData : [];
 
   if (!characterId) {
     return (
@@ -438,23 +450,26 @@ const CharacterInventoryPage = () => {
     );
   }
 
+  // Debug log pro kontrolu dat
+  console.log('Inventory data type:', typeof inventoryData, 'Is array:', Array.isArray(inventoryData), 'Data:', inventoryData);
+
   // Kontrola oprávnění
   const canEdit = user && character && (
     user.role === 'admin' || 
     user.id === character.userId
   );
 
-  // Seskupení podle typů
-  const groupedInventory = inventory.reduce((acc, item) => {
+  // Seskupení podle typů - s kontrolou, že inventory je pole
+  const groupedInventory = Array.isArray(inventory) ? inventory.reduce((acc, item) => {
     const type = item.item_type;
     if (!acc[type]) acc[type] = [];
     acc[type].push(item);
     return acc;
-  }, {} as Record<string, InventoryItem[]>);
+  }, {} as Record<string, InventoryItem[]>) : {};
 
-  // Statistiky
-  const totalItems = inventory.reduce((sum, item) => sum + item.quantity, 0);
-  const totalValue = inventory.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  // Statistiky - s kontrolou, že inventory je pole
+  const totalItems = Array.isArray(inventory) ? inventory.reduce((sum, item) => sum + (item.quantity || 0), 0) : 0;
+  const totalValue = Array.isArray(inventory) ? inventory.reduce((sum, item) => sum + ((item.price || 0) * (item.quantity || 1)), 0) : 0;
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -554,7 +569,7 @@ const CharacterInventoryPage = () => {
                   {ITEM_TYPE_OPTIONS.find(opt => opt.value === type)?.label || type}
                 </h2>
                 <Badge variant="secondary">
-                  {items.reduce((sum, item) => sum + item.quantity, 0)} ks
+                  {Array.isArray(items) ? items.reduce((sum, item) => sum + (item.quantity || 0), 0) : 0} ks
                 </Badge>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
