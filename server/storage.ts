@@ -366,14 +366,31 @@ export class DatabaseStorage implements IStorage {
         .from('chat_messages')
         .select(`
           *,
-          character:characters(firstName, middleName, lastName, avatar)
+          character:characters(first_name, middle_name, last_name, avatar)
         `)
-        .eq('roomId', roomId)
-        .order('createdAt', { ascending: false })
+        .eq('room_id', roomId)
+        .order('created_at', { ascending: false })
         .limit(100);
 
       if (error) throw error;
-      return data || [];
+      
+      // Convert to camelCase
+      const messages = (data || []).map(msg => ({
+        id: msg.id,
+        roomId: msg.room_id,
+        characterId: msg.character_id,
+        content: msg.content,
+        messageType: msg.message_type || 'text',
+        createdAt: msg.created_at,
+        character: msg.character ? {
+          firstName: msg.character.first_name,
+          middleName: msg.character.middle_name,
+          lastName: msg.character.last_name,
+          avatar: msg.character.avatar
+        } : null
+      }));
+      
+      return messages;
     } catch (error) {
       console.error('Error fetching chat messages:', error);
       return [];
@@ -385,20 +402,39 @@ export class DatabaseStorage implements IStorage {
       const { data, error } = await supabase
         .from('chat_messages')
         .insert([{
-          roomId: messageData.roomId,
-          characterId: messageData.characterId,
+          room_id: messageData.roomId,
+          character_id: messageData.characterId,
+          user_id: messageData.userId,
           content: messageData.content,
-          messageType: messageData.messageType || 'text',
-          createdAt: new Date().toISOString()
+          message_type: messageData.messageType || 'text',
+          created_at: new Date().toISOString()
         }])
         .select(`
           *,
-          character:characters(firstName, middleName, lastName, avatar)
+          character:characters(first_name, middle_name, last_name, avatar)
         `)
         .single();
 
       if (error) throw error;
-      return data;
+      
+      // Convert to camelCase
+      const message = {
+        id: data.id,
+        roomId: data.room_id,
+        characterId: data.character_id,
+        userId: data.user_id,
+        content: data.content,
+        messageType: data.message_type,
+        createdAt: data.created_at,
+        character: data.character ? {
+          firstName: data.character.first_name,
+          middleName: data.character.middle_name,
+          lastName: data.character.last_name,
+          avatar: data.character.avatar
+        } : null
+      };
+      
+      return message;
     } catch (error) {
       console.error('Error creating chat message:', error);
       throw error;
@@ -1073,7 +1109,7 @@ export class DatabaseStorage implements IStorage {
         effect: "Vytvoří světelné lano, které slouží k přitažení předmětu k sesílateli, pokud je použito na pevně ukotvený předmět, může se naopak přitáhnout sesílatel.",
         category: "Kouzelné formule",
         type: "Základní",
-        targetType: "object" as const,
+        target_type: "object",
       },
       {
         name: "Lumos",
@@ -1081,7 +1117,7 @@ export class DatabaseStorage implements IStorage {
         effect: "Rozsvítí konec hůlky jako svítilnu.",
         category: "Kouzelné formule",
         type: "Základní",
-        targetType: "self" as const,
+        target_type: "self",
       },
       {
         name: "Nox",
@@ -1089,7 +1125,7 @@ export class DatabaseStorage implements IStorage {
         effect: "Zhasne světlo vyvolané kouzlem Lumos.",
         category: "Kouzelné formule",
         type: "Základní",
-        targetType: "self" as const,
+        target_type: "self",
       }
     ];
 
@@ -1107,22 +1143,26 @@ export class DatabaseStorage implements IStorage {
         spell = existingSpells[0];
         console.log(`Spell already exists: ${spell.name}`);
       }
+      
       // Add spell to all existing characters who don't have it
       const { data: allCharacters } = await supabase.from('characters').select('*');
       if (!allCharacters) continue;
+      
       for (const character of allCharacters) {
         // Check if character already has this spell
         const { data: existingCharacterSpell } = await supabase
-          .from('characterSpells')
+          .from('character_spells')
           .select('*')
-          .eq('characterId', character.id)
-          .eq('spellId', spell.id);
+          .eq('character_id', character.id)
+          .eq('spell_id', spell.id);
+          
         if (!existingCharacterSpell || existingCharacterSpell.length === 0) {
-          await supabase.from('characterSpells').insert([{
-            characterId: character.id,
-            spellId: spell.id,
+          await supabase.from('character_spells').insert([{
+            character_id: character.id,
+            spell_id: spell.id,
+            learned_at: new Date().toISOString()
           }]);
-          console.log(`Added spell ${spell.name} to character ${character.firstName} ${character.lastName}`);
+          console.log(`Added spell ${spell.name} to character ${character.first_name} ${character.last_name}`);
         }
       }
     }

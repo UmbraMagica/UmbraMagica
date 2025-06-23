@@ -61,6 +61,13 @@ function requireAdmin(req: any, res: any, next: any) {
 export async function registerRoutes(app: Express): Promise<void> {
   // HTTP a WebSocket server
   const httpServer = createServer(app);
+  
+  // Start HTTP server first
+  const serverPort = parseInt(process.env.PORT || "5000", 10) || 5000;
+  httpServer.listen(serverPort, "0.0.0.0", () => {
+    console.log(`Server running on port ${serverPort}`);
+  });
+  
   const wss = new WebSocketServer({ 
     server: httpServer, 
     path: '/ws',
@@ -89,6 +96,35 @@ export async function registerRoutes(app: Express): Promise<void> {
         return false;
       }
     }
+  });
+
+  // WebSocket connection handling
+  wss.on('connection', (ws, req) => {
+    const user = (req as any).user;
+    console.log(`WebSocket connected: ${user.username}`);
+
+    ws.on('message', (data) => {
+      try {
+        const message = JSON.parse(data.toString());
+        console.log('WebSocket message received:', message);
+
+        if (message.type === 'authenticate') {
+          ws.send(JSON.stringify({ type: 'authenticated', success: true }));
+        } else if (message.type === 'join_room') {
+          ws.send(JSON.stringify({ type: 'room_joined', roomId: message.roomId }));
+        }
+      } catch (error) {
+        console.error('WebSocket message error:', error);
+      }
+    });
+
+    ws.on('close', () => {
+      console.log(`WebSocket disconnected: ${user.username}`);
+    });
+
+    ws.on('error', (error) => {
+      console.error('WebSocket error:', error);
+    });
   });
 
   // Multer config pro uploady
@@ -438,10 +474,22 @@ export async function registerRoutes(app: Express): Promise<void> {
       }
 
       const spells = await storage.getCharacterSpells(characterId);
+      console.log(`Found ${spells.length} spells for character ${characterId}`);
       res.json(spells || []);
     } catch (error) {
       console.error("Error fetching character spells:", error);
       res.status(500).json({ message: "Failed to fetch spells" });
+    }
+  });
+
+  // Initialize default spells for all characters if they don't have any
+  app.post("/api/admin/initialize-default-spells", requireAdmin, async (req, res) => {
+    try {
+      await storage.initializeDefaultSpells();
+      res.json({ message: "Default spells initialized successfully" });
+    } catch (error) {
+      console.error("Error initializing default spells:", error);
+      res.status(500).json({ message: "Failed to initialize default spells" });
     }
   });
 

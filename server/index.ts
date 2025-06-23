@@ -104,10 +104,8 @@ app.use((err, req, res, next) => {
     serveStatic(app);
   }
 
-  const port = Number(process.env.PORT);
-  app.listen(port, "0.0.0.0", () => {
-    log(`serving on port ${port}`);
-  });
+  const port = parseInt(process.env.PORT || "5000", 10) || 5000;
+  // Server is started in routes.ts
 
   // 🧱 404 fallback
   app.use('/api/*', (req, res) => {

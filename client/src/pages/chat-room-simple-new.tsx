@@ -249,7 +249,10 @@ export default function ChatRoom() {
     }
 
     const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-    const wsUrl = `${protocol}//${window.location.host}/ws?token=${token}`;
+    const host = import.meta.env.VITE_API_URL ? 
+      import.meta.env.VITE_API_URL.replace(/^https?:\/\//, '') : 
+      window.location.host;
+    const wsUrl = `${protocol}//${host}/ws?token=${token}`;
 
     console.log("Setting up WebSocket connection to:", wsUrl);
 
