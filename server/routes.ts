@@ -785,8 +785,7 @@ export async function registerRoutes(app: Express): Promise<void> {
       const allCharacters = await storage.getAllCharacters();
       const safeAllCharacters = Array.isArray(allCharacters) ? allCharacters : [];
       const activeCharacters = safeAllCharacters.filter((char: any) => !char.deathDate && !char.isSystem);
-      const charactersWithFullName = activeCharacters.map((char: any) =>```text
- ({
+      const charactersWithFullName = activeCharacters.map((char: any) => ({
         ...char,
         fullName: `${char.firstName} ${char.middleName ? char.middleName + ' ' : ''}${char.lastName}`
       }));
