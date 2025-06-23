@@ -385,45 +385,14 @@ export async function registerRoutes(app: Express): Promise<void> {
     }
 
     try {
-      const messageData = {
-        room_id: Number(roomId),
-        character_id: Number(characterId) || 0,
-        user_id: req.user!.id,
+      // Use the storage layer for consistency
+      const message = await storage.createChatMessage({
+        roomId: Number(roomId),
+        characterId: Number(characterId) || 0,
+        userId: req.user!.id,
         content: content.trim(),
-        message_type: messageType || 'text',
-        created_at: new Date().toISOString()
-      };
-
-      const { data, error } = await supabase
-        .from('messages')
-        .insert([messageData])
-        .select(`
-          *,
-          character:characters(first_name, middle_name, last_name, avatar)
-        `)
-        .single();
-
-      if (error) {
-        console.error("Database error creating message:", error);
-        throw error;
-      }
-
-      // Convert to camelCase for response
-      const message = {
-        id: data.id,
-        roomId: data.room_id,
-        characterId: data.character_id,
-        userId: data.user_id,
-        content: data.content,
-        messageType: data.message_type,
-        createdAt: data.created_at,
-        character: data.character ? {
-          firstName: data.character.first_name,
-          middleName: data.character.middle_name,
-          lastName: data.character.last_name,
-          avatar: data.character.avatar
-        } : null
-      };
+        messageType: messageType || 'text'
+      });
       
       res.status(201).json(message);
     } catch (error) {
@@ -448,41 +417,13 @@ export async function registerRoutes(app: Express): Promise<void> {
         return res.status(404).json({ message: "Character not found" });
       }
 
-      const messageData = {
-        room_id: Number(roomId),
-        character_id: Number(characterId),
-        user_id: req.user!.id,
+      const message = await storage.createChatMessage({
+        roomId: Number(roomId),
+        characterId: Number(characterId),
+        userId: req.user!.id,
         content: `🎲 ${character.firstName} ${character.lastName} hodil kostkou a padlo: ${result}`,
-        message_type: 'dice',
-        created_at: new Date().toISOString()
-      };
-
-      const { data, error } = await supabase
-        .from('messages')
-        .insert([messageData])
-        .select(`
-          *,
-          character:characters(first_name, middle_name, last_name, avatar)
-        `)
-        .single();
-
-      if (error) throw error;
-
-      const message = {
-        id: data.id,
-        roomId: data.room_id,
-        characterId: data.character_id,
-        userId: data.user_id,
-        content: data.content,
-        messageType: data.message_type,
-        createdAt: data.created_at,
-        character: data.character ? {
-          firstName: data.character.first_name,
-          middleName: data.character.middle_name,
-          lastName: data.character.last_name,
-          avatar: data.character.avatar
-        } : null
-      };
+        messageType: 'dice'
+      });
       
       res.json({ result, message });
     } catch (error) {
@@ -507,41 +448,13 @@ export async function registerRoutes(app: Express): Promise<void> {
         return res.status(404).json({ message: "Character not found" });
       }
 
-      const messageData = {
-        room_id: Number(roomId),
-        character_id: Number(characterId),
-        user_id: req.user!.id,
+      const message = await storage.createChatMessage({
+        roomId: Number(roomId),
+        characterId: Number(characterId),
+        userId: req.user!.id,
         content: `🪙 ${character.firstName} ${character.lastName} hodil mincí a padl: ${result}`,
-        message_type: 'coin',
-        created_at: new Date().toISOString()
-      };
-
-      const { data, error } = await supabase
-        .from('messages')
-        .insert([messageData])
-        .select(`
-          *,
-          character:characters(first_name, middle_name, last_name, avatar)
-        `)
-        .single();
-
-      if (error) throw error;
-
-      const message = {
-        id: data.id,
-        roomId: data.room_id,
-        characterId: data.character_id,
-        userId: data.user_id,
-        content: data.content,
-        messageType: data.message_type,
-        createdAt: data.created_at,
-        character: data.character ? {
-          firstName: data.character.first_name,
-          middleName: data.character.middle_name,
-          lastName: data.character.last_name,
-          avatar: data.character.avatar
-        } : null
-      };
+        messageType: 'coin'
+      });
       
       res.json({ result, message });
     } catch (error) {
@@ -648,45 +561,14 @@ export async function registerRoutes(app: Express): Promise<void> {
     }
 
     try {
-      const messageData = {
-        room_id: Number(roomId),
-        character_id: 0, // Use 0 for narrator messages
-        user_id: req.user!.id,
+      // Use the storage layer for consistency
+      const message = await storage.createChatMessage({
+        roomId: Number(roomId),
+        characterId: 0, // Use 0 for narrator messages
+        userId: req.user!.id,
         content: content.trim(),
-        message_type: 'narrator',
-        created_at: new Date().toISOString()
-      };
-
-      const { data, error } = await supabase
-        .from('messages')
-        .insert([messageData])
-        .select(`
-          *,
-          character:characters(first_name, middle_name, last_name, avatar)
-        `)
-        .single();
-
-      if (error) {
-        console.error("Database error creating narrator message:", error);
-        throw error;
-      }
-
-      // Convert to camelCase for response
-      const message = {
-        id: data.id,
-        roomId: data.room_id,
-        characterId: data.character_id,
-        userId: data.user_id,
-        content: data.content,
-        messageType: data.message_type,
-        createdAt: data.created_at,
-        character: {
-          firstName: 'Vypravěč',
-          middleName: null,
-          lastName: '',
-          avatar: null
-        }
-      };
+        messageType: 'narrator'
+      });
       
       res.json(message);
     } catch (error) {

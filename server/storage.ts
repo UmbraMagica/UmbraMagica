@@ -373,7 +373,7 @@ export class DatabaseStorage implements IStorage {
         .limit(100);
 
       if (error) throw error;
-      
+
       // Convert to camelCase
       const messages = (data || []).map(msg => ({
         id: msg.id,
@@ -389,7 +389,7 @@ export class DatabaseStorage implements IStorage {
           avatar: msg.character.avatar
         } : null
       }));
-      
+
       return messages;
     } catch (error) {
       console.error('Error fetching chat messages:', error);
@@ -397,20 +397,24 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
-  async createChatMessage(messageData: any) {
+  async createChatMessage(messageData: {
+    roomId: number;
+    characterId: number;
+    userId: number;
+    content: string;
+    messageType: string;
+  }) {
     try {
-      const insertData = {
-        room_id: messageData.roomId || messageData.room_id,
-        character_id: messageData.characterId || messageData.character_id || 0,
-        user_id: messageData.userId || messageData.user_id,
-        content: messageData.content,
-        message_type: messageData.messageType || messageData.message_type || 'text',
-        created_at: new Date().toISOString()
-      };
-
       const { data, error } = await supabase
         .from('messages')
-        .insert([insertData])
+        .insert({
+          room_id: messageData.roomId,
+          character_id: messageData.characterId,
+          user_id: messageData.userId,
+          content: messageData.content,
+          message_type: messageData.messageType,
+          created_at: new Date().toISOString()
+        })
         .select(`
           *,
           character:characters(first_name, middle_name, last_name, avatar)
@@ -421,7 +425,26 @@ export class DatabaseStorage implements IStorage {
         console.error('Database error in createChatMessage:', error);
         throw error;
       }
-      
+
+      // Handle special message types that don't have characters
+      let characterData = null;
+      if (data.character_id === 0) {
+        // Narrator or system message
+        characterData = {
+          firstName: messageData.messageType === 'narrator' ? 'Vypravěč' : 'Systém',
+          middleName: null,
+          lastName: '',
+          avatar: null
+        };
+      } else if (data.character) {
+        characterData = {
+          firstName: data.character.first_name,
+          middleName: data.character.middle_name,
+          lastName: data.character.last_name,
+          avatar: data.character.avatar
+        };
+      }
+
       // Convert to camelCase
       const message = {
         id: data.id,
@@ -431,19 +454,9 @@ export class DatabaseStorage implements IStorage {
         content: data.content,
         messageType: data.message_type,
         createdAt: data.created_at,
-        character: data.character ? {
-          firstName: data.character.first_name,
-          middleName: data.character.middle_name,
-          lastName: data.character.last_name,
-          avatar: data.character.avatar
-        } : {
-          firstName: 'Systém',
-          middleName: null,
-          lastName: '',
-          avatar: null
-        }
+        character: characterData
       };
-      
+
       return message;
     } catch (error) {
       console.error('Error creating chat message:', error);
@@ -1157,11 +1170,11 @@ export class DatabaseStorage implements IStorage {
         spell = existingSpells[0];
         console.log(`Spell already exists: ${spell.name}`);
       }
-      
+
       // Add spell to all existing characters who don't have it
       const { data: allCharacters } = await supabase.from('characters').select('*');
       if (!allCharacters) continue;
-      
+
       for (const character of allCharacters) {
         // Check if character already has this spell
         const { data: existingCharacterSpell } = await supabase
@@ -1169,7 +1182,7 @@ export class DatabaseStorage implements IStorage {
           .select('*')
           .eq('character_id', character.id)
           .eq('spell_id', spell.id);
-          
+
         if (!existingCharacterSpell || existingCharacterSpell.length === 0) {
           await supabase.from('character_spells').insert([{
             character_id: character.id,
@@ -1481,6 +1494,7 @@ export class DatabaseStorage implements IStorage {
           if (length.id) {
             await supabase.from('wand_lengths').update(toSnake(length)).eq('id', length.id);
           } else {
+            ```text
             await supabase.from('wand_lengths').insert([toSnake(length)]);
           }
         }
