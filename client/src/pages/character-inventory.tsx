@@ -49,7 +49,7 @@ const inventoryItemSchema = z.object({
   description: z.string().optional(),
   rarity: z.string().optional(),
   quantity: z.number().min(1),
-  notes: z.string().optional(),
+  notes: z.string().nullable().optional().default(""),
 });
 
 type InventoryItemForm = z.infer<typeof inventoryItemSchema>;
@@ -640,7 +640,7 @@ function EditInventoryItemDialog({ item, onClose, onSave }: { item: InventoryIte
       description: item.description,
       rarity: item.rarity,
       quantity: item.quantity,
-      notes: item.notes,
+      notes: item.notes ?? "",
     },
   });
   function onSubmit(data: InventoryItemForm) {

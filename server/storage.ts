@@ -445,19 +445,19 @@ export class DatabaseStorage implements IStorage {
 
   // Chat operations (keeping existing implementation)
   async getChatRoom(id: number): Promise<ChatRoom | undefined> {
-    const { data, error } = await supabase.from('chatRooms').select('*').eq('id', id).single();
+    const { data, error } = await supabase.from('chat_rooms').select('*').eq('id', id).single();
     if (error) return undefined;
     return toCamel(data);
   }
 
   async getChatRoomByName(name: string): Promise<ChatRoom | undefined> {
-    const { data, error } = await supabase.from('chatRooms').select('*').eq('name', name).single();
+    const { data, error } = await supabase.from('chat_rooms').select('*').eq('name', name).single();
     if (error) return undefined;
     return toCamel(data);
   }
 
   async createChatRoom(insertChatRoom: InsertChatRoom): Promise<ChatRoom> {
-    const { data, error } = await supabase.from('chatRooms').insert([insertChatRoom]).select().single();
+    const { data, error } = await supabase.from('chat_rooms').insert([insertChatRoom]).select().single();
     if (error) throw new Error(error.message);
     return toCamel(data);
   }
@@ -466,25 +466,25 @@ export class DatabaseStorage implements IStorage {
     if (updates.password) {
       updates.password = await this.hashPassword(updates.password);
     }
-    const { data, error } = await supabase.from('chatRooms').update({ ...updates, updated_at: new Date() }).eq('id', id).select().single();
+    const { data, error } = await supabase.from('chat_rooms').update({ ...updates, updated_at: new Date() }).eq('id', id).select().single();
     if (error) return undefined;
     return toCamel(data);
   }
 
   async deleteChatRoom(id: number): Promise<boolean> {
     await supabase.from('messages').delete().eq('room_id', id);
-    const { error } = await supabase.from('chatRooms').delete().eq('id', id);
+    const { error } = await supabase.from('chat_rooms').delete().eq('id', id);
     return !error;
   }
 
   async getAllChatRooms(): Promise<ChatRoom[]> {
-    const { data, error } = await supabase.from('chatRooms').select('*').order('sort_order', { ascending: true });
+    const { data, error } = await supabase.from('chat_rooms').select('*').order('sort_order', { ascending: true });
     if (error) return [];
     return toCamel(data || []);
   }
 
   async getChatRoomsByCategory(categoryId: number): Promise<ChatRoom[]> {
-    const { data, error } = await supabase.from('chatRooms').select('*').eq('category_id', categoryId).order('sort_order', { ascending: true });
+    const { data, error } = await supabase.from('chat_rooms').select('*').eq('category_id', categoryId).order('sort_order', { ascending: true });
     if (error) return [];
     return toCamel(data || []);
   }
@@ -497,53 +497,53 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateChatCategorySortOrder(id: number, sortOrder: number): Promise<ChatCategory | undefined> {
-    const { data, error } = await supabase.from('chatCategories').update({ sortOrder }).eq('id', id).select().single();
+    const { data, error } = await supabase.from('chat_categories').update({ sortOrder }).eq('id', id).select().single();
     if (error) return undefined;
     return data;
   }
 
   async updateChatRoomSortOrder(id: number, sortOrder: number): Promise<ChatRoom | undefined> {
-    const { data, error } = await supabase.from('chatRooms').update({ sortOrder }).eq('id', id).select().single();
+    const { data, error } = await supabase.from('chat_rooms').update({ sortOrder }).eq('id', id).select().single();
     if (error) return undefined;
     return data;
   }
 
   async getChatCategory(id: number): Promise<ChatCategory | undefined> {
-    const { data, error } = await supabase.from('chatCategories').select('*').eq('id', id).single();
+    const { data, error } = await supabase.from('chat_categories').select('*').eq('id', id).single();
     if (error) return undefined;
     return toCamel(data);
   }
 
   async getChatCategoryByName(name: string): Promise<ChatCategory | undefined> {
-    const { data, error } = await supabase.from('chatCategories').select('*').eq('name', name).single();
+    const { data, error } = await supabase.from('chat_categories').select('*').eq('name', name).single();
     if (error) return undefined;
     return toCamel(data);
   }
 
   async createChatCategory(insertChatCategory: InsertChatCategory): Promise<ChatCategory> {
-    const { data, error } = await supabase.from('chatCategories').insert([insertChatCategory]).select().single();
+    const { data, error } = await supabase.from('chat_categories').insert([insertChatCategory]).select().single();
     if (error) throw new Error(error.message);
     return data;
   }
 
   async updateChatCategory(id: number, updates: Partial<InsertChatCategory>): Promise<ChatCategory | undefined> {
-    const { data, error } = await supabase.from('chatCategories').update(updates).eq('id', id).select().single();
+    const { data, error } = await supabase.from('chat_categories').update(updates).eq('id', id).select().single();
     if (error) return undefined;
     return data;
   }
 
   async deleteChatCategory(id: number): Promise<boolean> {
     // Zkontrolujeme, jestli má podkategorie nebo místnosti
-    const { data: children } = await supabase.from('chatCategories').select('id').eq('parentId', id);
+    const { data: children } = await supabase.from('chat_categories').select('id').eq('parentId', id);
     if (children && children.length > 0) return false;
-    const { data: rooms } = await supabase.from('chatRooms').select('id').eq('categoryId', id);
+    const { data: rooms } = await supabase.from('chat_rooms').select('id').eq('categoryId', id);
     if (rooms && rooms.length > 0) return false;
-    const { error } = await supabase.from('chatCategories').delete().eq('id', id);
+    const { error } = await supabase.from('chat_categories').delete().eq('id', id);
     return !error;
   }
 
   async getAllChatCategories(): Promise<ChatCategory[]> {
-    const { data, error } = await supabase.from('chatCategories').select('*').order('sort_order');
+    const { data, error } = await supabase.from('chat_categories').select('*').order('sort_order');
     if (error) {
       console.error("getAllChatCategories error:", error);
       return [];
@@ -555,7 +555,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getChatCategoriesWithChildren(): Promise<(ChatCategory & { children: ChatCategory[], rooms: ChatRoom[] })[]> {
-    const { data, error } = await supabase.from('chatCategories').select('*, chat_rooms(*)').order('sort_order');
+    const { data, error } = await supabase.from('chat_categories').select('*, chat_rooms(*)').order('sort_order');
     if (error) {
       console.error("getChatCategoriesWithChildren error:", error);
       return [];
@@ -949,7 +949,7 @@ export class DatabaseStorage implements IStorage {
   async getCharacterInventory(characterId: number): Promise<any[]> {
     // Získáme všechny položky inventáře
     const { data: inventory, error } = await supabase
-      .from('characterInventory')
+      .from('character_inventory')
       .select('*')
       .eq('character_id', characterId);
     if (error || !inventory) return [];
@@ -986,25 +986,25 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getInventoryItem(id: number): Promise<InventoryItem | undefined> {
-    const { data, error } = await supabase.from('characterInventory').select('*').eq('id', id).single();
+    const { data, error } = await supabase.from('character_inventory').select('*').eq('id', id).single();
     if (error) return undefined;
     return data;
   }
 
   async addInventoryItem(item: InsertInventoryItem): Promise<InventoryItem> {
-    const { data, error } = await supabase.from('characterInventory').insert([item]).select().single();
+    const { data, error } = await supabase.from('character_inventory').insert([item]).select().single();
     if (error) throw new Error(error.message);
     return data;
   }
 
   async updateInventoryItem(id: number, updates: Partial<InsertInventoryItem>): Promise<InventoryItem | undefined> {
-    const { data, error } = await supabase.from('characterInventory').update(updates).eq('id', id).select().single();
+    const { data, error } = await supabase.from('character_inventory').update(updates).eq('id', id).select().single();
     if (error) return undefined;
     return data;
   }
 
   async deleteInventoryItem(id: number): Promise<boolean> {
-    const { error } = await supabase.from('characterInventory').delete().eq('id', id);
+    const { error } = await supabase.from('character_inventory').delete().eq('id', id);
     return !error;
   }
 
