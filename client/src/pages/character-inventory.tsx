@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useParams, useLocation } from "wouter";
 import React from "react";
+import { z as zod } from "zod";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -47,7 +48,7 @@ const inventoryItemSchema = z.object({
   item_name: z.string().optional(),
   description: z.string().optional(),
   rarity: z.string().optional(),
-  quantity: z.number().min(1).default(1),
+  quantity: z.number().min(1),
   notes: z.string().optional(),
 });
 
@@ -408,8 +409,9 @@ const CharacterInventoryPage = () => {
     queryFn: async () => {
       try {
         const result = await apiRequest("GET", `/api/characters/${characterId}/inventory`);
-        // Zajistíme, že vždy vrátíme pole
-        return Array.isArray(result) ? result : [];
+        if (Array.isArray(result)) return result;
+        if (result && Array.isArray(result.data)) return result.data;
+        return [];
       } catch (error) {
         console.error('Error loading inventory:', error);
         return [];
@@ -420,6 +422,14 @@ const CharacterInventoryPage = () => {
 
   // Zajistíme, že inventory je vždy pole
   const inventory = Array.isArray(inventoryData) ? inventoryData : [];
+
+  // DEBUG: Výpis do konzole
+  React.useEffect(() => {
+    console.log("[DEBUG][characterId]", characterId);
+    console.log("[DEBUG][inventoryData]", inventoryData);
+    console.log("[DEBUG][inventory]", inventory);
+    console.log("[DEBUG][inventoryError]", inventoryError);
+  }, [characterId, inventoryData, inventory, inventoryError]);
 
   if (!characterId) {
     return (
@@ -514,6 +524,9 @@ const CharacterInventoryPage = () => {
       </div>
 
       {/* Statistiky */}
+      <pre className="bg-gray-100 text-xs p-2 mb-4 rounded">
+        {JSON.stringify(inventory, null, 2)}
+      </pre>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         <Card>
           <CardContent className="pt-6">
