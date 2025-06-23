@@ -333,8 +333,19 @@ export class DatabaseStorage implements IStorage {
     return toCamel(data);
   }
 
-  async getCharacterById(id: number): Promise<Character | undefined> {
-    return this.getCharacter(id);
+  async getCharacterById(id: number): Promise<Character | null> {
+    const { data, error } = await supabase
+      .from('characters')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error) {
+      console.error('Error fetching character:', error);
+      return null;
+    }
+
+    return data ? toCamel(data) : null;
   }
 
   async getCharactersByUserId(userId: number): Promise<Character[]> {
@@ -349,8 +360,7 @@ export class DatabaseStorage implements IStorage {
     return toCamel(data || []);
   }
 
-  // Chat methods
-  async getChatMessages(roomId: number) {
+  async getChatMessages(roomId: number): Promise<any> {
     try {
       const { data, error } = await supabase
         .from('chat_messages')
@@ -654,33 +664,61 @@ export class DatabaseStorage implements IStorage {
     return toCamel(data || []);
   }
 
-  async getChatCategoriesWithChildren(userRole: string = 'user'): Promise<(ChatCategory & { children: ChatCategory[], rooms: ChatRoom[] })[]> {
-    let query = supabase.from('chat_categories').select('*, chat_rooms(*)').order('sort_order');
-    if (userRole !== 'admin') {
-      // Filtruj rooms pouze na veřejné a netestovací
-      // Supabase neumí deep filter, takže filtruj až po načtení
-      const { data, error } = await query;
-      if (error) {
-        console.error('[DEBUG][getChatCategoriesWithChildren][error]', error);
-        return [];
-      }
-      const filtered = (data || []).map((cat: any) => ({
-        ...cat,
-        chat_rooms: Array.isArray(cat.chat_rooms)
-          ? cat.chat_rooms.filter((room: any) => (room.is_public !== false && room.is_test !== true))
-          : [],
-      }));
-      console.log('[DEBUG][getChatCategoriesWithChildren][data][filtered]', filtered);
-      return toCamel(filtered);
-    } else {
-      const { data, error } = await query;
-      if (error) {
-        console.error('[DEBUG][getChatCategoriesWithChildren][error]', error);
-        return [];
-      }
-      console.log('[DEBUG][getChatCategoriesWithChildren][data]', data);
-      return toCamel(data || []);
+  async getChatCategoriesWithChildren(userRole: string = 'user'): Promise<ChatCategory[]> {
+    // Fetch all categories
+    const { data: categories, error: categoriesError } = await supabase
+      .from('chat_categories')
+      .select('*')
+      .order('sort_order', { ascending: true });
+
+    if (categoriesError) {
+      console.error('Error fetching chat categories:', categoriesError);
+      return [];
     }
+
+    // Fetch all rooms
+    const { data: rooms, error: roomsError } = await supabase
+      .from('chat_rooms')
+      .select('*')
+      .eq('is_public', true) // Only public rooms for now
+      .order('sort_order', { ascending: true });
+
+    if (roomsError) {
+      console.error('Error fetching chat rooms:', roomsError);
+      return [];
+    }
+
+    // Build hierarchical structure
+    const categoryMap = new Map();
+    const rootCategories: any[] = [];
+
+    // First pass: create all categories
+    categories?.forEach(cat => {
+      const category = toCamel(cat);
+      category.children = [];
+      category.rooms = [];
+      categoryMap.set(category.id, category);
+    });
+
+    // Second pass: assign rooms to categories
+    rooms?.forEach(room => {
+      const camelRoom = toCamel(room);
+      if (camelRoom.categoryId && categoryMap.has(camelRoom.categoryId)) {
+        categoryMap.get(camelRoom.categoryId).rooms.push(camelRoom);
+      }
+    });
+
+    // Third pass: build hierarchy
+    categories?.forEach(cat => {
+      const category = categoryMap.get(cat.id);
+      if (cat.parent_id && categoryMap.has(cat.parent_id)) {
+        categoryMap.get(cat.parent_id).children.push(category);
+      } else {
+        rootCategories.push(category);
+      }
+    });
+
+    return rootCategories;
   }
 
   async getAllChatRooms(userRole: string = 'user'): Promise<ChatRoom[]> {
@@ -998,14 +1036,21 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Character spell operations
-  async getCharacterSpells(characterId: number): Promise<(CharacterSpell & { spell: Spell })[]> {
-    const { data: charSpells, error } = await supabase.from('characterSpells').select('*').eq('character_id', characterId);
-    if (error || !charSpells) return [];
-    const { data: spellsData } = await supabase.from('spells').select('*');
-    return toCamel(charSpells.map(cs => ({
-      ...cs,
-      spell: spellsData?.find(s => s.id === cs.spell_id)
-    })));
+  async getCharacterSpells(characterId: number): Promise<any[]> {
+    const { data, error } = await supabase
+      .from('character_spells')
+      .select(`
+        *,
+        spell:spells(*)
+      `)
+      .eq('character_id', characterId);
+
+    if (error) {
+      console.error('Error fetching character spells:', error);
+      return [];
+    }
+
+    return (data || []).map(toCamel);
   }
 
   async addSpellToCharacter(characterId: number, spellId: number): Promise<CharacterSpell> {

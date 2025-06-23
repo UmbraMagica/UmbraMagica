@@ -323,8 +323,11 @@ export async function registerRoutes(app: Express): Promise<void> {
       return res.status(400).json({ message: "Invalid roomId" });
     }
 
+    console.log(`[CHAT][MESSAGES] User ${req.user!.username} requesting messages for room ${roomId}`);
+
     try {
       const messages = await storage.getChatMessages(roomId);
+      console.log(`[CHAT][MESSAGES] Returning ${messages?.length || 0} messages`);
       res.json(messages || []);
     } catch (error) {
       console.error("Error fetching chat messages:", error);
@@ -344,6 +347,7 @@ export async function registerRoutes(app: Express): Promise<void> {
       const message = await storage.createChatMessage({
         roomId: Number(roomId),
         characterId: Number(characterId),
+        userId: req.user!.id,
         content,
         messageType: messageType || 'text'
       });
@@ -374,6 +378,7 @@ export async function registerRoutes(app: Express): Promise<void> {
       const message = await storage.createChatMessage({
         roomId: Number(roomId),
         characterId: Number(characterId),
+        userId: req.user!.id,
         content: `🎲 ${character.firstName} ${character.lastName} hodil kostkou a padlo: ${result}`,
         messageType: 'dice'
       });
@@ -404,6 +409,7 @@ export async function registerRoutes(app: Express): Promise<void> {
       const message = await storage.createChatMessage({
         roomId: Number(roomId),
         characterId: Number(characterId),
+        userId: req.user!.id,
         content: `🪙 ${character.firstName} ${character.lastName} hodil mincí a padl: ${result}`,
         messageType: 'coin'
       });
@@ -412,6 +418,106 @@ export async function registerRoutes(app: Express): Promise<void> {
     } catch (error) {
       console.error("Error flipping coin:", error);
       res.status(500).json({ message: "Failed to flip coin" });
+    }
+  });
+
+  // Character spells endpoint
+  app.get("/api/characters/:id/spells", requireAuth, async (req, res) => {
+    const characterId = Number(req.params.id);
+    if (!characterId || isNaN(characterId)) {
+      return res.status(400).json({ message: "Invalid characterId" });
+    }
+
+    try {
+      // Check if character belongs to user or is admin
+      if (req.user!.role !== 'admin') {
+        const character = await storage.getCharacterById(characterId);
+        if (!character || character.userId !== req.user!.id) {
+          return res.status(403).json({ message: "Character not found or access denied" });
+        }
+      }
+
+      const spells = await storage.getCharacterSpells(characterId);
+      res.json(spells || []);
+    } catch (error) {
+      console.error("Error fetching character spells:", error);
+      res.status(500).json({ message: "Failed to fetch spells" });
+    }
+  });
+
+  // Cast spell endpoint
+  app.post("/api/game/cast-spell", requireAuth, async (req, res) => {
+    const { roomId, characterId, spellId, message } = req.body;
+    
+    if (!roomId || !characterId || !spellId) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    try {
+      const character = await storage.getCharacterById(characterId);
+      if (!character) {
+        return res.status(404).json({ message: "Character not found" });
+      }
+
+      // Check if character has a wand
+      const wand = await storage.getCharacterWand(characterId);
+      if (!wand) {
+        return res.status(400).json({ message: "Vaše postava potřebuje hůlku pro sesílání kouzel." });
+      }
+
+      // Check if character knows the spell
+      const characterSpells = await storage.getCharacterSpells(characterId);
+      const knownSpell = characterSpells.find((cs: any) => cs.spell.id === spellId);
+      if (!knownSpell) {
+        return res.status(400).json({ message: "Character doesn't know this spell" });
+      }
+
+      const spell = knownSpell.spell;
+      const spellContent = message 
+        ? `✨ ${character.firstName} ${character.lastName} seslal kouzlo "${spell.name}": ${message}`
+        : `✨ ${character.firstName} ${character.lastName} seslal kouzlo "${spell.name}"`;
+
+      const chatMessage = await storage.createChatMessage({
+        roomId: Number(roomId),
+        characterId: Number(characterId),
+        userId: req.user!.id,
+        content: spellContent,
+        messageType: 'spell'
+      });
+      
+      res.json({ spell, message: chatMessage });
+    } catch (error) {
+      console.error("Error casting spell:", error);
+      res.status(500).json({ message: "Failed to cast spell" });
+    }
+  });
+
+  // Narrator message endpoint
+  app.post("/api/chat/narrator-message", requireAuth, async (req, res) => {
+    const { roomId, content } = req.body;
+    
+    if (!roomId || !content) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    // Check if user has narrator permissions
+    if (!req.user || (req.user.role !== 'admin' && !req.user.canNarrate)) {
+      return res.status(403).json({ message: "Nemáte oprávnění k vypravování" });
+    }
+
+    try {
+      const message = await storage.createChatMessage({
+        roomId: Number(roomId),
+        characterId: 0, // Use 0 for narrator messages
+        userId: req.user!.id,
+        content: content,
+        messageType: 'narrator'
+      });
+      
+      res.json(message);
+    } catch (error) {
+      console.error("Error sending narrator message:", error);
+      res.status(500).json({ message: "Failed to send narrator message" });
     }
   });
 

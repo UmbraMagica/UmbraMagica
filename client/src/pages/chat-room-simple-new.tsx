@@ -136,11 +136,12 @@ export default function ChatRoom() {
     queryKey: ["/api/chat/rooms", currentRoomId, "messages"],
     queryFn: async () => {
       const token = localStorage.getItem('jwt_token');
+      if (!token) {
+        throw new Error("No authentication token");
+      }
       const response = await fetch(`${API_URL}/api/chat/rooms/${currentRoomId}/messages`, {
-        headers: token ? { 
+        headers: { 
           'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        } : {
           'Content-Type': 'application/json'
         },
         credentials: "include",
@@ -150,7 +151,7 @@ export default function ChatRoom() {
       }
       return response.json();
     },
-    enabled: !!currentRoomId,
+    enabled: !!currentRoomId && !!localStorage.getItem('jwt_token'),
     refetchInterval: 5000,
     staleTime: 0, // Always consider data stale
   });
