@@ -135,7 +135,14 @@ export default function ChatRoom() {
   const { data: messages = [], isLoading: messagesLoading } = useQuery<ChatMessage[]>({
     queryKey: ["/api/chat/rooms", currentRoomId, "messages"],
     queryFn: async () => {
+      const token = localStorage.getItem('jwt_token');
       const response = await fetch(`${API_URL}/api/chat/rooms/${currentRoomId}/messages`, {
+        headers: token ? { 
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        } : {
+          'Content-Type': 'application/json'
+        },
         credentials: "include",
       });
       if (!response.ok) {
@@ -234,8 +241,11 @@ export default function ChatRoom() {
   useEffect(() => {
     if (!currentRoomId || !user) return;
 
-    const token = localStorage.getItem('ws-token') || Math.random().toString(36).substring(7);
-    localStorage.setItem('ws-token', token);
+    const token = localStorage.getItem('jwt_token');
+    if (!token) {
+      console.error("No JWT token found for WebSocket connection");
+      return;
+    }
 
     const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
     const wsUrl = `${protocol}//${window.location.host}/ws?token=${token}`;

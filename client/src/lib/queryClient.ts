@@ -50,10 +50,13 @@ export const getQueryFn: <T>(options: {
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
     const token = getAuthToken();
-    const headers: Record<string, string> = {};
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json'
+    };
     if (token) headers["Authorization"] = `Bearer ${token}`;
     const res = await fetch(queryKey[0] as string, {
       headers,
+      credentials: 'include'
     });
     if (unauthorizedBehavior === "returnNull" && res.status === 401) {
       return null;
@@ -83,7 +86,12 @@ export async function apiFetch(input: RequestInfo, init: RequestInit = {}) {
   if (token) {
     headers.set('Authorization', `Bearer ${token}`);
   }
-  const response = await fetch(input, { ...init, headers });
+  headers.set('Content-Type', 'application/json');
+  const response = await fetch(input, { 
+    ...init, 
+    headers,
+    credentials: 'include'
+  });
   if (!response.ok) throw new Error(`API error: ${response.status}`);
   const contentType = response.headers.get('content-type');
   if (contentType && contentType.includes('application/json')) {
