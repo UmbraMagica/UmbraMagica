@@ -727,7 +727,7 @@ export class DatabaseStorage implements IStorage {
     return toCamel(data || []);
   }
 
-  async getChatCategoriesWithChildren(userRole: string = 'user'): Promise<ChatCategory[]> {
+  async getChatCategoriesWithChildren(userRole: string = 'user'): Promise<(ChatCategory & { children: ChatCategory[], rooms: ChatRoom[] })[]> {
     // Fetch all categories
     const { data: categories, error: categoriesError } = await supabase
       .from('chat_categories')
@@ -743,7 +743,6 @@ export class DatabaseStorage implements IStorage {
     const { data: rooms, error: roomsError } = await supabase
       .from('chat_rooms')
       .select('*')
-      .eq('is_public', true) // Only public rooms for now
       .order('sort_order', { ascending: true });
 
     if (roomsError) {
@@ -751,8 +750,13 @@ export class DatabaseStorage implements IStorage {
       return [];
     }
 
+    // Filtruj místnosti pro běžné uživatele
+    const filteredRooms = userRole !== 'admin'
+      ? (rooms || []).filter((room: any) => room.is_public !== false && room.is_test !== true)
+      : (rooms || []);
+
     // Build hierarchical structure
-    const categoryMap = new Map();
+    const categoryMap = new Map<number, any>();
     const rootCategories: any[] = [];
 
     // First pass: create all categories
@@ -764,9 +768,8 @@ export class DatabaseStorage implements IStorage {
     });
 
     // Second pass: assign rooms to categories
-    rooms?.forEach(room => {
+    filteredRooms?.forEach(room => {
       const camelRoom = toCamel(room);
-      ``````text
       if (camelRoom.categoryId && categoryMap.has(camelRoom.categoryId)) {
         categoryMap.get(camelRoom.categoryId).rooms.push(camelRoom);
       }
