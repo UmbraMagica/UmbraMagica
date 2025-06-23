@@ -477,30 +477,6 @@ export class DatabaseStorage implements IStorage {
     return !error;
   }
 
-  async getAllChatRooms(userRole: string = 'user'): Promise<ChatRoom[]> {
-    let query = supabase.from('chat_rooms').select('*').order('sort_order', { ascending: true });
-    if (userRole !== 'admin') {
-      // Supabase neumí deep OR s více podmínkami, proto načteme vše a filtrujeme v JS
-      const { data, error } = await query;
-      if (error) {
-        console.error('[DEBUG][getAllChatRooms][error]', error);
-        return [];
-      }
-      // Filtrujeme pouze veřejné a netestovací místnosti
-      const filtered = (data || []).filter((room: any) => (room.is_public !== false && room.is_test !== true));
-      console.log('[DEBUG][getAllChatRooms][data][filtered]', filtered);
-      return toCamel(filtered);
-    } else {
-      const { data, error } = await query;
-      if (error) {
-        console.error('[DEBUG][getAllChatRooms][error]', error);
-        return [];
-      }
-      console.log('[DEBUG][getAllChatRooms][data]', data);
-      return toCamel(data || []);
-    }
-  }
-
   async getChatRoomsByCategory(categoryId: number): Promise<ChatRoom[]> {
     const { data, error } = await supabase.from('chat_rooms').select('*').eq('category_id', categoryId).order('sort_order', { ascending: true });
     if (error) return [];

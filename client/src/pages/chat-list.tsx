@@ -28,7 +28,7 @@ export default function ChatList() {
   const [editingDescription, setEditingDescription] = useState("");
 
   // Fetch chat rooms
-  const { data: roomsRaw, isLoading, error } = useQuery<ChatRoom[]>({
+  const { data: roomsRaw, isLoading, error, refetch } = useQuery<ChatRoom[]>({
     queryKey: ["/api/chat/rooms"],
     queryFn: async () => {
       const result = await apiRequest("GET", "/api/chat/rooms");
@@ -36,11 +36,14 @@ export default function ChatList() {
       return Array.isArray(result) ? result : [];
     },
     enabled: !!user,
+    retry: 3,
+    refetchOnWindowFocus: false,
+    staleTime: 30000,
   });
   const rooms = Array.isArray(roomsRaw) ? roomsRaw : [];
 
   // Fetch chat categories
-  const { data: categoriesRaw } = useQuery({
+  const { data: categoriesRaw, refetch: refetchCategories } = useQuery({
     queryKey: ["/api/chat/categories"],
     queryFn: async () => {
       const result = await apiRequest("GET", "/api/chat/categories");
@@ -48,11 +51,50 @@ export default function ChatList() {
       return Array.isArray(result) ? result : [];
     },
     enabled: !!user,
+    retry: 3,
+    refetchOnWindowFocus: false,
+    staleTime: 30000,
   });
   const categories = Array.isArray(categoriesRaw) ? categoriesRaw : [];
 
   if (error) {
-    return <div className="text-red-500 p-4">Chyba při načítání místností: {error.message || String(error)}</div>;
+    return (
+      <div className="container mx-auto p-6 max-w-4xl">
+        <div className="mb-8">
+          <div className="flex items-center gap-3 mb-4">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setLocation('/home')}
+              className="flex items-center gap-2"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Zpět na hlavní stranu
+            </Button>
+          </div>
+          <h1 className="text-3xl font-bold text-foreground mb-2">Herní chaty</h1>
+        </div>
+        <Card>
+          <CardContent className="p-6">
+            <div className="text-center">
+              <div className="text-red-500 mb-4">
+                <h3 className="text-lg font-semibold mb-2">Chyba při načítání chatů</h3>
+                <p className="text-sm">{error.message || String(error)}</p>
+              </div>
+              <Button 
+                onClick={() => {
+                  refetch();
+                  refetchCategories();
+                }}
+                variant="outline"
+              >
+                Zkusit znovu
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
 
   console.log("Chat rooms data:", rooms);
@@ -143,37 +185,34 @@ export default function ChatList() {
         </p>
       </div>
 
-      {/* Debug informace */}
-      <div className="mb-4 p-4 bg-muted rounded-lg">
-        <h3 className="font-medium mb-2">Debug Info:</h3>
-        <p>Počet místností: {rooms.length}</p>
-        <p>Počet kategorií: {categories.length}</p>
-        <p>Uživatelská role: {user?.role}</p>
-        <p>Loading: {isLoading ? 'Ano' : 'Ne'}</p>
-        {error && <p className="text-red-500">Chyba: {String(error)}</p>}
-      </div>
-
-      {/* Zobrazení kategorií */}
-      {categories.length > 0 && (
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold mb-4">Kategorie</h2>
-          <div className="grid gap-4">
-            {categories.map((category: any) => (
-              <div key={category.id} className="p-4 border rounded-lg">
-                <h3 className="font-medium">{category.name}</h3>
-                <p className="text-sm text-muted-foreground">{category.description}</p>
-                {category.chatRooms && category.chatRooms.length > 0 && (
-                  <div className="mt-2">
-                    <p className="text-xs">Místnosti v kategorii: {category.chatRooms.length}</p>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
+      {isLoading ? (
+        <div className="text-center py-8">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Načítání chatů...</p>
         </div>
-      )}
+      ) : (
+        <>
+          {/* Zobrazení kategorií */}
+          {categories.length > 0 && (
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold mb-4">Kategorie</h2>
+              <div className="grid gap-4">
+                {categories.map((category: any) => (
+                  <div key={category.id} className="p-4 border rounded-lg">
+                    <h3 className="font-medium">{category.name}</h3>
+                    <p className="text-sm text-muted-foreground">{category.description}</p>
+                    {category.chatRooms && category.chatRooms.length > 0 && (
+                      <div className="mt-2">
+                        <p className="text-xs">Místnosti v kategorii: {category.chatRooms.length}</p>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
-      <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid gap-6 md:grid-cols-2">
         {rooms.map((room) => (
           <Card 
             key={room.id}
@@ -249,7 +288,7 @@ export default function ChatList() {
           </Card>
         ))}
 
-        {rooms.length === 0 && (
+        {rooms.length === 0 && !isLoading && (
           <div className="col-span-full text-center py-12">
             <MessageCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-lg font-medium text-foreground mb-2">
@@ -258,9 +297,21 @@ export default function ChatList() {
             <p className="text-muted-foreground">
               Momentálně nejsou k dispozici žádné chatovací místnosti.
             </p>
+            <Button 
+              onClick={() => {
+                refetch();
+                refetchCategories();
+              }}
+              variant="outline"
+              className="mt-4"
+            >
+              Obnovit
+            </Button>
           </div>
         )}
       </div>
+        </>
+      )}
     </div>
   );
 }
