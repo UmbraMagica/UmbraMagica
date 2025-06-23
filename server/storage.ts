@@ -106,7 +106,7 @@ export interface IStorage {
   updateChatCategory(id: number, updates: Partial<InsertChatCategory>): Promise<ChatCategory | undefined>;
   deleteChatCategory(id: number): Promise<boolean>;
   getAllChatCategories(): Promise<ChatCategory[]>;
-  getChatCategoriesWithChildren(): Promise<(ChatCategory & { children: ChatCategory[], rooms: ChatRoom[] })[]>;
+  getChatCategoriesWithChildren(userRole: string): Promise<(ChatCategory & { children: ChatCategory[], rooms: ChatRoom[] })[]>;
 
   // Chat operations
   getChatRoom(id: number): Promise<ChatRoom | undefined>;
@@ -114,7 +114,7 @@ export interface IStorage {
   createChatRoom(room: InsertChatRoom): Promise<ChatRoom>;
   updateChatRoom(id: number, updates: Partial<InsertChatRoom>): Promise<ChatRoom | undefined>;
   deleteChatRoom(id: number): Promise<boolean>;
-  getAllChatRooms(): Promise<ChatRoom[]>;
+  getAllChatRooms(userRole: string): Promise<ChatRoom[]>;
   getChatRoomsByCategory(categoryId: number): Promise<ChatRoom[]>;
   validateRoomPassword(roomId: number, password: string): Promise<boolean>;
 
@@ -477,14 +477,28 @@ export class DatabaseStorage implements IStorage {
     return !error;
   }
 
-  async getAllChatRooms(): Promise<ChatRoom[]> {
-    const { data, error } = await supabase.from('chat_rooms').select('*').order('sort_order', { ascending: true });
-    if (error) {
-      console.error('[DEBUG][getAllChatRooms][error]', error);
-      return [];
+  async getAllChatRooms(userRole: string = 'user'): Promise<ChatRoom[]> {
+    let query = supabase.from('chat_rooms').select('*').order('sort_order', { ascending: true });
+    if (userRole !== 'admin') {
+      // Supabase neumí deep OR s více podmínkami, proto načteme vše a filtrujeme v JS
+      const { data, error } = await query;
+      if (error) {
+        console.error('[DEBUG][getAllChatRooms][error]', error);
+        return [];
+      }
+      // Filtrujeme pouze veřejné a netestovací místnosti
+      const filtered = (data || []).filter((room: any) => (room.is_public !== false && room.is_test !== true));
+      console.log('[DEBUG][getAllChatRooms][data][filtered]', filtered);
+      return toCamel(filtered);
+    } else {
+      const { data, error } = await query;
+      if (error) {
+        console.error('[DEBUG][getAllChatRooms][error]', error);
+        return [];
+      }
+      console.log('[DEBUG][getAllChatRooms][data]', data);
+      return toCamel(data || []);
     }
-    console.log('[DEBUG][getAllChatRooms][data]', data);
-    return toCamel(data || []);
   }
 
   async getChatRoomsByCategory(categoryId: number): Promise<ChatRoom[]> {
@@ -558,14 +572,33 @@ export class DatabaseStorage implements IStorage {
     return toCamel(data || []);
   }
 
-  async getChatCategoriesWithChildren(): Promise<(ChatCategory & { children: ChatCategory[], rooms: ChatRoom[] })[]> {
-    const { data, error } = await supabase.from('chat_categories').select('*, chat_rooms(*)').order('sort_order');
-    if (error) {
-      console.error('[DEBUG][getChatCategoriesWithChildren][error]', error);
-      return [];
+  async getChatCategoriesWithChildren(userRole: string = 'user'): Promise<(ChatCategory & { children: ChatCategory[], rooms: ChatRoom[] })[]> {
+    let query = supabase.from('chat_categories').select('*, chat_rooms(*)').order('sort_order');
+    if (userRole !== 'admin') {
+      // Filtruj rooms pouze na veřejné a netestovací
+      // Supabase neumí deep filter, takže filtruj až po načtení
+      const { data, error } = await query;
+      if (error) {
+        console.error('[DEBUG][getChatCategoriesWithChildren][error]', error);
+        return [];
+      }
+      const filtered = (data || []).map((cat: any) => ({
+        ...cat,
+        chat_rooms: Array.isArray(cat.chat_rooms)
+          ? cat.chat_rooms.filter((room: any) => (room.is_public !== false && room.is_test !== true))
+          : [],
+      }));
+      console.log('[DEBUG][getChatCategoriesWithChildren][data][filtered]', filtered);
+      return toCamel(filtered);
+    } else {
+      const { data, error } = await query;
+      if (error) {
+        console.error('[DEBUG][getChatCategoriesWithChildren][error]', error);
+        return [];
+      }
+      console.log('[DEBUG][getChatCategoriesWithChildren][data]', data);
+      return toCamel(data || []);
     }
-    console.log('[DEBUG][getChatCategoriesWithChildren][data]', data);
-    return toCamel(data || []);
   }
 
   // Message operations (keeping existing)
@@ -640,10 +673,9 @@ export class DatabaseStorage implements IStorage {
   }
 
   async clearRoomMessages(roomId: number): Promise<number> {
-    const { data, error, count } = await supabase.from('messages').delete().eq('roomId', roomId).select('*', { count: 'exact' });
+    // Oprava: .select('*') bez druhého argumentu
+    const { data, error } = await supabase.from('messages').delete().eq('roomId', roomId).select('*');
     if (error) return 0;
-    // count může být undefined, pokud není count: 'exact' podporováno, v tom případě použij délku data
-    if (typeof count === 'number') return count;
     if (Array.isArray(data)) return data.length;
     return 0;
   }
@@ -1347,7 +1379,7 @@ export class DatabaseStorage implements IStorage {
         grindelwald_points: grindelwaldPoints,
         dumbledore_points: dumbledorePoints,
         updated_at: now
-      }], { onConflict: ['id'] });
+      }], { onConflict: 'id' });
 
     if (updateError) {
       console.error("Error updating influence_bar:", updateError);

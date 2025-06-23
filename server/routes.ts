@@ -399,14 +399,16 @@ export async function registerRoutes(app: Express): Promise<void> {
   });
 
   // Chat kategorie (vrací data z databáze)
-  app.get("/api/chat/categories", requireAuth, async (_req, res) => {
-    const categories = await storage.getChatCategoriesWithChildren();
+  app.get("/api/chat/categories", requireAuth, async (req, res) => {
+    const userRole = req.user?.role || 'user';
+    const categories = await storage.getChatCategoriesWithChildren(userRole);
     res.json(categories);
   });
 
   // Chat místnosti (vrací data z databáze)
-  app.get("/api/chat/rooms", requireAuth, async (_req, res) => {
-    const rooms = await storage.getAllChatRooms();
+  app.get("/api/chat/rooms", requireAuth, async (req, res) => {
+    const userRole = req.user?.role || 'user';
+    const rooms = await storage.getAllChatRooms(userRole);
     res.json(rooms);
   });
 
