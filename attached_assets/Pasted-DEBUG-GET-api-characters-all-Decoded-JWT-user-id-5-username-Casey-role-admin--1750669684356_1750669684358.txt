@@ -1,0 +1,450 @@
+DEBUG] GET /api/characters/all
+Decoded JWT user: {
+  id: 5,
+  username: 'Casey',
+  role: 'admin',
+  iat: 1750668335,
+  exp: 1751273135
+}
+[DEBUG] GET /api/influence-bar
+Decoded JWT user: {
+  id: 5,
+  username: 'Casey',
+  role: 'admin',
+  iat: 1750668335,
+  exp: 1751273135
+}
+[DEBUG] GET /api/characters/online
+Decoded JWT user: {
+  id: 5,
+  username: 'Casey',
+  role: 'admin',
+  iat: 1750668335,
+  exp: 1751273135
+}
+9:03:59 AM [express] GET /api/characters/online 304 in 2ms :: []
+[DEBUG] GET /api/owl-post/unread-count/7
+Decoded JWT user: {
+  id: 5,
+  username: 'Casey',
+  role: 'admin',
+  iat: 1750668335,
+  exp: 1751273135
+}
+[DEBUG] GET /api/characters/7/wand
+Decoded JWT user: {
+  id: 5,
+  username: 'Casey',
+  role: 'admin',
+  iat: 1750668335,
+  exp: 1751273135
+}
+[DEBUG] GET /api/characters/7/last-chat
+Decoded JWT user: {
+  id: 5,
+  username: 'Casey',
+  role: 'admin',
+  iat: 1750668335,
+  exp: 1751273135
+}
+9:03:59 AM [express] GET /api/characters/7/last-chat 304 in 2ms
+9:04:00 AM [express] GET /api/influence-bar 304 in 266ms :: {"grindelwaldPoints":29,"dumbledorePoint…
+[DEBUG] GET /api/influence-history
+Decoded JWT user: {
+  id: 5,
+  username: 'Casey',
+  role: 'admin',
+  iat: 1750668335,
+  exp: 1751273135
+}
+Loaded 15 characters {
+  data: [
+    {
+      id: 17,
+      user_id: 12,
+      first_name: 'Matthew',
+      middle_name: 'Elias',
+      last_name: 'Parker',
+      birth_date: '1900-10-12T00:00:00',
+      is_active: true,
+      created_at: '2025-06-08T15:04:47.049',
+      updated_at: '2025-06-08T15:19:45.225',
+      school: 'Bradavice',
+      description: '',
+      death_date: null,
+      death_reason: null,
+      avatar: null,
+      height: 178,
+      weight: 76,
+      height_set_at: '2025-06-08T15:19:45.225',
+      school_set_at: '2025-06-08T15:19:45.225',
+      residence: null,
+      is_system: false,
+      character_history: null,
+      show_history_to_others: true
+    },
+    {
+      id: 13,
+      user_id: 8,
+      first_name: 'Zoe',
+      middle_name: '',
+      last_name: 'Higgins',
+      birth_date: '1900-01-01T00:00:00',
+      is_active: true,
+      created_at: '2025-06-01T20:09:08.736',
+      updated_at: '2025-06-08T15:33:42.047',
+      school: null,
+      description: null,
+      death_date: null,
+      death_reason: null,
+      avatar: null,
+      height: null,
+      weight: null,
+      height_set_at: null,
+      school_set_at: null,
+      residence: 'Tady je Bubákovo',
+      is_system: false,
+      character_history: null,
+      show_history_to_others: true
+    },
+    {
+      id: 16,
+      user_id: 11,
+      first_name: 'Jožin',
+      middle_name: 'Z',
+      last_name: 'Bažin',
+      birth_date: '1860-01-01T00:00:00',
+      is_active: true,
+      created_at: '2025-06-08T15:03:05.085',
+      updated_at: '2025-06-08T15:44:02.264',
+      school: 'Domácí vzdělávání',
+      description: 'Je fakt hnusny hajzl, <b>nechcete</b> se snim kamaradit faktycki',
+      death_date: null,
+      death_reason: null,
+      avatar: null,
+      height: 250,
+      weight: 300,
+      height_set_at: '2025-06-08T15:16:42.967',
+      school_set_at: '2025-06-08T15:16:42.967',
+      residence: 'Londýn - Ubytovna U starého Šeptáka',
+      is_system: false,
+      character_history: 'Narodil se v bažině \r\n' +
+        '\r\n' +
+        'Snědl čaroděje \r\n' +
+        '\r\n' +
+        'Nabyl kouzelných schopností \r\n' +
+        '\r\n' +
+        'Teď jde jíst čarodějů víc ',
+      show_history_to_others: true
+    },
+    {
+      id: 15,
+      user_id: 10,
+      first_name: 'Shantae',
+      middle_name: '',
+      last_name: 'Okoro',
+      birth_date: '1902-04-02T00:00:00',
+      is_active: true,
+      created_at: '2025-06-08T14:37:54.459',
+      updated_at: '2025-06-08T15:49:28.756',
+      school: 'Uagadou',
+      description: '',
+      death_date: null,
+      death_reason: null,
+      avatar: null,
+      height: 160,
+      weight: 55,
+      height_set_at: '2025-06-08T15:49:28.756',
+      school_set_at: '2025-06-08T15:49:28.756',
+      residence: null,
+      is_system: false,
+      character_history: null,
+      show_history_to_others: true
+    },
+    {
+      id: 8,
+      user_id: 1,
+      first_name: 'Mrtvý',
+      middle_name: '',
+      last_name: 'Skřet',
+      birth_date: '1860-06-14T00:00:00',
+      is_active: false,
+      created_at: '2025-05-30T11:10:39.36',
+      updated_at: '2025-05-30T12:27:51.733',
+      school: '',
+      description: '',
+      death_date: '2025-05-30T00:00:00',
+      death_reason: 'tester',
+      avatar: null,
+      height: null,
+      weight: null,
+      height_set_at: null,
+      school_set_at: null,
+      residence: null,
+      is_system: false,
+      character_history: null,
+      show_history_to_others: true
+    },
+    {
+      id: 1,
+      user_id: 1,
+      first_name: 'Gandalf',
+      middle_name: 'the',
+      last_name: 'Grey',
+      birth_date: '1880-01-15T00:00:00',
+      is_active: false,
+      created_at: '2025-05-28T14:17:30.39',
+      updated_at: '2025-05-31T20:27:10.463',
+      school: 'Domácí vzdělávání',
+      description: '...',
+      death_date: null,
+      death_reason: null,
+      avatar: null,
+      height: 190,
+      weight: 80,
+      height_set_at: '2025-05-31T20:27:10.463',
+      school_set_at: '2025-05-31T20:27:10.463',
+      residence: null,
+      is_system: false,
+      character_history: null,
+      show_history_to_others: true
+    },
+    {
+      id: 2,
+      user_id: 1,
+      first_name: 'Aragorn',
+      middle_name: null,
+      last_name: 'Ranger',
+      birth_date: '1895-03-20T00:00:00',
+      is_active: true,
+      created_at: '2025-05-28T14:17:30.39',
+      updated_at: '2025-05-30T11:32:27.392',
+      school: null,
+      description: null,
+      death_date: null,
+      death_reason: null,
+      avatar: null,
+      height: null,
+      weight: null,
+      height_set_at: null,
+      school_set_at: null,
+      residence: 'Londýn - Ubytovna U starého Šeptáka',
+      is_system: false,
+      character_history: null,
+      show_history_to_others: true
+    },
+    {
+      id: 12,
+      user_id: 7,
+      first_name: 'Příšera',
+      middle_name: 'z',
+      last_name: 'Bažin',
+      birth_date: '1910-06-01T00:00:00',
+      is_active: true,
+      created_at: '2025-06-01T19:43:12.39',
+      updated_at: '2025-06-01T19:43:12.381',
+      school: null,
+      description: null,
+      death_date: null,
+      death_reason: null,
+      avatar: null,
+      height: null,
+      weight: null,
+      height_set_at: null,
+      school_set_at: null,
+      residence: null,
+      is_system: false,
+      character_history: null,
+      show_history_to_others: true
+    },
+    {
+      id: 14,
+      user_id: 9,
+      first_name: 'Nickolas',
+      middle_name: '',
+      last_name: 'Sinclair',
+      birth_date: '1895-01-24T00:00:00',
+      is_active: true,
+      created_at: '2025-06-01T20:15:46.926',
+      updated_at: '2025-06-01T20:15:46.917',
+      school: null,
+      description: null,
+      death_date: null,
+      death_reason: null,
+      avatar: null,
+      height: null,
+      weight: null,
+      height_set_at: null,
+      school_set_at: null,
+      residence: null,
+      is_system: false,
+      character_history: null,
+      show_history_to_others: true
+    },
+    {
+      id: 7,
+      user_id: 5,
+      first_name: 'Kira',
+      middle_name: 'Mae',
+      last_name: 'Spencer',
+      birth_date: '1907-08-25T00:00:00',
+      is_active: true,
+      created_at: '2025-05-30T09:46:17.825',
+      updated_at: '2025-06-02T14:33:15.755',
+      school: 'Bradavice',
+      description: '',
+      death_date: null,
+      death_reason: null,
+      avatar: 'data:image/jpeg;base64,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',
+      height: null,
+      weight: null,
+      height_set_at: null,
+      school_set_at: null,
+      residence: 'Londýn - Ubytovna U starého Šeptáka',
+      is_system: false,
+      character_history: null,
+      show_history_to_others: true
+    },
+    {
+      id: 3,
+      user_id: 2,
+      first_name: 'Frodo',
+      middle_name: '',
+      last_name: 'Pytlík',
+      birth_date: '1902-09-22T00:00:00',
+      is_active: true,
+      created_at: '2025-05-28T14:17:30.39',
+      updated_at: '2025-06-02T14:41:45.98',
+      school: '',
+      description: '',
+      death_date: null,
+      death_reason: null,
+      avatar: 'data:image/jpeg;base64,/9j/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCACWAJYDASIAAhEBAxEB/8QAHAABAAMBAQEBAQAAAAAAAAAAAAECBgcFBAMI/8QANBAAAQQCAAQEBAQFBQAAAAAAAQACAwQFEQYSITEHE0FRFCJhcRUjMlIIM0JjgWJykqGx/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAH/xAAVEQEBAAAAAAAAAAAAAAAAAAAAEf/aAAwDAQACEQMRAD8A/qdERRRERAREQEUgKUFUVkSFVRWRIVVFZEhVUVlBCCEREBERAREQEREBfJk7rMdRltSRWJmRgFzK8TpXkb9Gt6n/AAsxxVx5gMbNYxIydmTMFhb8PiqzrlmIn1LGtcGn25xpZfAY/KZm291DiHxFxczW84ly1St5Dz7chj/66INVf46pjCDNYOMZnGV5S3IfCv8Az6jAPmcYiOYlvdzDp2uoB1paynagu1ILVSVk1edjZYpGHbXtcNgg+oIO1lqPCszcvSzdu1AzPRbhtWacJiZfg9GyxknqOhB2eUjp0JC9vhvDwYHGDH03O+EjkkdDGe0THOLgwf6W7IHsND0RHqIiKgiIgIiICIiCCFCsqqKIiICIiAszxfxNHiTHjqdKzlc1bYfIx9V3K8t7GR7z0ijB6c5PfoNnotBcsw0qk1q1KyGvCx0kkjzprGgbJJ9AAFyEX4+OeJ44Moy3DjrTWyRYSo3knsVx+mzfeNFkR2SyEkEg9Q47aA0XAuDyrarJPxTEY2i2Q7x/D8DHRhwPUSTvBc937iGtK6FrrtfhSqV6NWOtSgir1ohysiiYGMYPYAdAF+6ApaoVh2QERFUEREBERAREQFDlKhyCERFFEREGR8S8m2ngG0oa1e5kcjIIKlex/K5x85ll/tRhpe700NeoXn+D8dT8Es2MbDYnrWJfMdmLR1Nlpez7HLrYj30Zs9h0AGifK8Zb1SaaDF3+aLFQ1nXszYjbuQ1A8BtVh77nlDW6B6hhHqF0Hhx1t+DpPyFOGjZdGCasJ22Af0x/UtGgddNg66IPSREQArKB3UqoIiICIiAiIgIiICh3ZSh7IKoiKKIiIOTeMWRip5jGkVW2G0mDKTQgdbU7XiGlAT7GeUu+nISul4SC3WxNSHJWfirzYx582gA+Tu4gDsN70PbS5x412ocVZwmTdXbIaj5shJ/dNWCV0EZ+nnStP30ug8MVZ6XD2PrXbDrFyKFrbErncxfLr5zv/dtB9l65VoVnWL1mCtXb+qWaQMaPuT0V608NqBk9aWOaGQczJI3BzXD3BHQr+Vf40MhkIOIeFYJY3S4VsbrHkuJEc0wfpwdr2byj6BxW7/hRytjMYDiW1Fj243CvyZfRqRuLo4NsBexhP9IPKenTZPZB3YBERVBERAREQEREBERAQ9kQ9kFURFFEREGO8VcYzJcKOj8kSSfFVG75dkMNqEvH2Ib1+gXxeEOdZkuDKziZJrzofxKdoA2TZfJK0Dr30f8Axb0gEEHsehXCuC33fD7iGthbzWNdPDiqhJPMDGH2K/MD9xB/zAQdFzNWlxdDFjeJuDbc9Fzw4OuCB7I3fu+WQub9wtLiMZRw2OgoYqpBTpQDljggYGNaPoAvLocP1pLjcjfuT5W2yQuidNJ+VCQdajjb8jSO29F3TqVoEFkUAqVUEREBERAREQEREBD2RD2QVREUUREQFk+P+Dq/FWOlLJHVspHXfHUsg6Eb+ZkjC73DZI43f4PutYiDi3D/ABpc4VfkoM7SfWgltRZZzJtg169h/l2eX3ENkkk/skDuy7DWt17T7DK8zJH15PKlDT1Y/Qdo/XTgfsQs/wCIUuNq4J1rI4qLKTE/B1qzgAZpJ/yvL5j+lrubTj21s+iwnDGFt0KGLs4LiCvduXqj61mCJ5jNqvES1ksL37JkhDg1srhqRoaHa6FB2NvdWXLrXiDkeGpa+J4npRvzEb980RDG5KuOhlrbOvNBLS6FxB7hpd03veH+IMVxDV+Iw16C0wdHhjtPjPs9h+Zh+jgCqj1EREBERAREQEREBERBU9CiO7oooiIgIiIPO4gwtDiDEz43LQefUmA5m8xaQQQQQ4EFpBAIIOwQsbT8MIqNhk1HiriWuY6rKLOSWAlldhJbGHGIkAEnrvZ6bJ0uhogwWC4Jkxly18PyVhZJM+Q+KNy5ZA/SJHTxOGvXQIA9Fs6tGvXnM4jjdbewMksmNokkA7cxAG/t2X1IgsiqCp5lUSibRARNhNhARRtQSUFk2FVFKoepREQEREBERAREQEREBQpRARFCCUREBFClAREQEREBERAREQEREBERAREQEREBERBClEQEREBERB//2Q==',
+      height: null,
+      weight: null,
+      height_set_at: null,
+      school_set_at: null,
+      residence: null,
+      is_system: false,
+      character_history: 'Mě se na nic neptej, ale dávali to včera na Nova Cinema!',
+      show_history_to_others: true
+    },
+    {
+      id: 6,
+      user_id: 5,
+      first_name: 'Casey',
+      middle_name: 'Lotte',
+      last_name: 'Benett',
+      birth_date: '1902-12-16T00:00:00',
+      is_active: true,
+      created_at: '2025-05-30T06:47:39.391',
+      updated_at: '2025-06-08T14:48:53.094',
+      school: 'Bradavice',
+      description: '<b>Popisek</b> Tady bude popisek',
+      death_date: null,
+      death_reason: null,
+      avatar: null,
+      height: null,
+      weight: null,
+      height_set_at: null,
+      school_set_at: '2025-06-01T17:44:16.399',
+      residence: null,
+      is_system: false,
+      character_history: '123\r\n\r\nMy jsme bratři ',
+      show_history_to_others: true
+    },
+    {
+      id: 18,
+      user_id: 13,
+      first_name: 'Amálie',
+      middle_name: '',
+      last_name: 'Zoufalá',
+      birth_date: '1906-02-07T00:00:00',
+      is_active: true,
+      created_at: '2025-06-08T15:11:13.524',
+      updated_at: '2025-06-08T15:14:53.651',
+      school: null,
+      description: null,
+      death_date: null,
+      death_reason: null,
+      avatar: null,
+      height: null,
+      weight: null,
+      height_set_at: null,
+      school_set_at: null,
+      residence: ' Doupě neřesti',
+      is_system: false,
+      character_history: null,
+      show_history_to_others: true
+    },
+    {
+      id: 9,
+      user_id: 1,
+      first_name: 'Sám',
+      middle_name: '',
+      last_name: 'Doma',
+      birth_date: '1899-12-08T00:00:00',
+      is_active: false,
+      created_at: '2025-05-30T21:49:10.672',
+      updated_at: '2025-06-17T09:38:09.938',
+      school: 'Bradavice',
+      description: '',
+      death_date: null,
+      death_reason: null,
+      avatar: null,
+      height: null,
+      weight: null,
+      height_set_at: null,
+      school_set_at: null,
+      residence: 'někde v háji',
+      is_system: false,
+      character_history: 'ablbalblalbalbal',
+      show_history_to_others: true
+    },
+    {
+      id: 20,
+      user_id: 1,
+      first_name: 'Bažina',
+      middle_name: '',
+      last_name: 'Jóžová',
+      birth_date: '1900-01-01T00:00:00',
+      is_active: true,
+      created_at: '2025-06-08T15:44:22.859',
+      updated_at: '2025-06-17T09:45:45.63',
+      school: 'Vysoká škola života ',
+      description: 'To byste chtěli vědět hajzli',
+      death_date: null,
+      death_reason: null,
+      avatar: null,
+      height: null,
+      weight: null,
+      height_set_at: null,
+      school_set_at: null,
+      residence: null,
+      is_system: false,
+      character_history: 'vyschla bažina. zasraný globální oteplování',
+      show_history_to_others: true
+    }
+  ]
+}
+9:04:00 AM [express] GET /api/characters/all 304 in 567ms :: [{"id":17,"userId":12,"firstName":"Matt…
+9:04:00 AM [express] GET /api/owl-post/unread-count/7 304 in 634ms :: {"count":0}
+9:04:00 AM [express] GET /api/characters/7/wand 304 in 605ms :: {"id":3,"characterId":7,"wood":"Boro…
+9:04:00 AM [express] GET /api/influence-history 304 in 562ms :: [{"id":12,"changeType":"manual","poi…
+[DEBUG] GET /favicon.ico
+[DEBUG] GET /api/characters/7
+Decoded JWT user: {
+  id: 5,
+  username: 'Casey',
+  role: 'admin',
+  iat: 1750668335,
+  exp: 1751273135
+}
+9:04:02 AM [express] GET /api/characters/7 304 in 206ms :: {"id":7,"userId":5,"firstName":"Kira","mi…
+[DEBUG] GET /favicon.ico
+[DEBUG] GET /api/characters/7/inventory
+9:04:04 AM [express] GET /api/characters/7/inventory 304 in 218ms :: [{"id":21,"character_id":7,"ite…
+[DEBUG] POST /api/characters/7/inventory
+9:04:49 AM [express] POST /api/characters/7/inventory 201 in 263ms :: {"message":"Item added"}
+[DEBUG] GET /api/characters/7/inventory
+9:04:49 AM [express] GET /api/characters/7/inventory 200 in 540ms :: [{"id":22,"character_id":7,"ite…
