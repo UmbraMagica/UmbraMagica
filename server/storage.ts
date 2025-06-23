@@ -410,7 +410,6 @@ export class DatabaseStorage implements IStorage {
         .insert({
           room_id: messageData.roomId,
           character_id: messageData.characterId,
-          user_id: messageData.userId,
           content: messageData.content,
           message_type: messageData.messageType,
           created_at: new Date().toISOString()
