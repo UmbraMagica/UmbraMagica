@@ -1,0 +1,184 @@
+[useAuth] Loaded user data: {id: 1, username: 'TesterAdmin', email: 'admin@test.cz', role: 'admin', characters: Array(5)}
+index-Dy0TS-K9.js:495 Setting up WebSocket connection to: wss://umbra-dev.onrender.com/ws?token=f769nh
+index-Dy0TS-K9.js:495 
+            
+            
+           GET https://umbra-dev.onrender.com/api/chat/rooms/2/messages 401 (Unauthorized)
+queryFn @ index-Dy0TS-K9.js:495
+i @ index-Dy0TS-K9.js:57
+S @ index-Dy0TS-K9.js:57
+start @ index-Dy0TS-K9.js:57
+fetch @ index-Dy0TS-K9.js:57
+Hc @ index-Dy0TS-K9.js:57
+onSubscribe @ index-Dy0TS-K9.js:57
+subscribe @ index-Dy0TS-K9.js:57
+(anonymní) @ index-Dy0TS-K9.js:57
+Nw @ index-Dy0TS-K9.js:48
+ru @ index-Dy0TS-K9.js:48
+j1 @ index-Dy0TS-K9.js:48
+oa @ index-Dy0TS-K9.js:48
+j1 @ index-Dy0TS-K9.js:48
+oa @ index-Dy0TS-K9.js:48
+j1 @ index-Dy0TS-K9.js:48
+oa @ index-Dy0TS-K9.js:48
+j1 @ index-Dy0TS-K9.js:48
+oa @ index-Dy0TS-K9.js:48
+j1 @ index-Dy0TS-K9.js:48
+oa @ index-Dy0TS-K9.js:48
+j1 @ index-Dy0TS-K9.js:48
+oa @ index-Dy0TS-K9.js:48
+j1 @ index-Dy0TS-K9.js:48
+oa @ index-Dy0TS-K9.js:48
+j1 @ index-Dy0TS-K9.js:48
+oa @ index-Dy0TS-K9.js:48
+j1 @ index-Dy0TS-K9.js:48
+oa @ index-Dy0TS-K9.js:48
+j1 @ index-Dy0TS-K9.js:48
+oa @ index-Dy0TS-K9.js:48
+j1 @ index-Dy0TS-K9.js:48
+oa @ index-Dy0TS-K9.js:48
+j1 @ index-Dy0TS-K9.js:48
+oa @ index-Dy0TS-K9.js:48
+j1 @ index-Dy0TS-K9.js:48
+oa @ index-Dy0TS-K9.js:48
+j1 @ index-Dy0TS-K9.js:48
+oa @ index-Dy0TS-K9.js:48
+j1 @ index-Dy0TS-K9.js:48
+oa @ index-Dy0TS-K9.js:48
+j1 @ index-Dy0TS-K9.js:48
+oa @ index-Dy0TS-K9.js:48
+j1 @ index-Dy0TS-K9.js:48
+$1 @ index-Dy0TS-K9.js:48
+Ff @ index-Dy0TS-K9.js:48
+P1 @ index-Dy0TS-K9.js:48
+Db @ index-Dy0TS-K9.js:48
+Rb @ index-Dy0TS-K9.js:48
+E1 @ index-Dy0TS-K9.js:48
+Pb @ index-Dy0TS-K9.js:48
+iu @ index-Dy0TS-K9.js:48
+U1 @ index-Dy0TS-K9.js:48
+(anonymní) @ index-Dy0TS-K9.js:48
+setTimeout
+BA @ index-Dy0TS-K9.js:57
+l @ index-Dy0TS-K9.js:57
+batch @ index-Dy0TS-K9.js:57
+Za @ index-Dy0TS-K9.js:57
+setData @ index-Dy0TS-K9.js:57
+onSuccess @ index-Dy0TS-K9.js:57
+m @ index-Dy0TS-K9.js:57
+Promise.then
+S @ index-Dy0TS-K9.js:57
+start @ index-Dy0TS-K9.js:57
+fetch @ index-Dy0TS-K9.js:57
+Hc @ index-Dy0TS-K9.js:57
+onSubscribe @ index-Dy0TS-K9.js:57
+subscribe @ index-Dy0TS-K9.js:57
+(anonymní) @ index-Dy0TS-K9.js:57
+Nw @ index-Dy0TS-K9.js:48
+ru @ index-Dy0TS-K9.js:48
+j1 @ index-Dy0TS-K9.js:48
+oa @ index-Dy0TS-K9.js:48
+j1 @ index-Dy0TS-K9.js:48
+oa @ index-Dy0TS-K9.js:48
+j1 @ index-Dy0TS-K9.js:48
+oa @ index-Dy0TS-K9.js:48
+j1 @ index-Dy0TS-K9.js:48
+oa @ index-Dy0TS-K9.js:48
+j1 @ index-Dy0TS-K9.js:48
+oa @ index-Dy0TS-K9.js:48
+j1 @ index-Dy0TS-K9.js:48
+oa @ index-Dy0TS-K9.js:48
+j1 @ index-Dy0TS-K9.js:48
+oa @ index-Dy0TS-K9.js:48
+j1 @ index-Dy0TS-K9.js:48
+oa @ index-Dy0TS-K9.js:48
+j1 @ index-Dy0TS-K9.js:48
+oa @ index-Dy0TS-K9.js:48
+j1 @ index-Dy0TS-K9.js:48
+oa @ index-Dy0TS-K9.js:48
+j1 @ index-Dy0TS-K9.js:48
+$1 @ index-Dy0TS-K9.js:48
+Ff @ index-Dy0TS-K9.js:48
+Pb @ index-Dy0TS-K9.js:48
+iu @ index-Dy0TS-K9.js:48
+P1 @ index-Dy0TS-K9.js:48
+Db @ index-Dy0TS-K9.js:48
+Rb @ index-Dy0TS-K9.js:48
+E1 @ index-Dy0TS-K9.js:48
+F1 @ index-Dy0TS-K9.js:48
+K @ index-Dy0TS-K9.js:25Nechte si tuto chybu vysvětlit
+index-Dy0TS-K9.js:495 WebSocket connection to 'wss://umbra-dev.onrender.com/ws?token=f769nh' failed: 
+(anonymní) @ index-Dy0TS-K9.js:495
+ru @ index-Dy0TS-K9.js:48
+j1 @ index-Dy0TS-K9.js:48
+oa @ index-Dy0TS-K9.js:48
+j1 @ index-Dy0TS-K9.js:48
+oa @ index-Dy0TS-K9.js:48
+j1 @ index-Dy0TS-K9.js:48
+oa @ index-Dy0TS-K9.js:48
+j1 @ index-Dy0TS-K9.js:48
+oa @ index-Dy0TS-K9.js:48
+j1 @ index-Dy0TS-K9.js:48
+oa @ index-Dy0TS-K9.js:48
+j1 @ index-Dy0TS-K9.js:48
+oa @ index-Dy0TS-K9.js:48
+j1 @ index-Dy0TS-K9.js:48
+oa @ index-Dy0TS-K9.js:48
+j1 @ index-Dy0TS-K9.js:48
+oa @ index-Dy0TS-K9.js:48
+j1 @ index-Dy0TS-K9.js:48
+oa @ index-Dy0TS-K9.js:48
+j1 @ index-Dy0TS-K9.js:48
+oa @ index-Dy0TS-K9.js:48
+j1 @ index-Dy0TS-K9.js:48
+oa @ index-Dy0TS-K9.js:48
+j1 @ index-Dy0TS-K9.js:48
+oa @ index-Dy0TS-K9.js:48
+j1 @ index-Dy0TS-K9.js:48
+oa @ index-Dy0TS-K9.js:48
+j1 @ index-Dy0TS-K9.js:48
+oa @ index-Dy0TS-K9.js:48
+j1 @ index-Dy0TS-K9.js:48
+oa @ index-Dy0TS-K9.js:48
+j1 @ index-Dy0TS-K9.js:48
+oa @ index-Dy0TS-K9.js:48
+j1 @ index-Dy0TS-K9.js:48
+$1 @ index-Dy0TS-K9.js:48
+Ff @ index-Dy0TS-K9.js:48
+P1 @ index-Dy0TS-K9.js:48
+Db @ index-Dy0TS-K9.js:48
+Rb @ index-Dy0TS-K9.js:48
+E1 @ index-Dy0TS-K9.js:48
+Pb @ index-Dy0TS-K9.js:48
+iu @ index-Dy0TS-K9.js:48
+U1 @ index-Dy0TS-K9.js:48
+(anonymní) @ index-Dy0TS-K9.js:48Nechte si tuto chybu vysvětlit
+index-Dy0TS-K9.js:495 WebSocket error: Event {isTrusted: true, type: 'error', target: WebSocket, currentTarget: WebSocket, eventPhase: 2, …}
+me.onerror @ index-Dy0TS-K9.js:495Nechte si tuto chybu vysvětlit
+index-Dy0TS-K9.js:495 WebSocket disconnected
+index-Dy0TS-K9.js:495 
+            
+            
+           GET https://umbra-dev.onrender.com/api/chat/rooms/2/messages 401 (Unauthorized)
+queryFn @ index-Dy0TS-K9.js:495
+i @ index-Dy0TS-K9.js:57
+S @ index-Dy0TS-K9.js:57
+start @ index-Dy0TS-K9.js:57
+fetch @ index-Dy0TS-K9.js:57
+Hc @ index-Dy0TS-K9.js:57
+(anonymní) @ index-Dy0TS-K9.js:57Nechte si tuto chybu vysvětlit
+index-Dy0TS-K9.js:495 
+            
+            
+           GET https://umbra-dev.onrender.com/api/chat/rooms/2/messages 401 (Unauthorized)
+queryFn @ index-Dy0TS-K9.js:495
+i @ index-Dy0TS-K9.js:57
+S @ index-Dy0TS-K9.js:57
+start @ index-Dy0TS-K9.js:57
+fetch @ index-Dy0TS-K9.js:57
+Hc @ index-Dy0TS-K9.js:57
+(anonymní) @ index-Dy0TS-K9.js:57Nechte si tuto chybu vysvětlit
+index-Dy0TS-K9.js:495 
+            
+            
+           GET https://umbra-dev.onrender.com/api/chat/rooms/2/messages 401 (Unauthorized)
