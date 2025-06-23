@@ -1,0 +1,77 @@
+Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Chat access debug: {userRole: 'admin', needsCharacter: false, userCharactersLength: 0, chatCharacter: 'undefined undefined', allUserCharacters: Array(0)}
+index-CQTOeSYH.js:495 Uncaught TypeError: ne.map is not a function
+    at M5 (index-CQTOeSYH.js:495:6427)
+    at Xv (index-CQTOeSYH.js:48:34152)
+    at hx (index-CQTOeSYH.js:48:62028)
+    at o1 (index-CQTOeSYH.js:48:72485)
+    at R1 (index-CQTOeSYH.js:48:106413)
+    at hT (index-CQTOeSYH.js:48:105476)
+    at ep (index-CQTOeSYH.js:48:105306)
+    at E1 (index-CQTOeSYH.js:48:102428)
+    at F1 (index-CQTOeSYH.js:48:113760)
+    at MessagePort.K (index-CQTOeSYH.js:25:1558
