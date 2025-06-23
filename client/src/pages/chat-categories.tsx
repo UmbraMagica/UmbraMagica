@@ -114,7 +114,7 @@ function SubCategoryCollapsible({ subCategory }: { subCategory: ChatCategory }) 
           </Button>
         </CollapsibleTrigger>
         <CollapsibleContent className="mt-2 ml-4 space-y-2">
-          {subCategory.rooms.map((room) => (
+          {subCategory.rooms && Array.isArray(subCategory.rooms) ? subCategory.rooms.map((room) => (
             <Button 
               key={room.id}
               variant="outline" 
@@ -135,7 +135,7 @@ function SubCategoryCollapsible({ subCategory }: { subCategory: ChatCategory }) 
                 )}
               </div>
             </Button>
-          ))}
+          )) : null}
         </CollapsibleContent>
       </Collapsible>
 
@@ -259,7 +259,7 @@ export default function ChatCategories() {
   const { user } = useAuth();
   
   // Fetch chat categories
-  const { data: categories = [], isLoading, error } = useQuery<ChatCategory[]>({
+  const { data: categoriesRaw, isLoading, error } = useQuery<ChatCategory[]>({
     queryKey: ["/api/chat/categories"],
     queryFn: async () => {
       const result = await apiFetch("/api/chat/categories");
@@ -267,6 +267,7 @@ export default function ChatCategories() {
     },
     enabled: true,
   });
+  const categories = Array.isArray(categoriesRaw) ? categoriesRaw : [];
 
   const { data: allRooms } = useQuery({
     queryKey: ["/api/chat/rooms"],

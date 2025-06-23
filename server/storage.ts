@@ -479,7 +479,11 @@ export class DatabaseStorage implements IStorage {
 
   async getAllChatRooms(): Promise<ChatRoom[]> {
     const { data, error } = await supabase.from('chat_rooms').select('*').order('sort_order', { ascending: true });
-    if (error) return [];
+    if (error) {
+      console.error('[DEBUG][getAllChatRooms][error]', error);
+      return [];
+    }
+    console.log('[DEBUG][getAllChatRooms][data]', data);
     return toCamel(data || []);
   }
 
@@ -557,12 +561,10 @@ export class DatabaseStorage implements IStorage {
   async getChatCategoriesWithChildren(): Promise<(ChatCategory & { children: ChatCategory[], rooms: ChatRoom[] })[]> {
     const { data, error } = await supabase.from('chat_categories').select('*, chat_rooms(*)').order('sort_order');
     if (error) {
-      console.error("getChatCategoriesWithChildren error:", error);
+      console.error('[DEBUG][getChatCategoriesWithChildren][error]', error);
       return [];
     }
-    if (!data || data.length === 0) {
-      console.warn("No chat categories with children found", { data });
-    }
+    console.log('[DEBUG][getChatCategoriesWithChildren][data]', data);
     return toCamel(data || []);
   }
 

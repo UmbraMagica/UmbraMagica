@@ -28,7 +28,7 @@ export default function ChatList() {
   const [editingDescription, setEditingDescription] = useState("");
 
   // Fetch chat rooms
-  const { data: rooms = [], isLoading, error } = useQuery<ChatRoom[]>({
+  const { data: roomsRaw, isLoading, error } = useQuery<ChatRoom[]>({
     queryKey: ["/api/chat/rooms"],
     queryFn: async () => {
       const result = await apiRequest("GET", "/api/chat/rooms");
@@ -36,6 +36,11 @@ export default function ChatList() {
     },
     enabled: !!user,
   });
+  const rooms = Array.isArray(roomsRaw) ? roomsRaw : [];
+
+  if (error) {
+    return <div className="text-red-500 p-4">Chyba při načítání místností: {error.message || String(error)}</div>;
+  }
 
   console.log("Chat rooms data:", rooms);
   console.log("Loading:", isLoading);
