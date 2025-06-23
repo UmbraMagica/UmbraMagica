@@ -1,0 +1,86 @@
+      '\r\n' +
+      'Hlavní vstupní hala\r\n' +
+      'Po průchodu výlohou se návštěvník ocitne v živé, přesto přísně organizované vstupní hale. Stěny z leštěného dřeva, lavice s výšivkami a velká nástěnná tabule s rozpisem pater, nemocí a pohotovostí. Vzduch je cítit bylinkami, lektvary a něčím nepojmenovatelným, co trochu připomíná rozpuštěné kletby.\r\n' +
+      '\r\n' +
+      'Rozvržení pater\r\n' +
+      'Nemocnice je rozdělena do několika specializovaných oddělení – každé patro se věnuje jiné oblasti:\r\n' +
+      '\r\n' +
+      'Přízemí – Recepce, pohotovost, administrativa a uklidňující lektvary.\r\n' +
+      '\r\n' +
+      '1. patro – Zranění způsobená kouzly: explodující kotlíky, omylem uříznuté končetiny a kletby.\r\n' +
+      '\r\n' +
+      '2. patro – Nemoci způsobené magickými tvory: upíří kousnutí, dračí horečky, vlkodlačí škrábance.\r\n' +
+      '\r\n' +
+      '3. patro – Magické viry a nakažlivé choroby: mluvící neštovice, samovolné zmizení končetin.\r\n' +
+      '\r\n' +
+      '4. patro – Poškození mysli a duše: následky černé magie, přetížení paměťových kouzel, magické trauma.\r\n' +
+      '\r\n' +
+      '5. patro – Experimentální léčby, léčitelé specialisté a výzkumná laboratoř.\r\n' +
+      '\r\n' +
+      'Suterén – Přísně střežené oddělení pro trvale poškozené případy, oběti temné magie a pacienty neschopné návratu do běžného života.\r\n' +
+      '\r\n' +
+      'Personál\r\n' +
+      'Léčitelé nosí zelené hábity s emblémem sv. Munga držícího hůlku a kost. Jsou odhodlaní, unavení a neskutečně schopní. Učňové léčitelství běhají s tácem lektvarů, přičemž se snaží nezakopnout o pacienta proměněného v želvu.\r\n' +
+      '\r\n' +
+      '\r\n' +
+      'V dnešní době je nemocnice přeplněná – přijímají raněné z kontinentu, oběti utajených útoků i ty, kdo se snaží ukrýt před zlověstnou budoucností. Vznikají tajná oddělení, kde jsou zkoumány nové formy magie – a ne vždy s vědomím vedení nemocnice.',
+    password: null
+  },
+  {
+    id: 7,
+    name: 'Čarokáva',
+    description: 'Kavárna pro čaroděje',
+    is_public: true,
+    created_at: '2025-05-29T18:28:17.858',
+    category_id: 2,
+    sort_order: 20,
+    long_description: 'Čarokáva je místem, kde se zastavil čas. Malá dřevěná vývěska nad vchodem nese zlaté, jemně pulsující runy, které se mění podle fáze měsíce. Dveře, těžké a tmavé, se otevírají téměř samy, jako by zvědavě vítaly každého nového hosta. Uvnitř kavárny vládne podmanivá atmosféra. Stěny jsou vyzdobené starými pergameny a pohyblivými ilustracemi, které se líně přeskupují. Ve vzduchu se vznáší směs vůní – pražených kávových zrn, čerstvých bylin a slabého náznaku kouřové magie. Po místnosti se rozléhá tiché šumění – šeptající stránky knih, tlumený rozhovor čarodějů a jemné cinkání porcelánu. Stoly jsou rozestavěné nepravidelně, každý trochu jiný, jako by si žil vlastním životem. Nad některými se vznášejí drobné lucerny, které se naklání ke svým hostům, nad jinými se tetelí sotva znatelná mlha. V rohu místnosti je ukrytý výklenek s velkým oknem, které neukazuje ven, ale do jiné části světa – občas v něm zasvítí vzdálené hvězdy nebo se mihne silueta někoho, kdo zde možná kdysi sedával. Čarokáva není jen obyčejná kavárna. Je to místo setkání těch, kteří hledají odpovědi, i těch, kteří se chtějí ztratit. Někteří návštěvníci se tu zdrží jen na chvíli, jiní mají pocit, že tu seděli celé hodiny, přestože ručičky starožitných hodin nad pultem se téměř nepohnuly. A možná právě to je na Čarokávě to kouzelné – že nikdy nevíš, kolik času v ní vlastně strávíš.\r\n',
+    password: null
+  },
+  {
+    id: 12,
+    name: 'Katakomby',
+    description: 'Podzemní bludiště pod Londýnem',
+    is_public: true,
+    created_at: '2025-05-29T18:28:18.073',
+    category_id: 6,
+    sort_order: 21,
+    long_description: 'Jenom stíny šeptají, co zde bude.',
+    password: null
+  }
+]
+[CHAT][ROOMS] Returning 30 rooms
+5:28:50 PM [express] GET /api/chat/rooms 304 in 395ms :: [{"id":37,"name":"Bažina","description":"Sí…
+[DEBUG] GET /api/chat/rooms/30/messages
+Decoded JWT user: {
+  id: 1,
+  username: 'TesterAdmin',
+  role: 'admin',
+  iat: 1750677785,
+  exp: 1751282585
+}
+[CHAT][MESSAGES] User TesterAdmin requesting messages for room 30
+Error fetching chat messages: {
+  code: 'PGRST200',
+  details: "Searched for a foreign key relationship between 'chat_messages' and 'characters' in the schema 'public', but no matches were found.",
+  hint: "Perhaps you meant 'messages' instead of 'chat_messages'.",
+  message: "Could not find a relationship between 'chat_messages' and 'characters' in the schema cache"
+}
+[CHAT][MESSAGES] Returning 0 messages
+5:28:55 PM [express] GET /api/chat/rooms/30/messages 304 in 229ms :: []
+[DEBUG] GET /api/chat/rooms/30/presence
+Decoded JWT user: {
+  id: 1,
+  username: 'TesterAdmin',
+  role: 'admin',
+  iat: 1750677785,
+  exp: 1751282585
+}
+5:29:00 PM [express] GET /api/chat/rooms/30/presence 304 in 1ms :: []
+[DEBUG] GET /api/chat/rooms/30/messages
+Decoded JWT user: {
+  id: 1,
+  username: 'TesterAdmin',
+  role: 'admin',
+  iat: 1750677785,
+  exp: 1751282585
