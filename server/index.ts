@@ -1,7 +1,10 @@
 import 'dotenv/config';
-import express from "express";
+import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import characterInventoryRoutes from "./routes/characterInventory";
+import { registerRoutes } from "./routes";
+import { log } from "./vite";
+import { setupVite, serveStatic } from "./vite";
 
 const app = express();
 app.set('trust proxy', 1);
@@ -96,8 +99,9 @@ app.use((err, req, res, next) => {
     throw err;
   });
 
-  if (app.get("env") === "development") {
-    await setupVite(app, undefined);
+  if (process.env.NODE_ENV === "development") {
+    // Pokud někdy budeš chtít spouštět vývojový server, přidej zde správný http server jako druhý argument
+    // await setupVite(app, server);
   } else {
     serveStatic(app);
   }
