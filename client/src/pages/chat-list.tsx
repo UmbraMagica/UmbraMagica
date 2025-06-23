@@ -30,6 +30,10 @@ export default function ChatList() {
   // Fetch chat rooms
   const { data: rooms = [], isLoading, error } = useQuery<ChatRoom[]>({
     queryKey: ["/api/chat/rooms"],
+    queryFn: async () => {
+      const result = await apiRequest("GET", "/api/chat/rooms");
+      return Array.isArray(result) ? result : [];
+    },
     enabled: !!user,
   });
 

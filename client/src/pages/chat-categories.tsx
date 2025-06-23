@@ -258,23 +258,14 @@ function CategoryCard({ category }: { category: ChatCategory }) {
 export default function ChatCategories() {
   const { user } = useAuth();
   
-  const { data: categories, isLoading, error } = useQuery({
+  // Fetch chat categories
+  const { data: categories = [], isLoading, error } = useQuery<ChatCategory[]>({
     queryKey: ["/api/chat/categories"],
     queryFn: async () => {
-      const token = localStorage.getItem('jwt_token');
-      const response = await fetch(`${API_URL}/api/chat/categories`, {
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
-      });
-      if (!response.ok) {
-        throw new Error("Failed to fetch chat categories");
-      }
-      if (response.headers.get("content-type")?.includes("application/json")) {
-        return response.json() as Promise<ChatCategory[]>;
-      } else {
-        const text = await response.text();
-        throw new Error(text);
-      }
+      const result = await apiFetch("/api/chat/categories");
+      return Array.isArray(result) ? result : [];
     },
+    enabled: true,
   });
 
   const { data: allRooms } = useQuery({

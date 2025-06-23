@@ -307,7 +307,7 @@ export function AddInventoryItemDialog({ characterId }: { characterId: number })
   );
 }
 
-function InventoryItemCard({ item, canEdit, onDelete }: { item: InventoryItem; canEdit: boolean; onDelete?: () => void }) {
+function InventoryItemCard({ item, canEdit, onDelete, onEdit }: { item: InventoryItem; canEdit: boolean; onDelete?: () => void; onEdit?: () => void }) {
   const getRarityStyle = (rarity?: string) => {
     const rarityOption = RARITY_OPTIONS.find(opt => opt.value === rarity);
     return rarityOption?.color || "bg-gray-100 text-gray-800 border-gray-200";
@@ -346,7 +346,7 @@ function InventoryItemCard({ item, canEdit, onDelete }: { item: InventoryItem; c
           </div>
           {canEdit && (
             <div className="flex gap-1">
-              <Button variant="ghost" size="sm">
+              <Button variant="ghost" size="sm" onClick={onEdit}>
                 <Edit className="h-4 w-4" />
               </Button>
               <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive" onClick={onDelete}>
@@ -425,6 +425,16 @@ const CharacterInventoryPage = () => {
     mutationFn: (itemId: number) => apiRequest("DELETE", `/api/inventory/${itemId}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/characters/${characterId}/inventory`] });
+    },
+  });
+
+  const [editItem, setEditItem] = useState<InventoryItem | null>(null);
+  const editMutation = useMutation({
+    mutationFn: (data: InventoryItemForm & { id: number }) =>
+      apiRequest("PATCH", `/api/inventory/${data.id}`, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/characters/${characterId}/inventory`] });
+      setEditItem(null);
     },
   });
 
@@ -596,6 +606,7 @@ const CharacterInventoryPage = () => {
                     item={item}
                     canEdit={canEdit}
                     onDelete={() => deleteMutation.mutate(item.id)}
+                    onEdit={() => setEditItem(item)}
                   />
                 ))}
               </div>
@@ -606,8 +617,170 @@ const CharacterInventoryPage = () => {
           ))}
         </div>
       )}
+
+      {editItem && (
+        <EditInventoryItemDialog
+          item={editItem}
+          onClose={() => setEditItem(null)}
+          onSave={(data) => editMutation.mutate({ ...data, id: editItem.id })}
+        />
+      )}
     </div>
   );
 };
+
+function EditInventoryItemDialog({ item, onClose, onSave }: { item: InventoryItem; onClose: () => void; onSave: (data: InventoryItemForm) => void }) {
+  const form = useForm<InventoryItemForm>({
+    resolver: zodResolver(inventoryItemSchema),
+    defaultValues: {
+      item_type: item.item_type,
+      item_id: item.item_id,
+      price: item.price,
+      item_name: item.item_name,
+      description: item.description,
+      rarity: item.rarity,
+      quantity: item.quantity,
+      notes: item.notes,
+    },
+  });
+  function onSubmit(data: InventoryItemForm) {
+    onSave(data);
+  }
+  return (
+    <Dialog open onOpenChange={onClose}>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Upravit položku inventáře</DialogTitle>
+        </DialogHeader>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-6 py-4">
+            <FormField
+              control={form.control}
+              name="item_type"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Typ předmětu</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value || ""}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Vyber typ předmětu" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {ITEM_TYPE_OPTIONS.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          <div className="flex items-center gap-2">
+                            <span>{option.icon}</span>
+                            <span>{option.label}</span>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="rarity"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Vzácnost</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value || ""}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Vyber vzácnost" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {RARITY_OPTIONS.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="item_name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Název předmětu</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Např. Neviditelný plášť" {...field} value={field.value || ""} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Popis</FormLabel>
+                  <FormControl>
+                    <Textarea placeholder="Popis předmětu, jeho vlastnosti a účinky..." rows={3} {...field} value={field.value || ""} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="quantity"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Množství</FormLabel>
+                    <FormControl>
+                      <Input type="number" min="1" {...field} value={field.value || ""} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="price"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Cena (v galeonech)</FormLabel>
+                    <FormControl>
+                      <Input type="number" min="0" {...field} value={field.value || ""} onChange={e => field.onChange(Number(e.target.value))} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <FormField
+              control={form.control}
+              name="notes"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Poznámky</FormLabel>
+                  <FormControl>
+                    <Textarea placeholder="Poznámky k předmětu..." rows={2} {...field} value={field.value || ""} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className="flex justify-end gap-2">
+              <Button type="button" variant="outline" onClick={onClose}>Zrušit</Button>
+              <Button type="submit">Uložit změny</Button>
+            </div>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
+  );
+}
 
 export default CharacterInventoryPage;
