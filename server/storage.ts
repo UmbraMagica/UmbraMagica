@@ -363,7 +363,7 @@ export class DatabaseStorage implements IStorage {
   async getChatMessages(roomId: number): Promise<any> {
     try {
       const { data, error } = await supabase
-        .from('chat_messages')
+        .from('messages')
         .select(`
           *,
           character:characters(first_name, middle_name, last_name, avatar)
@@ -400,7 +400,7 @@ export class DatabaseStorage implements IStorage {
   async createChatMessage(messageData: any) {
     try {
       const { data, error } = await supabase
-        .from('chat_messages')
+        .from('messages')
         .insert([{
           room_id: messageData.roomId,
           character_id: messageData.characterId,
@@ -445,17 +445,21 @@ export class DatabaseStorage implements IStorage {
     try {
       // First, get all messages to archive
       const { data: messages, error: fetchError } = await supabase
-        .from('chat_messages')
+        .from('messages')
         .select('*')
-        .eq('roomId', roomId);
+        .eq('room_id', roomId);
 
       if (fetchError) throw fetchError;
 
       if (messages && messages.length > 0) {
         // Move to archive table
         const { error: archiveError } = await supabase
-          .from('chat_messages_archive')
-          .insert(messages.map(msg => ({ ...msg, archivedAt: new Date().toISOString() })));
+          .from('archived_messages')
+          .insert(messages.map(msg => ({ 
+            ...msg, 
+            original_message_id: msg.id,
+            archived_at: new Date().toISOString() 
+          })));
 
         if (archiveError) throw archiveError;
       }
@@ -470,9 +474,9 @@ export class DatabaseStorage implements IStorage {
   async clearChatMessages(roomId: number) {
     try {
       const { data, error } = await supabase
-        .from('chat_messages')
+        .from('messages')
         .delete()
-        .eq('roomId', roomId)
+        .eq('room_id', roomId)
         .select('id');
 
       if (error) throw error;

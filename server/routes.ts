@@ -229,6 +229,11 @@ export async function registerRoutes(app: Express): Promise<void> {
       username: user.username,
       email: user.email,
       role: user.role,
+      canNarrate: user.canNarrate,
+      characterOrder: user.characterOrder ? JSON.parse(user.characterOrder) : null,
+      highlightWords: user.highlightWords,
+      highlightColor: user.highlightColor,
+      narratorColor: user.narratorColor,
       characters,
     });
   });
@@ -1022,11 +1027,125 @@ export async function registerRoutes(app: Express): Promise<void> {
   // Characters endpoint - hlavní endpoint pro načítání postav uživatele
   app.get("/api/characters", requireAuth, async (req, res) => {
     try {
-      const characters = await storage.getCharactersByUserId(req.user!.id);
-      res.json(characters);
+      if (req.user!.role === 'admin') {
+        const characters = await storage.getAllCharacters();
+        res.json(characters);
+      } else {
+        const characters = await storage.getCharactersByUserId(req.user!.id);
+        res.json(characters);
+      }
     } catch (error) {
       console.error("Error fetching user characters:", error);
       res.status(500).json({ message: "Failed to fetch characters" });
+    }
+  });
+
+  // Get all spells
+  app.get("/api/spells", requireAuth, async (req, res) => {
+    try {
+      const spells = await storage.getAllSpells();
+      res.json(spells);
+    } catch (error) {
+      console.error("Error fetching spells:", error);
+      res.status(500).json({ message: "Failed to fetch spells" });
+    }
+  });
+
+  // Add spell to character
+  app.post("/api/characters/:id/spells", requireAuth, async (req, res) => {
+    const characterId = Number(req.params.id);
+    const { spellId } = req.body;
+
+    if (!characterId || !spellId) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    try {
+      // Check character ownership
+      if (req.user!.role !== 'admin') {
+        const character = await storage.getCharacterById(characterId);
+        if (!character || character.userId !== req.user!.id) {
+          return res.status(403).json({ message: "Access denied" });
+        }
+      }
+
+      const characterSpell = await storage.addSpellToCharacter(characterId, spellId);
+      res.json(characterSpell);
+    } catch (error) {
+      console.error("Error adding spell to character:", error);
+      res.status(500).json({ message: "Failed to add spell" });
+    }
+  });
+
+  // Remove spell from character
+  app.delete("/api/characters/:id/spells/:spellId", requireAuth, async (req, res) => {
+    const characterId = Number(req.params.id);
+    const spellId = Number(req.params.spellId);
+
+    try {
+      // Check character ownership
+      if (req.user!.role !== 'admin') {
+        const character = await storage.getCharacterById(characterId);
+        if (!character || character.userId !== req.user!.id) {
+          return res.status(403).json({ message: "Access denied" });
+        }
+      }
+
+      const success = await storage.removeSpellFromCharacter(characterId, spellId);
+      if (success) {
+        res.json({ success: true });
+      } else {
+        res.status(404).json({ message: "Spell not found" });
+      }
+    } catch (error) {
+      console.error("Error removing spell from character:", error);
+      res.status(500).json({ message: "Failed to remove spell" });
+    }
+  });
+
+  // Cemetery - get dead characters
+  app.get("/api/cemetery", requireAuth, async (req, res) => {
+    try {
+      const deadCharacters = await storage.getDeadCharacters();
+      res.json(deadCharacters);
+    } catch (error) {
+      console.error("Error fetching dead characters:", error);
+      res.status(500).json({ message: "Failed to fetch cemetery" });
+    }
+  });
+
+  // Admin: Kill character
+  app.post("/api/admin/characters/:id/kill", requireAdmin, async (req, res) => {
+    const characterId = Number(req.params.id);
+    const { deathReason } = req.body;
+
+    try {
+      const character = await storage.killCharacter(characterId, deathReason, req.user!.id);
+      if (character) {
+        res.json(character);
+      } else {
+        res.status(404).json({ message: "Character not found" });
+      }
+    } catch (error) {
+      console.error("Error killing character:", error);
+      res.status(500).json({ message: "Failed to kill character" });
+    }
+  });
+
+  // Admin: Revive character
+  app.post("/api/admin/characters/:id/revive", requireAdmin, async (req, res) => {
+    const characterId = Number(req.params.id);
+
+    try {
+      const character = await storage.reviveCharacter(characterId);
+      if (character) {
+        res.json(character);
+      } else {
+        res.status(404).json({ message: "Character not found" });
+      }
+    } catch (error) {
+      console.error("Error reviving character:", error);
+      res.status(500).json({ message: "Failed to revive character" });
     }
   });
 
