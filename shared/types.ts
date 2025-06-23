@@ -92,21 +92,21 @@ export type Wand = {
   acquired_at: string;
 };
 
-export type InventoryItem = {
+export interface InventoryItem {
   id: number;
   character_id: number;
   item_type: string;
   item_id: number;
   acquired_at: string;
   price: number;
-  category?: string;
-  quantity?: number;
-  rarity?: string;
-  description?: string;
-  notes?: string;
-  item_name?: string;
-  created_at?: string;
-  is_equipped?: boolean;
-};
+  category: string | null;
+  quantity: number;
+  rarity: string | null;
+  description: string | null;
+  notes: string | null;
+  item_name: string | null;
+  created_at: string;
+  is_equipped: boolean;
+}
 
 export type InsertInventoryItem = Omit<InventoryItem, 'id' | 'acquired_at'> & { acquired_at?: string };

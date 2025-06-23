@@ -785,7 +785,7 @@ export async function registerRoutes(app: Express): Promise<void> {
       const allCharacters = await storage.getAllCharacters();
       const safeAllCharacters = Array.isArray(allCharacters) ? allCharacters : [];
       const activeCharacters = safeAllCharacters.filter((char: any) => !char.deathDate && !char.isSystem);
-      const charactersWithFullName = activeCharacters.map((char: any) =>Completing the inventory POST route implementation and other fixes.```text
+      const charactersWithFullName = activeCharacters.map((char: any) =>```text
  ({
         ...char,
         fullName: `${char.firstName} ${char.middleName ? char.middleName + ' ' : ''}${char.lastName}`
@@ -829,7 +829,7 @@ export async function registerRoutes(app: Express): Promise<void> {
           recipient: recipient ? {
             firstName: recipient.firstName,
             middleName: recipient.middleName,
-            lastName: sender.lastName
+            lastName: recipient.lastName
           } : null
         };
       }));
@@ -873,7 +873,7 @@ export async function registerRoutes(app: Express): Promise<void> {
           recipient: recipient ? {
             firstName: recipient.firstName,
             middleName: recipient.middleName,
-            lastName: sender.lastName
+            lastName: recipient.lastName
           } : null
         };
       }));

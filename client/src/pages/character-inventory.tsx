@@ -360,7 +360,7 @@ function InventoryItemCard({ item, canEdit }: { item: InventoryItem; canEdit: bo
         {item.description && (
           <p className="text-sm text-muted-foreground mb-3">{item.description}</p>
         )}
-        
+
         <div className="flex items-center justify-between text-sm">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-1">
@@ -524,7 +524,7 @@ const CharacterInventoryPage = () => {
       </div>
 
       {/* Statistiky */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8"></div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
