@@ -1,0 +1,141 @@
+> client@1.0.0 build
+> vite build
+The CJS build of Vite's Node API is deprecated. See https://vitejs.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.
+vite v5.2.10 building for production...
+transforming...
+✓ 2723 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.52 kB │ gzip:   0.35 kB
+dist/assets/index-L6iFcDGh.css   90.42 kB │ gzip:  15.33 kB
+dist/assets/index-ByVsW5zH.js   887.62 kB │ gzip: 241.63 kB
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 5.09s
+> umbra-magica@1.0.0 postbuild:client
+> rm -rf dist/public && mkdir -p dist/public && cp -r client/dist/* dist/public/
+> umbra-magica@1.0.0 postbuild:client
+> rm -rf dist/public && mkdir -p dist/public && cp -r client/dist/* dist/public/
+> umbra-magica@1.0.0 build:server
+> esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+  dist/index.js  111.6kb
+⚡ Done in 10ms
+==> Uploading build...
+==> Uploaded in 5.8s. Compression took 4.4s
+==> Build successful 🎉
+==> Deploying...
+==> Running '   npm start'
+> umbra-magica@1.0.0 start
+> cross-env NODE_ENV=production node dist/index.js
+registerRoutes: konec
+8:55:20 AM [express] serving on port 10000
+[DEBUG] HEAD /
+==> Your service is live 🎉
+[DEBUG] GET /
+[DEBUG] GET /
+[DEBUG] GET /assets/index-L6iFcDGh.css
+[DEBUG] GET /assets/index-ByVsW5zH.js
+[DEBUG] GET /api/auth/user
+Decoded JWT user: {
+  id: 5,
+  username: 'Casey',
+  role: 'admin',
+  iat: 1750668335,
+  exp: 1751273135
+}
+[DEBUG] GET /favicon.ico
+8:56:19 AM [express] GET /api/auth/user 200 in 1772ms :: {"id":5,"username":"Casey","email":"caseylo…
+[DEBUG] GET /api/characters/online
+Decoded JWT user: {
+  id: 5,
+  username: 'Casey',
+  role: 'admin',
+  iat: 1750668335,
+  exp: 1751273135
+}
+8:56:19 AM [express] GET /api/characters/online 304 in 3ms :: []
+[DEBUG] GET /api/characters/all
+Decoded JWT user: {
+  id: 5,
+  username: 'Casey',
+  role: 'admin',
+  iat: 1750668335,
+  exp: 1751273135
+}
+[DEBUG] GET /api/influence-bar
+Decoded JWT user: {
+  id: 5,
+  username: 'Casey',
+  role: 'admin',
+  iat: 1750668335,
+  exp: 1751273135
+}
+[DEBUG] GET /api/characters/7/wand
+Decoded JWT user: {
+  id: 5,
+  username: 'Casey',
+  role: 'admin',
+  iat: 1750668335,
+  exp: 1751273135
+}
+[DEBUG] GET /api/characters/7/last-chat
+Decoded JWT user: {
+  id: 5,
+  username: 'Casey',
+  role: 'admin',
+  iat: 1750668335,
+  exp: 1751273135
+}
+8:56:19 AM [express] GET /api/characters/7/last-chat 304 in 3ms
+[DEBUG] GET /api/influence-history
+Decoded JWT user: {
+  id: 5,
+  username: 'Casey',
+  role: 'admin',
+  iat: 1750668335,
+  exp: 1751273135
+}
+Loaded 15 characters {
+  data: [
+    {
+      id: 17,
+      user_id: 12,
+      first_name: 'Matthew',
+      middle_name: 'Elias',
+      last_name: 'Parker',
+      birth_date: '1900-10-12T00:00:00',
+      is_active: true,
+      created_at: '2025-06-08T15:04:47.049',
+      updated_at: '2025-06-08T15:19:45.225',
+      school: 'Bradavice',
+      description: '',
+      death_date: null,
+      death_reason: null,
+      avatar: null,
+      height: 178,
+      weight: 76,
+      height_set_at: '2025-06-08T15:19:45.225',
+      school_set_at: '2025-06-08T15:19:45.225',
+      residence: null,
+      is_system: false,
+      character_history: null,
+      show_history_to_others: true
+    },
+    {
+      id: 13,
+      user_id: 8,
+      first_name: 'Zoe',
+      middle_name: '',
+      last_name: 'Higgins',
+      birth_date: '1900-01-01T00:00:00',
+      is_active: true,
+      created_at: '2025-06-01T20:09:08.736',
+      updated_at: '2025-06-08T15:33:42.047',
+      school: null,
+      description: null,
+      death_date: null,
+      death_reason: null,
+      avatar: null,
+      height: null,
