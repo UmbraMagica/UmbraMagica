@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useParams } from "wouter";
+import React from "react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -280,3 +281,24 @@ export function AddInventoryItemDialog({ characterId }: { characterId: number })
     </Dialog>
   );
 }
+
+// Hlavní stránka inventáře postavy
+const CharacterInventoryPage = () => {
+  const params = useParams();
+  // Očekáváme, že characterId je v URL jako string, převedeme na číslo
+  const characterId = params.characterId ? Number(params.characterId) : undefined;
+
+  if (!characterId) {
+    return <div>Chybí ID postavy v URL.</div>;
+  }
+
+  return (
+    <div className="p-4">
+      <h1 className="text-2xl font-bold mb-4">Inventář postavy</h1>
+      <AddInventoryItemDialog characterId={characterId} />
+      {/* Zde můžeš přidat další komponenty pro zobrazení inventáře */}
+    </div>
+  );
+};
+
+export default CharacterInventoryPage;
