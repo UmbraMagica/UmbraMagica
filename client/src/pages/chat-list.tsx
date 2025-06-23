@@ -273,13 +273,13 @@ export default function ChatList() {
                   </div>
                 )}
               </div>
-              
+
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Users className="h-4 w-4" />
                   <span>Veřejná místnost</span>
                 </div>
-                
+
                 <Button variant="outline" size="sm">
                   Vstoupit
                 </Button>
@@ -312,6 +312,29 @@ export default function ChatList() {
       </div>
         </>
       )}
+      {/* Debug informace */}
+      <div className="mb-4 p-4 bg-muted rounded-lg">
+        <h3 className="font-medium mb-2">Debug Info:</h3>
+        <p>Počet místností: {rooms.length}</p>
+        <p>Počet kategorií: {categories.length}</p>
+        <p>Uživatelská role: {user?.role}</p>
+        <p>Loading: {isLoading ? 'Ano' : 'Ne'}</p>
+        <p>API URL: {import.meta.env.VITE_API_URL || 'default'}</p>
+        <p>Auth token existuje: {!!localStorage.getItem('jwt_token')}</p>
+        {error && <p className="text-red-500">Chyba: {String(error)}</p>}
+        {rooms.length > 0 && (
+          <details className="mt-2">
+            <summary className="cursor-pointer text-sm">Místnosti (klikněte pro zobrazení)</summary>
+            <div className="mt-2 text-xs max-h-32 overflow-y-auto">
+              {rooms.map((room: any) => (
+                <div key={room.id} className="border-b py-1">
+                  ID: {room.id}, Název: {room.name}, Veřejná: {room.isPublic ? 'Ano' : 'Ne'}
+                </div>
+              ))}
+            </div>
+          </details>
+        )}
+      </div>
     </div>
   );
 }

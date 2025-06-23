@@ -65,7 +65,7 @@ function renderMessageWithHighlight(content: string, highlightWords?: string, hi
   }[highlightColor || 'yellow'] || 'bg-yellow-200/60 text-yellow-900 dark:bg-yellow-400/30 dark:text-yellow-100';
 
   let highlightedContent = content;
-  
+
   words.forEach(word => {
     // Escape special regex characters
     const escapedWord = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -115,11 +115,11 @@ export default function ChatRoom() {
   const [chatCharacter, setChatCharacter] = useState<any>(null);
   const [isNarratorMode, setIsNarratorMode] = useState(false);
   const [narratorMessage, setNarratorMessage] = useState("");
-  
+
   const currentRoomId = roomId ? parseInt(roomId) : null;
 
   // All hooks must be at the top level - before any conditional returns
-  
+
   // Fetch user's characters for switching (only alive characters)
   const { data: allUserCharacters = [], isLoading: charactersLoading } = useQuery<any[]>({
     queryKey: ["/api/characters"],
@@ -156,7 +156,7 @@ export default function ChatRoom() {
   });
 
   // ALL useEffect hooks must be here at the top level
-  
+
   // Initialize chat character when entering chat room
   useEffect(() => {
     // Filter only alive characters (not in cemetery) and exclude system characters
@@ -165,15 +165,15 @@ export default function ChatRoom() {
       const isNotSystem = !char.isSystem;
       return isAlive && isNotSystem;
     }) : [];
-    
+
     // Sort characters according to user's preferred order
     const userCharacters = (() => {
       if (!user?.characterOrder || !Array.isArray(user.characterOrder)) {
         return filteredCharacters;
       }
-      
+
       const orderMap = new Map(user.characterOrder.map((id, index) => [id, index]));
-      
+
       return [...filteredCharacters].sort((a, b) => {
         const orderA = orderMap.get(a.id) ?? 999;
         const orderB = orderMap.get(b.id) ?? 999;
@@ -210,7 +210,7 @@ export default function ChatRoom() {
         console.log("Messages data:", messages);
         console.log("Messages loading:", messagesLoading);
         console.log("Current room ID:", currentRoomId);
-        
+
         // Sort messages by creation date (newest first for display)
         const sortedMessages = [...messages].sort(
           (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
@@ -232,16 +232,16 @@ export default function ChatRoom() {
 
     const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
     const wsUrl = `${protocol}//${window.location.host}/ws?token=${token}`;
-    
+
     console.log("Setting up WebSocket connection to:", wsUrl);
-    
+
     const newWs = new WebSocket(wsUrl);
-    
+
     newWs.onopen = () => {
       console.log("WebSocket connected");
       setIsConnected(true);
       setWs(newWs);
-      
+
       // Join the room - first authenticate, then join
       if (user && chatCharacter) {
         newWs.send(JSON.stringify({
@@ -250,7 +250,7 @@ export default function ChatRoom() {
           userId: user.id,
           characterId: chatCharacter.id
         }));
-        
+
         // Wait a bit then join room
         setTimeout(() => {
           newWs.send(JSON.stringify({
@@ -265,7 +265,7 @@ export default function ChatRoom() {
       try {
         const data = JSON.parse(event.data);
         console.log("WebSocket message received:", data);
-        
+
         if (data.type === 'new-message') {
           setLocalMessages(prev => {
             const messageExists = prev.some(msg => msg.id === data.message.id);
@@ -319,9 +319,9 @@ export default function ChatRoom() {
     if (!user?.characterOrder || !Array.isArray(user.characterOrder)) {
       return filteredCharacters;
     }
-    
+
     const orderMap = new Map(user.characterOrder.map((id, index) => [id, index]));
-    
+
     return [...filteredCharacters].sort((a, b) => {
       const orderA = orderMap.get(a.id) ?? 999;
       const orderB = orderMap.get(b.id) ?? 999;
@@ -348,26 +348,27 @@ export default function ChatRoom() {
       </div>
     );
   }
-  
+
   // Check if user needs a character (non-admin users need a character)
   const needsCharacter = user?.role !== 'admin';
-  
+
   // Debug information
-  console.log('Chat access debug:', {
-    userRole: user?.role,
-    needsCharacter,
-    userCharactersLength: userCharacters.length,
-    chatCharacter: chatCharacter?.firstName + ' ' + chatCharacter?.lastName,
-    allUserCharacters: allUserCharacters.map(c => ({ id: c.id, name: c.firstName + ' ' + c.lastName, deathDate: c.deathDate }))
-  });
-  
+  // Removing unnecessary console.log
+  // console.log('Chat access debug:', {
+  //   userRole: user?.role,
+  //   needsCharacter,
+  //   userCharactersLength: userCharacters.length,
+  //   chatCharacter: chatCharacter?.firstName + ' ' + chatCharacter?.lastName,
+  //   allUserCharacters: allUserCharacters.map(c => ({ id: c.id, name: c.firstName + ' ' + c.lastName, deathDate: c.deathDate }))
+  // });
+
   // For users who need a character, ensure one is always set
   if (needsCharacter && userCharacters.length > 0 && !chatCharacter) {
     // Use first character directly for rendering, useEffect will set it properly
     const tempCharacter = userCharacters[0];
     console.log('Temporarily using character for render:', tempCharacter.firstName, tempCharacter.lastName);
   }
-  
+
   // Show loading while characters are being fetched
   if (needsCharacter && charactersLoading) {
     return (
@@ -402,7 +403,7 @@ export default function ChatRoom() {
 
   const handleSendMessage = async () => {
     if (!currentRoomId) return;
-    
+
     // For non-admin users, require a character
     if (needsCharacter && !currentCharacter) return;
 
@@ -421,7 +422,7 @@ export default function ChatRoom() {
             }),
             credentials: "include",
           });
-          
+
           if (!response.ok) {
             // Try to get the error message from the response
             try {
@@ -431,7 +432,7 @@ export default function ChatRoom() {
               throw new Error("Vaše postava potřebuje hůlku pro sesílání kouzel.");
             }
           }
-          
+
           setSelectedSpell(null);
           setMessageInput("");
         } catch (spellError: any) {
@@ -452,7 +453,7 @@ export default function ChatRoom() {
     } catch (error: any) {
       console.log('Cast spell error:', error); // Debug log
       let errorMessage = "Nepodařilo se odeslat zprávu.";
-      
+
       // Use the actual server error message for spell casting errors
       if (selectedSpell && error.message) {
         if (error.message.includes("Character doesn't know this spell")) {
@@ -467,16 +468,16 @@ export default function ChatRoom() {
       } else if (error.message) {
         errorMessage = error.message;
       }
-      
+
       console.log('Final error message:', errorMessage); // Debug log
-      
+
       // Show error as both toast and system message in chat
       toast({
         title: "Chyba",
         description: errorMessage,
         variant: "destructive",
       });
-      
+
       // Also add error as a system message to the chat
       const systemMessage: ChatMessage = {
         id: Date.now(),
@@ -493,7 +494,7 @@ export default function ChatRoom() {
         }
       };
       setLocalMessages(prev => [systemMessage, ...prev]);
-      
+
       // Clear the selected spell to reset the state
       setSelectedSpell(null);
     }
@@ -550,10 +551,10 @@ export default function ChatRoom() {
         roomId: currentRoomId,
         content: narratorMessage.trim()
       });
-      
+
       setNarratorMessage("");
       setIsNarratorMode(false);
-      
+
       toast({
         title: "Vypravěčská zpráva odeslána",
         description: "Vaša zpráva byla úspěšně odeslána",
@@ -574,7 +575,7 @@ export default function ChatRoom() {
       const response = await fetch(`${API_URL}/api/rooms/${currentRoomId}/download`, {
         credentials: "include",
       });
-      
+
       if (response.ok) {
         const blob = await response.blob();
         const url = window.URL.createObjectURL(blob);
@@ -586,7 +587,7 @@ export default function ChatRoom() {
         a.click();
         window.URL.revokeObjectURL(url);
         document.body.removeChild(a);
-        
+
         toast({
           title: "Úspěch",
           description: "Chat byl stažen",
@@ -609,12 +610,12 @@ export default function ChatRoom() {
     try {
       const response = await apiRequest("POST", `${API_URL}/api/chat/rooms/${currentRoomId}/archive`);
       const data = await response.json();
-      
+
       toast({
         title: "Úspěch",
         description: data.message,
       });
-      
+
       // Refresh messages
       queryClient.invalidateQueries({ queryKey: [`${API_URL}/api/chat/rooms/${currentRoomId}/messages`] });
     } catch (error) {
@@ -637,16 +638,16 @@ export default function ChatRoom() {
       // First archive messages
       const archiveResponse = await apiRequest("POST", `${API_URL}/api/chat/rooms/${currentRoomId}/archive`);
       const archiveData = await archiveResponse.json();
-      
+
       // Then clear visible messages
       const clearResponse = await apiRequest("DELETE", `${API_URL}/api/admin/rooms/${currentRoomId}/clear`);
       const clearData = await clearResponse.json();
-      
+
       toast({
         title: "Úspěch",
         description: `${archiveData.message} Zprávy byly poté smazány z aktivního chatu.`,
       });
-      
+
       // Refresh messages
       queryClient.invalidateQueries({ queryKey: [`${API_URL}/api/chat/rooms/${currentRoomId}/messages`] });
       setLocalMessages([]);
@@ -679,15 +680,15 @@ export default function ChatRoom() {
 
   const handleSaveDescription = async () => {
     if (!currentRoom) return;
-    
+
     try {
       await apiRequest("PATCH", `${API_URL}/api/admin/chat/rooms/${currentRoom.id}`, {
         longDescription: editedDescription
       });
-      
+
       // Invalidate queries to refetch updated data
       queryClient.invalidateQueries({ queryKey: ["/api/chat/rooms"] });
-      
+
       setIsEditingDescription(false);
       toast({
         title: "Úspěch",
@@ -704,15 +705,15 @@ export default function ChatRoom() {
 
   const handleSaveName = async () => {
     if (!currentRoom) return;
-    
+
     try {
       await apiRequest("PATCH", `${API_URL}/api/admin/chat/rooms/${currentRoom.id}`, {
         name: editedName
       });
-      
+
       // Invalidate queries to refetch updated data
       queryClient.invalidateQueries({ queryKey: ["/api/chat/rooms"] });
-      
+
       setIsEditingName(false);
       toast({
         title: "Úspěch",
@@ -835,7 +836,7 @@ export default function ChatRoom() {
               <Download className="h-4 w-4" />
               Stáhnout
             </Button>
-            
+
             {user?.role === 'admin' && (
               <>
                 <Button
@@ -848,7 +849,7 @@ export default function ChatRoom() {
                   <Archive className="h-4 w-4" />
                   Archivovat
                 </Button>
-                
+
                 <Button
                   onClick={handleClearMessages}
                   variant="outline"
@@ -861,7 +862,7 @@ export default function ChatRoom() {
                 </Button>
               </>
             )}
-            
+
             <div className={`h-2 w-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`} />
             <span className="text-sm text-muted-foreground">
               {isConnected ? 'Připojeno' : 'Odpojeno'}
@@ -893,7 +894,7 @@ export default function ChatRoom() {
                   <CharacterAvatar character={message.character} size="sm" />
                 );
               })()}
-              
+
               <div className="flex-1 min-w-0">
                 <div className="flex items-baseline gap-2 mb-1">
                   {(() => {
@@ -1055,7 +1056,7 @@ export default function ChatRoom() {
                 <CharacterAvatar character={currentCharacter} size="lg" />
               </div>
             )}
-            
+
             {/* Right side with two rows */}
             <div className="flex-1 space-y-2">
               {/* Top row - Message input */}
@@ -1093,7 +1094,7 @@ export default function ChatRoom() {
                   {selectedSpell ? "Seslat" : "Odeslat"}
                 </Button>
               </div>
-              
+
               {/* Bottom row - Character selector, action buttons and counter */}
               <div className="flex items-center justify-between">
                 {/* Left side - Character selector and action buttons */}
@@ -1118,7 +1119,7 @@ export default function ChatRoom() {
                       {currentCharacter?.firstName} {currentCharacter?.lastName}
                     </span>
                   )}
-                  
+
                   {/* Action buttons as tiles with text */}
                   <Button
                     onClick={handleDiceRoll}
@@ -1165,7 +1166,7 @@ export default function ChatRoom() {
                       Kouzla
                     </Button>
                   )}
-                  
+
                   {/* Narrator mode button - only show if user has narrator permissions or is admin */}
                   {(user?.canNarrate || user?.role === 'admin') && (
                     <Button
@@ -1200,7 +1201,7 @@ export default function ChatRoom() {
                     </Button>
                   )}
                 </div>
-                
+
                 {/* Right side - Character counter */}
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-muted-foreground">
@@ -1210,7 +1211,7 @@ export default function ChatRoom() {
               </div>
             </div>
           </div>
-          
+
           {/* Narrator Input - Only show when narrator mode is active */}
           {isNarratorMode && user?.canNarrate && (
             <div className="flex items-start gap-3 mt-3 pt-3 border-t">
@@ -1229,7 +1230,7 @@ export default function ChatRoom() {
                   <span className="text-lg font-bold text-white">V</span>
                 </div>
               </div>
-              
+
               {/* Narrator input */}
               <div className="flex-1 space-y-2">
                 <div className="flex items-end gap-2">
@@ -1279,7 +1280,7 @@ export default function ChatRoom() {
                     Vypravět
                   </Button>
                 </div>
-                
+
                 <div className="flex items-center justify-between">
                   <span className="text-xs italic"
                         style={{
@@ -1353,7 +1354,7 @@ export default function ChatRoom() {
         <div className="flex-1 p-4 overflow-y-auto space-y-4">
           {/* Room Presence */}
           <RoomPresence roomId={currentRoomId!} onlineCharacters={roomPresenceData} />
-          
+
           {/* Room Description */}
           {(currentRoom.longDescription || user?.role === 'admin') && (
             <div>
