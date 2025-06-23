@@ -1,0 +1,163 @@
+==> Cloning from https://github.com/UmbraMagica/Umbra-dev
+==> Checking out commit cc9d808d84a747db6a70898f4aa497851b407ecf in branch main
+==> Using Node.js version 22.16.0 (default)
+==> Docs on specifying a Node.js version: https://render.com/docs/node-version
+==> Using Bun version 1.1.0 (default)
+==> Docs on specifying a Bun version: https://render.com/docs/bun-version
+==> Running build command '   npm install && npm run build'...
+added 559 packages, and audited 560 packages in 11s
+75 packages are looking for funding
+  run `npm fund` for details
+9 vulnerabilities (1 low, 7 moderate, 1 high)
+To address issues that do not require attention, run:
+  npm audit fix
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+Run `npm audit` for details.
+> umbra-magica@1.0.0 build
+> npm run build:client && npm run postbuild:client && npm run build:server
+> umbra-magica@1.0.0 build:client
+> cd client && npm install && npm run build
+added 237 packages, and audited 238 packages in 8s
+43 packages are looking for funding
+  run `npm fund` for details
+3 vulnerabilities (1 low, 2 moderate)
+To address all issues, run:
+  npm audit fix
+Run `npm audit` for details.
+> client@1.0.0 build
+> vite build
+The CJS build of Vite's Node API is deprecated. See https://vitejs.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.
+vite v5.2.10 building for production...
+transforming...
+✓ 2723 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.52 kB │ gzip:   0.35 kB
+dist/assets/index-CIT7KXWa.css   90.45 kB │ gzip:  15.34 kB
+dist/assets/index-DTRSo2kD.js   893.61 kB │ gzip: 242.54 kB
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 5.97s
+> umbra-magica@1.0.0 postbuild:client
+> rm -rf dist/public && mkdir -p dist/public && cp -r client/dist/* dist/public/
+> umbra-magica@1.0.0 postbuild:client
+> rm -rf dist/public && mkdir -p dist/public && cp -r client/dist/* dist/public/
+> umbra-magica@1.0.0 build:server
+> esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+  dist/index.js  112.7kb
+⚡ Done in 35ms
+==> Uploading build...
+==> Uploaded in 7.6s. Compression took 7.2s
+==> Build successful 🎉
+==> Deploying...
+==> Running '   npm start'
+> umbra-magica@1.0.0 start
+> cross-env NODE_ENV=production node dist/index.js
+registerRoutes: konec
+1:26:31 PM [express] serving on port 10000
+[DEBUG] HEAD /
+==> Your service is live 🎉
+[DEBUG] GET /
+    description: 'Úřad kouzelné vlády',
+    is_public: true,
+    created_at: '2025-05-29T18:28:17.97',
+    category_id: 4,
+    sort_order: 17,
+    long_description: '"Ne vše, co se třpytí, je kouzelné. A ne vše kouzelné je správné."\r\n' +
+      '\r\n' +
+      'Skryté hluboko pod ulicemi Londýna, přístupné krbem, toaletou či tajnými chodbami v kavárnách, se rozprostírá komplex Ministerstva kouzel – srdce byrokratické moci kouzelnické Británie. V roce 1925 je to místo napětí, tichých dohod a šeptaných intrik – důsledky sílící hrozby z kontinentu jsou cítit v každé dlaždici.\r\n' +
+      '\r\n' +
+      'Vstupní hala\r\n' +
+      'Velkolepá, vysoká jako chrám – s temně zelenými cihlovými stěnami, lesklou černou podlahou a zlatými fontánami magie uprostřed. Lidé sem proudí jako proud myšlenek, přemístění nebo krbem, pod dozorem pracovníků Odboru magického práva.\r\n' +
+      '\r\n' +
+      'Oddělení a kanceláře\r\n' +
+      'Bludiště chodeb a pater – od Odboru záhad, kam vstupují jen ti vyvolení, přes Odbor pro uplatňování kouzelnických zákonů až po kanceláře Regulace magických tvorů. Stěny jsou pokryty pohyblivými nástěnkami, na nichž se objevují vyhlášky, zatykače i falešné zprávy. Vzduch je prosycen vůní pergamenu, vosku a politiky.\r\n' +
+      '\r\n' +
+      '\r\n' +
+      'V dnešních dnech je Ministerstvo nejen správním centrem, ale i místem strachu a ostražitosti. Byrokraté a bystrozoři se míjejí v temných kuloárech, informace se filtrují, jména mizí ze seznamů. Každý krok je sledován, každý šepot může být zradou.',
+    password: null
+  },
+  {
+    id: 6,
+    name: 'Černá vrána',
+    description: 'Pohřební služba pro kouzelný svět',
+    is_public: true,
+    created_at: '2025-05-29T18:28:17.821',
+    category_id: 2,
+    sort_order: 18,
+    long_description: 'Na Příčné ulici stojí temně laděná budova. Její fasáda je natřená sytou černou barvou s matnými detaily v šedé. Okna jsou vysoká a úzká, s černými závěsy, za nimiž je vidět jen matný odraz světla svíček. Nad vchodem visí elegantní dřevěná tabule s nápisem „Černá vrána" ve stříbrném písmu, ozdobená drobným reliéfem letící vrány. Dvoukřídlé dveře, vyřezávané z temného dřeva, jsou opatřeny mosazným klepadlem ve tvaru havraní hlavy. Před vchodem stojí dvě černé lucerny, jejichž mihotavé plamínky dodávají atmosféře tajemný nádech. Vzduch kolem budovy je naplněn lehkou vůní kadidla a na dlažbě u vchodu je vyryt symbol vrány.\r\n' +
+      '\r\n' +
+      'Jakmile zákazník vstoupí, ucítí jemnou vůni vosku, bylin a starého dřeva. Interiér je v přítmí, osvětlovaný pouze světlem svíček, které stojí na masivních kandelábrech rozestavěných po místnosti. Podlahu pokrývají tmavě šedé kamenné dlaždice, občas ozdobené složitými ornamenty v podobě vran a větví. Na levé straně místnosti je dlouhý pult, vyrobený z ebenového dřeva, na němž stojí černá pokladna a několik dekorativních krabiček. Za pultem jsou police plné katalogů, drobných pohřebních artefaktů, vzorků vyřezávaných urn ale i různých pomůcek pro média či snad komunikaci s duchy? Na pravé straně se nachází vitríny, ve kterých jsou vystaveny pohřební dekorace – od honosných pohřebních šperků až po drobné ozdobné lahvičky, do nichž se údajně mohou uchovat vzpomínky. V rohu je pohodlné křeslo s malým stolkem, kde si zákazníci mohou prohlédnout katalogy v soukromí. V zadní části místnosti jsou těžké sametové závěsy, které oddělují hlavní prostor od neveřejných částí podniku. Za pultem stojí - po domluvení schůzky - v černém hábitu Morgause Birchwood - majitelka - a mluví tlumeným, uklidňujícím hlasem. Každé gesto, každý pohyb je promyšlený a důstojný, jako by každý zákazník byl důležitou součástí rituálu. Atmosféra celého prostoru je klidná, téměř posvátná. Zdá se, že místo oplývá jakousi zvláštní magií, která vytváří dojem, že čas uvnitř plyne pomaleji než venku. Za pultem je pak vchod do zadní části obchodu, kde se nacházejí zřejmě sklady a zázemí. A také průchod do sklepa. Ten je vybaven lékařským stolem, několika světly a spoustou roztodivných nástrojů. Inu, někde se k tomu dlouhému odpočinku musí nebožtíci připravit. Nicméně, to není pro oči truchlících, jednoduše… pouze na pozvání paní majitelky. Hodně štěstí.\r\n',
+    password: null
+  },
+  {
+    id: 11,
+    name: 'Nemocnice u sv. Munga',
+    description: 'Nemocnice pro kouzelné nemoci a úrazy',
+    is_public: true,
+    created_at: '2025-05-29T18:28:18.037',
+    category_id: 5,
+    sort_order: 19,
+    long_description: '"Léčíme, co se léčit dá – a zbytek alespoň utěšíme."\r\n' +
+      '\r\n' +
+      'Za nenápadnou výlohou starého obchodního domu "Purcell & Syn – obuv pro pány" na londýnské Panské ulici se skrývá jedno z nejdůležitějších míst kouzelnického světa. Vstup je umožněn pouze těm, kdo vědí, že mají poklepat na rozbitou figurínu v rohu výlohy a vyslovit své přání pomoci.\r\n' +
+      '\r\n' +
+      'Exteriér a vstup\r\n' +
+      'Z ulice vypadá budova omšele – výlohy plné prachu, zrezivělé písmo a zapomenuté figuríny. Jen pozorné oko si všimne, že figuríny mění občas postoj… a že výloha klame.\r\n' +
+      '\r\n' +
+      'Hlavní vstupní hala\r\n' +
+      'Po průchodu výlohou se návštěvník ocitne v živé, přesto přísně organizované vstupní hale. Stěny z leštěného dřeva, lavice s výšivkami a velká nástěnná tabule s rozpisem pater, nemocí a pohotovostí. Vzduch je cítit bylinkami, lektvary a něčím nepojmenovatelným, co trochu připomíná rozpuštěné kletby.\r\n' +
+      '\r\n' +
+      'Rozvržení pater\r\n' +
+      'Nemocnice je rozdělena do několika specializovaných oddělení – každé patro se věnuje jiné oblasti:\r\n' +
+      '\r\n' +
+      'Přízemí – Recepce, pohotovost, administrativa a uklidňující lektvary.\r\n' +
+      '\r\n' +
+      '1. patro – Zranění způsobená kouzly: explodující kotlíky, omylem uříznuté končetiny a kletby.\r\n' +
+      '\r\n' +
+      '2. patro – Nemoci způsobené magickými tvory: upíří kousnutí, dračí horečky, vlkodlačí škrábance.\r\n' +
+      '\r\n' +
+      '3. patro – Magické viry a nakažlivé choroby: mluvící neštovice, samovolné zmizení končetin.\r\n' +
+      '\r\n' +
+      '4. patro – Poškození mysli a duše: následky černé magie, přetížení paměťových kouzel, magické trauma.\r\n' +
+      '\r\n' +
+      '5. patro – Experimentální léčby, léčitelé specialisté a výzkumná laboratoř.\r\n' +
+      '\r\n' +
+      'Suterén – Přísně střežené oddělení pro trvale poškozené případy, oběti temné magie a pacienty neschopné návratu do běžného života.\r\n' +
+      '\r\n' +
+      'Personál\r\n' +
+      'Léčitelé nosí zelené hábity s emblémem sv. Munga držícího hůlku a kost. Jsou odhodlaní, unavení a neskutečně schopní. Učňové léčitelství běhají s tácem lektvarů, přičemž se snaží nezakopnout o pacienta proměněného v želvu.\r\n' +
+      '\r\n' +
+      '\r\n' +
+      'V dnešní době je nemocnice přeplněná – přijímají raněné z kontinentu, oběti utajených útoků i ty, kdo se snaží ukrýt před zlověstnou budoucností. Vznikají tajná oddělení, kde jsou zkoumány nové formy magie – a ne vždy s vědomím vedení nemocnice.',
+    password: null
+  },
+  {
+    id: 7,
+    name: 'Čarokáva',
+    description: 'Kavárna pro čaroděje',
+    is_public: true,
+    created_at: '2025-05-29T18:28:17.858',
+    category_id: 2,
+    sort_order: 20,
+    long_description: 'Čarokáva je místem, kde se zastavil čas. Malá dřevěná vývěska nad vchodem nese zlaté, jemně pulsující runy, které se mění podle fáze měsíce. Dveře, těžké a tmavé, se otevírají téměř samy, jako by zvědavě vítaly každého nového hosta. Uvnitř kavárny vládne podmanivá atmosféra. Stěny jsou vyzdobené starými pergameny a pohyblivými ilustracemi, které se líně přeskupují. Ve vzduchu se vznáší směs vůní – pražených kávových zrn, čerstvých bylin a slabého náznaku kouřové magie. Po místnosti se rozléhá tiché šumění – šeptající stránky knih, tlumený rozhovor čarodějů a jemné cinkání porcelánu. Stoly jsou rozestavěné nepravidelně, každý trochu jiný, jako by si žil vlastním životem. Nad některými se vznášejí drobné lucerny, které se naklání ke svým hostům, nad jinými se tetelí sotva znatelná mlha. V rohu místnosti je ukrytý výklenek s velkým oknem, které neukazuje ven, ale do jiné části světa – občas v něm zasvítí vzdálené hvězdy nebo se mihne silueta někoho, kdo zde možná kdysi sedával. Čarokáva není jen obyčejná kavárna. Je to místo setkání těch, kteří hledají odpovědi, i těch, kteří se chtějí ztratit. Někteří návštěvníci se tu zdrží jen na chvíli, jiní mají pocit, že tu seděli celé hodiny, přestože ručičky starožitných hodin nad pultem se téměř nepohnuly. A možná právě to je na Čarokávě to kouzelné – že nikdy nevíš, kolik času v ní vlastně strávíš.\r\n',
+    password: null
+  },
+  {
+    id: 12,
+    name: 'Katakomby',
+    description: 'Podzemní bludiště pod Londýnem',
+    is_public: true,
+    created_at: '2025-05-29T18:28:18.073',
+    category_id: 6,
+    sort_order: 21,
+    long_description: 'Jenom stíny šeptají, co zde bude.',
+    password: null
+  }
+]
+[CHAT][ROOMS] Returning 30 rooms
+1:30:20 PM [express] GET /api/chat/rooms 304 in 439ms :: [{"id":37,"name":"Bažina","description":"Sí…
+[DEBUG] GET /assets/index-CIT7KXWa.css
