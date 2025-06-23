@@ -780,7 +780,7 @@ export async function registerRoutes(app: Express): Promise<void> {
 
     // Ověření přístupu k postavě
     if (req.user!.role !== 'admin') {
-      const characters = await storage.getCharactersByUserId(req.user!.id);
+      constcharacters = await storage.getCharactersByUserId(req.user!.id);
       if (!characters.some((char: any) => char.id === characterId)) {
         return res.status(403).json({ message: "Forbidden" });
       }

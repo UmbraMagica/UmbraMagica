@@ -126,7 +126,7 @@ export function AddInventoryItemDialog({ characterId }: { characterId: number })
           Přidat předmět
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Package className="h-5 w-5" />
@@ -450,8 +450,7 @@ const CharacterInventoryPage = () => {
     );
   }
 
-  // Debug log pro kontrolu dat
-  console.log('Inventory data type:', typeof inventoryData, 'Is array:', Array.isArray(inventoryData), 'Data:', inventoryData);
+  
 
   // Kontrola oprávnění
   const canEdit = user && character && (
