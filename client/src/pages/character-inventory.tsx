@@ -330,7 +330,7 @@ function InventoryItemCard({ item, canEdit }: { item: InventoryItem; canEdit: bo
           <div className="flex items-center gap-3">
             <span className="text-2xl">{getTypeIcon(item.item_type)}</span>
             <div>
-              <CardTitle className="text-lg">{item.item_name || "Nepojmenovaný předmět"}</CardTitle>
+              <CardTitle className="text-lg">{item.item_name || `${getTypeLabel(item.item_type)} #${item.item_id}`}</CardTitle>
               <CardDescription className="flex items-center gap-2 mt-1">
                 <span>{getTypeLabel(item.item_type)}</span>
                 {item.rarity && (
@@ -524,10 +524,7 @@ const CharacterInventoryPage = () => {
       </div>
 
       {/* Statistiky */}
-      <pre className="bg-gray-100 text-xs p-2 mb-4 rounded">
-        {JSON.stringify(inventory, null, 2)}
-      </pre>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8"></div>
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">

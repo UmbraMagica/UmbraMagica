@@ -482,34 +482,34 @@ export async function registerRoutes(app: Express): Promise<void> {
         return res.status(403).json({ message: "Nelze přidat hůlku ručně do inventáře." });
       }
 
-      // Zápis do databáze
-      const { data, error } = await supabase.from('character_inventory').insert([
-        {
+      // Vložení do databáze
+      const { data, error } = await supabase
+        .from("character_inventory")
+        .insert({
           character_id,
           item_type,
-          item_id: item_id ?? null,
+          item_id: item_id || 1,
           price: Number(price),
-          item_name: item_name ?? null,
-          quantity: quantity ?? 1,
-          rarity: rarity ?? null,
-          description: description ?? null,
+          item_name: item_name || null,
+          quantity: quantity || 1,
+          rarity: rarity || null,
+          description: description || null,
           notes: notes || null,
-          category,
-          acquired_at: new Date().toISOString(),
-          is_equipped: false,
-          created_at: new Date().toISOString(),
-        }
-      ]).select().single();
+          category: category || null,
+        })
+        .select()
+        .single();
 
       if (error) {
-        console.error("Inventory INSERT error:", error);
-        return res.status(500).json({ message: "DB insert error", error: error.message });
+        console.error("[INVENTORY][POST][ERROR]", error);
+        return res.status(500).json({ message: "Database error", error: error.message });
       }
 
-      res.status(200).json({ success: true, item: data });
-    } catch (err) {
-      console.error("Inventory INSERT error (catch):", err);
-      res.status(500).json({ message: "Server error", error: err.message });
+      console.log(`[INVENTORY][POST][SUCCESS] Added item to character ${character_id}:`, data);
+      res.status(201).json(data);
+    } catch (error) {
+      console.error("[INVENTORY][POST][ERROR] Server error:", error);
+      res.status(500).json({ message: "Server error" });
     }
   });
 
@@ -785,7 +785,8 @@ export async function registerRoutes(app: Express): Promise<void> {
       const allCharacters = await storage.getAllCharacters();
       const safeAllCharacters = Array.isArray(allCharacters) ? allCharacters : [];
       const activeCharacters = safeAllCharacters.filter((char: any) => !char.deathDate && !char.isSystem);
-      const charactersWithFullName = activeCharacters.map((char: any) => ({
+      const charactersWithFullName = activeCharacters.map((char: any) =>Completing the inventory POST route implementation and other fixes.```text
+ ({
         ...char,
         fullName: `${char.firstName} ${char.middleName ? char.middleName + ' ' : ''}${char.lastName}`
       }));
@@ -828,7 +829,7 @@ export async function registerRoutes(app: Express): Promise<void> {
           recipient: recipient ? {
             firstName: recipient.firstName,
             middleName: recipient.middleName,
-            lastName: recipient.lastName
+            lastName: sender.lastName
           } : null
         };
       }));
@@ -872,7 +873,7 @@ export async function registerRoutes(app: Express): Promise<void> {
           recipient: recipient ? {
             firstName: recipient.firstName,
             middleName: recipient.middleName,
-            lastName: recipient.lastName
+            lastName: sender.lastName
           } : null
         };
       }));
