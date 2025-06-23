@@ -411,6 +411,12 @@ export async function registerRoutes(app: Express): Promise<void> {
   // Character inventory routes
   app.get("/api/characters/:id/inventory", requireAuth, async (req, res) => {
     const characterId = Number(req.params.id);
+    console.log('[INVENTORY][REQ]', {
+      user: req.user,
+      characterId,
+      params: req.params,
+      url: req.originalUrl,
+    });
     if (!characterId || isNaN(characterId)) {
       return res.status(400).json({ message: "Invalid characterId" });
     }
@@ -432,15 +438,17 @@ export async function registerRoutes(app: Express): Promise<void> {
         .eq("character_id", characterId)
         .order("acquired_at", { ascending: false });
 
+      console.log('[INVENTORY][DB]', { data, error });
+
       if (error) {
-        console.error("Inventory fetch error:", error);
+        console.error("[INVENTORY][ERROR] Inventory fetch error:", error);
         return res.status(500).json({ message: "DB error", error: error.message });
       }
 
-      console.log(`Inventory for character ${characterId}:`, data);
+      console.log(`[INVENTORY][RESULT] Inventory for character ${characterId}:`, data);
       res.json(data || []);
     } catch (error) {
-      console.error("Inventory fetch error (catch):", error);
+      console.error("[INVENTORY][ERROR] Inventory fetch error (catch):", error);
       res.status(500).json({ message: "Server error" });
     }
   });

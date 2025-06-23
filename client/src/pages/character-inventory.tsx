@@ -1,4 +1,3 @@
-
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -450,7 +449,19 @@ const CharacterInventoryPage = () => {
     );
   }
 
-  
+  if (inventoryError) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <Card>
+          <CardContent className="pt-6">
+            <p className="text-center text-red-500">
+              Chyba při načítání inventáře: {inventoryError.message || String(inventoryError)}
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   // Kontrola oprávnění
   const canEdit = user && character && (
