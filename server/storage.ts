@@ -399,23 +399,28 @@ export class DatabaseStorage implements IStorage {
 
   async createChatMessage(messageData: any) {
     try {
+      const insertData = {
+        room_id: messageData.roomId || messageData.room_id,
+        character_id: messageData.characterId || messageData.character_id || 0,
+        user_id: messageData.userId || messageData.user_id,
+        content: messageData.content,
+        message_type: messageData.messageType || messageData.message_type || 'text',
+        created_at: new Date().toISOString()
+      };
+
       const { data, error } = await supabase
         .from('messages')
-        .insert([{
-          room_id: messageData.roomId,
-          character_id: messageData.characterId,
-          user_id: messageData.userId,
-          content: messageData.content,
-          message_type: messageData.messageType || 'text',
-          created_at: new Date().toISOString()
-        }])
+        .insert([insertData])
         .select(`
           *,
           character:characters(first_name, middle_name, last_name, avatar)
         `)
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Database error in createChatMessage:', error);
+        throw error;
+      }
       
       // Convert to camelCase
       const message = {
@@ -431,7 +436,12 @@ export class DatabaseStorage implements IStorage {
           middleName: data.character.middle_name,
           lastName: data.character.last_name,
           avatar: data.character.avatar
-        } : null
+        } : {
+          firstName: 'Systém',
+          middleName: null,
+          lastName: '',
+          avatar: null
+        }
       };
       
       return message;
