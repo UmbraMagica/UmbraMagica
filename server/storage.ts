@@ -766,7 +766,7 @@ export class DatabaseStorage implements IStorage {
     // Second pass: assign rooms to categories
     rooms?.forEach(room => {
       const camelRoom = toCamel(room);
-      ```text
+      ``````text
       if (camelRoom.categoryId && categoryMap.has(camelRoom.categoryId)) {
         categoryMap.get(camelRoom.categoryId).rooms.push(camelRoom);
       }
@@ -986,7 +986,7 @@ export class DatabaseStorage implements IStorage {
       action: 'approve_character',
       targetUserId: request.userId,
       targetRequestId: requestId,
-      details: `Approved character request: ${request.firstName} ${request.lastName}`
+      details: `Approved character request: ${request.firstName} ${request.lastName}\``
     });
     return character;
   }
@@ -1000,7 +1000,7 @@ export class DatabaseStorage implements IStorage {
       action: 'reject_character',
       targetUserId: request.userId,
       targetRequestId: requestId,
-      details: `Rejected character request: ${request.firstName} ${request.lastName}`
+      details: `Rejected character request: ${request.firstName} ${request.lastName}\``
     });
     return { ...request, status: 'rejected', reviewNote };
   }
@@ -1494,7 +1494,6 @@ export class DatabaseStorage implements IStorage {
         for (const length of components.lengths) {
           if (length.id) {
             await supabase.from('wand_lengths').update(toSnake(length)).eq('id', length.id);
-```text
           } else {
             await supabase.from('wand_lengths').insert([toSnake(length)]);
           }
