@@ -405,18 +405,7 @@ const CharacterInventoryPage = () => {
 
   // Načtení inventáře
   const { data: inventoryData, isLoading: inventoryLoading, error: inventoryError } = useQuery<InventoryItem[]>({
-    queryKey: ["characterInventory", characterId],
-    queryFn: async () => {
-      try {
-        const result = await apiRequest("GET", `/api/characters/${characterId}/inventory`);
-        if (Array.isArray(result)) return result;
-        if (result && Array.isArray(result.data)) return result.data;
-        return [];
-      } catch (error) {
-        console.error('Error loading inventory:', error);
-        return [];
-      }
-    },
+    queryKey: [`/api/characters/${characterId}/inventory`],
     enabled: !!characterId,
   });
 
