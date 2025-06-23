@@ -288,6 +288,153 @@ export async function registerRoutes(app: Express): Promise<void> {
     res.json(null);
   });
 
+  // Chat messages endpoint
+  app.get("/api/chat/rooms/:roomId/messages", requireAuth, async (req, res) => {
+    const roomId = Number(req.params.roomId);
+    if (!roomId || isNaN(roomId)) {
+      return res.status(400).json({ message: "Invalid roomId" });
+    }
+
+    try {
+      const messages = await storage.getChatMessages(roomId);
+      res.json(messages || []);
+    } catch (error) {
+      console.error("Error fetching chat messages:", error);
+      res.status(500).json({ message: "Failed to fetch messages" });
+    }
+  });
+
+  // Send chat message
+  app.post("/api/chat/messages", requireAuth, async (req, res) => {
+    const { roomId, characterId, content, messageType } = req.body;
+    
+    if (!roomId || !content) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    try {
+      const message = await storage.createChatMessage({
+        roomId: Number(roomId),
+        characterId: Number(characterId),
+        content,
+        messageType: messageType || 'text'
+      });
+      
+      res.status(201).json(message);
+    } catch (error) {
+      console.error("Error creating chat message:", error);
+      res.status(500).json({ message: "Failed to send message" });
+    }
+  });
+
+  // Game actions - dice roll
+  app.post("/api/game/dice-roll", requireAuth, async (req, res) => {
+    const { roomId, characterId } = req.body;
+    
+    if (!roomId || !characterId) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    try {
+      const result = Math.floor(Math.random() * 10) + 1;
+      const character = await storage.getCharacterById(characterId);
+      
+      if (!character) {
+        return res.status(404).json({ message: "Character not found" });
+      }
+
+      const message = await storage.createChatMessage({
+        roomId: Number(roomId),
+        characterId: Number(characterId),
+        content: `🎲 ${character.firstName} ${character.lastName} hodil kostkou a padlo: ${result}`,
+        messageType: 'dice'
+      });
+      
+      res.json({ result, message });
+    } catch (error) {
+      console.error("Error rolling dice:", error);
+      res.status(500).json({ message: "Failed to roll dice" });
+    }
+  });
+
+  // Game actions - coin flip
+  app.post("/api/game/coin-flip", requireAuth, async (req, res) => {
+    const { roomId, characterId } = req.body;
+    
+    if (!roomId || !characterId) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    try {
+      const result = Math.random() < 0.5 ? "Panna" : "Orel";
+      const character = await storage.getCharacterById(characterId);
+      
+      if (!character) {
+        return res.status(404).json({ message: "Character not found" });
+      }
+
+      const message = await storage.createChatMessage({
+        roomId: Number(roomId),
+        characterId: Number(characterId),
+        content: `🪙 ${character.firstName} ${character.lastName} hodil mincí a padl: ${result}`,
+        messageType: 'coin'
+      });
+      
+      res.json({ result, message });
+    } catch (error) {
+      console.error("Error flipping coin:", error);
+      res.status(500).json({ message: "Failed to flip coin" });
+    }
+  });
+
+  // Archive messages
+  app.post("/api/chat/rooms/:roomId/archive", requireAdmin, async (req, res) => {
+    const roomId = Number(req.params.roomId);
+    if (!roomId || isNaN(roomId)) {
+      return res.status(400).json({ message: "Invalid roomId" });
+    }
+
+    try {
+      const result = await storage.archiveChatMessages(roomId);
+      res.json({ message: `Archivováno ${result.count} zpráv` });
+    } catch (error) {
+      console.error("Error archiving messages:", error);
+      res.status(500).json({ message: "Failed to archive messages" });
+    }
+  });
+
+  // Clear messages (admin only)
+  app.delete("/api/admin/rooms/:roomId/clear", requireAdmin, async (req, res) => {
+    const roomId = Number(req.params.roomId);
+    if (!roomId || isNaN(roomId)) {
+      return res.status(400).json({ message: "Invalid roomId" });
+    }
+
+    try {
+      const result = await storage.clearChatMessages(roomId);
+      res.json({ message: `Smazáno ${result.count} zpráv` });
+    } catch (error) {
+      console.error("Error clearing messages:", error);
+      res.status(500).json({ message: "Failed to clear messages" });
+    }
+  });
+
+  // Room presence
+  app.get("/api/chat/rooms/:roomId/presence", requireAuth, async (req, res) => {
+    const roomId = Number(req.params.roomId);
+    if (!roomId || isNaN(roomId)) {
+      return res.status(400).json({ message: "Invalid roomId" });
+    }
+
+    try {
+      const presence = await storage.getRoomPresence(roomId);
+      res.json(presence || []);
+    } catch (error) {
+      console.error("Error fetching room presence:", error);
+      res.status(500).json({ message: "Failed to fetch presence" });
+    }
+  });
+
   // Character routes
   app.get("/api/characters/:id", requireAuth, async (req, res) => {
     const characterId = Number(req.params.id);

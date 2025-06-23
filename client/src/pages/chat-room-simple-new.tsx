@@ -1,3 +1,4 @@
+
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
@@ -134,8 +135,15 @@ export default function ChatRoom() {
   // Fetch messages
   const { data: messages = [], isLoading: messagesLoading } = useQuery<ChatMessage[]>({
     queryKey: ["/api/chat/rooms", currentRoomId, "messages"],
-    queryFn: () =>
-      fetch(`${API_URL}/api/chat/rooms/${currentRoomId}/messages`).then(res => res.json()),
+    queryFn: async () => {
+      const response = await fetch(`${API_URL}/api/chat/rooms/${currentRoomId}/messages`, {
+        credentials: "include",
+      });
+      if (!response.ok) {
+        throw new Error("Failed to fetch messages");
+      }
+      return response.json();
+    },
     enabled: !!currentRoomId,
     refetchInterval: 5000,
     staleTime: 0, // Always consider data stale
@@ -307,8 +315,6 @@ export default function ChatRoom() {
     };
   }, [currentRoomId, user, chatCharacter, queryClient]);
 
-  // Removed automatic scrolling - chat stays at top showing newest messages
-
   // Filter and sort characters - moved to useEffect above
   const filteredCharacters = Array.isArray(allUserCharacters) ? allUserCharacters.filter((char: any) => {
     const isAlive = !char.deathDate;
@@ -333,10 +339,6 @@ export default function ChatRoom() {
   const currentCharacter = chatCharacter;
   const currentRoom = rooms.find(room => room.id === currentRoomId);
 
-
-
-
-
   // Safety check for user data
   if (!user) {
     return (
@@ -351,16 +353,6 @@ export default function ChatRoom() {
 
   // Check if user needs a character (non-admin users need a character)
   const needsCharacter = user?.role !== 'admin';
-
-  // Debug information
-  // Removing unnecessary console.log
-  // console.log('Chat access debug:', {
-  //   userRole: user?.role,
-  //   needsCharacter,
-  //   userCharactersLength: userCharacters.length,
-  //   chatCharacter: chatCharacter?.firstName + ' ' + chatCharacter?.lastName,
-  //   allUserCharacters: allUserCharacters.map(c => ({ id: c.id, name: c.firstName + ' ' + c.lastName, deathDate: c.deathDate }))
-  // });
 
   // For users who need a character, ensure one is always set
   if (needsCharacter && userCharacters.length > 0 && !chatCharacter) {
@@ -399,8 +391,6 @@ export default function ChatRoom() {
     );
   }
 
-  // Hooks already moved to top of component
-
   const handleSendMessage = async () => {
     if (!currentRoomId) return;
 
@@ -413,7 +403,10 @@ export default function ChatRoom() {
         try {
           const response = await fetch(`${API_URL}/api/game/cast-spell`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { 
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${localStorage.getItem('jwt_token')}`
+            },
             body: JSON.stringify({
               roomId: currentRoomId,
               characterId: currentCharacter?.id,
@@ -441,13 +434,25 @@ export default function ChatRoom() {
         }
       } else if (messageInput.trim()) {
         // Send regular message only if there's content
-        const messageData = {
-          roomId: currentRoomId,
-          characterId: currentCharacter?.id,
-          content: messageInput.trim(),
-          messageType: isNarratorMode ? 'narrator' : 'text'
-        };
-        await apiRequest("POST", `${API_URL}/api/chat/messages`, messageData);
+        const response = await fetch(`${API_URL}/api/chat/messages`, {
+          method: "POST",
+          headers: { 
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem('jwt_token')}`
+          },
+          body: JSON.stringify({
+            roomId: currentRoomId,
+            characterId: currentCharacter?.id,
+            content: messageInput.trim(),
+            messageType: isNarratorMode ? 'narrator' : 'text'
+          }),
+          credentials: "include",
+        });
+
+        if (!response.ok) {
+          throw new Error("Nepodařilo se odeslat zprávu");
+        }
+
         setMessageInput("");
       }
     } catch (error: any) {
@@ -504,9 +509,26 @@ export default function ChatRoom() {
     if (!currentCharacter || !currentRoomId) return;
 
     try {
-      await apiRequest("POST", `${API_URL}/api/game/dice-roll`, {
-        roomId: currentRoomId,
-        characterId: currentCharacter.id
+      const response = await fetch(`${API_URL}/api/game/dice-roll`, {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem('jwt_token')}`
+        },
+        body: JSON.stringify({
+          roomId: currentRoomId,
+          characterId: currentCharacter.id
+        }),
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to roll dice");
+      }
+
+      toast({
+        title: "Kostka hozena",
+        description: "Kostka byla úspěšně hozena",
       });
     } catch (error) {
       toast({
@@ -521,9 +543,26 @@ export default function ChatRoom() {
     if (!currentCharacter || !currentRoomId) return;
 
     try {
-      await apiRequest("POST", `${API_URL}/api/game/coin-flip`, {
-        roomId: currentRoomId,
-        characterId: currentCharacter.id
+      const response = await fetch(`${API_URL}/api/game/coin-flip`, {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem('jwt_token')}`
+        },
+        body: JSON.stringify({
+          roomId: currentRoomId,
+          characterId: currentCharacter.id
+        }),
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to flip coin");
+      }
+
+      toast({
+        title: "Mince hozena",
+        description: "Mince byla úspěšně hozena",
       });
     } catch (error) {
       toast({
@@ -547,10 +586,22 @@ export default function ChatRoom() {
     if (!currentRoomId || !narratorMessage.trim()) return;
 
     try {
-      await apiRequest("POST", `${API_URL}/api/chat/narrator-message`, {
-        roomId: currentRoomId,
-        content: narratorMessage.trim()
+      const response = await fetch(`${API_URL}/api/chat/narrator-message`, {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem('jwt_token')}`
+        },
+        body: JSON.stringify({
+          roomId: currentRoomId,
+          content: narratorMessage.trim()
+        }),
+        credentials: "include",
       });
+
+      if (!response.ok) {
+        throw new Error("Failed to send narrator message");
+      }
 
       setNarratorMessage("");
       setIsNarratorMode(false);
@@ -573,6 +624,9 @@ export default function ChatRoom() {
 
     try {
       const response = await fetch(`${API_URL}/api/rooms/${currentRoomId}/download`, {
+        headers: {
+          "Authorization": `Bearer ${localStorage.getItem('jwt_token')}`
+        },
         credentials: "include",
       });
 
@@ -608,16 +662,28 @@ export default function ChatRoom() {
     if (!currentRoomId || user?.role !== 'admin') return;
 
     try {
-      const response = await apiRequest("POST", `${API_URL}/api/chat/rooms/${currentRoomId}/archive`);
+      const response = await fetch(`${API_URL}/api/chat/rooms/${currentRoomId}/archive`, {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem('jwt_token')}`
+        },
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        throw new Error("Archive failed");
+      }
+
       const data = await response.json();
 
       toast({
         title: "Úspěch",
-        description: data.message,
+        description: data.message || "Zprávy byly archivovány",
       });
 
       // Refresh messages
-      queryClient.invalidateQueries({ queryKey: [`${API_URL}/api/chat/rooms/${currentRoomId}/messages`] });
+      queryClient.invalidateQueries({ queryKey: ["/api/chat/rooms", currentRoomId, "messages"] });
     } catch (error) {
       toast({
         title: "Chyba",
@@ -636,11 +702,35 @@ export default function ChatRoom() {
 
     try {
       // First archive messages
-      const archiveResponse = await apiRequest("POST", `${API_URL}/api/chat/rooms/${currentRoomId}/archive`);
+      const archiveResponse = await fetch(`${API_URL}/api/chat/rooms/${currentRoomId}/archive`, {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem('jwt_token')}`
+        },
+        credentials: "include",
+      });
+
+      if (!archiveResponse.ok) {
+        throw new Error("Archive failed");
+      }
+
       const archiveData = await archiveResponse.json();
 
       // Then clear visible messages
-      const clearResponse = await apiRequest("DELETE", `${API_URL}/api/admin/rooms/${currentRoomId}/clear`);
+      const clearResponse = await fetch(`${API_URL}/api/admin/rooms/${currentRoomId}/clear`, {
+        method: "DELETE",
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem('jwt_token')}`
+        },
+        credentials: "include",
+      });
+
+      if (!clearResponse.ok) {
+        throw new Error("Clear failed");
+      }
+
       const clearData = await clearResponse.json();
 
       toast({
@@ -649,7 +739,7 @@ export default function ChatRoom() {
       });
 
       // Refresh messages
-      queryClient.invalidateQueries({ queryKey: [`${API_URL}/api/chat/rooms/${currentRoomId}/messages`] });
+      queryClient.invalidateQueries({ queryKey: ["/api/chat/rooms", currentRoomId, "messages"] });
       setLocalMessages([]);
     } catch (error) {
       toast({
@@ -682,9 +772,21 @@ export default function ChatRoom() {
     if (!currentRoom) return;
 
     try {
-      await apiRequest("PATCH", `${API_URL}/api/admin/chat/rooms/${currentRoom.id}`, {
-        longDescription: editedDescription
+      const response = await fetch(`${API_URL}/api/admin/chat/rooms/${currentRoom.id}`, {
+        method: "PATCH",
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem('jwt_token')}`
+        },
+        body: JSON.stringify({
+          longDescription: editedDescription
+        }),
+        credentials: "include",
       });
+
+      if (!response.ok) {
+        throw new Error("Update failed");
+      }
 
       // Invalidate queries to refetch updated data
       queryClient.invalidateQueries({ queryKey: ["/api/chat/rooms"] });
@@ -707,9 +809,21 @@ export default function ChatRoom() {
     if (!currentRoom) return;
 
     try {
-      await apiRequest("PATCH", `${API_URL}/api/admin/chat/rooms/${currentRoom.id}`, {
-        name: editedName
+      const response = await fetch(`${API_URL}/api/admin/chat/rooms/${currentRoom.id}`, {
+        method: "PATCH",
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem('jwt_token')}`
+        },
+        body: JSON.stringify({
+          name: editedName
+        }),
+        credentials: "include",
       });
+
+      if (!response.ok) {
+        throw new Error("Update failed");
+      }
 
       // Invalidate queries to refetch updated data
       queryClient.invalidateQueries({ queryKey: ["/api/chat/rooms"] });
@@ -943,7 +1057,13 @@ export default function ChatRoom() {
                         <Button
                           onClick={() => {
                             if (confirm('Opravdu chcete smazat tuto vypravěčskou zprávu?')) {
-                              apiRequest("DELETE", `${API_URL}/api/chat/messages/${message.id}`)
+                              fetch(`${API_URL}/api/chat/messages/${message.id}`, {
+                                method: "DELETE",
+                                headers: {
+                                  "Authorization": `Bearer ${localStorage.getItem('jwt_token')}`
+                                },
+                                credentials: "include",
+                              })
                                 .then(() => {
                                   queryClient.invalidateQueries({ queryKey: ["/api/chat/rooms", currentRoomId, "messages"] });
                                   toast({
@@ -980,8 +1100,16 @@ export default function ChatRoom() {
                           onChange={(e) => {
                             const newCharacterId = parseInt(e.target.value);
                             if (newCharacterId !== message.characterId) {
-                              apiRequest("PATCH", `${API_URL}/api/chat/messages/${message.id}/character`, {
-                                characterId: newCharacterId
+                              fetch(`${API_URL}/api/chat/messages/${message.id}/character`, {
+                                method: "PATCH",
+                                headers: { 
+                                  "Content-Type": "application/json",
+                                  "Authorization": `Bearer ${localStorage.getItem('jwt_token')}`
+                                },
+                                body: JSON.stringify({
+                                  characterId: newCharacterId
+                                }),
+                                credentials: "include",
                               })
                                 .then(() => {
                                   queryClient.invalidateQueries({ queryKey: ["/api/chat/rooms", currentRoomId, "messages"] });

@@ -228,6 +228,13 @@ export interface IStorage {
     itemId: number,
     price?: number
   ): Promise<void>;
+
+    // Chat methods
+    getChatMessages(roomId: number): Promise<any>;
+    createChatMessage(messageData: any): Promise<any>;
+    archiveChatMessages(roomId: number): Promise<{ count: number }>;
+    clearChatMessages(roomId: number): Promise<{ count: number }>;
+    getRoomPresence(roomId: number): Promise<any>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -340,6 +347,105 @@ export class DatabaseStorage implements IStorage {
       console.warn("No characters found for user", { userId, data });
     }
     return toCamel(data || []);
+  }
+
+  // Chat methods
+  async getChatMessages(roomId: number) {
+    try {
+      const { data, error } = await supabase
+        .from('chat_messages')
+        .select(`
+          *,
+          character:characters(firstName, middleName, lastName, avatar)
+        `)
+        .eq('roomId', roomId)
+        .order('createdAt', { ascending: false })
+        .limit(100);
+
+      if (error) throw error;
+      return data || [];
+    } catch (error) {
+      console.error('Error fetching chat messages:', error);
+      return [];
+    }
+  }
+
+  async createChatMessage(messageData: any) {
+    try {
+      const { data, error } = await supabase
+        .from('chat_messages')
+        .insert([{
+          roomId: messageData.roomId,
+          characterId: messageData.characterId,
+          content: messageData.content,
+          messageType: messageData.messageType || 'text',
+          createdAt: new Date().toISOString()
+        }])
+        .select(`
+          *,
+          character:characters(firstName, middleName, lastName, avatar)
+        `)
+        .single();
+
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error('Error creating chat message:', error);
+      throw error;
+    }
+  }
+
+  async archiveChatMessages(roomId: number) {
+    try {
+      // First, get all messages to archive
+      const { data: messages, error: fetchError } = await supabase
+        .from('chat_messages')
+        .select('*')
+        .eq('roomId', roomId);
+
+      if (fetchError) throw fetchError;
+
+      if (messages && messages.length > 0) {
+        // Move to archive table
+        const { error: archiveError } = await supabase
+          .from('chat_messages_archive')
+          .insert(messages.map(msg => ({ ...msg, archivedAt: new Date().toISOString() })));
+
+        if (archiveError) throw archiveError;
+      }
+
+      return { count: messages?.length || 0 };
+    } catch (error) {
+      console.error('Error archiving messages:', error);
+      throw error;
+    }
+  }
+
+  async clearChatMessages(roomId: number) {
+    try {
+      const { data, error } = await supabase
+        .from('chat_messages')
+        .delete()
+        .eq('roomId', roomId)
+        .select('id');
+
+      if (error) throw error;
+      return { count: data?.length || 0 };
+    } catch (error) {
+      console.error('Error clearing messages:', error);
+      throw error;
+    }
+  }
+
+  async getRoomPresence(roomId: number) {
+    try {
+      // This would be implemented with real-time presence tracking
+      // For now, return empty array
+      return [];
+    } catch (error) {
+      console.error('Error fetching room presence:', error);
+      return [];
+    }
   }
 
   async createCharacter(insertCharacter: InsertCharacter): Promise<Character> {
@@ -579,13 +685,13 @@ export class DatabaseStorage implements IStorage {
 
   async getAllChatRooms(userRole: string = 'user'): Promise<ChatRoom[]> {
     let query = supabase.from('chat_rooms').select('*').order('sort_order');
-    
+
     const { data, error } = await query;
     if (error) {
       console.error('[DEBUG][getAllChatRooms][error]', error);
       return [];
     }
-    
+
     if (userRole !== 'admin') {
       // Filtruj pouze veřejné a netestovací místnosti pro běžné uživatele
       const filtered = (data || []).filter((room: any) => 
@@ -594,7 +700,7 @@ export class DatabaseStorage implements IStorage {
       console.log('[DEBUG][getAllChatRooms][filtered]', filtered);
       return toCamel(filtered);
     }
-    
+
     console.log('[DEBUG][getAllChatRooms][data]', data);
     return toCamel(data || []);
   }
@@ -1338,8 +1444,7 @@ export class DatabaseStorage implements IStorage {
       return toCamel(data || []);
     } catch (error) {
       console.error("Error fetching influence history:", error);
-      return [];
-    }
+      return [];        }
   }
 
   async adjustInfluence(side: 'grindelwald' | 'dumbledore', points: number, userId: number): Promise<void> {
