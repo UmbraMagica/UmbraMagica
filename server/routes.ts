@@ -425,8 +425,24 @@ export async function registerRoutes(app: Express): Promise<void> {
       return res.status(403).json({ message: "Forbidden" });
     }
 
-    const inventory = await storage.getCharacterInventory(characterId);
-    res.json(inventory);
+    try {
+      const { data, error } = await supabase
+        .from("character_inventory")
+        .select("*")
+        .eq("character_id", characterId)
+        .order("acquired_at", { ascending: false });
+
+      if (error) {
+        console.error("Inventory fetch error:", error);
+        return res.status(500).json({ message: "DB error", error: error.message });
+      }
+
+      console.log(`Inventory for character ${characterId}:`, data);
+      res.json(data || []);
+    } catch (error) {
+      console.error("Inventory fetch error (catch):", error);
+      res.status(500).json({ message: "Server error" });
+    }
   });
 
   app.post("/api/characters/:id/inventory", requireAuth, async (req, res) => {
@@ -780,7 +796,7 @@ export async function registerRoutes(app: Express): Promise<void> {
 
     // Ověření přístupu k postavě
     if (req.user!.role !== 'admin') {
-      constcharacters = await storage.getCharactersByUserId(req.user!.id);
+      const characters = await storage.getCharactersByUserId(req.user!.id);
       if (!characters.some((char: any) => char.id === characterId)) {
         return res.status(403).json({ message: "Forbidden" });
       }
