@@ -398,14 +398,16 @@ export async function registerRoutes(app: Express): Promise<void> {
     }
   });
 
-  // Chat kategorie (zatím prázdné)
+  // Chat kategorie (vrací data z databáze)
   app.get("/api/chat/categories", requireAuth, async (_req, res) => {
-    res.json([]);
+    const categories = await storage.getChatCategoriesWithChildren();
+    res.json(categories);
   });
 
-  // Chat místnosti (zatím prázdné)
+  // Chat místnosti (vrací data z databáze)
   app.get("/api/chat/rooms", requireAuth, async (_req, res) => {
-    res.json([]);
+    const rooms = await storage.getAllChatRooms();
+    res.json(rooms);
   });
 
   // Character inventory routes

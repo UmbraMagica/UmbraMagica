@@ -307,7 +307,7 @@ export function AddInventoryItemDialog({ characterId }: { characterId: number })
   );
 }
 
-function InventoryItemCard({ item, canEdit }: { item: InventoryItem; canEdit: boolean }) {
+function InventoryItemCard({ item, canEdit, onDelete }: { item: InventoryItem; canEdit: boolean; onDelete?: () => void }) {
   const getRarityStyle = (rarity?: string) => {
     const rarityOption = RARITY_OPTIONS.find(opt => opt.value === rarity);
     return rarityOption?.color || "bg-gray-100 text-gray-800 border-gray-200";
@@ -349,7 +349,7 @@ function InventoryItemCard({ item, canEdit }: { item: InventoryItem; canEdit: bo
               <Button variant="ghost" size="sm">
                 <Edit className="h-4 w-4" />
               </Button>
-              <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive">
+              <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive" onClick={onDelete}>
                 <Trash2 className="h-4 w-4" />
               </Button>
             </div>
@@ -419,6 +419,14 @@ const CharacterInventoryPage = () => {
     console.log("[DEBUG][inventory]", inventory);
     console.log("[DEBUG][inventoryError]", inventoryError);
   }, [characterId, inventoryData, inventory, inventoryError]);
+
+  const queryClient = useQueryClient();
+  const deleteMutation = useMutation({
+    mutationFn: (itemId: number) => apiRequest("DELETE", `/api/inventory/${itemId}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/characters/${characterId}/inventory`] });
+    },
+  });
 
   if (!characterId) {
     return (
@@ -583,7 +591,12 @@ const CharacterInventoryPage = () => {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {items.map((item) => (
-                  <InventoryItemCard key={item.id} item={item} canEdit={canEdit || false} />
+                  <InventoryItemCard
+                    key={item.id}
+                    item={item}
+                    canEdit={canEdit}
+                    onDelete={() => deleteMutation.mutate(item.id)}
+                  />
                 ))}
               </div>
               {Object.keys(groupedInventory).indexOf(type) < Object.keys(groupedInventory).length - 1 && (
