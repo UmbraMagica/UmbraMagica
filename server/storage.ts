@@ -601,6 +601,28 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
+  async getAllChatRooms(userRole: string = 'user'): Promise<ChatRoom[]> {
+    let query = supabase.from('chat_rooms').select('*').order('sort_order');
+    
+    const { data, error } = await query;
+    if (error) {
+      console.error('[DEBUG][getAllChatRooms][error]', error);
+      return [];
+    }
+    
+    if (userRole !== 'admin') {
+      // Filtruj pouze veřejné a netestovací místnosti pro běžné uživatele
+      const filtered = (data || []).filter((room: any) => 
+        room.is_public !== false && room.is_test !== true
+      );
+      console.log('[DEBUG][getAllChatRooms][filtered]', filtered);
+      return toCamel(filtered);
+    }
+    
+    console.log('[DEBUG][getAllChatRooms][data]', data);
+    return toCamel(data || []);
+  }
+
   // Message operations (keeping existing)
   async getMessage(id: number): Promise<Message | undefined> {
     const { data, error } = await supabase.from('messages').select('*').eq('id', id).single();

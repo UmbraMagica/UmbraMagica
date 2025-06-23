@@ -32,11 +32,24 @@ export default function ChatList() {
     queryKey: ["/api/chat/rooms"],
     queryFn: async () => {
       const result = await apiRequest("GET", "/api/chat/rooms");
+      console.log("Chat rooms API response:", result);
       return Array.isArray(result) ? result : [];
     },
     enabled: !!user,
   });
   const rooms = Array.isArray(roomsRaw) ? roomsRaw : [];
+
+  // Fetch chat categories
+  const { data: categoriesRaw } = useQuery({
+    queryKey: ["/api/chat/categories"],
+    queryFn: async () => {
+      const result = await apiRequest("GET", "/api/chat/categories");
+      console.log("Chat categories API response:", result);
+      return Array.isArray(result) ? result : [];
+    },
+    enabled: !!user,
+  });
+  const categories = Array.isArray(categoriesRaw) ? categoriesRaw : [];
 
   if (error) {
     return <div className="text-red-500 p-4">Chyba při načítání místností: {error.message || String(error)}</div>;
@@ -129,6 +142,36 @@ export default function ChatList() {
           Vyberte chatovací místnost pro interakci s ostatními hráči
         </p>
       </div>
+
+      {/* Debug informace */}
+      <div className="mb-4 p-4 bg-muted rounded-lg">
+        <h3 className="font-medium mb-2">Debug Info:</h3>
+        <p>Počet místností: {rooms.length}</p>
+        <p>Počet kategorií: {categories.length}</p>
+        <p>Uživatelská role: {user?.role}</p>
+        <p>Loading: {isLoading ? 'Ano' : 'Ne'}</p>
+        {error && <p className="text-red-500">Chyba: {String(error)}</p>}
+      </div>
+
+      {/* Zobrazení kategorií */}
+      {categories.length > 0 && (
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold mb-4">Kategorie</h2>
+          <div className="grid gap-4">
+            {categories.map((category: any) => (
+              <div key={category.id} className="p-4 border rounded-lg">
+                <h3 className="font-medium">{category.name}</h3>
+                <p className="text-sm text-muted-foreground">{category.description}</p>
+                {category.chatRooms && category.chatRooms.length > 0 && (
+                  <div className="mt-2">
+                    <p className="text-xs">Místnosti v kategorii: {category.chatRooms.length}</p>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="grid gap-6 md:grid-cols-2">
         {rooms.map((room) => (

@@ -401,14 +401,18 @@ export async function registerRoutes(app: Express): Promise<void> {
   // Chat kategorie (vrací data z databáze)
   app.get("/api/chat/categories", requireAuth, async (req, res) => {
     const userRole = req.user?.role || 'user';
+    console.log(`[CHAT][CATEGORIES] User ${req.user?.username} (${userRole}) requesting categories`);
     const categories = await storage.getChatCategoriesWithChildren(userRole);
+    console.log(`[CHAT][CATEGORIES] Returning ${categories.length} categories`);
     res.json(categories);
   });
 
   // Chat místnosti (vrací data z databáze)
   app.get("/api/chat/rooms", requireAuth, async (req, res) => {
     const userRole = req.user?.role || 'user';
+    console.log(`[CHAT][ROOMS] User ${req.user?.username} (${userRole}) requesting rooms`);
     const rooms = await storage.getAllChatRooms(userRole);
+    console.log(`[CHAT][ROOMS] Returning ${rooms.length} rooms`);
     res.json(rooms);
   });
 
