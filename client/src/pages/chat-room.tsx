@@ -273,6 +273,7 @@ export default function ChatRoom() {
       queryClient.invalidateQueries({ queryKey: ["/api/chat/rooms", currentRoomId, "messages"] });
     },
     onError: (error) => {
+      console.error('Chyba při odesílání:', error);
       toast({
         title: "Chyba při odesílání zprávy",
         description: error.message,
@@ -309,6 +310,7 @@ export default function ChatRoom() {
       queryClient.invalidateQueries({ queryKey: ["/api/chat/rooms", currentRoomId, "messages"] });
     },
     onError: (error) => {
+      console.error('Chyba při odesílání:', error);
       toast({
         title: "Chyba při odesílání zprávy",
         description: error.message,
@@ -541,26 +543,16 @@ export default function ChatRoom() {
       });
       return;
     }
-
     if (!currentRoomId) {
       toast({
-        title: "Chyba", 
+        title: "Chyba",
         description: "Neplatná místnost",
         variant: "destructive",
       });
       return;
     }
-
-    console.log('Sending message:', { 
-      isNarratorMode, 
-      selectedCharacter: selectedCharacter ? { id: selectedCharacter.id, name: getCharacterName(selectedCharacter) } : null,
-      canSendAsNarrator: user?.role === 'admin' || user?.canNarrate,
-      messageInput: messageInput.trim().substring(0, 50) + '...'
-    });
-
     if (isNarratorMode) {
-      // Vypravěčská zpráva
-      if (!(user?.role === 'admin' || user?.canNarrate)) {
+      if (!canSendAsNarrator) {
         toast({
           title: "Chyba",
           description: "Nemáte oprávnění k vypravování",
@@ -570,7 +562,6 @@ export default function ChatRoom() {
       }
       sendNarratorMessageMutation.mutate(messageInput.trim());
     } else {
-      // Běžná zpráva
       if (!selectedCharacter || !selectedCharacter.id) {
         toast({
           title: "Chyba",
@@ -579,7 +570,6 @@ export default function ChatRoom() {
         });
         return;
       }
-
       if (selectedCharacter.deathDate) {
         toast({
           title: "Chyba",
@@ -588,7 +578,10 @@ export default function ChatRoom() {
         });
         return;
       }
-
+      console.log('Odesílám zprávu:', {
+        content: messageInput.trim(),
+        characterId: selectedCharacter.id,
+      });
       sendMessageMutation.mutate({
         content: messageInput.trim(),
         characterId: selectedCharacter.id,
@@ -721,12 +714,14 @@ export default function ChatRoom() {
                 <p className="text-muted-foreground">Žádné zprávy v této místnosti.</p>
               </div>
             ) : (
-              sortedMessages.filter(m => m && m.character && typeof m.character.firstName === 'string').map((message) => (
+              sortedMessages.map((message) => (
                 <div key={message.id} className="flex gap-3 items-start">
                   <Avatar className="w-10 h-10 flex-shrink-0">
-                    <AvatarImage src={message.character?.avatar || ""} />
+                    <AvatarImage src={message.character?.avatar || undefined} />
                     <AvatarFallback className="bg-primary/10 text-primary font-semibold">
-                      {message.character?.firstName?.charAt(0) || 'N'}{message.character?.lastName?.charAt(0) || 'P'}
+                      {message.character?.firstName?.charAt(0)
+                        || (message.messageType === 'narrator' ? 'V' : 'S')}
+                      {message.character?.lastName?.charAt(0) || ''}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1 min-w-0">
@@ -734,7 +729,7 @@ export default function ChatRoom() {
                       <span className="font-semibold text-foreground">
                         {message.character?.firstName
                           ? `${message.character.firstName}${message.character.middleName ? ' ' + message.character.middleName : ''} ${message.character.lastName}`.trim()
-                          : 'Neznámá postava'}
+                          : (message.messageType === 'narrator' ? 'Vypravěč' : 'Systém')}
                       </span>
                       <span className="text-xs text-muted-foreground">
                         {formatMessageTime(message.createdAt)}
@@ -756,7 +751,7 @@ export default function ChatRoom() {
           {/* První řádek: Avatar + pole pro zprávu + tlačítko odeslat */}
           <div className="flex items-center gap-3">
             <Avatar className="w-8 h-8 flex-shrink-0">
-              <AvatarImage src={selectedCharacter?.avatar || ""} />
+              <AvatarImage src={selectedCharacter?.avatar || undefined} />
               <AvatarFallback className="bg-primary/10 text-primary font-semibold text-xs">
                 {selectedCharacter ? getCharacterInitials(selectedCharacter) : (isNarratorMode ? 'V' : 'NP')}
               </AvatarFallback>
