@@ -1127,9 +1127,9 @@ export default function ChatRoom() {
                               }
                             }}
                           >
-                            {userCharacters.map((character: any) => (
-                              <option key={character.id} value={character.id}>
-                                {character.firstName} {character.lastName}
+                            {userCharacters.filter(c => c && typeof c.firstName === 'string').map(char => (
+                              <option key={char.id} value={char.id}>
+                                {char.firstName}{char.middleName ? ' ' + char.middleName : ''} {char.lastName}
                               </option>
                             ))}
                           </select>
@@ -1235,9 +1235,9 @@ export default function ChatRoom() {
                       }}
                       className="text-sm border rounded px-2 py-1 bg-background"
                     >
-                      {userCharacters.map((character: any) => (
-                        <option key={character.id} value={character.id}>
-                          {character.firstName} {character.lastName}
+                      {userCharacters.filter(c => c && typeof c.firstName === 'string').map(char => (
+                        <option key={char.id} value={char.id}>
+                          {char.firstName}{char.middleName ? ' ' + char.middleName : ''} {char.lastName}
                         </option>
                       ))}
                     </select>

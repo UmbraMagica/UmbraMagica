@@ -721,18 +721,20 @@ export default function ChatRoom() {
                 <p className="text-muted-foreground">Žádné zprávy v této místnosti.</p>
               </div>
             ) : (
-              sortedMessages.map((message) => (
+              sortedMessages.filter(m => m && m.character && typeof m.character.firstName === 'string').map((message) => (
                 <div key={message.id} className="flex gap-3 items-start">
                   <Avatar className="w-10 h-10 flex-shrink-0">
                     <AvatarImage src={message.character?.avatar || ""} />
                     <AvatarFallback className="bg-primary/10 text-primary font-semibold">
-                      {getCharacterInitials(message)}
+                      {message.character?.firstName?.charAt(0) || 'N'}{message.character?.lastName?.charAt(0) || 'P'}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-baseline gap-2 mb-1">
                       <span className="font-semibold text-foreground">
-                        {message.character.firstName} {message.character.middleName ? message.character.middleName + ' ' : ''}{message.character.lastName}
+                        {message.character?.firstName
+                          ? `${message.character.firstName}${message.character.middleName ? ' ' + message.character.middleName : ''} ${message.character.lastName}`.trim()
+                          : 'Neznámá postava'}
                       </span>
                       <span className="text-xs text-muted-foreground">
                         {formatMessageTime(message.createdAt)}
@@ -806,9 +808,9 @@ export default function ChatRoom() {
                   <SelectValue placeholder={userCharacters.length === 0 ? "Žádné postavy" : "Vyber postavu"} />
                 </SelectTrigger>
                 <SelectContent>
-                  {userCharacters.map(char => (
+                  {userCharacters.filter(c => c && typeof c.firstName === 'string').map(char => (
                     <SelectItem key={char.id} value={char.id.toString()}>
-                      {getCharacterName(char)}
+                      {char.firstName}{char.middleName ? ' ' + char.middleName : ''} {char.lastName}
                     </SelectItem>
                   ))}
                 </SelectContent>
