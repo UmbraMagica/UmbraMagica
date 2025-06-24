@@ -1,0 +1,45 @@
+né starými pergameny a pohyblivými ilustracemi, které se líně přeskupují. Ve vzduchu se vznáší směs vůní – pražených kávových zrn, čerstvých bylin a slabého náznaku kouřové magie. Po místnosti se rozléhá tiché šumění – šeptající stránky knih, tlumený rozhovor čarodějů a jemné cinkání porcelánu. Stoly jsou rozestavěné nepravidelně, každý trochu jiný, jako by si žil vlastním životem. Nad některými se vznášejí drobné lucerny, které se naklání ke svým hostům, nad jinými se tetelí sotva znatelná mlha. V rohu místnosti je ukrytý výklenek s velkým oknem, které neukazuje ven, ale do jiné části světa – občas v něm zasvítí vzdálené hvězdy nebo se mihne silueta někoho, kdo zde možná kdysi sedával. Čarokáva není jen obyčejná kavárna. Je to místo setkání těch, kteří hledají odpovědi, i těch, kteří se chtějí ztratit. Někteří návštěvníci se tu zdrží jen na chvíli, jiní mají pocit, že tu seděli celé hodiny, přestože ručičky starožitných hodin nad pultem se téměř nepohnuly. A možná právě to je na Čarokávě to kouzelné – že nikdy nevíš, kolik času v ní vlastně strávíš.\r\n',
+    password: null
+  },
+  {
+    id: 12,
+    name: 'Katakomby',
+    description: 'Podzemní bludiště pod Londýnem',
+    is_public: true,
+    created_at: '2025-05-29T18:28:18.073',
+    category_id: 6,
+    sort_order: 21,
+    long_description: 'Jenom stíny šeptají, co zde bude.',
+    password: null
+  }
+]
+[CHAT][ROOMS] Returning 30 rooms
+12:47:48 PM [express] GET /api/chat/rooms 304 in 712ms :: [{"id":37,"name":"Bažina","description":"Sí…
+[DEBUG] POST /api/chat/narrator-message
+Decoded JWT user: {
+  id: 5,
+  username: 'Casey',
+  role: 'admin',
+  iat: 1750754858,
+  exp: 1751359658
+}
+Database error in createChatMessage: {
+  code: '23503',
+  details: 'Key (character_id)=(0) is not present in table "characters".',
+  hint: null,
+  message: 'insert or update on table "messages" violates foreign key constraint "messages_character_id_fkey"'
+}
+Error creating chat message: {
+  code: '23503',
+  details: 'Key (character_id)=(0) is not present in table "characters".',
+  hint: null,
+  message: 'insert or update on table "messages" violates foreign key constraint "messages_character_id_fkey"'
+}
+Error sending narrator message: {
+  code: '23503',
+  details: 'Key (character_id)=(0) is not present in table "characters".',
+  hint: null,
+  message: 'insert or update on table "messages" violates foreign key constraint "messages_character_id_fkey"'
+}
+12:50:14 PM [express] POST /api/chat/narrator-message 500 in 662ms :: {"message":"Failed to send narr…
+[DEBUG] GET /assets/index-C8x4iXXK.css
