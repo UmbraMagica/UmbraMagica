@@ -50,16 +50,10 @@ export default function ChatRoom() {
   const [ws, setWs] = useState<WebSocket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { selectedCharacter, changeCharacter } = useSelectedCharacter();
+  const { selectedCharacter, changeCharacter, userCharacters, isLoading: charactersLoading } = useSelectedCharacter();
   const [currentChatCharacter, setCurrentChatCharacter] = useState(selectedCharacter);
   
   const currentRoomId = roomId ? parseInt(roomId) : null;
-
-  // Fetch user's characters for chat selection
-  const { data: userCharacters = [] } = useQuery({
-    queryKey: ["/api/characters"],
-    enabled: !!user,
-  });
   
   // Debug user data
   console.log("User data:", user);
@@ -328,26 +322,22 @@ export default function ChatRoom() {
   // Filter available characters
   const availableCharacters = userCharacters.filter(char => !char.deathDate && !char.isSystem);
 
-  // Update current chat character when selectedCharacter or userCharacters change
+  // Update current chat character when selectedCharacter changes
   useEffect(() => {
     console.log("Character effect - selectedCharacter:", selectedCharacter, "availableCharacters:", availableCharacters.length);
     
-    if (selectedCharacter && availableCharacters.some(char => char.id === selectedCharacter.id)) {
-      // Use selected character if it's available
+    if (selectedCharacter) {
       setCurrentChatCharacter(selectedCharacter);
     } else if (availableCharacters.length > 0) {
-      // Use first available character if no valid selection
+      // Auto-select first available character if none selected
       const firstChar = availableCharacters[0];
       console.log("Auto-selecting first character:", firstChar);
       setCurrentChatCharacter(firstChar);
-      if (changeCharacter) {
-        changeCharacter(firstChar);
-      }
+      changeCharacter(firstChar);
     } else {
-      // No characters available
       setCurrentChatCharacter(null);
     }
-  }, [selectedCharacter, availableCharacters, changeCharacter]);
+  }, [selectedCharacter, availableCharacters.length, changeCharacter]);
 
   const handleSendMessage = () => {
     if (!messageInput.trim() || !currentRoomId || !currentChatCharacter) return;
@@ -396,6 +386,18 @@ export default function ChatRoom() {
         <Card>
           <CardContent className="p-6">
             <p className="text-muted-foreground">Pro přístup k chatu se musíte přihlásit.</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (charactersLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Card>
+          <CardContent className="p-6">
+            <p className="text-muted-foreground">Načítání postav...</p>
           </CardContent>
         </Card>
       </div>
