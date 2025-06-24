@@ -479,9 +479,9 @@ export default function ChatRoom() {
   return (
     <div className="flex flex-row h-[calc(100vh-4rem)] w-full">
       {/* Levý sloupec: Chat */}
-      <div className="flex flex-col flex-1 max-w-3xl mx-auto p-4">
+      <div className="flex flex-col flex-1 overflow-hidden">
         {/* Horní lišta */}
-        <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center justify-between mb-2 px-6 pt-4">
           <div className="flex items-center gap-2">
             <Button variant="ghost" size="sm" onClick={() => setLocation('/chat')}>
               <ArrowLeft className="h-4 w-4 mr-2" />
@@ -535,7 +535,7 @@ export default function ChatRoom() {
           </div>
         </ScrollArea>
         {/* Input, avatar a Select pro výběr postavy */}
-        <div className="flex items-end gap-3 mt-2">
+        <div className="flex items-end gap-3 mt-2 px-6 pb-4">
           <Avatar className="w-10 h-10 flex-shrink-0">
             <AvatarImage src="" />
             <AvatarFallback className="bg-primary/10 text-primary font-semibold">
@@ -584,7 +584,7 @@ export default function ChatRoom() {
           </Button>
         </div>
         {/* Tlačítka pod inputem */}
-        <div className="flex gap-2 mt-2">
+        <div className="flex gap-2 mt-2 px-6 pb-4">
           <Button variant="secondary" size="sm" onClick={() => diceRollMutation.mutate()} disabled={!selectedCharacter}>
             <Dices className="h-4 w-4 mr-1" /> Kostka
           </Button>
@@ -595,18 +595,23 @@ export default function ChatRoom() {
           {/* ... případně další tlačítka ... */}
         </div>
       </div>
-
-      {/* Right Sidebar - Room Description */}
-      {currentRoom.longDescription && (
-        <div className="w-80 border-l bg-muted/20 overflow-y-auto">
-          <div className="p-4">
-            <h3 className="font-semibold text-sm mb-3">Popis místnosti</h3>
-            <div className="text-sm text-muted-foreground whitespace-pre-wrap leading-relaxed">
-              {currentRoom.longDescription}
-            </div>
+      {/* Pravý panel: Popis místnosti a tlačítko Upravit pro admina */}
+      <div className="w-80 border-l bg-muted/20 overflow-y-auto flex flex-col">
+        <div className="flex items-center justify-between p-4 border-b">
+          <h3 className="font-semibold text-sm mb-0">Informace o místnosti</h3>
+          {user?.role === 'admin' && (
+            <Button variant="outline" size="sm" onClick={() => {/* logika pro úpravu popisu */}}>
+              Upravit
+            </Button>
+          )}
+        </div>
+        <div className="p-4">
+          <h4 className="font-semibold text-sm mb-3">Popis místnosti</h4>
+          <div className="text-sm text-muted-foreground whitespace-pre-wrap leading-relaxed">
+            {currentRoom.longDescription}
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }
