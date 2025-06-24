@@ -50,10 +50,7 @@ export default function ChatRoom() {
   const [ws, setWs] = useState<WebSocket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { selectedCharacter, changeCharacter, userCharacters, isLoading: charactersLoading } = useSelectedCharacter();
-  const [currentChatCharacter, setCurrentChatCharacter] = useState(selectedCharacter);
-  const [characters, setCharacters] = useState<any[]>(user?.characters || []);
-  const canSendAsNarrator = user?.role === 'admin' || user?.role === 'narrator' || user?.canNarrate;
+  const { selectedCharacter, changeCharacter, userCharacters, isLoading: charactersLoading, canSendAsNarrator } = useSelectedCharacter();
   
   const currentRoomId = roomId ? parseInt(roomId) : null;
   
@@ -61,7 +58,6 @@ export default function ChatRoom() {
   console.log("User data:", user);
   console.log("User characters from query:", userCharacters);
   console.log("Selected character:", selectedCharacter);
-  console.log("Current chat character:", currentChatCharacter);
 
   // Fetch current room info
   const { data: rooms = [] } = useQuery<ChatRoom[]>({
@@ -335,21 +331,16 @@ export default function ChatRoom() {
     console.log("Character effect - selectedCharacter:", selectedCharacter, "availableCharacters:", availableCharacters.length);
     
     if (selectedCharacter) {
-      setCurrentChatCharacter(selectedCharacter);
+      changeCharacter(selectedCharacter);
     } else if (availableCharacters.length > 0) {
       // Auto-select first available character if none selected
       const firstChar = availableCharacters[0];
       console.log("Auto-selecting first character:", firstChar);
-      setCurrentChatCharacter(firstChar);
       changeCharacter(firstChar);
     } else {
-      setCurrentChatCharacter(null);
+      changeCharacter(null);
     }
   }, [selectedCharacter, availableCharacters.length, changeCharacter]);
-
-  useEffect(() => {
-    setCharacters(user?.characters || []);
-  }, [user]);
 
   // 1. Výběr postavy per chat/okno
   useEffect(() => {
@@ -526,24 +517,22 @@ export default function ChatRoom() {
             
             {/* Výběr postavy/role */}
             <div className="flex items-center gap-2">
-              {availableOptions.length <= 1 ? (
-                <p className="text-sm text-muted-foreground">
-                  Píšeš jako: {availableOptions[0]?.name || "neznámá postava"}
-                </p>
-              ) : (
-                <Select onValueChange={handleSelectChange} value={selectedCharacter?.id?.toString() || ''}>
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Vyber postavu" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {availableOptions.map((char) => (
+              <Select onValueChange={handleSelectChange} value={selectedCharacter?.id?.toString() || ''}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Vyber postavu" />
+                </SelectTrigger>
+                <SelectContent>
+                  {(canSendAsNarrator ? [
+                    <SelectItem key={0} value="0">Vypravěč</SelectItem>
+                  ] : []).concat(
+                    userCharacters.map((char) => (
                       <SelectItem key={char.id} value={char.id.toString()}>
-                        {char.name}
+                        {char.firstName + (char.lastName ? ' ' + char.lastName : '')}
                       </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
+                    ))
+                  )}
+                </SelectContent>
+              </Select>
             </div>
             {/* Konec výběru postavy/role */}
             <div className="flex items-center gap-2 ml-4">
@@ -615,11 +604,11 @@ export default function ChatRoom() {
             <Avatar className="w-10 h-10 flex-shrink-0">
               <AvatarImage src="" />
               <AvatarFallback className={`font-semibold ${
-                currentChatCharacter?.id === 'narrator' 
+                selectedCharacter?.id === 'narrator' 
                   ? `text-white` 
                   : 'bg-secondary/50 text-secondary-foreground'
               }`} style={{
-                backgroundColor: currentChatCharacter?.id === 'narrator' ? (
+                backgroundColor: selectedCharacter?.id === 'narrator' ? (
                   user?.narratorColor === 'yellow' ? '#fbbf24' :
                   user?.narratorColor === 'red' ? '#ef4444' :
                   user?.narratorColor === 'blue' ? '#3b82f6' :
@@ -628,9 +617,9 @@ export default function ChatRoom() {
                   '#8b5cf6'
                 ) : undefined
               }}>
-                {currentChatCharacter?.id === 'narrator' ? 'V' :
-                 currentChatCharacter ? 
-                  `${currentChatCharacter.firstName.charAt(0)}${currentChatCharacter.lastName.charAt(0)}` : 
+                {selectedCharacter?.id === 'narrator' ? 'V' :
+                 selectedCharacter ? 
+                  `${selectedCharacter.firstName.charAt(0)}${selectedCharacter.lastName.charAt(0)}` : 
                   getCurrentUserInitials()}
               </AvatarFallback>
             </Avatar>

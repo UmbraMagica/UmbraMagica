@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 
@@ -10,6 +9,7 @@ interface Character {
   deathDate?: string;
   isSystem?: boolean;
   isActive?: boolean;
+  name?: string;
 }
 
 interface SelectedCharacterContextType {
@@ -17,11 +17,12 @@ interface SelectedCharacterContextType {
   userCharacters: Character[];
   changeCharacter: (char: Character) => void;
   isLoading: boolean;
+  canSendAsNarrator: boolean;
 }
 
 const SelectedCharacterContext = createContext<SelectedCharacterContextType | null>(null);
 
-export function SelectedCharacterProvider({ children }: { children: React.ReactNode }) {
+export function SelectedCharacterProvider({ children, roomId, canSendAsNarrator }: { children: React.ReactNode, roomId: string, canSendAsNarrator: boolean }) {
   const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(null);
 
   // Fetch user's characters
@@ -31,44 +32,43 @@ export function SelectedCharacterProvider({ children }: { children: React.ReactN
   });
 
   useEffect(() => {
-    console.log("Context: userCharacters updated:", userCharacters.length);
-    
+    if (!roomId) return;
     if (userCharacters && userCharacters.length > 0) {
       const availableChars = userCharacters.filter((c: Character) => !c.deathDate && !c.isSystem);
-      
-      if (availableChars.length === 0) {
+      let options = [...availableChars];
+      if (canSendAsNarrator) {
+        options = [{ id: 0, firstName: 'Vypravěč', lastName: '', name: 'Vypravěč' }, ...options];
+      }
+      if (options.length === 0) {
         setSelectedCharacter(null);
-        localStorage.removeItem("selectedCharacterId");
+        localStorage.removeItem(`selectedCharacterId_${roomId}`);
         return;
       }
-
-      const savedId = localStorage.getItem("selectedCharacterId");
+      const savedId = localStorage.getItem(`selectedCharacterId_${roomId}`);
       let char: Character | null = null;
-      
       if (savedId) {
-        char = availableChars.find((c: Character) => c.id === parseInt(savedId)) || null;
+        if (savedId === '0' && canSendAsNarrator) {
+          char = { id: 0, firstName: 'Vypravěč', lastName: '', name: 'Vypravěč' };
+        } else {
+          char = options.find((c: Character) => c.id === parseInt(savedId)) || null;
+        }
       }
-      
       if (!char) {
-        char = availableChars.find((c: Character) => c.isActive) || availableChars[0];
+        char = options.find((c: Character) => c.isActive) || options[0];
       }
-      
       if (char && char.id !== selectedCharacter?.id) {
-        console.log("Context: Setting character:", char);
         setSelectedCharacter(char);
-        localStorage.setItem("selectedCharacterId", char.id.toString());
+        localStorage.setItem(`selectedCharacterId_${roomId}`, char.id.toString());
       }
     } else if (userCharacters.length === 0 && !isLoading) {
-      // No characters available
       setSelectedCharacter(null);
-      localStorage.removeItem("selectedCharacterId");
+      if (roomId) localStorage.removeItem(`selectedCharacterId_${roomId}`);
     }
-  }, [userCharacters, isLoading]);
+  }, [userCharacters, isLoading, roomId, canSendAsNarrator]);
 
   const changeCharacter = (char: Character) => {
-    console.log("Context: Changing character to:", char);
     setSelectedCharacter(char);
-    localStorage.setItem("selectedCharacterId", char.id.toString());
+    if (roomId) localStorage.setItem(`selectedCharacterId_${roomId}`, char.id.toString());
   };
 
   const contextValue: SelectedCharacterContextType = {
@@ -76,6 +76,7 @@ export function SelectedCharacterProvider({ children }: { children: React.ReactN
     userCharacters,
     changeCharacter,
     isLoading,
+    canSendAsNarrator,
   };
 
   return (
