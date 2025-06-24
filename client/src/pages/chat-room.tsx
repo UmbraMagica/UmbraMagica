@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams, useLocation } from "wouter";
@@ -120,10 +121,12 @@ export default function ChatRoom() {
 
   const currentRoomId = roomId ? parseInt(roomId) : null;
 
-  // Use characters from useAuth instead of separate query
-  const { user, isLoading } = useAuth();
+  // Use characters from useAuth
+  const { user, isLoading: authLoading } = useAuth();
+  
+  // Safe character processing
   const userCharactersRaw = user?.characters || [];
-  const charactersLoading = isLoading;
+  const charactersLoading = authLoading;
 
   // Process user characters - only alive, non-system characters that belong to the current user
   const userCharacters = Array.isArray(userCharactersRaw) ? 
@@ -146,17 +149,21 @@ export default function ChatRoom() {
     }) : [];
 
   // Fetch current room info
-  const { data: rooms = [] } = useQuery<ChatRoom[]>({
+  const { data: rooms = [], isLoading: roomsLoading } = useQuery<ChatRoom[]>({
     queryKey: ["/api/chat/rooms"],
     enabled: !!user,
+    retry: 3,
+    staleTime: 30000,
   });
 
   const currentRoom = rooms.find(r => r.id === currentRoomId);
 
   // Fetch messages for current room
-  const { data: messages = [] } = useQuery<ChatMessage[]>({
+  const { data: messages = [], isLoading: messagesLoading } = useQuery<ChatMessage[]>({
     queryKey: ["/api/chat/rooms", currentRoomId, "messages"],
-    enabled: !!currentRoomId,
+    enabled: !!currentRoomId && !!user,
+    retry: 3,
+    staleTime: 10000,
   });
 
   // Auto-select first character when characters load, or enable narrator mode for admin without characters
@@ -168,7 +175,7 @@ export default function ChatRoom() {
       console.log('Admin has no own characters, enabling narrator mode');
       setIsNarratorMode(true);
     }
-  }, [userCharacters, selectedCharacter, charactersLoading, isNarratorMode, canSendAsNarrator]);
+  }, [userCharacters, selectedCharacter, charactersLoading, isNarratorMode, user?.role]);
 
   // Initialize WebSocket connection
   useEffect(() => {
@@ -544,13 +551,13 @@ export default function ChatRoom() {
     console.log('Sending message:', { 
       isNarratorMode, 
       selectedCharacter: selectedCharacter ? { id: selectedCharacter.id, name: getCharacterName(selectedCharacter) } : null,
-      canSendAsNarrator,
+      canSendAsNarrator: user?.role === 'admin' || user?.canNarrate,
       messageInput: messageInput.trim().substring(0, 50) + '...'
     });
 
     if (isNarratorMode) {
       // Vypravěčská zpráva
-      if (!canSendAsNarrator) {
+      if (!(user?.role === 'admin' || user?.canNarrate)) {
         toast({
           title: "Chyba",
           description: "Nemáte oprávnění k vypravování",
@@ -593,24 +600,26 @@ export default function ChatRoom() {
     return format(new Date(dateString), "dd.MM.yyyy HH:mm");
   };
 
-  if (!user) {
+  // Loading states
+  if (authLoading || roomsLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Card>
           <CardContent className="p-6">
-            <p className="text-muted-foreground">Pro přístup k chatu se musíte přihlásit.</p>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-muted-foreground">Načítání...</p>
           </CardContent>
         </Card>
       </div>
     );
   }
 
-  if (charactersLoading) {
+  if (!user) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Card>
           <CardContent className="p-6">
-            <p className="text-muted-foreground">Načítání postav...</p>
+            <p className="text-muted-foreground">Pro přístup k chatu se musíte přihlásit.</p>
           </CardContent>
         </Card>
       </div>
@@ -674,53 +683,70 @@ export default function ChatRoom() {
               <Download className="h-4 w-4 mr-2" />
               Stáhnout
             </Button>
-            <Button variant="outline" size="sm" onClick={() => currentRoomId && archiveMessagesMutation.mutate(currentRoomId)}>
-              <Archive className="h-4 w-4 mr-2" />
-              Archivovat
-            </Button>
-            <Button variant="destructive" size="sm" onClick={() => {/* zde přidej logiku pro archivovat a smazat */}}>
-              <Trash2 className="h-4 w-4 mr-2" />
-              Archivovat a smazat
-            </Button>
+            {user?.role === 'admin' && (
+              <>
+                <Button variant="outline" size="sm" onClick={() => currentRoomId && archiveMessagesMutation.mutate(currentRoomId)}>
+                  <Archive className="h-4 w-4 mr-2" />
+                  Archivovat
+                </Button>
+                <Button variant="destructive" size="sm" onClick={() => {/* zde přidej logiku pro archivovat a smazat */}}>
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Archivovat a smazat
+                </Button>
+              </>
+            )}
           </div>
         </div>
+        
         {/* Chat zprávy */}
-        <ScrollArea className="flex-1 bg-muted/10 rounded-lg p-4 mb-2">
+        <ScrollArea className="flex-1 bg-muted/10 rounded-lg p-4 mb-2 mx-6">
           <div className="space-y-4">
-            {sortedMessages.map((message) => (
-              <div key={message.id} className="flex gap-3 items-start">
-                <Avatar className="w-10 h-10 flex-shrink-0">
-                  <AvatarImage src={message.character?.avatar || ""} />
-                  <AvatarFallback className="bg-primary/10 text-primary font-semibold">
-                    {getCharacterInitials(message)}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-baseline gap-2 mb-1">
-                    <span className="font-semibold text-foreground">
-                      {getCharacterName(message)}
-                    </span>
-                    <span className="text-xs text-muted-foreground">
-                      {formatMessageTime(message.createdAt)}
-                    </span>
-                  </div>
-                  <div className="bg-muted/30 rounded-lg p-3">
-                    <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
+            {messagesLoading ? (
+              <div className="text-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+                <p className="text-muted-foreground">Načítání zpráv...</p>
+              </div>
+            ) : sortedMessages.length === 0 ? (
+              <div className="text-center py-8">
+                <p className="text-muted-foreground">Žádné zprávy v této místnosti.</p>
+              </div>
+            ) : (
+              sortedMessages.map((message) => (
+                <div key={message.id} className="flex gap-3 items-start">
+                  <Avatar className="w-10 h-10 flex-shrink-0">
+                    <AvatarImage src={message.character?.avatar || ""} />
+                    <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+                      {getCharacterInitials(message)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-baseline gap-2 mb-1">
+                      <span className="font-semibold text-foreground">
+                        {getCharacterName(message)}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        {formatMessageTime(message.createdAt)}
+                      </span>
+                    </div>
+                    <div className="bg-muted/30 rounded-lg p-3">
+                      <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
             <div ref={messagesEndRef} />
           </div>
         </ScrollArea>
+        
         {/* Kompaktní dolní lišta */}
-        <div className="flex flex-col gap-2 px-6 pb-0">
+        <div className="flex flex-col gap-2 px-6 pb-4">
           {/* První řádek: Avatar + pole pro zprávu + tlačítko odeslat */}
           <div className="flex items-center gap-3">
             <Avatar className="w-8 h-8 flex-shrink-0">
               <AvatarImage src={selectedCharacter?.avatar || ""} />
               <AvatarFallback className="bg-primary/10 text-primary font-semibold text-xs">
-                {selectedCharacter ? getCharacterInitials(selectedCharacter) : 'NP'}
+                {selectedCharacter ? getCharacterInitials(selectedCharacter) : (isNarratorMode ? 'V' : 'NP')}
               </AvatarFallback>
             </Avatar>
             <div className="flex-1 relative">
@@ -755,66 +781,72 @@ export default function ChatRoom() {
 
           {/* Druhý řádek: Výběr postavy a akční tlačítka */}
           <div className="flex gap-2 items-center">
-            <Select
-              value={selectedCharacter?.id?.toString() || ''}
-              onValueChange={val => {
-                if (val) {
-                  const char = userCharacters.find(c => c.id.toString() === val);
-                  if (char) setSelectedCharacter(char);
-                }
-              }}
-              disabled={userCharacters.length === 0}
-            >
-              <SelectTrigger className="w-[180px] h-8">
-                <SelectValue placeholder={userCharacters.length === 0 ? "Žádné postavy" : "Vyber postavu"} />
-              </SelectTrigger>
-              <SelectContent>
-                {userCharacters.map(char => (
-                  <SelectItem key={char.id} value={char.id.toString()}>
-                    {getCharacterName(char)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            {!isNarratorMode && (
+              <Select
+                value={selectedCharacter?.id?.toString() || ''}
+                onValueChange={val => {
+                  if (val) {
+                    const char = userCharacters.find(c => c.id.toString() === val);
+                    if (char) setSelectedCharacter(char);
+                  }
+                }}
+                disabled={userCharacters.length === 0}
+              >
+                <SelectTrigger className="w-[180px] h-8">
+                  <SelectValue placeholder={userCharacters.length === 0 ? "Žádné postavy" : "Vyber postavu"} />
+                </SelectTrigger>
+                <SelectContent>
+                  {userCharacters.map(char => (
+                    <SelectItem key={char.id} value={char.id.toString()}>
+                      {getCharacterName(char)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
 
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={() => diceRollMutation.mutate()} 
-              disabled={!selectedCharacter || !selectedCharacter.id || diceRollMutation.isPending}
-              className="h-8 gap-1"
-              title="Hodit kostkou (1-10)"
-            >
-              <Dices className="h-4 w-4 text-blue-600" />
-              <span className="text-xs text-blue-600 font-medium">
-                {diceRollMutation.isPending ? 'Házím...' : 'Kostka'}
-              </span>
-            </Button>
+            {!isNarratorMode && (
+              <>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => diceRollMutation.mutate()} 
+                  disabled={!selectedCharacter || !selectedCharacter.id || diceRollMutation.isPending}
+                  className="h-8 gap-1"
+                  title="Hodit kostkou (1-10)"
+                >
+                  <Dices className="h-4 w-4 text-blue-600" />
+                  <span className="text-xs text-blue-600 font-medium">
+                    {diceRollMutation.isPending ? 'Házím...' : 'Kostka'}
+                  </span>
+                </Button>
 
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={() => coinFlipMutation.mutate()} 
-              disabled={!selectedCharacter || !selectedCharacter.id || coinFlipMutation.isPending}
-              className="h-8 gap-1"
-              title="Hodit mincí"
-            >
-              <Coins className="h-4 w-4 text-yellow-600" />
-              <span className="text-xs text-yellow-600 font-medium">
-                {coinFlipMutation.isPending ? 'Házím...' : 'Mince'}
-              </span>
-            </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => coinFlipMutation.mutate()} 
+                  disabled={!selectedCharacter || !selectedCharacter.id || coinFlipMutation.isPending}
+                  className="h-8 gap-1"
+                  title="Hodit mincí"
+                >
+                  <Coins className="h-4 w-4 text-yellow-600" />
+                  <span className="text-xs text-yellow-600 font-medium">
+                    {coinFlipMutation.isPending ? 'Házím...' : 'Mince'}
+                  </span>
+                </Button>
 
-            <Button 
-              variant="outline" 
-              size="sm" 
-              disabled={!selectedCharacter}
-              className="h-8 gap-1"
-              title="Seslat kouzlo"
-            >
-              <Wand2 className="h-4 w-4 text-purple-600" />
-              <span className="text-xs text-purple-600 font-medium">Kouzla</span>
-            </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  disabled={!selectedCharacter}
+                  className="h-8 gap-1"
+                  title="Seslat kouzlo"
+                >
+                  <Wand2 className="h-4 w-4 text-purple-600" />
+                  <span className="text-xs text-purple-600 font-medium">Kouzla</span>
+                </Button>
+              </>
+            )}
 
             {canSendAsNarrator && (
               <Button 
@@ -823,37 +855,38 @@ export default function ChatRoom() {
                 onClick={() => setIsNarratorMode(!isNarratorMode)}
                 className="h-8"
               >
-                Vypravěč
+                {isNarratorMode ? 'Vypravěč (aktivní)' : 'Vypravěč'}
               </Button>
             )}
           </div>
         </div>
       </div>
+      
       {/* Pravý panel: Popis místnosti a tlačítko Upravit pro admina */}
       <div className="w-80 border-l bg-muted/20 overflow-y-auto flex flex-col">
         <div className="flex items-center justify-between p-4 border-b">
-            <h3 className="font-semibold text-sm mb-0">Informace o místnosti</h3>
-            {!isEditingDescription && user?.role === 'admin' && (
-              <Button variant="outline" size="sm" onClick={handleEditDescription}>
-                Upravit
+          <h3 className="font-semibold text-sm mb-0">Informace o místnosti</h3>
+          {!isEditingDescription && user?.role === 'admin' && (
+            <Button variant="outline" size="sm" onClick={handleEditDescription}>
+              Upravit
+            </Button>
+          )}
+          {isEditingDescription && (
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" onClick={handleCancelEdit}>
+                Zrušit
               </Button>
-            )}
-            {isEditingDescription && (
-              <div className="flex gap-2">
-                <Button variant="outline" size="sm" onClick={handleCancelEdit}>
-                  Zrušit
-                </Button>
-                <Button 
-                  variant="default" 
-                  size="sm" 
-                  onClick={handleSaveDescription}
-                  disabled={updateRoomDescriptionMutation.isPending}
-                >
-                  {updateRoomDescriptionMutation.isPending ? 'Ukládá...' : 'Uložit'}
-                </Button>
-              </div>
-            )}
-          </div>
+              <Button 
+                variant="default" 
+                size="sm" 
+                onClick={handleSaveDescription}
+                disabled={updateRoomDescriptionMutation.isPending}
+              >
+                {updateRoomDescriptionMutation.isPending ? 'Ukládá...' : 'Uložit'}
+              </Button>
+            </div>
+          )}
+        </div>
         <div className="p-4">
           <h4 className="font-semibold text-sm mb-3">Popis místnosti</h4>
           {isEditingDescription ? (
