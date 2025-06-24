@@ -1,0 +1,51 @@
+[useAuth] FULL DEBUG - Loaded user data: Object
+index-BazFkjI_.js:447 [useAuth] FULL DEBUG - Characters response status: 200
+index-BazFkjI_.js:447 [useAuth] FULL DEBUG - Raw characters data: Object
+index-BazFkjI_.js:447 [useAuth] FULL DEBUG - Characters data type: object
+index-BazFkjI_.js:447 [useAuth] FULL DEBUG - Is array: false
+index-BazFkjI_.js:447 [processCharacters] FULL DEBUG - Input data: Object
+index-BazFkjI_.js:447 [processCharacters] FULL DEBUG - Input type: object
+index-BazFkjI_.js:447 [processCharacters] FULL DEBUG - Is array: false
+index-BazFkjI_.js:447 [processCharacters] FULL DEBUG - Using charactersData.characters
+index-BazFkjI_.js:447 [processCharacters] FULL DEBUG - Characters array: Array(15)
+index-BazFkjI_.js:447 [processCharacters] FULL DEBUG - Characters array length: 15
+index-BazFkjI_.js:447 [processCharacters] FULL DEBUG - Checking character 0: Object
+index-BazFkjI_.js:447 [processCharacters] FULL DEBUG - Character 0 valid: true
+index-BazFkjI_.js:447 [processCharacters] FULL DEBUG - Checking character 1: Object
+index-BazFkjI_.js:447 [processCharacters] FULL DEBUG - Character 1 valid: true
+index-BazFkjI_.js:447 [processCharacters] FULL DEBUG - Checking character 2: Object
+index-BazFkjI_.js:447 [processCharacters] FULL DEBUG - Character 2 valid: true
+index-BazFkjI_.js:447 [processCharacters] FULL DEBUG - Checking character 3: Object
+index-BazFkjI_.js:447 [processCharacters] FULL DEBUG - Character 3 valid: true
+index-BazFkjI_.js:447 [processCharacters] FULL DEBUG - Checking character 4: Object
+index-BazFkjI_.js:447 [processCharacters] FULL DEBUG - Character 4 valid: true
+index-BazFkjI_.js:447 [processCharacters] FULL DEBUG - Checking character 5: Object
+index-BazFkjI_.js:447 [processCharacters] FULL DEBUG - Character 5 valid: true
+index-BazFkjI_.js:447 [processCharacters] FULL DEBUG - Checking character 6: Object
+index-BazFkjI_.js:447 [processCharacters] FULL DEBUG - Character 6 valid: true
+index-BazFkjI_.js:447 [processCharacters] FULL DEBUG - Checking character 7: Object
+index-BazFkjI_.js:447 [processCharacters] FULL DEBUG - Character 7 valid: true
+index-BazFkjI_.js:447 [processCharacters] FULL DEBUG - Checking character 8: Object
+index-BazFkjI_.js:447 [processCharacters] FULL DEBUG - Character 8 valid: true
+index-BazFkjI_.js:447 [processCharacters] FULL DEBUG - Checking character 9: Object
+index-BazFkjI_.js:447 [processCharacters] FULL DEBUG - Character 9 valid: true
+index-BazFkjI_.js:447 [processCharacters] FULL DEBUG - Checking character 10: Object
+index-BazFkjI_.js:447 [processCharacters] FULL DEBUG - Character 10 valid: true
+index-BazFkjI_.js:447 [processCharacters] FULL DEBUG - Checking character 11: Object
+index-BazFkjI_.js:447 [processCharacters] FULL DEBUG - Character 11 valid: true
+index-BazFkjI_.js:447 [processCharacters] FULL DEBUG - Checking character 12: Object
+index-BazFkjI_.js:447 [processCharacters] FULL DEBUG - Character 12 valid: true
+index-BazFkjI_.js:447 [processCharacters] FULL DEBUG - Checking character 13: Object
+index-BazFkjI_.js:447 [processCharacters] FULL DEBUG - Character 13 valid: true
+index-BazFkjI_.js:447 [processCharacters] FULL DEBUG - Checking character 14: Object
+index-BazFkjI_.js:447 [processCharacters] FULL DEBUG - Character 14 valid: true
+index-BazFkjI_.js:447 [processCharacters] FULL DEBUG - Valid characters: Array(15)
+index-BazFkjI_.js:447 [processCharacters] FULL DEBUG - Valid characters count: 15
+index-BazFkjI_.js:447 [useAuth] FULL DEBUG - Processed characters: Array(15)
+index-BazFkjI_.js:447 [useAuth] FULL DEBUG - Processed characters count: 15
+index-BazFkjI_.js:500 Auto-selecting first character: Object
+index-BazFkjI_.js:500 Connecting to WebSocket: wss://umbra-dev.onrender.com/ws?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwidXNlcm5hbWUiOiJDYXNleSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1MDc1ODgzOCwiZXhwIjoxNzUxMzYzNjM4fQ.R7nifFeRLX5A5PRaGNR2vjQgiZuXv7VFRLG3kOtV6kk
+index-BazFkjI_.js:500 WebSocket connected
+index-BazFkjI_.js:500 Sending message: {isNarratorMode: true, selectedCharacter: {…}, canSendAsNarrator: true, messageInput: 'mmm...'}
+index-BazFkjI_.js:500 Sending message: {isNarratorMode: false, selectedCharacter: {…}, canSendAsNarrator: true, messageInput: 'mmm...'}
+index-BazFkjI_.js:500 Sending message: {isNarratorMode: true, selectedCharacter: {…}, canSendAsNarrator: true, messageInput: 'mmm...'}
