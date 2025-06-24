@@ -376,7 +376,7 @@ export class DatabaseStorage implements IStorage {
           content,
           message_type,
           created_at,
-          characters (
+          character (
             id,
             first_name,
             middle_name,
@@ -410,14 +410,14 @@ export class DatabaseStorage implements IStorage {
             avatar: null,
             userId: 0
           };
-        } else if (msg.characters) {
+        } else if (msg.character) {
           let charObj = null;
-          if (Array.isArray(msg.characters)) {
-            if (msg.characters.length > 0) {
-              charObj = msg.characters[0];
+          if (Array.isArray(msg.character)) {
+            if (msg.character.length > 0) {
+              charObj = msg.character[0];
             }
-          } else if (typeof msg.characters === 'object' && msg.characters !== null) {
-            charObj = msg.characters;
+          } else if (typeof msg.character === 'object' && msg.character !== null) {
+            charObj = msg.character;
           }
           console.log(`[DEBUG][getChatMessages][${idx}] charObj:`, JSON.stringify(charObj, null, 2));
           if (
