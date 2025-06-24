@@ -485,29 +485,12 @@ export default function ChatRoom() {
           <div className="flex items-center gap-2">
             <Button variant="ghost" size="sm" onClick={() => setLocation('/chat')}>
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Zpět
+              Opustit chat
             </Button>
             <span className="font-bold text-lg">{currentRoom?.name || 'Místnost'}</span>
+            <span className="text-sm text-muted-foreground">{currentRoom?.description}</span>
           </div>
           <div className="flex items-center gap-2">
-            <Select
-              value={selectedCharacter?.id?.toString() || ''}
-              onValueChange={val => {
-                const char = userCharacters.find(c => c.id.toString() === val);
-                if (char) setSelectedCharacter(char);
-              }}
-            >
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Vyber postavu" />
-              </SelectTrigger>
-              <SelectContent>
-                {userCharacters.map(char => (
-                  <SelectItem key={char.id} value={char.id.toString()}>
-                    {getCharacterName(char)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
             <Button variant="outline" size="sm" onClick={exportChat}>
               <Download className="h-4 w-4 mr-2" />
               Stáhnout
@@ -515,6 +498,10 @@ export default function ChatRoom() {
             <Button variant="outline" size="sm" onClick={() => currentRoomId && archiveMessagesMutation.mutate(currentRoomId)}>
               <Archive className="h-4 w-4 mr-2" />
               Archivovat
+            </Button>
+            <Button variant="destructive" size="sm" onClick={() => {/* zde přidej logiku pro archivovat a smazat */}}>
+              <Trash2 className="h-4 w-4 mr-2" />
+              Archivovat a smazat
             </Button>
           </div>
         </div>
@@ -535,7 +522,7 @@ export default function ChatRoom() {
                       {getCharacterName(message.character)}
                     </span>
                     <span className="text-xs text-muted-foreground">
-                      {format(new Date(message.createdAt), "dd.MM.yyyy HH:mm")}
+                      {formatMessageTime(message.createdAt)}
                     </span>
                   </div>
                   <div className="bg-muted/30 rounded-lg p-3">
@@ -547,7 +534,7 @@ export default function ChatRoom() {
             <div ref={messagesEndRef} />
           </div>
         </ScrollArea>
-        {/* Input a avatar postavy */}
+        {/* Input, avatar a Select pro výběr postavy */}
         <div className="flex items-end gap-3 mt-2">
           <Avatar className="w-10 h-10 flex-shrink-0">
             <AvatarImage src="" />
@@ -555,6 +542,24 @@ export default function ChatRoom() {
               {getCharacterInitials(selectedCharacter)}
             </AvatarFallback>
           </Avatar>
+          <Select
+            value={selectedCharacter?.id?.toString() || ''}
+            onValueChange={val => {
+              const char = userCharacters.find(c => c.id.toString() === val);
+              if (char) setSelectedCharacter(char);
+            }}
+          >
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Vyber postavu" />
+            </SelectTrigger>
+            <SelectContent>
+              {userCharacters.map(char => (
+                <SelectItem key={char.id} value={char.id.toString()}>
+                  {getCharacterName(char)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <Textarea
             className="flex-1 min-h-[48px] max-h-[120px] resize-none"
             placeholder="Napište zprávu..."
