@@ -526,7 +526,7 @@ export default function ChatRoom() {
   };
 
   const handleSendMessage = () => {
-    if (!messageInput.trim() || !currentRoomId) {
+    if (!messageInput.trim()) {
       toast({
         title: "Chyba",
         description: "Zpráva nemůže být prázdná",
@@ -535,11 +535,20 @@ export default function ChatRoom() {
       return;
     }
 
+    if (!currentRoomId) {
+      toast({
+        title: "Chyba", 
+        description: "Neplatná místnost",
+        variant: "destructive",
+      });
+      return;
+    }
+
     console.log('Sending message:', { 
       isNarratorMode, 
-      selectedCharacter, 
+      selectedCharacter: selectedCharacter ? { id: selectedCharacter.id, name: getCharacterName(selectedCharacter) } : null,
       canSendAsNarrator,
-      messageInput: messageInput.trim() 
+      messageInput: messageInput.trim().substring(0, 50) + '...'
     });
 
     if (isNarratorMode) {
@@ -553,17 +562,29 @@ export default function ChatRoom() {
         return;
       }
       sendNarratorMessageMutation.mutate(messageInput.trim());
-    } else if (selectedCharacter && selectedCharacter.id) {
+    } else {
       // Běžná zpráva
+      if (!selectedCharacter || !selectedCharacter.id) {
+        toast({
+          title: "Chyba",
+          description: "Vyberte postavu pro odeslání zprávy",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (selectedCharacter.deathDate) {
+        toast({
+          title: "Chyba",
+          description: "Nelze odesílat zprávy s mrtvou postavou",
+          variant: "destructive",
+        });
+        return;
+      }
+
       sendMessageMutation.mutate({
         content: messageInput.trim(),
         characterId: selectedCharacter.id,
-      });
-    } else {
-      toast({
-        title: "Chyba",
-        description: "Vyberte postavu pro odeslání zprávy",
-        variant: "destructive",
       });
     }
   };

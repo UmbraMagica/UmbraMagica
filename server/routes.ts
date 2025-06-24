@@ -434,8 +434,10 @@ export async function registerRoutes(app: Express): Promise<void> {
   app.post("/api/chat/messages", requireAuth, async (req, res) => {
     const { roomId, characterId, content, messageType } = req.body;
 
-    if (!roomId || !content) {
-      return res.status(400).json({ message: "Missing required fields" });
+    console.log(`[CHAT][POST] Message request:`, { roomId, characterId, content: content?.substring(0, 50), messageType, userId: req.user!.id });
+
+    if (!roomId || !content?.trim()) {
+      return res.status(400).json({ message: "Missing required fields: roomId and content" });
     }
 
     if (!characterId || characterId === 0) {
@@ -448,11 +450,22 @@ export async function registerRoutes(app: Express): Promise<void> {
         const userCharacters = await storage.getCharactersByUserId(req.user!.id);
         const hasCharacter = userCharacters.some((char: any) => char.id === Number(characterId));
         if (!hasCharacter) {
+          console.log(`[CHAT][POST] Character ${characterId} does not belong to user ${req.user!.id}`);
           return res.status(403).json({ message: "Character does not belong to user" });
         }
       }
 
-      // Use the storage layer for consistency
+      // Verify character exists and is active
+      const character = await storage.getCharacterById(Number(characterId));
+      if (!character) {
+        return res.status(404).json({ message: "Character not found" });
+      }
+
+      if (character.deathDate) {
+        return res.status(400).json({ message: "Cannot send messages with a dead character" });
+      }
+
+      // Create the message
       const message = await storage.createChatMessage({
         roomId: Number(roomId),
         characterId: Number(characterId),
@@ -461,10 +474,11 @@ export async function registerRoutes(app: Express): Promise<void> {
         messageType: messageType || 'text'
       });
 
+      console.log(`[CHAT][POST] Message created successfully:`, { messageId: message.id, characterName: message.character?.firstName });
       res.status(201).json(message);
     } catch (error) {
       console.error("Error creating chat message:", error);
-      res.status(500).json({ message: "Failed to send message" });
+      res.status(500).json({ message: "Failed to send message", error: error.message });
     }
   });
 
@@ -635,8 +649,10 @@ export async function registerRoutes(app: Express): Promise<void> {
   app.post("/api/chat/narrator-message", requireAuth, async (req, res) => {
     const { roomId, content } = req.body;
 
-    if (!roomId || !content) {
-      return res.status(400).json({ message: "Missing required fields" });
+    console.log(`[NARRATOR][POST] Message request:`, { roomId, content: content?.substring(0, 50), userId: req.user!.id });
+
+    if (!roomId || !content?.trim()) {
+      return res.status(400).json({ message: "Missing required fields: roomId and content" });
     }
 
     // Get user data to check narrator permissions
@@ -646,46 +662,20 @@ export async function registerRoutes(app: Express): Promise<void> {
     }
 
     try {
-      // Insert directly with null character_id for narrator messages
-      const { data, error } = await supabase
-        .from('messages')
-        .insert({
-          room_id: Number(roomId),
-          character_id: null, // Use null for narrator messages
-          content: content.trim(),
-          message_type: 'narrator',
-          created_at: new Date().toISOString()
-        })
-        .select()
-        .single();
+      // Use storage method for consistency
+      const message = await storage.createChatMessage({
+        roomId: Number(roomId),
+        characterId: 0, // Use 0 for narrator messages
+        userId: req.user!.id,
+        content: content.trim(),
+        messageType: 'narrator'
+      });
 
-      if (error) {
-        console.error('Database error in narrator message:', error);
-        throw error;
-      }
-
-      // Format response
-      const message = {
-        id: data.id,
-        roomId: data.room_id,
-        characterId: null,
-        content: data.content,
-        messageType: data.message_type,
-        createdAt: data.created_at,
-        character: {
-          id: 0,
-          firstName: 'Vypravěč',
-          middleName: null,
-          lastName: '',
-          avatar: null,
-          userId: 0
-        }
-      };
-
+      console.log(`[NARRATOR][POST] Message created successfully:`, { messageId: message.id });
       res.json(message);
     } catch (error) {
       console.error("Error sending narrator message:", error);
-      res.status(500).json({ message: "Failed to send narrator message" });
+      res.status(500).json({ message: "Failed to send narrator message", error: error.message });
     }
   });
 
