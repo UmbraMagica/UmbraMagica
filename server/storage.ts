@@ -376,7 +376,7 @@ export class DatabaseStorage implements IStorage {
           content,
           message_type,
           created_at,
-          characters!inner (
+          characters (
             id,
             first_name,
             middle_name,
