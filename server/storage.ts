@@ -403,29 +403,54 @@ export class DatabaseStorage implements IStorage {
       // Process all messages
       const processedMessages = data.map(msg => {
         let character;
-        
-        if (!msg.character_id || msg.character_id === 0 || msg.message_type === 'narrator') {
-          // Narrator/system message
+        if (msg.character_id === 0 || msg.message_type === 'narrator') {
+          // Narrator message
           character = {
             id: 0,
-            firstName: msg.message_type === 'narrator' ? 'Vypravěč' : 'Systém',
+            firstName: 'Vypravěč',
             middleName: null,
             lastName: '',
             avatar: null,
             userId: 0
           };
         } else if (msg.characters) {
-          // Regular character message with loaded character data
-          character = {
-            id: msg.characters.id,
-            firstName: msg.characters.first_name,
-            middleName: msg.characters.middle_name,
-            lastName: msg.characters.last_name,
-            avatar: msg.characters.avatar,
-            userId: msg.characters.user_id
-          };
+          // msg.characters může být pole nebo objekt
+          let charObj = null;
+          if (Array.isArray(msg.characters)) {
+            if (msg.characters.length > 0) {
+              charObj = msg.characters[0];
+            }
+          } else if (typeof msg.characters === 'object' && msg.characters !== null) {
+            charObj = msg.characters;
+          }
+          if (
+            charObj &&
+            typeof charObj === 'object' &&
+            !Array.isArray(charObj) &&
+            charObj !== null &&
+            charObj.id
+          ) {
+            character = {
+              id: charObj.id,
+              firstName: charObj.first_name,
+              middleName: charObj.middle_name,
+              lastName: charObj.last_name,
+              avatar: charObj.avatar,
+              userId: charObj.user_id
+            };
+          } else {
+            // Fallback pro chybějící data
+            character = {
+              id: msg.character_id,
+              firstName: 'Neznámá',
+              middleName: null,
+              lastName: 'postava',
+              avatar: null,
+              userId: 0
+            };
+          }
         } else {
-          // Fallback for missing character data
+          // Fallback pro chybějící data
           character = {
             id: msg.character_id,
             firstName: 'Neznámá',
