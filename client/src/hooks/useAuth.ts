@@ -35,35 +35,55 @@ function isValidCharacter(char: any): char is Character {
 // Helper function to safely process characters
 function processCharacters(charactersData: any): Character[] {
   try {
-    console.log('[processCharacters] Input data:', charactersData);
+    console.log('[processCharacters] FULL DEBUG - Input data:', charactersData);
+    console.log('[processCharacters] FULL DEBUG - Input type:', typeof charactersData);
+    console.log('[processCharacters] FULL DEBUG - Is array:', Array.isArray(charactersData));
+    
     let charactersArray: any[] = [];
     
     if (Array.isArray(charactersData)) {
       charactersArray = charactersData;
+      console.log('[processCharacters] FULL DEBUG - Using direct array');
     } else if (charactersData && Array.isArray(charactersData.characters)) {
       charactersArray = charactersData.characters;
+      console.log('[processCharacters] FULL DEBUG - Using charactersData.characters');
     } else if (charactersData && typeof charactersData === 'object') {
       // Try to find any array in the object
       const values = Object.values(charactersData);
       const arrayValue = values.find(val => Array.isArray(val));
       if (arrayValue) {
         charactersArray = arrayValue as any[];
+        console.log('[processCharacters] FULL DEBUG - Found array in object values');
       }
     }
 
-    console.log('[processCharacters] Characters array:', charactersArray);
-    const validCharacters = charactersArray.filter(char => {
+    console.log('[processCharacters] FULL DEBUG - Characters array:', charactersArray);
+    console.log('[processCharacters] FULL DEBUG - Characters array length:', charactersArray.length);
+    
+    const validCharacters = charactersArray.filter((char, index) => {
+      console.log(`[processCharacters] FULL DEBUG - Checking character ${index}:`, char);
+      
       const isValid = isValidCharacter(char);
+      console.log(`[processCharacters] FULL DEBUG - Character ${index} valid:`, isValid);
+      
       if (!isValid && char) {
-        console.log('[processCharacters] Invalid character filtered:', char);
+        console.log(`[processCharacters] FULL DEBUG - Invalid character ${index}:`, {
+          id: char.id,
+          firstName: char.firstName,
+          userId: char.userId,
+          hasId: typeof char.id === 'number',
+          hasFirstName: typeof char.firstName === 'string',
+          hasUserId: typeof char.userId === 'number'
+        });
       }
       return isValid;
     });
     
-    console.log('[processCharacters] Valid characters:', validCharacters);
+    console.log('[processCharacters] FULL DEBUG - Valid characters:', validCharacters);
+    console.log('[processCharacters] FULL DEBUG - Valid characters count:', validCharacters.length);
     return validCharacters;
   } catch (error) {
-    console.error('Error processing characters data:', error);
+    console.error('[processCharacters] FULL DEBUG - Error processing characters:', error);
     return [];
   }
 }
@@ -97,7 +117,7 @@ export function useAuth() {
         }
 
         const userData = await response.json();
-        console.log('[useAuth] Loaded user data:', userData ? { id: userData.id, username: userData.username, role: userData.role } : null);
+        console.log('[useAuth] FULL DEBUG - Loaded user data:', userData);
 
         if (!userData) return null;
 
@@ -110,17 +130,23 @@ export function useAuth() {
             }
           });
           
+          console.log('[useAuth] FULL DEBUG - Characters response status:', charactersResponse.status);
+          
           if (charactersResponse.ok) {
             const charactersData = await charactersResponse.json();
-            console.log('[useAuth] Raw characters data:', charactersData);
+            console.log('[useAuth] FULL DEBUG - Raw characters data:', charactersData);
+            console.log('[useAuth] FULL DEBUG - Characters data type:', typeof charactersData);
+            console.log('[useAuth] FULL DEBUG - Is array:', Array.isArray(charactersData));
+            
             userData.characters = processCharacters(charactersData);
-            console.log('[useAuth] Processed characters:', userData.characters);
+            console.log('[useAuth] FULL DEBUG - Processed characters:', userData.characters);
+            console.log('[useAuth] FULL DEBUG - Processed characters count:', userData.characters?.length || 0);
           } else {
-            console.warn('Failed to fetch characters separately');
+            console.warn('[useAuth] FULL DEBUG - Failed to fetch characters, status:', charactersResponse.status);
             userData.characters = [];
           }
         } catch (error) {
-          console.error('[useAuth] Failed to fetch characters:', error);
+          console.error('[useAuth] FULL DEBUG - Failed to fetch characters:', error);
           userData.characters = [];
         }
 

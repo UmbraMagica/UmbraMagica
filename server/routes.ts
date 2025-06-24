@@ -65,26 +65,40 @@ function validateAndFilterCharacters(characters: any[]): any[] {
     return [];
   }
 
-  return characters.filter(char => {
+  return characters.filter((char, index) => {
+    console.log(`[validateAndFilterCharacters] FULL DEBUG - Processing character ${index}:`, char);
+    
     if (!char || typeof char !== 'object') {
-      console.warn('Invalid character object:', char);
+      console.warn(`[validateAndFilterCharacters] FULL DEBUG - Invalid character object ${index}:`, char);
       return false;
     }
 
-    const isValid = typeof char.id === 'number' && 
-                   typeof char.firstName === 'string' && 
-                   char.firstName.trim() !== '' &&
-                   typeof char.userId === 'number';
+    const hasValidId = typeof char.id === 'number' && char.id > 0;
+    const hasValidFirstName = typeof char.firstName === 'string' && char.firstName.trim() !== '';
+    const hasValidUserId = typeof char.userId === 'number' && char.userId > 0;
+    
+    const isValid = hasValidId && hasValidFirstName && hasValidUserId;
+
+    console.log(`[validateAndFilterCharacters] FULL DEBUG - Character ${index} validation:`, {
+      id: char.id,
+      firstName: char.firstName,
+      lastName: char.lastName,
+      userId: char.userId,
+      hasValidId,
+      hasValidFirstName,
+      hasValidUserId,
+      isValid
+    });
 
     if (!isValid) {
-      console.warn('Invalid character filtered out:', {
+      console.warn(`[validateAndFilterCharacters] FULL DEBUG - Invalid character ${index} filtered out:`, {
         id: char.id,
         firstName: char.firstName,
         lastName: char.lastName,
         userId: char.userId,
-        hasValidId: typeof char.id === 'number',
-        hasValidFirstName: typeof char.firstName === 'string' && char.firstName.trim() !== '',
-        hasValidUserId: typeof char.userId === 'number'
+        reason: !hasValidId ? 'invalid ID' : 
+                !hasValidFirstName ? 'invalid firstName' :
+                !hasValidUserId ? 'invalid userId' : 'unknown'
       });
     }
 
@@ -291,25 +305,16 @@ export async function registerRoutes(app: Express): Promise<void> {
         characters = await storage.getCharactersByUserId(req.user!.id);
       }
 
-      console.log(`[CHARACTERS] User ${req.user!.username} (${req.user!.role}) requesting characters`);
-      console.log(`[CHARACTERS] Raw count: ${characters?.length || 0}`);
+      console.log(`[CHARACTERS] FULL DEBUG - User ${req.user!.username} (${req.user!.role}) requesting characters`);
+      console.log(`[CHARACTERS] FULL DEBUG - Raw characters:`, characters);
+      console.log(`[CHARACTERS] FULL DEBUG - Raw count: ${characters?.length || 0}`);
       
       const validCharacters = validateAndFilterCharacters(characters);
-      console.log(`[CHARACTERS] Valid count: ${validCharacters.length}`);
+      console.log(`[CHARACTERS] FULL DEBUG - Valid count: ${validCharacters.length}`);
+      console.log(`[CHARACTERS] FULL DEBUG - Valid characters:`, validCharacters);
       
-      // Log sample of characters for debug
-      if (validCharacters.length > 0) {
-        console.log(`[CHARACTERS] First character sample:`, {
-          id: validCharacters[0].id,
-          firstName: validCharacters[0].firstName,
-          lastName: validCharacters[0].lastName,
-          userId: validCharacters[0].userId,
-          isSystem: validCharacters[0].isSystem,
-          deathDate: validCharacters[0].deathDate
-        });
-      }
-
       // Always return in { characters: [] } format for consistency
+      console.log(`[CHARACTERS] FULL DEBUG - Returning response:`, { characters: validCharacters });
       res.json({ characters: validCharacters });
     } catch (error) {
       console.error("Chyba při načítání postav:", error);

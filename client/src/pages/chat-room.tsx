@@ -144,34 +144,56 @@ export default function ChatRoom() {
   });
 
   // Process user characters - only alive, non-system characters belonging to the user
+  console.log('[chat-room] FULL DEBUG - Raw characters:', userCharactersRaw);
+  console.log('[chat-room] FULL DEBUG - User:', { id: user?.id, role: user?.role, username: user?.username });
+  
   const userCharacters = Array.isArray(userCharactersRaw) ? 
-    userCharactersRaw.filter(char => {
+    userCharactersRaw.filter((char, index) => {
+      console.log(`[chat-room] FULL DEBUG - Processing character ${index}:`, char);
+      
       if (!char || typeof char !== 'object') {
-        console.log('[chat-room] Invalid character object:', char);
+        console.log(`[chat-room] REJECTED - Invalid object:`, char);
         return false;
       }
       
-      const isValid = typeof char.id === 'number' &&
-        typeof char.firstName === 'string' &&
-        char.firstName.trim() !== '' &&
-        !char.deathDate && 
-        (user?.role === 'admin' || char.userId === user?.id) &&
-        !char.isSystem;
+      // Check basic properties
+      const hasValidId = typeof char.id === 'number' && char.id > 0;
+      const hasValidFirstName = typeof char.firstName === 'string' && char.firstName.trim() !== '';
+      const isAlive = !char.deathDate;
+      const isNotSystem = !char.isSystem;
       
-      if (!isValid && char) {
-        console.log('[chat-room] Filtered out character:', {
-          id: char.id,
-          firstName: char.firstName,
-          lastName: char.lastName,
-          deathDate: char.deathDate,
-          userId: char.userId,
-          isSystem: char.isSystem,
-          currentUserId: user?.id,
-          userRole: user?.role
+      // Check ownership - admin can access all, users only their own
+      const hasAccess = user?.role === 'admin' || char.userId === user?.id;
+      
+      console.log(`[chat-room] FULL DEBUG - Character ${char.firstName} ${char.lastName} validation:`, {
+        hasValidId,
+        hasValidFirstName,
+        isAlive,
+        isNotSystem,
+        hasAccess,
+        charUserId: char.userId,
+        currentUserId: user?.id,
+        userRole: user?.role
+      });
+      
+      const isValid = hasValidId && hasValidFirstName && isAlive && isNotSystem && hasAccess;
+      
+      if (!isValid) {
+        console.log(`[chat-room] REJECTED - Character ${char.firstName} ${char.lastName}:`, {
+          reason: !hasValidId ? 'invalid ID' : 
+                  !hasValidFirstName ? 'invalid firstName' :
+                  !isAlive ? 'dead character' :
+                  !isNotSystem ? 'system character' :
+                  !hasAccess ? 'no access' : 'unknown'
         });
+      } else {
+        console.log(`[chat-room] ACCEPTED - Character ${char.firstName} ${char.lastName}`);
       }
+      
       return isValid;
     }) : [];
+
+  console.log('[chat-room] FULL DEBUG - Final userCharacters:', userCharacters);
 
   // Fetch current room info
   const { data: rooms = [] } = useQuery<ChatRoom[]>({
