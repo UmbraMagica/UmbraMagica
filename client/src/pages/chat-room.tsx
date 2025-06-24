@@ -137,6 +137,7 @@ export default function ChatRoom() {
         throw new Error('Failed to fetch characters');
       }
       const data = await response.json();
+      console.log('[chat-room] Raw characters response:', data);
       // Backend může vrátit data v různých formátech
       return data.characters || data || [];
     }
@@ -144,13 +145,23 @@ export default function ChatRoom() {
 
   // Process user characters - only alive, non-system characters belonging to the user
   const userCharacters = Array.isArray(userCharactersRaw) ? 
-    userCharactersRaw.filter(char => 
-      char && 
-      !char.deathDate && 
-      char.userId === user?.id &&
-      char.firstName !== 'Systém' &&
-      char.firstName !== 'Správa'
-    ) : [];
+    userCharactersRaw.filter(char => {
+      const isValid = char && 
+        typeof char === 'object' &&
+        typeof char.id === 'number' &&
+        typeof char.firstName === 'string' &&
+        char.firstName.trim() !== '' &&
+        !char.deathDate && 
+        char.userId === user?.id &&
+        char.firstName !== 'Systém' &&
+        char.firstName !== 'Správa' &&
+        !char.isSystem;
+      
+      if (!isValid && char) {
+        console.log('[chat-room] Filtered out character:', char);
+      }
+      return isValid;
+    }) : [];
 
   // Fetch current room info
   const { data: rooms = [] } = useQuery<ChatRoom[]>({

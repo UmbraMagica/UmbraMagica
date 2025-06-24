@@ -279,8 +279,11 @@ export async function registerRoutes(app: Express): Promise<void> {
         characters = await storage.getCharactersByUserId(req.user!.id);
       }
 
+      console.log(`[CHARACTERS] Raw characters for user ${req.user!.username}:`, JSON.stringify(characters, null, 2));
+      
       const validCharacters = validateAndFilterCharacters(characters);
       console.log(`[CHARACTERS] User ${req.user!.username} requested characters, returning ${validCharacters.length} valid characters`);
+      console.log(`[CHARACTERS] Valid characters:`, JSON.stringify(validCharacters, null, 2));
 
       // Always return in { characters: [] } format for consistency
       res.json({ characters: validCharacters });

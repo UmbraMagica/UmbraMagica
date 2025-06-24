@@ -367,11 +367,8 @@ export class DatabaseStorage implements IStorage {
 
   async getChatMessages(roomId: number) {
     try {
-      console.log(`[STORAGE] Fetching messages for room ${roomId}`);
-
-      // Fetch all messages for the room with character data using JOIN
       const { data, error } = await supabase
-        .from('messages')
+        .from("messages")
         .select(`
           id,
           room_id,
@@ -379,7 +376,7 @@ export class DatabaseStorage implements IStorage {
           content,
           message_type,
           created_at,
-          characters (
+          characters!inner (
             id,
             first_name,
             middle_name,
@@ -388,16 +385,8 @@ export class DatabaseStorage implements IStorage {
             user_id
           )
         `)
-        .eq('room_id', roomId)
-        .order('created_at', { ascending: true });
-
-      console.log('[DEBUG][getChatMessages] Raw DB data:', JSON.stringify(data, null, 2));
-      if (data) {
-        data.forEach((msg, idx) => {
-          console.log(`[DEBUG][getChatMessages][RAW][${idx}]`, JSON.stringify(msg, null, 2));
-          console.log(`[DEBUG][getChatMessages][RAW][${idx}] typeof characters:`, typeof msg.characters, 'Array:', Array.isArray(msg.characters));
-        });
-      }
+        .eq("room_id", roomId)
+        .order("created_at", { ascending: true });
 
       if (error) {
         console.error('Error fetching messages:', error);
@@ -797,7 +786,7 @@ export class DatabaseStorage implements IStorage {
 
   async deleteChatRoom(id: number): Promise<boolean> {
     await supabase.from('messages').delete().eq('room_id', id);
-    const { error } = await supabase.from('chat_rooms').delete().eq('id', id);
+    const { error } = awaitsupabase.from('chat_rooms').delete().eq('id', id);
     return !error;
   }
 

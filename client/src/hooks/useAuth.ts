@@ -34,6 +34,7 @@ function isValidCharacter(char: any): char is Character {
 // Helper function to safely process characters
 function processCharacters(charactersData: any): Character[] {
   try {
+    console.log('[processCharacters] Input data:', charactersData);
     let charactersArray: any[] = [];
     
     if (Array.isArray(charactersData)) {
@@ -49,7 +50,17 @@ function processCharacters(charactersData: any): Character[] {
       }
     }
 
-    return charactersArray.filter(isValidCharacter);
+    console.log('[processCharacters] Characters array:', charactersArray);
+    const validCharacters = charactersArray.filter(char => {
+      const isValid = isValidCharacter(char);
+      if (!isValid && char) {
+        console.log('[processCharacters] Invalid character filtered:', char);
+      }
+      return isValid;
+    });
+    
+    console.log('[processCharacters] Valid characters:', validCharacters);
+    return validCharacters;
   } catch (error) {
     console.error('Error processing characters data:', error);
     return [];
@@ -89,30 +100,27 @@ export function useAuth() {
 
         if (!userData) return null;
 
-        // Pokud user nemá characters property, načti je zvlášť
-        if (!userData.characters) {
-          try {
-            const charactersResponse = await fetch(`${API_URL}/api/characters`, {
-              headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-              }
-            });
-            
-            if (charactersResponse.ok) {
-              const charactersData = await charactersResponse.json();
-              userData.characters = processCharacters(charactersData);
-            } else {
-              console.warn('Failed to fetch characters separately');
-              userData.characters = [];
+        // Vždy načti postavy zvlášť pro aktuální data
+        try {
+          const charactersResponse = await fetch(`${API_URL}/api/characters`, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
             }
-          } catch (error) {
-            console.error('[useAuth] Failed to fetch characters:', error);
+          });
+          
+          if (charactersResponse.ok) {
+            const charactersData = await charactersResponse.json();
+            console.log('[useAuth] Raw characters data:', charactersData);
+            userData.characters = processCharacters(charactersData);
+            console.log('[useAuth] Processed characters:', userData.characters);
+          } else {
+            console.warn('Failed to fetch characters separately');
             userData.characters = [];
           }
-        } else {
-          // Process existing characters
-          userData.characters = processCharacters(userData.characters);
+        } catch (error) {
+          console.error('[useAuth] Failed to fetch characters:', error);
+          userData.characters = [];
         }
 
         return userData;
