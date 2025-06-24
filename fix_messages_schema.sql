@@ -1,0 +1,1 @@
+ALTER TABLE messages ALTER COLUMN character_id DROP NOT NULL;
