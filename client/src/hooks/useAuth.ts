@@ -59,8 +59,9 @@ export function useAuth() {
             }
           });
           if (charactersResponse.ok) {
-            const characters = await charactersResponse.json();
-            userData.characters = characters;
+            const charactersData = await charactersResponse.json();
+            // API může vrátit buď pole nebo objekt s characters property
+            userData.characters = Array.isArray(charactersData) ? charactersData : (charactersData.characters || []);
           } else {
             userData.characters = [];
           }
@@ -69,6 +70,9 @@ export function useAuth() {
           userData.characters = [];
         }
       }
+
+      // Zajisti, že characters je vždy pole
+      userData.characters = Array.isArray(userData.characters) ? userData.characters : [];
 
       return userData;
     },

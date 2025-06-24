@@ -79,9 +79,19 @@ export function SelectedCharacterProvider({ children, roomId, canSendAsNarrator 
     }
   }, [userCharacters, isLoading, roomId, canSendAsNarrator]);
 
-  const changeCharacter = (char: Character) => {
+  const changeCharacter = (char: Character | null) => {
+    // Validate character data before setting
+    if (char && (!char.id || !char.firstName)) {
+      console.error('Invalid character data:', char);
+      return;
+    }
+
     setSelectedCharacter(char);
-    if (roomId) localStorage.setItem(`selectedCharacterId_${roomId}`, char.id.toString());
+    if (char) {
+      localStorage.setItem(`selectedCharacterId_${roomId}`, char.id.toString());
+    } else {
+      localStorage.removeItem(`selectedCharacterId_${roomId}`);
+    }
   };
 
   const contextValue: SelectedCharacterContextType = {

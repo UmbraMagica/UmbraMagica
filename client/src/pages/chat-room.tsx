@@ -280,6 +280,13 @@ export default function ChatRoom() {
         try {
           const data = JSON.parse(event.data);
           console.log('WebSocket zpráva:', data);
+          
+          // Pokud je to nová zpráva, invaliduj query cache
+          if (data.type === 'new_message') {
+            queryClient.invalidateQueries({ 
+              queryKey: ["/api/chat/rooms", currentRoomId, "messages"] 
+            });
+          }
         } catch (err) {
           console.log('WebSocket raw message:', event.data);
         }
@@ -383,9 +390,29 @@ export default function ChatRoom() {
   // 5. Odesílání zprávy
   const handleSendMessage = () => {
     if (!messageInput.trim() || !currentRoomId || !selectedCharacter) return;
-    if (selectedCharacter.id === 0) {
-      // Vypravěčská zpráva
-      // ... poslat na správný endpoint ...
+    
+    if (selectedCharacter.id === 0 || selectedCharacter.id === 'narrator') {
+      // Vypravěčská zpráva - použij narrator endpoint
+      fetch(`${API_URL}/api/chat/narrator-message`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('jwt_token')}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          roomId: currentRoomId,
+          content: messageInput.trim()
+        })
+      }).then(() => {
+        setMessageInput("");
+        queryClient.invalidateQueries({ queryKey: ["/api/chat/rooms", currentRoomId, "messages"] });
+      }).catch(error => {
+        toast({
+          title: "Chyba při odesílání zprávy",
+          description: error.message,
+          variant: "destructive",
+        });
+      });
     } else {
       // Běžná zpráva
       sendMessageMutation.mutate({
@@ -515,15 +542,17 @@ export default function ChatRoom() {
                   <SelectValue placeholder="Vyber postavu" />
                 </SelectTrigger>
                 <SelectContent>
-                  {(canSendAsNarrator ? [
+                  {canSendAsNarrator && (
                     <SelectItem key={0} value="0">Vypravěč</SelectItem>
-                  ] : []).concat(
-                    userCharacters.filter(char => char && typeof char.firstName === 'string').map((char) => (
+                  )}
+                  {userCharacters
+                    .filter(char => char && char.firstName && typeof char.firstName === 'string')
+                    .map((char) => (
                       <SelectItem key={char.id} value={char.id.toString()}>
                         {char.firstName + (char.lastName ? ' ' + char.lastName : '')}
                       </SelectItem>
                     ))
-                  )}
+                  }
                 </SelectContent>
               </Select>
             </div>

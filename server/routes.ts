@@ -1045,10 +1045,10 @@ export async function registerRoutes(app: Express): Promise<void> {
     try {
       if (req.user!.role === 'admin') {
         const characters = await storage.getAllCharacters();
-        res.json(characters);
+        res.json(Array.isArray(characters) ? characters : []);
       } else {
         const characters = await storage.getCharactersByUserId(req.user!.id);
-        res.json(characters);
+        res.json(Array.isArray(characters) ? characters : []);
       }
     } catch (error) {
       console.error("Error fetching user characters:", error);
