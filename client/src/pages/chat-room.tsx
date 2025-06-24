@@ -321,6 +321,15 @@ export default function ChatRoom() {
 
   // Filter available characters
   const availableCharacters = userCharacters.filter(char => !char.deathDate && !char.isSystem);
+  
+  // Check if user can send as narrator
+  const canSendAsNarrator = user?.canNarrate || user?.role === 'admin';
+  
+  // Create all available options (characters + narrator if allowed)
+  const allCharacterOptions = [
+    ...availableCharacters,
+    ...(canSendAsNarrator ? [{ id: 'narrator', firstName: 'Vypravěč', lastName: '', isNarrator: true }] : [])
+  ];
 
   // Update current chat character when selectedCharacter changes
   useEffect(() => {
@@ -341,10 +350,48 @@ export default function ChatRoom() {
 
   const handleSendMessage = () => {
     if (!messageInput.trim() || !currentRoomId || !currentChatCharacter) return;
-    sendMessageMutation.mutate({
-      content: messageInput.trim(),
-      characterId: currentChatCharacter.id,
-    });
+    
+    // Handle narrator messages differently
+    if (currentChatCharacter.id === 'narrator') {
+      // Send as narrator message
+      const token = localStorage.getItem('jwt_token');
+      fetch(`${API_URL}/api/chat/narrator-message`, {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          roomId: currentRoomId,
+          content: messageInput.trim()
+        }),
+        credentials: "include",
+      })
+      .then(response => {
+        if (response.ok) {
+          setMessageInput("");
+          toast({
+            title: "Vypravěčská zpráva odeslána",
+            description: "Vaše zpráva byla úspěšně odeslána",
+          });
+        } else {
+          throw new Error("Failed to send narrator message");
+        }
+      })
+      .catch(() => {
+        toast({
+          title: "Chyba",
+          description: "Nepodařilo se odeslat vypravěčskou zprávu.",
+          variant: "destructive",
+        });
+      });
+    } else {
+      // Send as regular character message
+      sendMessageMutation.mutate({
+        content: messageInput.trim(),
+        characterId: currentChatCharacter.id,
+      });
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -531,42 +578,86 @@ export default function ChatRoom() {
           <div className="mb-3">
             <div className="flex items-center gap-3">
               <span className="text-sm font-medium">Píšu za:</span>
-              {availableCharacters.length > 1 ? (
-                <Select 
-                  value={currentChatCharacter?.id?.toString() || ""} 
-                  onValueChange={(value) => {
-                    const character = availableCharacters.find(c => c.id === parseInt(value));
-                    if (character) {
-                      setCurrentChatCharacter(character);
-                      if (changeCharacter) {
-                        changeCharacter(character);
+              {!charactersLoading ? (
+                allCharacterOptions.length > 1 ? (
+                  <Select 
+                    value={currentChatCharacter?.id === 'narrator' ? 'narrator' : currentChatCharacter?.id?.toString() || ""} 
+                    onValueChange={(value) => {
+                      if (value === 'narrator') {
+                        setCurrentChatCharacter({ id: 'narrator', firstName: 'Vypravěč', lastName: '', isNarrator: true });
+                      } else {
+                        const character = availableCharacters.find(c => c.id === parseInt(value));
+                        if (character) {
+                          setCurrentChatCharacter(character);
+                          changeCharacter(character);
+                        }
                       }
-                    }
-                  }}
-                >
-                  <SelectTrigger className="w-64">
-                    <SelectValue>
-                      {currentChatCharacter ? 
+                    }}
+                  >
+                    <SelectTrigger className="w-64">
+                      <SelectValue>
+                        {currentChatCharacter?.id === 'narrator' ? 'Vypravěč' :
+                         currentChatCharacter ? 
                         `${currentChatCharacter.firstName} ${currentChatCharacter.lastName}` : 
                         "Vyberte postavu"}
-                    </SelectValue>
-                  </SelectTrigger>
-                  <SelectContent>
-                    {availableCharacters.map((character) => (
-                      <SelectItem key={character.id} value={character.id.toString()}>
-                        {character.firstName} {character.middleName ? `${character.middleName} ` : ''}{character.lastName}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              ) : availableCharacters.length === 1 ? (
-                <span className="text-sm font-medium text-primary">
-                  {availableCharacters[0].firstName} {availableCharacters[0].lastName}
-                </span>
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {availableCharacters.map((character) => (
+                        <SelectItem key={character.id} value={character.id.toString()}>
+                          {character.firstName} {character.middleName ? `${character.middleName} ` : ''}{character.lastName}
+                        </SelectItem>
+                      ))}
+                      {canSendAsNarrator && (
+                        <SelectItem value="narrator">Vypravěč</SelectItem>
+                      )}
+                    </SelectContent>
+                  </Select>
+                ) : availableCharacters.length === 1 && !canSendAsNarrator ? (
+                  <span className="text-sm font-medium text-primary">
+                    {availableCharacters[0].firstName} {availableCharacters[0].lastName}
+                  </span>
+                ) : availableCharacters.length === 0 ? (
+                  <span className="text-sm font-medium text-red-500">
+                    Žádné postavy k dispozici
+                  </span>
+                ) : (
+                  <Select 
+                    value={currentChatCharacter?.id === 'narrator' ? 'narrator' : currentChatCharacter?.id?.toString() || ""} 
+                    onValueChange={(value) => {
+                      if (value === 'narrator') {
+                        setCurrentChatCharacter({ id: 'narrator', firstName: 'Vypravěč', lastName: '', isNarrator: true });
+                      } else {
+                        const character = availableCharacters.find(c => c.id === parseInt(value));
+                        if (character) {
+                          setCurrentChatCharacter(character);
+                          changeCharacter(character);
+                        }
+                      }
+                    }}
+                  >
+                    <SelectTrigger className="w-64">
+                      <SelectValue>
+                        {currentChatCharacter?.id === 'narrator' ? 'Vypravěč' :
+                         currentChatCharacter ? 
+                        `${currentChatCharacter.firstName} ${currentChatCharacter.lastName}` : 
+                        "Vyberte postavu"}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {availableCharacters.map((character) => (
+                        <SelectItem key={character.id} value={character.id.toString()}>
+                          {character.firstName} {character.middleName ? `${character.middleName} ` : ''}{character.lastName}
+                        </SelectItem>
+                      ))}
+                      {canSendAsNarrator && (
+                        <SelectItem value="narrator">Vypravěč</SelectItem>
+                      )}
+                    </SelectContent>
+                  </Select>
+                )
               ) : (
-                <span className="text-sm font-medium text-red-500">
-                  Žádné postavy k dispozici
-                </span>
+                <span className="text-sm text-muted-foreground">Načítání postav...</span>
               )}
             </div>
           </div>
@@ -575,8 +666,22 @@ export default function ChatRoom() {
             {/* Character Avatar */}
             <Avatar className="w-10 h-10 flex-shrink-0">
               <AvatarImage src="" />
-              <AvatarFallback className="bg-secondary/50 text-secondary-foreground font-semibold">
-                {currentChatCharacter ? 
+              <AvatarFallback className={`font-semibold ${
+                currentChatCharacter?.id === 'narrator' 
+                  ? `text-white` 
+                  : 'bg-secondary/50 text-secondary-foreground'
+              }`} style={{
+                backgroundColor: currentChatCharacter?.id === 'narrator' ? (
+                  user?.narratorColor === 'yellow' ? '#fbbf24' :
+                  user?.narratorColor === 'red' ? '#ef4444' :
+                  user?.narratorColor === 'blue' ? '#3b82f6' :
+                  user?.narratorColor === 'green' ? '#10b981' :
+                  user?.narratorColor === 'pink' ? '#ec4899' :
+                  '#8b5cf6'
+                ) : undefined
+              }}>
+                {currentChatCharacter?.id === 'narrator' ? 'V' :
+                 currentChatCharacter ? 
                   `${currentChatCharacter.firstName.charAt(0)}${currentChatCharacter.lastName.charAt(0)}` : 
                   getCurrentUserInitials()}
               </AvatarFallback>
@@ -607,14 +712,43 @@ export default function ChatRoom() {
               </div>
             </div>
             
-            {/* Send Button */}
-            <Button
-              onClick={handleSendMessage}
-              disabled={!isMessageValid || !currentChatCharacter || sendMessageMutation.isPending}
-              className="h-[60px] px-6"
-            >
-              <Send className="h-4 w-4" />
-            </Button>
+            {/* Action Buttons */}
+            <div className="flex flex-col gap-2">
+              {/* Dice and Coin buttons - available for all characters */}
+              {currentChatCharacter && currentChatCharacter.id !== 'narrator' && (
+                <div className="flex gap-1">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => diceRollMutation.mutate()}
+                    disabled={!isConnected || diceRollMutation.isPending}
+                    className="h-8 px-2"
+                    title="Hod kostkou"
+                  >
+                    <Dices className="h-3 w-3" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => coinFlipMutation.mutate()}
+                    disabled={!isConnected || coinFlipMutation.isPending}
+                    className="h-8 px-2"
+                    title="Hod mincí"
+                  >
+                    <Coins className="h-3 w-3" />
+                  </Button>
+                </div>
+              )}
+              
+              {/* Send Button */}
+              <Button
+                onClick={handleSendMessage}
+                disabled={!isMessageValid || !currentChatCharacter || sendMessageMutation.isPending}
+                className="h-[60px] px-6"
+              >
+                <Send className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </div>
       </Card>
