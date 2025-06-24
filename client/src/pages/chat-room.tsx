@@ -644,3 +644,14 @@ export default function ChatRoom() {
                     {messageInputLength < MIN_MESSAGE_LENGTH 
                       ? `Minimum ${MIN_MESSAGE_LENGTH} znak` 
                       : `Maximum ${MAX_MESSAGE_LENGTH} znaků`
+                    }
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </Card>
+    </div>
+  );
+}
