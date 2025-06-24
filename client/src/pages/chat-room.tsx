@@ -534,65 +534,71 @@ export default function ChatRoom() {
             <div ref={messagesEndRef} />
           </div>
         </ScrollArea>
-        {/* Input, avatar a Select pro výběr postavy */}
-        <div className="flex items-end gap-3 mt-2 px-6 pb-4">
-          <Avatar className="w-10 h-10 flex-shrink-0">
-            <AvatarImage src="" />
-            <AvatarFallback className="bg-primary/10 text-primary font-semibold">
-              {getCharacterInitials(selectedCharacter)}
-            </AvatarFallback>
-          </Avatar>
-          <Select
-            value={selectedCharacter?.id?.toString() || ''}
-            onValueChange={val => {
-              const char = userCharacters.find(c => c.id.toString() === val);
-              if (char) setSelectedCharacter(char);
-            }}
-          >
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Vyber postavu" />
-            </SelectTrigger>
-            <SelectContent>
-              {userCharacters.map(char => (
-                <SelectItem key={char.id} value={char.id.toString()}>
-                  {getCharacterName(char)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Textarea
-            className="flex-1 min-h-[48px] max-h-[120px] resize-none"
-            placeholder="Napište zprávu..."
-            value={messageInput}
-            onChange={e => setMessageInput(e.target.value)}
-            onKeyDown={e => {
-              if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                handleSendMessage();
-              }
-            }}
-            maxLength={MAX_MESSAGE_LENGTH}
-            disabled={!isConnected}
-          />
-          <Button
-            variant="default"
-            size="sm"
-            onClick={handleSendMessage}
-            disabled={!isMessageValid || !isConnected}
-          >
-            Odeslat
-          </Button>
-        </div>
-        {/* Tlačítka pod inputem */}
-        <div className="flex gap-2 mt-2 px-6 pb-4">
-          <Button variant="secondary" size="sm" onClick={() => diceRollMutation.mutate()} disabled={!selectedCharacter}>
-            <Dices className="h-4 w-4 mr-1" /> Kostka
-          </Button>
-          <Button variant="secondary" size="sm" onClick={() => coinFlipMutation.mutate()} disabled={!selectedCharacter}>
-            <Coins className="h-4 w-4 mr-1" /> Mince
-          </Button>
-          {/* Kouzla a vypravěč zobrazit podle pravidel */}
-          {/* ... případně další tlačítka ... */}
+        {/* Kompaktní dolní lišta */}
+        <div className="flex flex-col gap-1 px-6 pb-4">
+          <div className="flex items-end gap-3">
+            <Avatar className="w-10 h-10 flex-shrink-0">
+              <AvatarImage src="" />
+              <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+                {getCharacterInitials(selectedCharacter)}
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex-1 flex flex-col gap-1">
+              <Textarea
+                className="min-h-[48px] max-h-[120px] resize-none"
+                placeholder="Napište zprávu..."
+                value={messageInput}
+                onChange={e => setMessageInput(e.target.value)}
+                onKeyDown={e => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSendMessage();
+                  }
+                }}
+                maxLength={MAX_MESSAGE_LENGTH}
+                disabled={!isConnected}
+              />
+              <div className="flex justify-end text-xs text-muted-foreground">
+                {messageInputLength}/{MAX_MESSAGE_LENGTH} znaků
+              </div>
+            </div>
+            <Button
+              variant="default"
+              size="sm"
+              onClick={handleSendMessage}
+              disabled={!isMessageValid || !isConnected}
+            >
+              Odeslat
+            </Button>
+          </div>
+          <div className="flex gap-2 mt-1 items-center">
+            <Select
+              value={selectedCharacter?.id?.toString() || ''}
+              onValueChange={val => {
+                const char = userCharacters.find(c => c.id.toString() === val);
+                if (char) setSelectedCharacter(char);
+              }}
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Vyber postavu" />
+              </SelectTrigger>
+              <SelectContent>
+                {userCharacters.map(char => (
+                  <SelectItem key={char.id} value={char.id.toString()}>
+                    {getCharacterName(char)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Button variant="secondary" size="sm" onClick={() => diceRollMutation.mutate()} disabled={!selectedCharacter}>
+              <Dices className="h-4 w-4 mr-1" /> Kostka
+            </Button>
+            <Button variant="secondary" size="sm" onClick={() => coinFlipMutation.mutate()} disabled={!selectedCharacter}>
+              <Coins className="h-4 w-4 mr-1" /> Mince
+            </Button>
+            {/* Kouzla a vypravěč zobrazit podle práv */}
+            {/* ... případně další tlačítka ... */}
+          </div>
         </div>
       </div>
       {/* Pravý panel: Popis místnosti a tlačítko Upravit pro admina */}
