@@ -29,7 +29,7 @@ interface Character {
 export default function CharactersList() {
   const [, setLocation] = useLocation();
   const { user } = useAuth();
-  
+
   const isAdmin = user?.role === 'admin';
 
   const { data: characters = [], isLoading } = useQuery<Character[]>({
@@ -91,7 +91,7 @@ export default function CharactersList() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {activeCharacters.map((character) => (
+        {activeCharacters.filter(character => character && character.firstName).map((character) => (
           <Card key={character.id} className="hover:shadow-lg transition-shadow">
             <CardHeader className="pb-3">
               <div className="flex items-center gap-3">

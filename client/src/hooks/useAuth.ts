@@ -48,7 +48,7 @@ export function useAuth() {
 
       const userData = await response.json();
       console.log('[useAuth] Loaded user data:', userData);
-      
+
       // Pokud user nemá characters property, načti je zvlášť
       if (userData && !userData.characters) {
         try {
@@ -69,7 +69,7 @@ export function useAuth() {
           userData.characters = [];
         }
       }
-      
+
       return userData;
     },
     retry: false,

@@ -51,9 +51,9 @@ export default function ChatRoom() {
   const [isConnected, setIsConnected] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { selectedCharacter, changeCharacter, userCharacters, isLoading: charactersLoading, canSendAsNarrator } = useSelectedCharacter();
-  
+
   const currentRoomId = roomId ? parseInt(roomId) : null;
-  
+
   // Debug user data
   console.log("User data:", user);
   console.log("User characters from query:", userCharacters);
@@ -64,7 +64,7 @@ export default function ChatRoom() {
     queryKey: ["/api/chat/rooms"],
     enabled: !!user,
   });
-  
+
   const currentRoom = rooms.find(r => r.id === currentRoomId);
 
   // Fetch messages for current room
@@ -143,11 +143,11 @@ export default function ChatRoom() {
         credentials: "include",
         body: JSON.stringify({}),
       });
-      
+
       if (!response.ok) {
         throw new Error("Archivace se nezdařila");
       }
-      
+
       return response.json();
     },
     onSuccess: () => {
@@ -221,14 +221,14 @@ export default function ChatRoom() {
   // Export chat function
   const exportChat = async () => {
     if (!currentRoomId) return;
-    
+
     try {
       const response = await fetch(`${API_URL}/api/chat/rooms/${currentRoomId}/export`, {
         credentials: 'include',
       });
-      
+
       if (!response.ok) throw new Error('Export se nezdařil');
-      
+
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -239,7 +239,7 @@ export default function ChatRoom() {
       a.click();
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
-      
+
       toast({
         title: "Chat exportován",
         description: "Soubor byl stažen do vašeho počítače.",
@@ -255,62 +255,55 @@ export default function ChatRoom() {
 
   // Initialize WebSocket connection
   useEffect(() => {
-    if (!user || !selectedCharacter) return;
-    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-    const wsUrl = `${protocol}//${window.location.host}/ws`;
-    const websocket = new WebSocket(wsUrl);
+    if (!user || !roomId) return;
 
-    websocket.onopen = () => {
-      console.log("WebSocket připojen");
-      setIsConnected(true);
-      // Authenticate with the server
-      websocket.send(JSON.stringify({
-        type: 'authenticate',
-        userId: user.id,
-        characterId: selectedCharacter.id,
-      }));
-    };
+    const token = localStorage.getItem('jwt_token');
+    if (!token) {
+      console.error('No JWT token found for WebSocket connection');
+      return;
+    }
 
-    websocket.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      
-      switch (data.type) {
-        case 'authenticated':
-          console.log("WebSocket autentifikován");
-          break;
-        case 'new_message':
-          // Add new message to the cache
-          queryClient.setQueryData<ChatMessage[]>(
-            ["/api/chat/rooms", data.message.roomId, "messages"],
-            (oldData) => oldData ? [...oldData, data.message] : [data.message]
-          );
-          break;
-        case 'error':
-          toast({
-            title: "WebSocket chyba",
-            description: data.message,
-            variant: "destructive",
-          });
-          break;
-      }
-    };
+    // Ensure we have a valid token before attempting connection
+    try {
+      const wsUrl = `${import.meta.env.VITE_WS_URL || 'wss://umbra-dev.onrender.com'}/ws?token=${encodeURIComponent(token)}`;
+      console.log('Connecting to WebSocket:', wsUrl);
 
-    websocket.onclose = () => {
-      console.log("WebSocket odpojen");
-      setIsConnected(false);
-    };
+      const ws = new WebSocket(wsUrl);
+      setWs(ws);
 
-    websocket.onerror = (error) => {
-      console.error("WebSocket chyba:", error);
-      setIsConnected(false);
-    };
+      ws.onopen = () => {
+        console.log('WebSocket připojen');
+        setIsConnected(true);
+      };
 
-    setWs(websocket);
+      ws.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          console.log('WebSocket zpráva:', data);
+        } catch (err) {
+          console.log('WebSocket raw message:', event.data);
+        }
+      };
 
-    return () => {
-      websocket.close();
-    };
-  }, [user, selectedCharacter, queryClient, toast]);
+      ws.onclose = (event) => {
+        console.log('WebSocket odpojen', event.code, event.reason);
+        setIsConnected(false);
+      };
+
+      ws.onerror = (error) => {
+        console.error('WebSocket chyba:', error);
+        setIsConnected(false);
+      };
+
+      return () => {
+        if (ws.readyState === WebSocket.OPEN) {
+          ws.close();
+        }
+      };
+    } catch (error) {
+      console.error('Failed to create WebSocket connection:', error);
+    }
+  }, [user, roomId]);
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -319,7 +312,7 @@ export default function ChatRoom() {
 
   // Filter available characters
   const availableCharacters = userCharacters.filter(char => !char.deathDate && !char.isSystem);
-  
+
   // Create all available options (characters + narrator if allowed)
   const allCharacterOptions = [
     ...availableCharacters,
@@ -329,7 +322,7 @@ export default function ChatRoom() {
   // Update current chat character when selectedCharacter changes
   useEffect(() => {
     console.log("Character effect - selectedCharacter:", selectedCharacter, "availableCharacters:", availableCharacters.length);
-    
+
     if (selectedCharacter) {
       changeCharacter(selectedCharacter);
     } else if (availableCharacters.length > 0) {
@@ -514,7 +507,7 @@ export default function ChatRoom() {
                 </div>
               </div>
             </div>
-            
+
             {/* Výběr postavy/role */}
             <div className="flex items-center gap-2">
               <Select onValueChange={handleSelectChange} value={selectedCharacter?.id?.toString() || ''}>
@@ -540,7 +533,7 @@ export default function ChatRoom() {
               <span className="text-sm text-muted-foreground">
                 {isConnected ? 'Připojeno' : 'Odpojeno'}
               </span>
-              
+
               <div className="flex gap-2 ml-4">
                 <Button
                   variant="outline"
@@ -563,7 +556,7 @@ export default function ChatRoom() {
             </div>
           </div>
         </CardHeader>
-        
+
         {/* Messages Area */}
         <ScrollArea className="flex-1 p-4">
           <div className="space-y-4">
@@ -576,7 +569,7 @@ export default function ChatRoom() {
                     {getCharacterInitials(message.character)}
                   </AvatarFallback>
                 </Avatar>
-                
+
                 {/* Message Content */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-baseline gap-2 mb-1">
@@ -623,7 +616,7 @@ export default function ChatRoom() {
                   getCurrentUserInitials()}
               </AvatarFallback>
             </Avatar>
-            
+
             {/* Input Area */}
             <div className="flex-1">
               <Textarea
