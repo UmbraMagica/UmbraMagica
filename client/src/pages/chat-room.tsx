@@ -46,7 +46,7 @@ const API_URL = import.meta.env.VITE_API_URL || '';
 function getCharacterName(message: any): string {
   // Pokud je characterId 0, jedná se o vypravěčskou zprávu
   if (message.characterId === 0) {
-    return 'Vypravěč';
+    return message.character?.firstName || 'Vypravěč';
   }
   
   // Pokud je message objekt postavy (ne zpráva)
@@ -60,19 +60,21 @@ function getCharacterName(message: any): string {
   // Pokud je to zpráva s vnořenou postavou
   const character = message.character;
   if (!character || typeof character !== 'object') {
+    console.warn('Missing character data for message:', message);
     return 'Neznámá postava';
   }
   const firstName = character.firstName || '';
   const middleName = character.middleName || '';
   const lastName = character.lastName || '';
-  return `${firstName}${middleName ? ` ${middleName}` : ''} ${lastName}`.trim() || 'Neznámá postava';
+  const fullName = `${firstName}${middleName ? ` ${middleName}` : ''} ${lastName}`.trim();
+  return fullName || 'Neznámá postava';
 }
 
 // Helper function to safely get character initials
 function getCharacterInitials(message: any): string {
   // Pokud je characterId 0, jedná se o vypravěčskou zprávu
   if (message.characterId === 0) {
-    return 'V';
+    return message.character?.firstName?.charAt(0) || 'V';
   }
   
   // Pokud je message objekt postavy (ne zpráva)
@@ -165,35 +167,45 @@ export default function ChatRoom() {
     if (!user || !roomId) return;
 
     const token = localStorage.getItem('jwt_token');
-    if (!token) return;
+    if (!token) {
+      console.warn('No JWT token found for WebSocket connection');
+      return;
+    }
 
     try {
-      const wsUrl = `${import.meta.env.VITE_WS_URL || 'wss://umbra-dev.onrender.com'}/ws?token=${encodeURIComponent(token)}`;
+      const wsBaseUrl = import.meta.env.VITE_WS_URL || window.location.protocol.replace('http', 'ws') + '//' + window.location.host;
+      const wsUrl = `${wsBaseUrl}/ws?token=${encodeURIComponent(token)}`;
+      console.log('Connecting to WebSocket:', wsUrl);
+      
       const ws = new WebSocket(wsUrl);
       setWs(ws);
 
       ws.onopen = () => {
+        console.log('WebSocket connected');
         setIsConnected(true);
       };
 
       ws.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
+          console.log('WebSocket message received:', data);
           if (data.type === 'new_message') {
             queryClient.invalidateQueries({ 
               queryKey: ["/api/chat/rooms", currentRoomId, "messages"] 
             });
           }
         } catch (err) {
-          // Ignore parsing errors
+          console.warn('Failed to parse WebSocket message:', err);
         }
       };
 
-      ws.onclose = () => {
+      ws.onclose = (event) => {
+        console.log('WebSocket closed:', event.code, event.reason);
         setIsConnected(false);
       };
 
-      ws.onerror = () => {
+      ws.onerror = (error) => {
+        console.error('WebSocket error:', error);
         setIsConnected(false);
       };
 
@@ -204,6 +216,7 @@ export default function ChatRoom() {
       };
     } catch (error) {
       console.error('Failed to create WebSocket connection:', error);
+      setIsConnected(false);
     }
   }, [user, roomId, currentRoomId, queryClient]);
 
@@ -324,8 +337,12 @@ export default function ChatRoom() {
   // Dice roll mutation
   const diceRollMutation = useMutation({
     mutationFn: async () => {
-      if (!selectedCharacter) {
+      if (!selectedCharacter || !selectedCharacter.id) {
         throw new Error("Vyberte postavu");
+      }
+
+      if (!currentRoomId) {
+        throw new Error("Neplatná místnost");
       }
 
       const token = localStorage.getItem('jwt_token');
@@ -335,6 +352,7 @@ export default function ChatRoom() {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
+        credentials: 'include',
         body: JSON.stringify({
           roomId: currentRoomId,
           characterId: selectedCharacter.id
@@ -342,7 +360,8 @@ export default function ChatRoom() {
       });
 
       if (!response.ok) {
-        throw new Error('Nepodařilo se hodit kostkou');
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || 'Nepodařilo se hodit kostkou');
       }
 
       return response.json();
@@ -351,6 +370,7 @@ export default function ChatRoom() {
       queryClient.invalidateQueries({ queryKey: ["/api/chat/rooms", currentRoomId, "messages"] });
     },
     onError: (error) => {
+      console.error('Dice roll error:', error);
       toast({
         title: "Chyba při hodu kostkou",
         description: error.message,
@@ -362,8 +382,12 @@ export default function ChatRoom() {
   // Coin flip mutation
   const coinFlipMutation = useMutation({
     mutationFn: async () => {
-      if (!selectedCharacter) {
+      if (!selectedCharacter || !selectedCharacter.id) {
         throw new Error("Vyberte postavu");
+      }
+
+      if (!currentRoomId) {
+        throw new Error("Neplatná místnost");
       }
 
       const token = localStorage.getItem('jwt_token');
@@ -373,6 +397,7 @@ export default function ChatRoom() {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
+        credentials: 'include',
         body: JSON.stringify({
           roomId: currentRoomId,
           characterId: selectedCharacter.id
@@ -380,7 +405,8 @@ export default function ChatRoom() {
       });
 
       if (!response.ok) {
-        throw new Error('Nepodařilo se hodit mincí');
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || 'Nepodařilo se hodit mincí');
       }
 
       return response.json();
@@ -389,6 +415,7 @@ export default function ChatRoom() {
       queryClient.invalidateQueries({ queryKey: ["/api/chat/rooms", currentRoomId, "messages"] });
     },
     onError: (error) => {
+      console.error('Coin flip error:', error);
       toast({
         title: "Chyba při hodu mincí",
         description: error.message,
@@ -497,6 +524,13 @@ export default function ChatRoom() {
       return;
     }
 
+    console.log('Sending message:', { 
+      isNarratorMode, 
+      selectedCharacter, 
+      canSendAsNarrator,
+      messageInput: messageInput.trim() 
+    });
+
     if (isNarratorMode) {
       // Vypravěčská zpráva
       if (!canSendAsNarrator) {
@@ -508,7 +542,7 @@ export default function ChatRoom() {
         return;
       }
       sendNarratorMessageMutation.mutate(messageInput.trim());
-    } else if (selectedCharacter) {
+    } else if (selectedCharacter && selectedCharacter.id) {
       // Běžná zpráva
       sendMessageMutation.mutate({
         content: messageInput.trim(),
@@ -627,7 +661,7 @@ export default function ChatRoom() {
             {sortedMessages.map((message) => (
               <div key={message.id} className="flex gap-3 items-start">
                 <Avatar className="w-10 h-10 flex-shrink-0">
-                  <AvatarImage src="" />
+                  <AvatarImage src={message.character?.avatar || ""} />
                   <AvatarFallback className="bg-primary/10 text-primary font-semibold">
                     {getCharacterInitials(message)}
                   </AvatarFallback>
@@ -655,7 +689,7 @@ export default function ChatRoom() {
           {/* První řádek: Avatar + pole pro zprávu + tlačítko odeslat */}
           <div className="flex items-center gap-3">
             <Avatar className="w-8 h-8 flex-shrink-0">
-              <AvatarImage src="" />
+              <AvatarImage src={selectedCharacter?.avatar || ""} />
               <AvatarFallback className="bg-primary/10 text-primary font-semibold text-xs">
                 {selectedCharacter ? getCharacterInitials(selectedCharacter) : 'NP'}
               </AvatarFallback>
@@ -717,24 +751,28 @@ export default function ChatRoom() {
               variant="outline" 
               size="sm" 
               onClick={() => diceRollMutation.mutate()} 
-              disabled={!selectedCharacter}
+              disabled={!selectedCharacter || !selectedCharacter.id || diceRollMutation.isPending}
               className="h-8 gap-1"
               title="Hodit kostkou (1-10)"
             >
               <Dices className="h-4 w-4 text-blue-600" />
-              <span className="text-xs text-blue-600 font-medium">Kostka</span>
+              <span className="text-xs text-blue-600 font-medium">
+                {diceRollMutation.isPending ? 'Házím...' : 'Kostka'}
+              </span>
             </Button>
 
             <Button 
               variant="outline" 
               size="sm" 
               onClick={() => coinFlipMutation.mutate()} 
-              disabled={!selectedCharacter}
+              disabled={!selectedCharacter || !selectedCharacter.id || coinFlipMutation.isPending}
               className="h-8 gap-1"
               title="Hodit mincí"
             >
               <Coins className="h-4 w-4 text-yellow-600" />
-              <span className="text-xs text-yellow-600 font-medium">Mince</span>
+              <span className="text-xs text-yellow-600 font-medium">
+                {coinFlipMutation.isPending ? 'Házím...' : 'Mince'}
+              </span>
             </Button>
 
             <Button 

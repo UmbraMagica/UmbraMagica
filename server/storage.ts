@@ -360,36 +360,76 @@ export class DatabaseStorage implements IStorage {
     return toCamel(data || []);
   }
 
-  async getChatMessages(roomId: number): Promise<any> {
+  async getChatMessages(roomId: number) {
     try {
+      console.log(`[STORAGE] Fetching messages for room ${roomId}`);
+
       const { data, error } = await supabase
         .from('messages')
         .select(`
           *,
-          character:characters(first_name, middle_name, last_name, avatar)
+          character:characters(id, first_name, middle_name, last_name, avatar, user_id)
         `)
         .eq('room_id', roomId)
-        .order('created_at', { ascending: false })
-        .limit(100);
+        .order('created_at', { ascending: true });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching chat messages:', error);
+        return [];
+      }
 
-      // Convert to camelCase
-      const messages = (data || []).map(msg => ({
-        id: msg.id,
-        roomId: msg.room_id,
-        characterId: msg.character_id,
-        content: msg.content,
-        messageType: msg.message_type || 'text',
-        createdAt: msg.created_at,
-        character: msg.character ? {
-          firstName: msg.character.first_name,
-          middleName: msg.character.middle_name,
-          lastName: msg.character.last_name,
-          avatar: msg.character.avatar
-        } : null
-      }));
+      console.log(`[STORAGE] Found ${data?.length || 0} messages`);
 
+      const messages = (data || []).map(msg => {
+        // Handle narrator/system messages (character_id = 0)
+        if (msg.character_id === 0) {
+          return {
+            id: msg.id,
+            roomId: msg.room_id,
+            characterId: 0,
+            content: msg.content,
+            messageType: msg.message_type,
+            createdAt: msg.created_at,
+            character: {
+              id: 0,
+              firstName: msg.message_type === 'narrator' ? 'Vypravěč' : 'Systém',
+              middleName: null,
+              lastName: '',
+              avatar: null,
+              userId: 0
+            }
+          };
+        }
+
+        // Handle regular character messages
+        const characterData = msg.character ? {
+          id: msg.character.id,
+          firstName: msg.character.first_name || '',
+          middleName: msg.character.middle_name || null,
+          lastName: msg.character.last_name || '',
+          avatar: msg.character.avatar || null,
+          userId: msg.character.user_id || 0
+        } : {
+          id: msg.character_id,
+          firstName: 'Neznámá',
+          middleName: null,
+          lastName: 'postava',
+          avatar: null,
+          userId: 0
+        };
+
+        return {
+          id: msg.id,
+          roomId: msg.room_id,
+          characterId: msg.character_id,
+          content: msg.content,
+          messageType: msg.message_type,
+          createdAt: msg.created_at,
+          character: characterData
+        };
+      });
+
+      console.log(`[STORAGE] Processed ${messages.length} messages`);
       return messages;
     } catch (error) {
       console.error('Error fetching chat messages:', error);
@@ -1462,7 +1502,7 @@ export class DatabaseStorage implements IStorage {
         flexibilities: (flexibilities.data || []).map(toCamel),
       };
     } catch (error) {
-      console.error('Error in getAllWandComponents:', error);
+      console.error('Error in getAllWandComponents:',error);
       throw error;
     }
   }
