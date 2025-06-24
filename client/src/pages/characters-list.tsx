@@ -120,7 +120,6 @@ export default function CharactersList() {
                 <div className="flex items-center gap-2">
                   <Badge variant="secondary" className="text-xs">
                     {character.firstName} {character.middleName ? `${character.middleName} ` : ''}{character.lastName}
-                    {character.isSystem && <span style={{color: '#888', fontSize: '0.9em'}}> (Systémová postava)</span>}
                   </Badge>
                 </div>
               </div>

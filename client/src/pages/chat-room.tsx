@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams, useLocation } from "wouter";
@@ -132,47 +131,14 @@ export default function ChatRoom() {
   console.log('[ChatRoom] FULL DEBUG - User characters count:', userCharactersRaw.length);
   console.log('[ChatRoom] FULL DEBUG - Current user ID:', user?.id);
 
-  // Process user characters - only alive, non-system characters that belong to the current user
+  // Process user characters - only alive, non-system characters belonging to the user
   const userCharacters = Array.isArray(userCharactersRaw) ? 
-    userCharactersRaw.filter((char) => {
-      console.log('[ChatRoom] FULL DEBUG - Processing character:', {
-        id: char.id,
-        firstName: char.firstName,
-        lastName: char.lastName,
-        userId: char.userId,
-        deathDate: char.deathDate,
-        isSystem: char.isSystem,
-        currentUserId: user?.id
-      });
-      
-      if (!char || typeof char !== 'object') {
-        console.log('[ChatRoom] FULL DEBUG - Character invalid (not object)');
-        return false;
-      }
-      
-      // Check basic properties
-      const hasValidId = typeof char.id === 'number' && char.id > 0;
-      const hasValidFirstName = typeof char.firstName === 'string' && char.firstName.trim() !== '';
-      const isAlive = !char.deathDate;
-      const isNotSystem = !char.isSystem;
-      
-      // IMPORTANT: Only include characters that belong to the current user
-      // Even admin can only send messages as their own characters, not as other users' characters
-      const belongsToUser = char.userId === user?.id;
-      
-      const isValid = hasValidId && hasValidFirstName && isAlive && isNotSystem && belongsToUser;
-      
-      console.log('[ChatRoom] FULL DEBUG - Character validation:', {
-        hasValidId,
-        hasValidFirstName,
-        isAlive,
-        isNotSystem,
-        belongsToUser,
-        isValid
-      });
-      
-      return isValid;
-    }) : [];
+    userCharactersRaw.filter(char => 
+      char && 
+      !char.deathDate && 
+      !char.isSystem &&
+      char.userId === user?.id
+    ) : [];
 
   console.log('[ChatRoom] FULL DEBUG - Filtered user characters:', userCharacters);
   console.log('[ChatRoom] FULL DEBUG - Filtered characters count:', userCharacters.length);
@@ -766,7 +732,7 @@ export default function ChatRoom() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-baseline gap-2 mb-1">
                       <span className="font-semibold text-foreground">
-                        {getCharacterName(message)}
+                        {message.character.firstName} {message.character.middleName ? message.character.middleName + ' ' : ''}{message.character.lastName}
                       </span>
                       <span className="text-xs text-muted-foreground">
                         {formatMessageTime(message.createdAt)}

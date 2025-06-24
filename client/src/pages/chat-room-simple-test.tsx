@@ -15,8 +15,8 @@ export default function ChatRoomSimpleTest() {
     enabled: !!user,
   });
 
-  // Filter characters (remove dead and system characters)
-  const userCharacters = Array.isArray(allUserCharacters) ? allUserCharacters.filter((char: any) => !char.deathDate && !char.isSystem) : [];
+  // Filtr pro výběr postavy uživatelem:
+  const userCharacters = Array.isArray(allUserCharacters) ? allUserCharacters.filter((char: any) => !char.deathDate && !char.isSystem && char.userId === user?.id) : [];
 
   // Simple access check
   const canAccess = user?.role === 'admin' || userCharacters.length > 0;
@@ -46,7 +46,7 @@ export default function ChatRoomSimpleTest() {
               <h3 className="font-medium">Dostupné postavy ({userCharacters.length}):</h3>
               {userCharacters.map((char: any) => (
                 <div key={char.id} className="p-2 border rounded">
-                  {char.firstName} {char.lastName} (ID: {char.id})
+                  {char.firstName} {char.middleName ? `${char.middleName} ` : ''} {char.lastName} (ID: {char.id})
                 </div>
               ))}
             </div>

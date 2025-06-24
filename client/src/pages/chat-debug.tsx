@@ -28,19 +28,7 @@ export default function ChatDebug() {
 
   const filteredCharacters = allUserCharacters.filter((char: any) => !char.deathDate && !char.isSystem);
   
-  const userCharacters = (() => {
-    if (!user?.characterOrder || !Array.isArray(user.characterOrder)) {
-      return filteredCharacters;
-    }
-    
-    const orderMap = new Map(user.characterOrder.map((id, index) => [id, index]));
-    
-    return [...filteredCharacters].sort((a, b) => {
-      const orderA = orderMap.get(a.id) ?? 999;
-      const orderB = orderMap.get(b.id) ?? 999;
-      return orderA - orderB;
-    });
-  })();
+  const userCharacters = allUserCharacters.filter((char: any) => !char.deathDate && !char.isSystem && char.userId === user?.id);
 
   const needsCharacter = user?.role !== 'admin';
 
@@ -66,7 +54,7 @@ export default function ChatDebug() {
               <ul className="space-y-1">
                 {allUserCharacters.map((char: any) => (
                   <li key={char.id} className="text-sm">
-                    {char.id}: {char.firstName} {char.lastName} 
+                    {char.id}: {char.firstName} {char.middleName ? `${char.middleName} ` : ''}{char.lastName} 
                     {char.deathDate && ' (DEAD)'}
                     {char.isSystem && ' (SYSTEM)'}
                   </li>
@@ -83,7 +71,7 @@ export default function ChatDebug() {
               <ul className="space-y-1">
                 {userCharacters.map((char: any) => (
                   <li key={char.id} className="text-sm">
-                    {char.id}: {char.firstName} {char.lastName}
+                    {char.id}: {char.firstName} {char.middleName ? `${char.middleName} ` : ''}{char.lastName}
                   </li>
                 ))}
               </ul>
