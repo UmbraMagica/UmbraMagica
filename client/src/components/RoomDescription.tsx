@@ -24,6 +24,51 @@ interface RoomDescriptionProps {
   roomName?: string;
 }
 
+// Helper function to format text with markdown-like syntax
+function formatDescription(text: string, roomName?: string): string {
+  if (!text) return '';
+  
+  let formatted = text;
+  
+  // Tučné písmo: **text** -> <strong>text</strong>
+  formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  
+  // Kurzíva: *text* -> <em>text</em>
+  formatted = formatted.replace(/\*(.*?)\*/g, '<em>$1</em>');
+  
+  // Podtržené: __text__ -> <u>text</u>
+  formatted = formatted.replace(/__(.*?)__/g, '<u>$1</u>');
+  
+  // Odkazy na místnosti: [Název místnosti] -> <span class="room-link">Název místnosti</span>
+  formatted = formatted.replace(/\[([^\]]+)\]/g, '<span class="text-blue-500 underline cursor-pointer">$1</span>');
+  
+  // Zachování line breaků
+  formatted = formatted.replace(/\n/g, '<br>');
+  
+  return formatted;
+}
+
+export function RoomDescription({ description, roomName }: RoomDescriptionProps) {
+  const formattedDescription = formatDescription(description, roomName);
+  
+  return (
+    <div 
+      className="text-sm text-muted-foreground prose prose-sm max-w-none"
+      dangerouslySetInnerHTML={{ 
+        __html: DOMPurify.sanitize(formattedDescription, {
+          ALLOWED_TAGS: ['strong', 'em', 'u', 'span', 'br'],
+          ALLOWED_ATTR: ['class']
+        })
+      }}
+    />
+  );
+}
+
+interface RoomDescriptionProps {
+  description: string;
+  roomName?: string;
+}
+
 export function RoomDescription({ description, roomName }: RoomDescriptionProps) {
   const [, setLocation] = useLocation();
   

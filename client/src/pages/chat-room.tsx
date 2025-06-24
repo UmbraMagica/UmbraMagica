@@ -49,6 +49,15 @@ function getCharacterName(message: any): string {
     return 'Vypravěč';
   }
   
+  // Pokud je message objekt postavy (ne zpráva)
+  if (message.firstName) {
+    const firstName = message.firstName || '';
+    const middleName = message.middleName || '';
+    const lastName = message.lastName || '';
+    return `${firstName}${middleName ? ` ${middleName}` : ''} ${lastName}`.trim() || 'Neznámá postava';
+  }
+  
+  // Pokud je to zpráva s vnořenou postavou
   const character = message.character;
   if (!character || typeof character !== 'object') {
     return 'Neznámá postava';
@@ -64,6 +73,13 @@ function getCharacterInitials(message: any): string {
   // Pokud je characterId 0, jedná se o vypravěčskou zprávu
   if (message.characterId === 0) {
     return 'V';
+  }
+  
+  // Pokud je message objekt postavy (ne zpráva)
+  if (message.firstName) {
+    const firstInitial = message.firstName?.charAt(0) || 'N';
+    const lastInitial = message.lastName?.charAt(0) || 'P';
+    return `${firstInitial}${lastInitial}`;
   }
   
   const character = message.character;
@@ -96,6 +112,21 @@ export default function ChatRoom() {
   const { data: userCharactersRaw = [], isLoading: charactersLoading } = useQuery<any[]>({
     queryKey: ["/api/characters"],
     enabled: !!user,
+    queryFn: async () => {
+      const token = localStorage.getItem('jwt_token');
+      const response = await fetch(`${API_URL}/api/characters`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch characters');
+      }
+      const data = await response.json();
+      // Backend může vrátit data v různých formátech
+      return data.characters || data || [];
+    }
   });
 
   // Process user characters - only alive, non-system characters belonging to the user
@@ -123,10 +154,11 @@ export default function ChatRoom() {
 
   // Auto-select first character when characters load
   useEffect(() => {
-    if (!selectedCharacter && userCharacters.length > 0 && !charactersLoading) {
+    if (!selectedCharacter && userCharacters.length > 0 && !charactersLoading && !isNarratorMode) {
+      console.log('Auto-selecting first character:', userCharacters[0]);
       setSelectedCharacter(userCharacters[0]);
     }
-  }, [userCharacters, selectedCharacter, charactersLoading]);
+  }, [userCharacters, selectedCharacter, charactersLoading, isNarratorMode]);
 
   // Initialize WebSocket connection
   useEffect(() => {
@@ -456,16 +488,37 @@ export default function ChatRoom() {
   };
 
   const handleSendMessage = () => {
-    if (!messageInput.trim() || !currentRoomId) return;
+    if (!messageInput.trim() || !currentRoomId) {
+      toast({
+        title: "Chyba",
+        description: "Zpráva nemůže být prázdná",
+        variant: "destructive",
+      });
+      return;
+    }
 
     if (isNarratorMode) {
       // Vypravěčská zpráva
+      if (!canSendAsNarrator) {
+        toast({
+          title: "Chyba",
+          description: "Nemáte oprávnění k vypravování",
+          variant: "destructive",
+        });
+        return;
+      }
       sendNarratorMessageMutation.mutate(messageInput.trim());
     } else if (selectedCharacter) {
       // Běžná zpráva
       sendMessageMutation.mutate({
         content: messageInput.trim(),
         characterId: selectedCharacter.id,
+      });
+    } else {
+      toast({
+        title: "Chyba",
+        description: "Vyberte postavu pro odeslání zprávy",
+        variant: "destructive",
       });
     }
   };
@@ -598,7 +651,7 @@ export default function ChatRoom() {
           </div>
         </ScrollArea>
         {/* Kompaktní dolní lišta */}
-        <div className="flex flex-col gap-2 px-6 pb-2">
+        <div className="flex flex-col gap-2 px-6 pb-0">
           {/* První řádek: Avatar + pole pro zprávu + tlačítko odeslat */}
           <div className="flex items-center gap-3">
             <Avatar className="w-8 h-8 flex-shrink-0">
@@ -666,9 +719,10 @@ export default function ChatRoom() {
               onClick={() => diceRollMutation.mutate()} 
               disabled={!selectedCharacter}
               className="h-8 gap-1"
+              title="Hodit kostkou (1-10)"
             >
-              <Dices className="h-4 w-4 text-blue-500" />
-              <span className="text-xs">Kostka</span>
+              <Dices className="h-4 w-4 text-blue-600" />
+              <span className="text-xs text-blue-600 font-medium">Kostka</span>
             </Button>
 
             <Button 
@@ -677,9 +731,10 @@ export default function ChatRoom() {
               onClick={() => coinFlipMutation.mutate()} 
               disabled={!selectedCharacter}
               className="h-8 gap-1"
+              title="Hodit mincí"
             >
-              <Coins className="h-4 w-4 text-yellow-500" />
-              <span className="text-xs">Mince</span>
+              <Coins className="h-4 w-4 text-yellow-600" />
+              <span className="text-xs text-yellow-600 font-medium">Mince</span>
             </Button>
 
             <Button 
@@ -687,9 +742,10 @@ export default function ChatRoom() {
               size="sm" 
               disabled={!selectedCharacter}
               className="h-8 gap-1"
+              title="Seslat kouzlo"
             >
-              <Wand2 className="h-4 w-4 text-purple-500" />
-              <span className="text-xs">Kouzla</span>
+              <Wand2 className="h-4 w-4 text-purple-600" />
+              <span className="text-xs text-purple-600 font-medium">Kouzla</span>
             </Button>
 
             {canSendAsNarrator && (
@@ -746,7 +802,7 @@ export default function ChatRoom() {
                   <div><strong>**text**</strong> - tučné písmo</div>
                   <div><em>*text*</em> - kurzíva</div>
                   <div><u>__text__</u> - podtržené</div>
-                  <div><span className="text-accent">[Název místnosti]</span> - odkaz na jinou místnost</div>
+                  <div><span className="text-blue-500 underline">[Název místnosti]</span> - odkaz na jinou místnost</div>
                 </div>
               </div>
             </div>
