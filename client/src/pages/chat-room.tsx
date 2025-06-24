@@ -75,33 +75,15 @@ function getCharacterName(message: any): string {
 }
 
 // Helper function to safely get character initials
-function getCharacterInitials(message: any): string {
-  // Handle narrator/system messages
-  if (!message.characterId || message.characterId === 0) {
-    if (message.character?.firstName) {
-      return message.character.firstName.charAt(0) || 'V';
-    }
-    return message.messageType === 'narrator' ? 'V' : 'S';
+function getCharacterInitials(obj: any): string {
+  if (!obj) return 'NP';
+  if (obj.firstName && obj.lastName) {
+    return `${obj.firstName.charAt(0) || 'N'}${obj.lastName.charAt(0) || 'P'}`;
   }
-  
-  // Handle direct character object (not a message)
-  if (message.firstName) {
-    const firstInitial = message.firstName?.charAt(0) || 'N';
-    const lastInitial = message.lastName?.charAt(0) || 'P';
-    return `${firstInitial}${lastInitial}`;
+  if (obj.character && obj.character.firstName && obj.character.lastName) {
+    return `${obj.character.firstName.charAt(0) || 'N'}${obj.character.lastName.charAt(0) || 'P'}`;
   }
-  
-  const character = message.character;
-  if (!character || typeof character !== 'object') {
-    return 'NP';
-  }
-  
-  // Get initials with fallbacks
-  const firstName = character.firstName || character.first_name || '';
-  const lastName = character.lastName || character.last_name || '';
-  const firstInitial = firstName.charAt(0) || 'N';
-  const lastInitial = lastName.charAt(0) || 'P';
-  return `${firstInitial}${lastInitial}`;
+  return 'NP';
 }
 
 export default function ChatRoom() {
@@ -602,6 +584,11 @@ export default function ChatRoom() {
     }
   }, [user, userCharacters, canSendAsNarrator, setLocation]);
 
+  // Debug log pro načtené zprávy
+  useEffect(() => {
+    console.log('Načtené zprávy z API:', messages);
+  }, [messages]);
+
   // Loading states
   if (authLoading || roomsLoading) {
     return (
@@ -710,9 +697,9 @@ export default function ChatRoom() {
                   <Avatar className="w-10 h-10 flex-shrink-0">
                     <AvatarImage src={message.character?.avatar || undefined} />
                     <AvatarFallback className="bg-primary/10 text-primary font-semibold">
-                      {message.character?.firstName?.charAt(0)
-                        || (message.messageType === 'narrator' ? 'V' : 'S')}
-                      {message.character?.lastName?.charAt(0) || ''}
+                      {message.character?.firstName && message.character?.lastName
+                        ? message.character.firstName.charAt(0) + message.character.lastName.charAt(0)
+                        : (message.messageType === 'narrator' ? 'V' : 'S')}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1 min-w-0">
