@@ -378,9 +378,11 @@ export class DatabaseStorage implements IStorage {
         return [];
       }
 
-      console.log(`[STORAGE] Found ${data?.length || 0} messages`);
+      console.log(`[STORAGE] Found ${data?.length || 0} messages`, data);
 
       const messages = (data || []).map(msg => {
+        console.log(`[STORAGE] Processing message:`, msg);
+        
         // Handle narrator/system messages (character_id = 0)
         if (msg.character_id === 0) {
           return {
@@ -401,22 +403,29 @@ export class DatabaseStorage implements IStorage {
           };
         }
 
-        // Handle regular character messages
-        const characterData = msg.character ? {
-          id: msg.character.id,
-          firstName: msg.character.first_name || '',
-          middleName: msg.character.middle_name || null,
-          lastName: msg.character.last_name || '',
-          avatar: msg.character.avatar || null,
-          userId: msg.character.user_id || 0
-        } : {
-          id: msg.character_id,
-          firstName: 'Neznámá',
-          middleName: null,
-          lastName: 'postava',
-          avatar: null,
-          userId: 0
-        };
+        // Handle regular character messages - improve fallback handling
+        let characterData;
+        if (msg.character && typeof msg.character === 'object') {
+          characterData = {
+            id: msg.character.id || msg.character_id,
+            firstName: msg.character.first_name || 'Neznámá',
+            middleName: msg.character.middle_name || null,
+            lastName: msg.character.last_name || 'postava',
+            avatar: msg.character.avatar || null,
+            userId: msg.character.user_id || 0
+          };
+        } else {
+          // If character relation failed to load, try to fetch it separately
+          console.warn(`[STORAGE] Character data missing for message ${msg.id}, character_id: ${msg.character_id}`);
+          characterData = {
+            id: msg.character_id,
+            firstName: 'Neznámá',
+            middleName: null,
+            lastName: 'postava',
+            avatar: null,
+            userId: 0
+          };
+        }
 
         return {
           id: msg.id,
@@ -429,7 +438,7 @@ export class DatabaseStorage implements IStorage {
         };
       });
 
-      console.log(`[STORAGE] Processed ${messages.length} messages`);
+      console.log(`[STORAGE] Processed ${messages.length} messages`, messages);
       return messages;
     } catch (error) {
       console.error('Error fetching chat messages:', error);
@@ -445,6 +454,8 @@ export class DatabaseStorage implements IStorage {
     messageType: string;
   }) {
     try {
+      console.log(`[STORAGE] Creating message:`, messageData);
+
       const { data, error } = await supabase
         .from('messages')
         .insert({
@@ -456,7 +467,7 @@ export class DatabaseStorage implements IStorage {
         })
         .select(`
           *,
-          character:characters(first_name, middle_name, last_name, avatar)
+          character:characters(id, first_name, middle_name, last_name, avatar, user_id)
         `)
         .single();
 
@@ -465,22 +476,39 @@ export class DatabaseStorage implements IStorage {
         throw error;
       }
 
+      console.log(`[STORAGE] Message created:`, data);
+
       // Handle special message types that don't have characters
       let characterData = null;
       if (data.character_id === 0) {
         // Narrator or system message
         characterData = {
+          id: 0,
           firstName: messageData.messageType === 'narrator' ? 'Vypravěč' : 'Systém',
           middleName: null,
           lastName: '',
-          avatar: null
+          avatar: null,
+          userId: 0
         };
-      } else if (data.character) {
+      } else if (data.character && typeof data.character === 'object') {
         characterData = {
+          id: data.character.id,
           firstName: data.character.first_name,
           middleName: data.character.middle_name,
           lastName: data.character.last_name,
-          avatar: data.character.avatar
+          avatar: data.character.avatar,
+          userId: data.character.user_id
+        };
+      } else {
+        // Fallback if character relation failed
+        console.warn(`[STORAGE] Character relation failed for message, using fallback`);
+        characterData = {
+          id: data.character_id,
+          firstName: 'Neznámá',
+          middleName: null,
+          lastName: 'postava',
+          avatar: null,
+          userId: 0
         };
       }
 
@@ -489,13 +517,13 @@ export class DatabaseStorage implements IStorage {
         id: data.id,
         roomId: data.room_id,
         characterId: data.character_id,
-        userId: data.user_id,
         content: data.content,
         messageType: data.message_type,
         createdAt: data.created_at,
         character: characterData
       };
 
+      console.log(`[STORAGE] Returning message:`, message);
       return message;
     } catch (error) {
       console.error('Error creating chat message:', error);

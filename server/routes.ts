@@ -477,6 +477,15 @@ export async function registerRoutes(app: Express): Promise<void> {
     }
 
     try {
+      // Verify that the character belongs to the user (unless admin)
+      if (req.user!.role !== 'admin') {
+        const userCharacters = await storage.getCharactersByUserId(req.user!.id);
+        const hasCharacter = userCharacters.some((char: any) => char.id === Number(characterId));
+        if (!hasCharacter) {
+          return res.status(403).json({ message: "Character does not belong to user" });
+        }
+      }
+
       const result = Math.floor(Math.random() * 10) + 1;
       const character = await storage.getCharacterById(characterId);
 
@@ -508,6 +517,15 @@ export async function registerRoutes(app: Express): Promise<void> {
     }
 
     try {
+      // Verify that the character belongs to the user (unless admin)
+      if (req.user!.role !== 'admin') {
+        const userCharacters = await storage.getCharactersByUserId(req.user!.id);
+        const hasCharacter = userCharacters.some((char: any) => char.id === Number(characterId));
+        if (!hasCharacter) {
+          return res.status(403).json({ message: "Character does not belong to user" });
+        }
+      }
+
       const result = Math.random() < 0.5 ? "Panna" : "Orel";
       const character = await storage.getCharacterById(characterId);
 

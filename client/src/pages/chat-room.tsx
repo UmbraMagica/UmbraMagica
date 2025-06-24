@@ -63,9 +63,11 @@ function getCharacterName(message: any): string {
     console.warn('Missing character data for message:', message);
     return 'Neznámá postava';
   }
-  const firstName = character.firstName || '';
-  const middleName = character.middleName || '';
-  const lastName = character.lastName || '';
+  
+  // Ensure we have the necessary fields
+  const firstName = character.firstName || character.first_name || '';
+  const middleName = character.middleName || character.middle_name || '';
+  const lastName = character.lastName || character.last_name || '';
   const fullName = `${firstName}${middleName ? ` ${middleName}` : ''} ${lastName}`.trim();
   return fullName || 'Neznámá postava';
 }
@@ -88,8 +90,12 @@ function getCharacterInitials(message: any): string {
   if (!character || typeof character !== 'object') {
     return 'NP';
   }
-  const firstInitial = character.firstName?.charAt(0) || 'N';
-  const lastInitial = character.lastName?.charAt(0) || 'P';
+  
+  // Support both camelCase and snake_case
+  const firstName = character.firstName || character.first_name || '';
+  const lastName = character.lastName || character.last_name || '';
+  const firstInitial = firstName.charAt(0) || 'N';
+  const lastInitial = lastName.charAt(0) || 'P';
   return `${firstInitial}${lastInitial}`;
 }
 
