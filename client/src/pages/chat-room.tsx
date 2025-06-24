@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { MessageCircle, Send, Download, Archive, ArrowLeft, User, Dices, Coins } from "lucide-react";
 import { format } from "date-fns";
 import { apiFetch } from "@/lib/queryClient";
+import { useSelectedCharacter } from "@/contexts/SelectedCharacterContext";
 
 interface ChatRoom {
   id: number;
@@ -48,6 +49,7 @@ export default function ChatRoom() {
   const [ws, setWs] = useState<WebSocket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const { selectedCharacter } = useSelectedCharacter();
   
   const currentRoomId = roomId ? parseInt(roomId) : null;
   
@@ -89,7 +91,7 @@ export default function ChatRoom() {
 
   // Send message mutation
   const sendMessageMutation = useMutation({
-    mutationFn: (messageData: { content: string; messageType?: string }) => {
+    mutationFn: (messageData: { content: string; messageType?: string; characterId: number }) => {
       return new Promise<void>((resolve, reject) => {
         if (!ws || !isConnected) {
           reject(new Error("WebSocket není připojen"));
@@ -106,6 +108,7 @@ export default function ChatRoom() {
           roomId: currentRoomId,
           content: messageData.content,
           messageType: messageData.messageType || 'message',
+          characterId: messageData.characterId,
         }));
 
         resolve();
@@ -246,8 +249,7 @@ export default function ChatRoom() {
 
   // Initialize WebSocket connection
   useEffect(() => {
-    if (!user || !user.characters?.[0] || !user.characters[0].firstName) return;
-
+    if (!user || !selectedCharacter) return;
     const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
     const wsUrl = `${protocol}//${window.location.host}/ws`;
     const websocket = new WebSocket(wsUrl);
@@ -255,12 +257,11 @@ export default function ChatRoom() {
     websocket.onopen = () => {
       console.log("WebSocket připojen");
       setIsConnected(true);
-      
       // Authenticate with the server
       websocket.send(JSON.stringify({
         type: 'authenticate',
         userId: user.id,
-        characterId: user.characters[0].id,
+        characterId: selectedCharacter.id,
       }));
     };
 
@@ -303,7 +304,7 @@ export default function ChatRoom() {
     return () => {
       websocket.close();
     };
-  }, [user, queryClient, toast]);
+  }, [user, selectedCharacter, queryClient, toast]);
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -311,10 +312,10 @@ export default function ChatRoom() {
   }, [messages]);
 
   const handleSendMessage = () => {
-    if (!messageInput.trim() || !currentRoomId) return;
-    
+    if (!messageInput.trim() || !currentRoomId || !selectedCharacter) return;
     sendMessageMutation.mutate({
       content: messageInput.trim(),
+      characterId: selectedCharacter.id,
     });
   };
 
@@ -363,26 +364,12 @@ export default function ChatRoom() {
     );
   }
 
-  const currentCharacter = user?.characters?.[0];
-  
-  if (!user.characters || user.characters.length === 0 || !currentCharacter) {
+  if (!selectedCharacter) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Card>
           <CardContent className="p-6">
-            <p className="text-muted-foreground">Nemáte žádnou postavu. Vytvořte si postavu pro přístup k chatu.</p>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  if (!currentCharacter.firstName || !currentCharacter.lastName) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Card>
-          <CardContent className="p-6">
-            <p className="text-muted-foreground">Vaše postava není kompletně nastavena. Upravte její údaje.</p>
+            <p className="text-muted-foreground">Nemáte vybranou žádnou postavu. Vyberte si postavu pro přístup k chatu.</p>
           </CardContent>
         </Card>
       </div>
