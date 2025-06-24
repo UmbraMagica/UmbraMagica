@@ -9,7 +9,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { MessageCircle, Send, Download, Archive, ArrowLeft, Dices, Coins, Trash2 } from "lucide-react";
+import { MessageCircle, Send, Download, Archive, ArrowLeft, Dices, Coins, Trash2, Wand2 } from "lucide-react";
 import { format } from "date-fns";
 
 interface ChatRoom {
@@ -55,10 +55,10 @@ function getCharacterName(character: any): string {
 // Helper function to safely get character initials
 function getCharacterInitials(character: any): string {
   if (!character || typeof character !== 'object') {
-    return 'N';
+    return 'NP';
   }
   const firstInitial = character.firstName?.charAt(0) || 'N';
-  const lastInitial = character.lastName?.charAt(0) || '';
+  const lastInitial = character.lastName?.charAt(0) || 'P';
   return `${firstInitial}${lastInitial}`;
 }
 
@@ -73,6 +73,8 @@ export default function ChatRoom() {
   const [ws, setWs] = useState<WebSocket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [isNarratorMode, setIsNarratorMode] = useState(false);
+  const [isEditingDescription, setIsEditingDescription] = useState(false);
+  const [editedDescription, setEditedDescription] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const currentRoomId = roomId ? parseInt(roomId) : null;
@@ -353,6 +355,57 @@ export default function ChatRoom() {
     },
   });
 
+  // Update room description mutation
+  const updateRoomDescriptionMutation = useMutation({
+    mutationFn: async (description: string) => {
+      const token = localStorage.getItem('jwt_token');
+      const response = await fetch(`${API_URL}/api/chat/rooms/${currentRoomId}`, {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify({ longDescription: description }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Nepodařilo se aktualizovat popis místnosti');
+      }
+
+      return response.json();
+    },
+    onSuccess: () => {
+      setIsEditingDescription(false);
+      queryClient.invalidateQueries({ queryKey: ["/api/chat/rooms"] });
+      toast({
+        title: "Popis aktualizován",
+        description: "Popis místnosti byl úspěšně aktualizován.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Chyba při aktualizaci",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleEditDescription = () => {
+    setEditedDescription(currentRoom?.longDescription || '');
+    setIsEditingDescription(true);
+  };
+
+  const handleSaveDescription = () => {
+    updateRoomDescriptionMutation.mutate(editedDescription);
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditingDescription(false);
+    setEditedDescription('');
+  };
+
   // Export chat function
   const exportChat = async () => {
     if (!currentRoomId) return;
@@ -508,7 +561,7 @@ export default function ChatRoom() {
         {/* Chat zprávy */}
         <ScrollArea className="flex-1 bg-muted/10 rounded-lg p-4 mb-2">
           <div className="space-y-4">
-            {messages.map((message) => (
+            {sortedMessages.map((message) => (
               <div key={message.id} className="flex gap-3 items-start">
                 <Avatar className="w-10 h-10 flex-shrink-0">
                   <AvatarImage src="" />
@@ -535,17 +588,18 @@ export default function ChatRoom() {
           </div>
         </ScrollArea>
         {/* Kompaktní dolní lišta */}
-        <div className="flex flex-col gap-1 px-6 pb-4">
-          <div className="flex items-end gap-3">
-            <Avatar className="w-10 h-10 flex-shrink-0">
+        <div className="flex flex-col gap-2 px-6 pb-4">
+          {/* První řádek: Avatar + pole pro zprávu + tlačítko odeslat */}
+          <div className="flex items-center gap-3">
+            <Avatar className="w-8 h-8 flex-shrink-0">
               <AvatarImage src="" />
-              <AvatarFallback className="bg-primary/10 text-primary font-semibold">
-                {getCharacterInitials(selectedCharacter)}
+              <AvatarFallback className="bg-primary/10 text-primary font-semibold text-xs">
+                {selectedCharacter ? getCharacterInitials(selectedCharacter) : 'NP'}
               </AvatarFallback>
             </Avatar>
-            <div className="flex-1 flex flex-col gap-1">
+            <div className="flex-1 relative">
               <Textarea
-                className="min-h-[48px] max-h-[120px] resize-none"
+                className="min-h-[40px] max-h-[100px] resize-none pr-16"
                 placeholder="Napište zprávu..."
                 value={messageInput}
                 onChange={e => setMessageInput(e.target.value)}
@@ -558,8 +612,8 @@ export default function ChatRoom() {
                 maxLength={MAX_MESSAGE_LENGTH}
                 disabled={!isConnected}
               />
-              <div className="flex justify-end text-xs text-muted-foreground">
-                {messageInputLength}/{MAX_MESSAGE_LENGTH} znaků
+              <div className="absolute bottom-1 right-1 text-xs text-muted-foreground">
+                {messageInputLength}/{MAX_MESSAGE_LENGTH}
               </div>
             </div>
             <Button
@@ -567,19 +621,24 @@ export default function ChatRoom() {
               size="sm"
               onClick={handleSendMessage}
               disabled={!isMessageValid || !isConnected}
+              className="px-4"
             >
-              Odeslat
+              <Send className="h-4 w-4" />
             </Button>
           </div>
-          <div className="flex gap-2 mt-1 items-center">
+          
+          {/* Druhý řádek: Výběr postavy a akční tlačítka */}
+          <div className="flex gap-2 items-center">
             <Select
               value={selectedCharacter?.id?.toString() || ''}
               onValueChange={val => {
-                const char = userCharacters.find(c => c.id.toString() === val);
-                if (char) setSelectedCharacter(char);
+                if (val) {
+                  const char = userCharacters.find(c => c.id.toString() === val);
+                  if (char) setSelectedCharacter(char);
+                }
               }}
             >
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="w-[180px] h-8">
                 <SelectValue placeholder="Vyber postavu" />
               </SelectTrigger>
               <SelectContent>
@@ -590,14 +649,46 @@ export default function ChatRoom() {
                 ))}
               </SelectContent>
             </Select>
-            <Button variant="secondary" size="sm" onClick={() => diceRollMutation.mutate()} disabled={!selectedCharacter}>
-              <Dices className="h-4 w-4 mr-1" /> Kostka
+            
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => diceRollMutation.mutate()} 
+              disabled={!selectedCharacter}
+              className="h-8"
+            >
+              <Dices className="h-4 w-4" />
             </Button>
-            <Button variant="secondary" size="sm" onClick={() => coinFlipMutation.mutate()} disabled={!selectedCharacter}>
-              <Coins className="h-4 w-4 mr-1" /> Mince
+            
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => coinFlipMutation.mutate()} 
+              disabled={!selectedCharacter}
+              className="h-8"
+            >
+              <Coins className="h-4 w-4" />
             </Button>
-            {/* Kouzla a vypravěč zobrazit podle práv */}
-            {/* ... případně další tlačítka ... */}
+            
+            <Button 
+              variant="outline" 
+              size="sm" 
+              disabled={!selectedCharacter}
+              className="h-8"
+            >
+              <Wand2 className="h-4 w-4" />
+            </Button>
+            
+            {canSendAsNarrator && (
+              <Button 
+                variant={isNarratorMode ? "default" : "outline"} 
+                size="sm"
+                onClick={() => setIsNarratorMode(!isNarratorMode)}
+                className="h-8"
+              >
+                Vypravěč
+              </Button>
+            )}
           </div>
         </div>
       </div>
@@ -605,17 +696,36 @@ export default function ChatRoom() {
       <div className="w-80 border-l bg-muted/20 overflow-y-auto flex flex-col">
         <div className="flex items-center justify-between p-4 border-b">
           <h3 className="font-semibold text-sm mb-0">Informace o místnosti</h3>
-          {user?.role === 'admin' && (
-            <Button variant="outline" size="sm" onClick={() => {/* logika pro úpravu popisu */}}>
+          {user?.role === 'admin' && !isEditingDescription && (
+            <Button variant="outline" size="sm" onClick={handleEditDescription}>
               Upravit
             </Button>
+          )}
+          {isEditingDescription && (
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" onClick={handleCancelEdit}>
+                Zrušit
+              </Button>
+              <Button variant="default" size="sm" onClick={handleSaveDescription}>
+                Uložit
+              </Button>
+            </div>
           )}
         </div>
         <div className="p-4">
           <h4 className="font-semibold text-sm mb-3">Popis místnosti</h4>
-          <div className="text-sm text-muted-foreground whitespace-pre-wrap leading-relaxed">
-            {currentRoom.longDescription}
-          </div>
+          {isEditingDescription ? (
+            <Textarea
+              value={editedDescription}
+              onChange={(e) => setEditedDescription(e.target.value)}
+              className="min-h-[200px] text-sm"
+              placeholder="Zadejte popis místnosti..."
+            />
+          ) : (
+            <div className="text-sm text-muted-foreground whitespace-pre-wrap leading-relaxed">
+              {currentRoom?.longDescription || 'Žádný popis není k dispozici.'}
+            </div>
+          )}
         </div>
       </div>
     </div>
