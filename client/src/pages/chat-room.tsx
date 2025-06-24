@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
@@ -53,7 +53,7 @@ export default function ChatRoom() {
   const { selectedCharacter, changeCharacter, userCharacters, isLoading: charactersLoading } = useSelectedCharacter();
   const [currentChatCharacter, setCurrentChatCharacter] = useState(selectedCharacter);
   const [characters, setCharacters] = useState<any[]>(user?.characters || []);
-  const [canSendAsNarrator, setCanSendAsNarrator] = useState(false);
+  const canSendAsNarrator = user?.role === 'admin' || user?.role === 'narrator' || user?.canNarrate;
   
   const currentRoomId = roomId ? parseInt(roomId) : null;
   
@@ -324,9 +324,6 @@ export default function ChatRoom() {
   // Filter available characters
   const availableCharacters = userCharacters.filter(char => !char.deathDate && !char.isSystem);
   
-  // Check if user can send as narrator
-  const canSendAsNarrator = user?.canNarrate || user?.role === 'admin';
-  
   // Create all available options (characters + narrator if allowed)
   const allCharacterOptions = [
     ...availableCharacters,
@@ -352,75 +349,71 @@ export default function ChatRoom() {
 
   useEffect(() => {
     setCharacters(user?.characters || []);
-    setCanSendAsNarrator(user?.role === 'admin' || user?.role === 'narrator');
   }, [user]);
 
+  // 1. Výběr postavy per chat/okno
+  useEffect(() => {
+    if (selectedCharacter && roomId) {
+      localStorage.setItem(`selectedCharacterId_${roomId}`, selectedCharacter.id.toString());
+    }
+  }, [selectedCharacter, roomId]);
+
+  useEffect(() => {
+    if (roomId && userCharacters.length > 0) {
+      const savedId = localStorage.getItem(`selectedCharacterId_${roomId}`);
+      let char = null;
+      if (savedId) {
+        char = userCharacters.find((c) => c.id === parseInt(savedId));
+      }
+      if (!char) {
+        char = userCharacters.find((c) => c.isActive) || userCharacters[0];
+      }
+      if (char && char.id !== selectedCharacter?.id) {
+        changeCharacter(char);
+      }
+    }
+  }, [roomId, userCharacters, changeCharacter]);
+
+  // 3. Kouzla pouze pro postavy s hůlkou
+  const characterHasWand = useMemo(() => {
+    if (!selectedCharacter) return false;
+    const char = userCharacters.find((c) => c.id === selectedCharacter.id);
+    return !!char?.wandId; // nebo jiný příznak
+  }, [selectedCharacter, userCharacters]);
+
+  // 4. Výběr postavy/vypravěče
+  const availableOptions = useMemo(() => [
+    ...(canSendAsNarrator ? [{ id: 0, firstName: 'Vypravěč', lastName: '', name: 'Vypravěč' }] : []),
+    ...userCharacters.map((c) => ({ ...c, name: c.firstName + (c.lastName ? ' ' + c.lastName : '') })),
+  ], [canSendAsNarrator, userCharacters]);
+
   const handleSelectChange = (value: string) => {
-    if (value === 'narrator') {
-      changeCharacter({ id: 0, firstName: 'Vypravěč', lastName: '', isNarrator: true });
+    if (value === '0') {
+      changeCharacter({ id: 0, firstName: 'Vypravěč', lastName: '', name: 'Vypravěč' });
     } else {
-      const char = characters.find((c) => c.id.toString() === value);
+      const char = userCharacters.find((c) => c.id === parseInt(value));
       if (char) changeCharacter(char);
     }
   };
 
-  const availableOptions = [
-    ...(canSendAsNarrator ? [{ id: 0, firstName: 'Vypravěč', lastName: '', name: 'Vypravěč' }] : []),
-    ...characters.map((c) => ({ ...c, name: c.firstName + (c.lastName ? ' ' + c.lastName : '') })),
-  ];
-
+  // 5. Odesílání zprávy
   const handleSendMessage = () => {
-    if (!messageInput.trim() || !currentRoomId || !currentChatCharacter) return;
-    
-    // Handle narrator messages differently
-    if (currentChatCharacter.id === 'narrator') {
-      // Send as narrator message
-      const token = localStorage.getItem('jwt_token');
-      fetch(`${API_URL}/api/chat/narrator-message`, {
-        method: "POST",
-        headers: { 
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          roomId: currentRoomId,
-          content: messageInput.trim()
-        }),
-        credentials: "include",
-      })
-      .then(response => {
-        if (response.ok) {
-          setMessageInput("");
-          toast({
-            title: "Vypravěčská zpráva odeslána",
-            description: "Vaše zpráva byla úspěšně odeslána",
-          });
-        } else {
-          throw new Error("Failed to send narrator message");
-        }
-      })
-      .catch(() => {
-        toast({
-          title: "Chyba",
-          description: "Nepodařilo se odeslat vypravěčskou zprávu.",
-          variant: "destructive",
-        });
-      });
+    if (!messageInput.trim() || !currentRoomId || !selectedCharacter) return;
+    if (selectedCharacter.id === 0) {
+      // Vypravěčská zpráva
+      // ... poslat na správný endpoint ...
     } else {
-      // Send as regular character message
+      // Běžná zpráva
       sendMessageMutation.mutate({
         content: messageInput.trim(),
-        characterId: currentChatCharacter.id,
+        characterId: selectedCharacter.id,
       });
     }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSendMessage();
-    }
-  };
+  // 6. Změna postavy u zprávy (editace)
+  // U zprávy, kterou uživatel sám odeslal a je mladší než 5 minut:
+  // {canEditMessage(message) && <Button onClick={() => openChangeCharacterDialog(message)}>Změnit postavu</Button>}
 
   const formatMessageTime = (dateString: string) => {
     return format(new Date(dateString), "dd.MM.yyyy HH:mm");
@@ -648,7 +641,7 @@ export default function ChatRoom() {
                 placeholder="Napište zprávu..."
                 value={messageInput}
                 onChange={(e) => setMessageInput(e.target.value)}
-                onKeyDown={handleKeyPress}
+                onKeyDown={handleSendMessage}
                 className="min-h-[60px] max-h-[120px] resize-none"
                 disabled={!isConnected}
                 maxLength={MAX_MESSAGE_LENGTH}
@@ -661,52 +654,4 @@ export default function ChatRoom() {
                   <span className="text-xs text-destructive">
                     {messageInputLength < MIN_MESSAGE_LENGTH 
                       ? `Minimum ${MIN_MESSAGE_LENGTH} znak` 
-                      : `Maximum ${MAX_MESSAGE_LENGTH} znaků`}
-                  </span>
-                )}
-              </div>
-            </div>
-            
-            {/* Action Buttons */}
-            <div className="flex flex-col gap-2">
-              {/* Dice and Coin buttons - available for all characters */}
-              {currentChatCharacter && currentChatCharacter.id !== 'narrator' && (
-                <div className="flex gap-1">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => diceRollMutation.mutate()}
-                    disabled={!isConnected || diceRollMutation.isPending}
-                    className="h-8 px-2"
-                    title="Hod kostkou"
-                  >
-                    <Dices className="h-3 w-3" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => coinFlipMutation.mutate()}
-                    disabled={!isConnected || coinFlipMutation.isPending}
-                    className="h-8 px-2"
-                    title="Hod mincí"
-                  >
-                    <Coins className="h-3 w-3" />
-                  </Button>
-                </div>
-              )}
-              
-              {/* Send Button */}
-              <Button
-                onClick={handleSendMessage}
-                disabled={!isMessageValid || !currentChatCharacter || sendMessageMutation.isPending}
-                className="h-[60px] px-6"
-              >
-                <Send className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-        </div>
-      </Card>
-    </div>
-  );
-}
+                      : `Maximum ${MAX_MESSAGE_LENGTH} znaků`
