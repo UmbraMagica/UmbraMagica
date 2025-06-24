@@ -317,12 +317,21 @@ export default function ChatRoom() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Filter available characters
-  const availableCharacters = userCharacters.filter(char => !char.deathDate && !char.isSystem);
+  // Filter available characters with proper validation
+  const availableCharacters = Array.isArray(userCharacters) 
+    ? userCharacters.filter(char => 
+        char && 
+        typeof char === 'object' && 
+        typeof char.firstName === 'string' && 
+        char.firstName.trim() !== '' &&
+        !char.deathDate && 
+        !char.isSystem
+      )
+    : [];
 
   // Create all available options (characters + narrator if allowed)
   const allCharacterOptions = [
-    ...availableCharacters,
+    ...availableCharacters.filter(char => char && char.firstName),
     ...(canSendAsNarrator ? [{ id: 'narrator', firstName: 'Vypravěč', lastName: '', isNarrator: true }] : [])
   ];
 
@@ -545,8 +554,13 @@ export default function ChatRoom() {
                   {canSendAsNarrator && (
                     <SelectItem key={0} value="0">Vypravěč</SelectItem>
                   )}
-                  {userCharacters
-                    .filter(char => char && char.firstName && typeof char.firstName === 'string')
+                  {availableCharacters
+                    .filter(char => 
+                      char && 
+                      typeof char === 'object' && 
+                      typeof char.firstName === 'string' && 
+                      char.firstName.trim() !== ''
+                    )
                     .map((char) => (
                       <SelectItem key={char.id} value={char.id.toString()}>
                         {char.firstName + (char.lastName ? ' ' + char.lastName : '')}

@@ -71,8 +71,16 @@ export function useAuth() {
         }
       }
 
-      // Zajisti, že characters je vždy pole
-      userData.characters = Array.isArray(userData.characters) ? userData.characters : [];
+      // Zajisti, že characters je vždy pole a obsahuje pouze validní objekty
+      userData.characters = Array.isArray(userData.characters) 
+        ? userData.characters.filter(char => 
+            char && 
+            typeof char === 'object' && 
+            typeof char.id === 'number' && 
+            typeof char.firstName === 'string' && 
+            char.firstName.trim() !== ''
+          )
+        : [];
 
       return userData;
     },

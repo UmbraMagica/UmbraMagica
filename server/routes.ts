@@ -323,7 +323,19 @@ export async function registerRoutes(app: Express): Promise<void> {
       } else {
         characters = await storage.getCharactersByUserId(req.user!.id);
       }
-      res.json(characters);
+      
+      // Filter out invalid characters on server side
+      const validCharacters = Array.isArray(characters) 
+        ? characters.filter(char => 
+            char && 
+            typeof char === 'object' && 
+            typeof char.id === 'number' && 
+            typeof char.firstName === 'string' && 
+            char.firstName.trim() !== ''
+          )
+        : [];
+      
+      res.json(validCharacters);
     } catch (error) {
       console.error("Error fetching characters:", error);
       res.status(500).json({ message: "Failed to fetch characters" });
@@ -693,13 +705,25 @@ export async function registerRoutes(app: Express): Promise<void> {
   // Endpoint pro seznam všech postav (bez parametrů)
   app.get("/api/characters", requireAuth, async (req, res) => {
     try {
+      let characters;
       if (req.user!.role === 'admin') {
-        const allCharacters = await storage.getAllCharacters();
-        res.json({ characters: allCharacters });
+        characters = await storage.getAllCharacters();
       } else {
-        const userCharacters = await storage.getCharactersByUserId(req.user!.id);
-        res.json({ characters: userCharacters });
+        characters = await storage.getCharactersByUserId(req.user!.id);
       }
+      
+      // Filter out invalid characters on server side
+      const validCharacters = Array.isArray(characters) 
+        ? characters.filter(char => 
+            char && 
+            typeof char === 'object' && 
+            typeof char.id === 'number' && 
+            typeof char.firstName === 'string' && 
+            char.firstName.trim() !== ''
+          )
+        : [];
+      
+      res.json({ characters: validCharacters });
     } catch (error) {
       console.error("Chyba při načítání postav:", error);
       res.status(500).json({ message: "Chyba serveru" });
