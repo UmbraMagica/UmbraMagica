@@ -25,11 +25,18 @@ const SelectedCharacterContext = createContext<SelectedCharacterContextType | nu
 export function SelectedCharacterProvider({ children, roomId, canSendAsNarrator }: { children: React.ReactNode, roomId: string, canSendAsNarrator: boolean }) {
   const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(null);
 
-  // Fetch user's characters
-  const { data: userCharacters = [], isLoading } = useQuery<Character[]>({
+  // Fetch user's characters (always return array)
+  const { data: userCharactersRaw = { characters: [] }, isLoading } = useQuery({
     queryKey: ["/api/characters"],
     staleTime: 1000 * 60 * 5, // 5 minutes
+    queryFn: async () => {
+      const res = await fetch('/api/characters', { credentials: 'include' });
+      return await res.json();
+    }
   });
+  const userCharacters: Character[] = Array.isArray(userCharactersRaw.characters)
+    ? userCharactersRaw.characters
+    : [];
 
   useEffect(() => {
     if (!roomId) return;
