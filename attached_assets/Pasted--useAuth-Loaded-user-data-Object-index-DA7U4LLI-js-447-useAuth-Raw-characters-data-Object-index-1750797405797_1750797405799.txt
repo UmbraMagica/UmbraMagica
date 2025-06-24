@@ -1,0 +1,48 @@
+[useAuth] Loaded user data: Object
+index-DA7U4LLI.js:447 [useAuth] Raw characters data: Object
+index-DA7U4LLI.js:447 [processCharacters] Input data: Object
+index-DA7U4LLI.js:447 [processCharacters] Characters array: Array(15)
+index-DA7U4LLI.js:447 [processCharacters] Valid characters: Array(15)
+index-DA7U4LLI.js:447 [useAuth] Processed characters: Array(15)
+index-DA7U4LLI.js:500 Connecting to WebSocket: wss://umbra-dev.onrender.com/ws?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwidXNlcm5hbWUiOiJDYXNleSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1MDc1ODgzOCwiZXhwIjoxNzUxMzYzNjM4fQ.R7nifFeRLX5A5PRaGNR2vjQgiZuXv7VFRLG3kOtV6kk
+index-DA7U4LLI.js:500 [chat-room] Raw characters response: Object
+index-DA7U4LLI.js:500 [chat-room] Filtered out character: Object
+index-DA7U4LLI.js:500 Auto-selecting first character: Object
+index-DA7U4LLI.js:500 [chat-room] Filtered out character: Object
+index-DA7U4LLI.js:500 [chat-room] Filtered out character: Object
+index-DA7U4LLI.js:500 WebSocket connected
+index-DA7U4LLI.js:500 [chat-room] Filtered out character: Object
+index-DA7U4LLI.js:500 [chat-room] Filtered out character: Object
+index-DA7U4LLI.js:500 [chat-room] Filtered out character: {id: 8, firstName: 'Mrtvý', lastName: 'Skřet', deathDate: '2025-05-30T00:00:00', userId: 1, …}
+index-DA7U4LLI.js:500 [chat-room] Filtered out character: {id: 8, firstName: 'Mrtvý', lastName: 'Skřet', deathDate: '2025-05-30T00:00:00', userId: 1, …}
+index-DA7U4LLI.js:500 [chat-room] Filtered out character: {id: 8, firstName: 'Mrtvý', lastName: 'Skřet', deathDate: '2025-05-30T00:00:00', userId: 1, …}
+index-DA7U4LLI.js:500 [chat-room] Filtered out character: {id: 8, firstName: 'Mrtvý', lastName: 'Skřet', deathDate: '2025-05-30T00:00:00', userId: 1, …}
+index-DA7U4LLI.js:500 [chat-room] Filtered out character: {id: 8, firstName: 'Mrtvý', lastName: 'Skřet', deathDate: '2025-05-30T00:00:00', userId: 1, …}
+index-DA7U4LLI.js:500 [chat-room] Filtered out character: {id: 8, firstName: 'Mrtvý', lastName: 'Skřet', deathDate: '2025-05-30T00:00:00', userId: 1, …}
+index-DA7U4LLI.js:500 [chat-room] Filtered out character: {id: 8, firstName: 'Mrtvý', lastName: 'Skřet', deathDate: '2025-05-30T00:00:00', userId: 1, …}
+index-DA7U4LLI.js:500 [chat-room] Filtered out character: {id: 8, firstName: 'Mrtvý', lastName: 'Skřet', deathDate: '2025-05-30T00:00:00', userId: 1, …}
+index-DA7U4LLI.js:500 [chat-room] Filtered out character: {id: 8, firstName: 'Mrtvý', lastName: 'Skřet', deathDate: '2025-05-30T00:00:00', userId: 1, …}
+index-DA7U4LLI.js:500 [chat-room] Filtered out character: {id: 8, firstName: 'Mrtvý', lastName: 'Skřet', deathDate: '2025-05-30T00:00:00', userId: 1, …}
+index-DA7U4LLI.js:500 [chat-room] Filtered out character: {id: 8, firstName: 'Mrtvý', lastName: 'Skřet', deathDate: '2025-05-30T00:00:00', userId: 1, …}
+index-DA7U4LLI.js:500 Sending message: {isNarratorMode: false, selectedCharacter: {…}, canSendAsNarrator: true, messageInput: 'jdi dement...'}
+index-DA7U4LLI.js:500 [chat-room] Filtered out character: {id: 8, firstName: 'Mrtvý', lastName: 'Skřet', deathDate: '2025-05-30T00:00:00', userId: 1, …}
+index-DA7U4LLI.js:500 [chat-room] Filtered out character: {id: 8, firstName: 'Mrtvý', lastName: 'Skřet', deathDate: '2025-05-30T00:00:00', userId: 1, …}
+index-DA7U4LLI.js:500 [chat-room] Filtered out character: {id: 8, firstName: 'Mrtvý', lastName: 'Skřet', deathDate: '2025-05-30T00:00:00', userId: 1, …}
+index-DA7U4LLI.js:500 [chat-room] Filtered out character: {id: 8, firstName: 'Mrtvý', lastName: 'Skřet', deathDate: '2025-05-30T00:00:00', userId: 1, …}
+index-DA7U4LLI.js:500 [chat-room] Filtered out character: {id: 8, firstName: 'Mrtvý', lastName: 'Skřet', deathDate: '2025-05-30T00:00:00', userId: 1, …}
+index-DA7U4LLI.js:500 [chat-room] Filtered out character: {id: 8, firstName: 'Mrtvý', lastName: 'Skřet', deathDate: '2025-05-30T00:00:00', userId: 1, …}
+index-DA7U4LLI.js:500 [chat-room] Filtered out character: {id: 8, firstName: 'Mrtvý', lastName: 'Skřet', deathDate: '2025-05-30T00:00:00', userId: 1, …}
+index-DA7U4LLI.js:500 [chat-room] Filtered out character: {id: 8, firstName: 'Mrtvý', lastName: 'Skřet', deathDate: '2025-05-30T00:00:00', userId: 1, …}
+index-DA7U4LLI.js:500 [chat-room] Filtered out character: {id: 8, firstName: 'Mrtvý', lastName: 'Skřet', deathDate: '2025-05-30T00:00:00', userId: 1, …}
+index-DA7U4LLI.js:500 [chat-room] Filtered out character: {id: 8, firstName: 'Mrtvý', lastName: 'Skřet', deathDate: '2025-05-30T00:00:00', userId: 1, …}
+index-DA7U4LLI.js:500 [chat-room] Filtered out character: {id: 8, firstName: 'Mrtvý', lastName: 'Skřet', deathDate: '2025-05-30T00:00:00', userId: 1, …}
+index-DA7U4LLI.js:500 [chat-room] Filtered out character: {id: 8, firstName: 'Mrtvý', lastName: 'Skřet', deathDate: '2025-05-30T00:00:00', userId: 1, …}
+index-DA7U4LLI.js:500 [chat-room] Filtered out character: {id: 8, firstName: 'Mrtvý', lastName: 'Skřet', deathDate: '2025-05-30T00:00:00', userId: 1, …}
+index-DA7U4LLI.js:500 [chat-room] Filtered out character: {id: 8, firstName: 'Mrtvý', lastName: 'Skřet', deathDate: '2025-05-30T00:00:00', userId: 1, …}
+index-DA7U4LLI.js:500 [chat-room] Filtered out character: {id: 8, firstName: 'Mrtvý', lastName: 'Skřet', deathDate: '2025-05-30T00:00:00', userId: 1, …}
+index-DA7U4LLI.js:500 [chat-room] Filtered out character: {id: 8, firstName: 'Mrtvý', lastName: 'Skřet', deathDate: '2025-05-30T00:00:00', userId: 1, …}
+index-DA7U4LLI.js:500 [chat-room] Filtered out character: {id: 8, firstName: 'Mrtvý', lastName: 'Skřet', deathDate: '2025-05-30T00:00:00', userId: 1, …}
+index-DA7U4LLI.js:500 Sending message: {isNarratorMode: true, selectedCharacter: {…}, canSendAsNarrator: true, messageInput: 'jsi dement...'}
+index-DA7U4LLI.js:500 [chat-room] Filtered out character: {id: 8, firstName: 'Mrtvý', lastName: 'Skřet', deathDate: '2025-05-30T00:00:00', userId: 1, …}
+index-DA7U4LLI.js:500 [chat-room] Filtered out character: {id: 8, firstName: 'Mrtvý', lastName: 'Skřet', deathDate: '2025-05-30T00:00:00', userId: 1, …}
+index-DA7U4LLI.js:500 WebSocket closed: 1005 

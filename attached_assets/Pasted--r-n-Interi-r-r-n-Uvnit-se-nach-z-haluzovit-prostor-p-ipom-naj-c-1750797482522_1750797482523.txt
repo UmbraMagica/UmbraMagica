@@ -1,0 +1,950 @@
+      '\r\n' +
+      '**Interiér**\r\n' +
+      'Uvnitř se nachází haluzovitý prostor připomínající směs krčmy, kanceláře a černého trhu. Stěny zdobí mapy s vybledlými poznámkami, truhly s pečetěmi, vybledlé fotografie expedic a kusy artefaktů, které vypadají, jako by se ještě hýbaly.\r\n' +
+      '\r\n' +
+      'Za centrálním stolem – odřeným, pokrytým inkoustovými skvrnami a vypálenými značkami – sedí koordinátor: vždy jiný, nikdy stejný. Místnost obklopují vývěsní tabule s úkoly – od banálních donášek a hlídání zásilek, přes hledání ztracených předmětů s magickou hodnotou, až po výpravy za zakázanými relikviemi, které by Ministerstvo nejradši spálilo.\r\n' +
+      '\r\n' +
+      '**Funkce a pověst**\r\n' +
+      'Lovci pokladů nejsou spolek ani cech – jsou to kontakt, síť a příležitost. Každý, kdo má odvahu, může vstoupit, vyslechnout nabídku, ale přežít a získat odměnu dokáže jen ten, kdo ví, kdy má kouzlit – a kdy utéct.\r\n' +
+      '\r\n' +
+      'Obchodníci je považují za špinavce, kouzelníci za zrádce i hrdiny. Ale kdo hledá něco, co nelze najít oficiální cestou, dříve nebo později zamíří sem.\r\n' +
+      '\r\n' +
+      "E'**Pravidla, napsaná rukou, přibitá dýkou ke zdi:**' ,\r\n" +
+      '„Co je nalezeno, to se dělí.“\r\n' +
+      '„Kdo zradí druhého Lovce, víc už se nevrátí.“\r\n' +
+      '„Ministerstvo? Jen další překážka.“\r\n' +
+      '„Zákon se dá obejít, pokud víš, kudy.“',
+    password: null
+  },
+  {
+    id: 9,
+    name: 'Zlomená hůlka',
+    description: 'Obchod s podezřelými kouzelnými předměty',
+    is_public: true,
+    created_at: '2025-05-29T18:28:17.933',
+    category_id: 3,
+    sort_order: 14,
+    long_description: '*„Všechno má svou cenu – i to, co by mělo zůstat zakázáno.“*\r\n' +
+      '\r\n' +
+      'Zasunutý do úzkého průchodu mezi dvěma polorozpadlými domy, obchod Stínové relikvie nemá vývěsní štít, jen železné dveře s vrytou lebkou a třemi očima. Uvnitř vládne šero, vzduch je hutný a voní po sušené krvi, kadidlu a prastarém pergamenu. Poličky praskají pod tíhou zakázaných předmětů – láhve s neidentifikovatelnými tekutinami, zrcadla, co šeptají ve spánku, zuby neznámých tvorů, svitky omotané lidskými vlasy i části těl v konzervačních lektvarech.\r\n' +
+      '\r\n' +
+      'Za pultem stojí hubený, vybledlý čaroděj jménem Morwen Szilas, jenž nikdy nemrká a zná cenu duše přesněji než jejího nositele. Kromě zboží nabízí i „služby": vyvolání ducha bez souhlasu, odklon sledování Ministerstva, zakrytí magických stop, prokletí na míru – nebo ticho.\r\n' +
+      '\r\n' +
+      'Obchod je přístupný jen těm, kteří znají správné zaklepání – a ti, co ho popletou, už většinou nikdy nezaklepou znovu.',
+    password: null
+  },
+  {
+    id: 18,
+    name: 'Pošmourná ulička',
+    description: 'Temné zákoutí Obrtlé ulice',
+    is_public: true,
+    created_at: '2025-05-31T20:25:55.518',
+    category_id: 3,
+    sort_order: 15,
+    long_description: null,
+    password: null
+  },
+  {
+    id: 4,
+    name: 'Gringottovi',
+    description: 'Banka pro čaroděje a kouzelníky',
+    is_public: true,
+    created_at: '2025-05-29T18:28:17.727',
+    category_id: 2,
+    sort_order: 16,
+    long_description: '*„Nevěř nikomu. Ani sobě. Ale svůj trezor nech u nás.“*\r\n' +
+      '\r\n' +
+      '**Vstupní hala**\r\n' +
+      'Uvnitř návštěvníka pohltí obrovská mramorová hala s vysokým stropem a dlouhou řadou masivních, vyřezávaných stolů, za nimiž sedí skřeti v tmavých hábitech. Vzduch voní pergamenem, olejem a kovem. Hala je tichá, téměř posvátná – každý krok zní dutě a ostré pohledy skřetů proříznou i kouzelnickou sebejistotu.\r\n' +
+      'Po stěnách visí bezpečnostní vývěsky v několika jazycích a výstrahy před podvodníky i artefakty, které „si žijí svým vlastním životem“. Některé dveře jsou střežené nejen runami, ale i subtilními mechanickými systémy, jejichž původ není zcela lidský.\r\n' +
+      '\r\n' +
+      '**Podzemí**\r\n' +
+      'Kovové vozíky se říkají na zakázku – vedou po spletité síti kolejnic, klikatících se v temnotě, hluboko pod zemský povrch. Skřeti je řídí s přesností, s jakou čarodějové kouzlí. Dráhy bývají chráněny nejen fyzickými zámky, ale i magickými iluzemi, labyrinty a poplašnými kouzly. Některé oblasti jsou dnes uzavřeny a „nejsou určeny veřejnosti“ – spekuluje se, že zde skřeti schovávají válečné artefakty nebo staré kletby.\r\n' +
+      'Jednoduché trezory nižších vrstev jsou stísněné, kovové a těsně chráněné magií. Bohatší trezory mají tvar kamenných krypt s vlastní atmosférou a obrannými mechanismy – některé reagují na krev, jiné na magický podpis, jiné prý poznají samotné srdce majitele.\r\n' +
+      'Existují hluboké úrovně, kam se nesmí – podle legend je tam uloženo „Zlato bohů“, zapečetěné relikvie staré magie a poklady, které nesmí být nikdy znovu probuzeny. Skřeti je hlídají mlčky – a žádné otázky nejsou vítané.\r\n' +
+      '\r\n',
+    password: null
+  },
+  {
+    id: 10,
+    name: 'Ministerstvo kouzel',
+    description: 'Úřad kouzelné vlády',
+    is_public: true,
+    created_at: '2025-05-29T18:28:17.97',
+    category_id: 4,
+    sort_order: 17,
+    long_description: '"Ne vše, co se třpytí, je kouzelné. A ne vše kouzelné je správné."\r\n' +
+      '\r\n' +
+      'Skryté hluboko pod ulicemi Londýna, přístupné krbem, toaletou či tajnými chodbami v kavárnách, se rozprostírá komplex Ministerstva kouzel – srdce byrokratické moci kouzelnické Británie. V roce 1925 je to místo napětí, tichých dohod a šeptaných intrik – důsledky sílící hrozby z kontinentu jsou cítit v každé dlaždici.\r\n' +
+      '\r\n' +
+      'Vstupní hala\r\n' +
+      'Velkolepá, vysoká jako chrám – s temně zelenými cihlovými stěnami, lesklou černou podlahou a zlatými fontánami magie uprostřed. Lidé sem proudí jako proud myšlenek, přemístění nebo krbem, pod dozorem pracovníků Odboru magického práva.\r\n' +
+      '\r\n' +
+      'Oddělení a kanceláře\r\n' +
+      'Bludiště chodeb a pater – od Odboru záhad, kam vstupují jen ti vyvolení, přes Odbor pro uplatňování kouzelnických zákonů až po kanceláře Regulace magických tvorů. Stěny jsou pokryty pohyblivými nástěnkami, na nichž se objevují vyhlášky, zatykače i falešné zprávy. Vzduch je prosycen vůní pergamenu, vosku a politiky.\r\n' +
+      '\r\n' +
+      '\r\n' +
+      'V dnešních dnech je Ministerstvo nejen správním centrem, ale i místem strachu a ostražitosti. Byrokraté a bystrozoři se míjejí v temných kuloárech, informace se filtrují, jména mizí ze seznamů. Každý krok je sledován, každý šepot může být zradou.',
+    password: null
+  },
+  {
+    id: 6,
+    name: 'Černá vrána',
+    description: 'Pohřební služba pro kouzelný svět',
+    is_public: true,
+    created_at: '2025-05-29T18:28:17.821',
+    category_id: 2,
+    sort_order: 18,
+    long_description: 'Na Příčné ulici stojí temně laděná budova. Její fasáda je natřená sytou černou barvou s matnými detaily v šedé. Okna jsou vysoká a úzká, s černými závěsy, za nimiž je vidět jen matný odraz světla svíček. Nad vchodem visí elegantní dřevěná tabule s nápisem „Černá vrána" ve stříbrném písmu, ozdobená drobným reliéfem letící vrány. Dvoukřídlé dveře, vyřezávané z temného dřeva, jsou opatřeny mosazným klepadlem ve tvaru havraní hlavy. Před vchodem stojí dvě černé lucerny, jejichž mihotavé plamínky dodávají atmosféře tajemný nádech. Vzduch kolem budovy je naplněn lehkou vůní kadidla a na dlažbě u vchodu je vyryt symbol vrány.\r\n' +
+      '\r\n' +
+      'Jakmile zákazník vstoupí, ucítí jemnou vůni vosku, bylin a starého dřeva. Interiér je v přítmí, osvětlovaný pouze světlem svíček, které stojí na masivních kandelábrech rozestavěných po místnosti. Podlahu pokrývají tmavě šedé kamenné dlaždice, občas ozdobené složitými ornamenty v podobě vran a větví. Na levé straně místnosti je dlouhý pult, vyrobený z ebenového dřeva, na němž stojí černá pokladna a několik dekorativních krabiček. Za pultem jsou police plné katalogů, drobných pohřebních artefaktů, vzorků vyřezávaných urn ale i různých pomůcek pro média či snad komunikaci s duchy? Na pravé straně se nachází vitríny, ve kterých jsou vystaveny pohřební dekorace – od honosných pohřebních šperků až po drobné ozdobné lahvičky, do nichž se údajně mohou uchovat vzpomínky. V rohu je pohodlné křeslo s malým stolkem, kde si zákazníci mohou prohlédnout katalogy v soukromí. V zadní části místnosti jsou těžké sametové závěsy, které oddělují hlavní prostor od neveřejných částí podniku. Za pultem stojí - po domluvení schůzky - v černém hábitu Morgause Birchwood - majitelka - a mluví tlumeným, uklidňujícím hlasem. Každé gesto, každý pohyb je promyšlený a důstojný, jako by každý zákazník byl důležitou součástí rituálu. Atmosféra celého prostoru je klidná, téměř posvátná. Zdá se, že místo oplývá jakousi zvláštní magií, která vytváří dojem, že čas uvnitř plyne pomaleji než venku. Za pultem je pak vchod do zadní části obchodu, kde se nacházejí zřejmě sklady a zázemí. A také průchod do sklepa. Ten je vybaven lékařským stolem, několika světly a spoustou roztodivných nástrojů. Inu, někde se k tomu dlouhému odpočinku musí nebožtíci připravit. Nicméně, to není pro oči truchlících, jednoduše… pouze na pozvání paní majitelky. Hodně štěstí.\r\n',
+    password: null
+  },
+  {
+    id: 11,
+    name: 'Nemocnice u sv. Munga',
+    description: 'Nemocnice pro kouzelné nemoci a úrazy',
+    is_public: true,
+    created_at: '2025-05-29T18:28:18.037',
+    category_id: 5,
+    sort_order: 19,
+    long_description: '"Léčíme, co se léčit dá – a zbytek alespoň utěšíme."\r\n' +
+      '\r\n' +
+      'Za nenápadnou výlohou starého obchodního domu "Purcell & Syn – obuv pro pány" na londýnské Panské ulici se skrývá jedno z nejdůležitějších míst kouzelnického světa. Vstup je umožněn pouze těm, kdo vědí, že mají poklepat na rozbitou figurínu v rohu výlohy a vyslovit své přání pomoci.\r\n' +
+      '\r\n' +
+      'Exteriér a vstup\r\n' +
+      'Z ulice vypadá budova omšele – výlohy plné prachu, zrezivělé písmo a zapomenuté figuríny. Jen pozorné oko si všimne, že figuríny mění občas postoj… a že výloha klame.\r\n' +
+      '\r\n' +
+      'Hlavní vstupní hala\r\n' +
+      'Po průchodu výlohou se návštěvník ocitne v živé, přesto přísně organizované vstupní hale. Stěny z leštěného dřeva, lavice s výšivkami a velká nástěnná tabule s rozpisem pater, nemocí a pohotovostí. Vzduch je cítit bylinkami, lektvary a něčím nepojmenovatelným, co trochu připomíná rozpuštěné kletby.\r\n' +
+      '\r\n' +
+      'Rozvržení pater\r\n' +
+      'Nemocnice je rozdělena do několika specializovaných oddělení – každé patro se věnuje jiné oblasti:\r\n' +
+      '\r\n' +
+      'Přízemí – Recepce, pohotovost, administrativa a uklidňující lektvary.\r\n' +
+      '\r\n' +
+      '1. patro – Zranění způsobená kouzly: explodující kotlíky, omylem uříznuté končetiny a kletby.\r\n' +
+      '\r\n' +
+      '2. patro – Nemoci způsobené magickými tvory: upíří kousnutí, dračí horečky, vlkodlačí škrábance.\r\n' +
+      '\r\n' +
+      '3. patro – Magické viry a nakažlivé choroby: mluvící neštovice, samovolné zmizení končetin.\r\n' +
+      '\r\n' +
+      '4. patro – Poškození mysli a duše: následky černé magie, přetížení paměťových kouzel, magické trauma.\r\n' +
+      '\r\n' +
+      '5. patro – Experimentální léčby, léčitelé specialisté a výzkumná laboratoř.\r\n' +
+      '\r\n' +
+      'Suterén – Přísně střežené oddělení pro trvale poškozené případy, oběti temné magie a pacienty neschopné návratu do běžného života.\r\n' +
+      '\r\n' +
+      'Personál\r\n' +
+      'Léčitelé nosí zelené hábity s emblémem sv. Munga držícího hůlku a kost. Jsou odhodlaní, unavení a neskutečně schopní. Učňové léčitelství běhají s tácem lektvarů, přičemž se snaží nezakopnout o pacienta proměněného v želvu.\r\n' +
+      '\r\n' +
+      '\r\n' +
+      'V dnešní době je nemocnice přeplněná – přijímají raněné z kontinentu, oběti utajených útoků i ty, kdo se snaží ukrýt před zlověstnou budoucností. Vznikají tajná oddělení, kde jsou zkoumány nové formy magie – a ne vždy s vědomím vedení nemocnice.',
+    password: null
+  },
+  {
+    id: 7,
+    name: 'Čarokáva',
+    description: 'Kavárna pro čaroděje',
+    is_public: true,
+    created_at: '2025-05-29T18:28:17.858',
+    category_id: 2,
+    sort_order: 20,
+    long_description: 'Čarokáva je místem, kde se zastavil čas. Malá dřevěná vývěska nad vchodem nese zlaté, jemně pulsující runy, které se mění podle fáze měsíce. Dveře, těžké a tmavé, se otevírají téměř samy, jako by zvědavě vítaly každého nového hosta. Uvnitř kavárny vládne podmanivá atmosféra. Stěny jsou vyzdobené starými pergameny a pohyblivými ilustracemi, které se líně přeskupují. Ve vzduchu se vznáší směs vůní – pražených kávových zrn, čerstvých bylin a slabého náznaku kouřové magie. Po místnosti se rozléhá tiché šumění – šeptající stránky knih, tlumený rozhovor čarodějů a jemné cinkání porcelánu. Stoly jsou rozestavěné nepravidelně, každý trochu jiný, jako by si žil vlastním životem. Nad některými se vznášejí drobné lucerny, které se naklání ke svým hostům, nad jinými se tetelí sotva znatelná mlha. V rohu místnosti je ukrytý výklenek s velkým oknem, které neukazuje ven, ale do jiné části světa – občas v něm zasvítí vzdálené hvězdy nebo se mihne silueta někoho, kdo zde možná kdysi sedával. Čarokáva není jen obyčejná kavárna. Je to místo setkání těch, kteří hledají odpovědi, i těch, kteří se chtějí ztratit. Někteří návštěvníci se tu zdrží jen na chvíli, jiní mají pocit, že tu seděli celé hodiny, přestože ručičky starožitných hodin nad pultem se téměř nepohnuly. A možná právě to je na Čarokávě to kouzelné – že nikdy nevíš, kolik času v ní vlastně strávíš.\r\n',
+    password: null
+  },
+  {
+    id: 12,
+    name: 'Katakomby',
+    description: 'Podzemní bludiště pod Londýnem',
+    is_public: true,
+    created_at: '2025-05-29T18:28:18.073',
+    category_id: 6,
+    sort_order: 21,
+    long_description: 'Jenom stíny šeptají, co zde bude.',
+    password: null
+  }
+]
+[CHAT][ROOMS] Returning 30 rooms
+8:35:54 PM [express] GET /api/chat/rooms 304 in 439ms :: [{"id":37,"name":"Bažina","description":"Sí…
+WebSocket: Authentication successful for user Casey
+WebSocket connected: Casey
+[DEBUG] GET /api/chat/rooms
+Decoded JWT user: {
+  id: 5,
+  username: 'Casey',
+  role: 'admin',
+  iat: 1750758838,
+  exp: 1751363638
+}
+[CHAT][ROOMS] User Casey (admin) requesting rooms
+[DEBUG][getAllChatRooms][data] [
+  {
+    id: 37,
+    name: 'Bažina',
+    description: 'Sídlo/Vila Rozsáhlá bažina - Jožin Z Bažin',
+    is_public: false,
+    created_at: '2025-06-08T15:32:19.887',
+    category_id: 13,
+    sort_order: 0,
+    long_description: '**INFORMACE O BYDLENÍ**\r\n' +
+      '\r\n' +
+      '📍 **Adresa:** Bažina\r\n' +
+      '🏠 **Typ:** Sídlo/Vila\r\n' +
+      '📏 **Velikost:** Rozsáhlá bažina\r\n' +
+      '👥 **Vlastník:** Jožin Z Bažin\r\n' +
+      '📅 **Přiděleno:** 8. 6. 2025\r\n' +
+      '\r\n' +
+      '**POPIS:**\r\n' +
+      'Chcu bidlet v bažiěn',
+    password: 'jozinovabazina'
+  },
+  {
+    id: 35,
+    name: 'Temže',
+    description: 'Městem protékající šedý proud, jenž unáší stíny minulosti i potají pronesená zaklínadla.',
+    is_public: true,
+    created_at: '2025-06-01T19:48:56.601',
+    category_id: 34,
+    sort_order: 0,
+    long_description: '*„Temže si všechno pamatuje — i to, co by Londýn nejraději zapomněl.“*\r\n' +
+      '\r\n' +
+      'Temže živoucí tepnou Londýna – špinavá, hlučná a plná kontrastů. Její šedé vody protékají srdcem města, lemované doky, skladišti, továrnami a dělnickými čtvrtěmi. Ranní mlha se zdržuje nízko nad hladinou, mísí se s kouřem z parníků a komínů a dává řece téměř snový, melancholický nádech.\r\n' +
+      'Mosty jako London Bridge, Tower Bridge nebo novější Blackfriars Bridge spojují oba břehy, kde se mísí viktoriánská architektura s náznaky modernity – automobilů přibývá, ale koně a povozy stále převažují.\r\n' +
+      'Na Temži je čilý lodní provoz: říční čluny, parníky, rybářské lodě a nákladní bárky, z nichž mnohé míří do londýnských přístavů. U nábřeží se pohybují žebráci, prodavači novin, děti hrající si s klacíky i obchodníci, kteří spěchají do města.\r\n' +
+      'V noci řeka temní, zrcadlí rozptýlená světla plynových lamp a svítící okna barů a nevěstinců v nižších čtvrtích. Sem tam prý zahlédneš i něco, co vypadá jako stín bez těla, šepot beze jména – Temže skrývá i své vlastní legendy.\r\n' +
+      'Pro kouzelníky zůstává mudlovská Temže zónou, kde magie ustupuje, ale nikdy zcela nemizí. Pod hladinou se údajně skrývají pozůstatky starých rituálů, runami značené kotvy a ztracené artefakty. Někteří tvrdí, že staré vody Londýna jsou natolik nasáklé dějinami, že rezonují i s kouzly zapomenutými v čase.',
+    password: null
+  },
+  {
+    id: 34,
+    name: 'Tower',
+    description: 'Starobylá pevnost, jejíž chladné zdi pamatují tolik kouzel, kolik krve — a ani jedno nezmizelo.',
+    is_public: true,
+    created_at: '2025-06-01T19:46:35.887',
+    category_id: 33,
+    sort_order: 0,
+    long_description: '*„Ve stínech věže šeptá historie krve, zrady a nikdy neodčiněných slibů.“*\r\n' +
+      '\r\n' +
+      'Tower of London stojí nad Temží jako ztělesnění dávné moci, chladu a neústupnosti. Jeho kamenné zdi jsou ošlehané větrem staletí, nasákly krev popravených i šeptané modlitby vězňů. V dnešní době už Tower není aktivním vězením, ale muzeem a památníkem říše – jeho brány se otevírají turistům, vojákům a historikům, kteří přicházejí obdivovat korunovační klenoty i ponurou atmosféru.\r\n' +
+      'Ale nocí Tower nemlčí. Strážní – známí jako Yeoman Warders, zvaní též "Beefeateři" – se potulují chodbami s halapartnami a lucernami, zatímco v temných koutech jako by stále zněly kroky duchů minulosti. Někteří přísahají, že zahlédli Annu Boleynovou bez hlavy, jiní mluví o nejasných postavách ve věžích, které mizí dřív, než je stačí popsat.\r\n' +
+      'Nedaleko Toweru se klenou Tower Bridge – technický zázrak viktoriánské doby – a St Katharine Docks, elegantnější přístavní oblast pro bohatší vrstvy, ale v roce 1925 už lehce upadá. Ještě před pár dekádami sem vplouvaly jachty a výstavní lodě, teď už jsou zde sklady, malé dílny a několik pozapomenutých kaváren s výhledem na řeku.\r\n' +
+      'Po ulicích mezi Towerem a Temží se pohybují úředníci, vojáci, námořníci i kapsáři. Smíšená společnost, kde každý nosí kabát a tvář, která se hodí k jeho postavení. Policie je vidět, ale spíše z povinnosti než z přesvědčení. V tmavých uličkách jako by stále přežíval starý Londýn, ten, který znali Jack Rozparovač, Dickens i alchymisté.\r\n' +
+      'A jsou místa, kam turisté nechodí – stinné průchody mezi budovami, zamčené vchody pod věží, výklenky v hradbách. Místa, kde se šeptá v jazyku, který pamatují jen ti nejstarší. Místa, kde občas blikne lucerna, ale není vidět, kdo ji drží.',
+    password: null
+  },
+  {
+    id: 33,
+    name: 'Doky',
+    description: 'Doky – místo, kde se mlha mísí se lží a každé setkání má svou cenu.',
+    is_public: true,
+    created_at: '2025-06-01T19:43:38.556',
+    category_id: 32,
+    sort_order: 0,
+    long_description: '*„Na molu nekladeš otázky – jen si pamatuj, co jsi prodal a co sis nechal.“*\r\n' +
+      '\r\n' +
+      'V šedém ranním oparu se nad Temží pomalu vynořují siluety jeřábů, stožárů a komínů parníků. Londýnské doky, srdce britského obchodu a zároveň jeho stíny, pulsují životem, potem a dřinou. Po kamenných nábřežích se kodrcají povozy naložené čajem, tabákem, hedvábím a kořením – zbožím přivezeným z dalekých koutů impéria. Z úzkých uliček mezi sklady a přístavními hospodami se line směsice pachů: mořská sůl, nafta, shnilé dřevo i čerstvě upražená káva.\r\n' +
+      'Pracovníci přístavu v hrubých kabátech a čepicích vykládají bedny a barely, zatímco jejich hlasité hádky a výkřiky zanikají v rámusu lodních sirén a škrábání oceli o kámen. Mnozí z nich jsou váleční veteráni nebo migranti z Irska, Skotska a kolonií, kteří zde hledají obživu, ale často nacházejí jen těžkou práci a bídu.\r\n' +
+      "Přístavní hospody jako The Iron Anchor či Mermaid's Rest jsou plné piva, kouře a starých mořských příběhů. V opileckém šeru se tu obchoduje, smlouvá, i mizí beze stopy. Občas se šeptá o černém trhu, o tajemných bednách bez označení a o lidech, kteří se plaví bez dokladů i bez otázek.\r\n" +
+      'Celou oblastí se line neklidná energie – město v přechodu mezi starým světem a modernitou. Mezi parníky se už objevují první motorové lodě, staré sklady se proměňují v montážní haly. Ale pod tou změnou zůstává cosi nehybného: špína, chudoba a naděje, že příští loď přiveze nový začátek.\r\n' +
+      'A i když se většina obyvatel dívá jen na účetní knihy a přístavní plány, ti vnímavější cítí, že v šeru mezi kontejnery se občas mihne něco... zvláštního. Něco, co nepatří do světa mudlů.',
+    password: null
+  },
+  {
+    id: 32,
+    name: 'Spící drak',
+    description: 'Kde sny hoří pomalu a minulost šeptá v kouři.',
+    is_public: true,
+    created_at: '2025-06-01T19:38:03.713',
+    category_id: 31,
+    sort_order: 0,
+    long_description: '*„Ten, kdo spí v kouři, se možná jednou probudí v jiné době.“*\r\n' +
+      '\r\n' +
+      '**Lokalita:** Limehouse, Východní Londýn – ve stínu čínských lampionů, na konci jedné z úzkých uliček vedoucích od přístavu.\r\n' +
+      '**Typ:** Opiové doupě pro ztracené duše, básníky, pašeráky, špiony i čaroděje, kteří se chtějí dotknout hranice snu a smrti.\r\n' +
+      '\r\n' +
+      '**Popis:**\r\n' +
+      'Za těžkými závěsy z karmínového sametu se svět ztiší. Uvnitř Spícího draka je šero, sladký kouř a tlumené tóny orientální hudby, přetnuté jen bubláním dýmek a občasným smíchem, který jako by přišel z jiného světa.\r\n' +
+      '\r\n' +
+      'Nízké stoly, polštáře a obrazce draků na hedvábných paravánech navozují dojem chrámu ztracených vzpomínek. Někteří návštěvníci nepromluví celé hodiny. Jiní šeptají jména mrtvých. A někteří... někteří tam prý viděli věci, které se dosud nestaly.\r\n' +
+      '\r\n' +
+      'Místní říkají, že pokud si dáš třetí dýmku a vydržíš bdělý, můžeš zahlédnout „Spícího draka“ – prastarého tvora, který hlídá práh mezi životem a snem. Nebo že si tě odnese.',
+    password: null
+  },
+  {
+    id: 31,
+    name: 'U Pozlacené lišky',
+    description: 'Tady se schází smetánka na drink.',
+    is_public: true,
+    created_at: '2025-06-01T19:24:08.961',
+    category_id: 28,
+    sort_order: 0,
+    long_description: '*„Zlato na liščí srsti je jen maska. Skutečný lesk je v očích těch, kdo vědí, kam se dívat.“*\r\n' +
+      '\r\n' +
+      '**Lokalita:** Bloomsbury, Londýn – jen pár ulic od Britského muzea\r\n' +
+      '**Typ:** Elegantní mudlovský bar a restaurace s nádechem dekadence a tajemství, často navštěvovaný intelektuály, umělci, bohémy a… občas i někým, kdo umí lusknutím prstu zhasnout svíčku.\r\n' +
+      '\r\n' +
+      '**Popis:**\r\n' +
+      'The Gilded Fox je podnik, který láká na své sametové křesla, měděné lampy a atmosféru jazzového večera, který se nikdy zcela nerozplyne. Interiér je vytříbený – hedvábné závěsy, kožené pohovky, zrcadla v mosazných rámech a diskrétní obsluha v černobílých uniformách.\r\n' +
+      '\r\n' +
+      'Večery jsou provázeny živou hudbou: tlumený klavír, housle nebo saxofon. Víno se nalévá do broušených sklenic, a servíruje se zvěřina, pečené fíky nebo čokoládové dezerty se zlatým prachem. Není těžké uvěřit, že sem zavítají i „ti jiní“ – zvlášť ve chvílích, kdy hodiny bijí půlnoc a hosté mluví tišším hlasem než dřív.\r\n' +
+      '\r\n' +
+      '**Zajímavost:**\r\n' +
+      'O majiteli se ví jen tolik, že se podepisuje jako „R. L.“ – nikdy není přítomen, ale personál se chová, jako by je sledoval. Někteří říkají, že Gilded Fox má vlastní „knihu hostů“, do které se zapisují jen ti, kdo přijdou hledat něco víc než jen drink. Možná tam někdy najdeš i známá jména z jiného světa.',
+    password: null
+  },
+  {
+    id: 30,
+    name: 'U Černé labutě',
+    description: 'Mudlovská hospoda páté cenové',
+    is_public: true,
+    created_at: '2025-06-01T19:01:27.319',
+    category_id: 24,
+    sort_order: 0,
+    long_description: '*„Ticho je v téhle hospodě někdy hlasitější než křik. A ti, co opravdu vidí, se radši moc neptají.“*\r\n' +
+      '\r\n' +
+      "**Lokalita**: předměstí Londýna, poblíž nádraží King's Cross\r\n" +
+      '\r\n' +
+      '**Popis:**\r\n' +
+      'The Black Swan je stará viktoriánská hospoda s tmavým dřevem, okny s vitrážemi a všudypřítomným pachem piva, starého tabáku a uhlí. Působí jako zapomenuté místo, které si ještě nezvyklo na moderní svět. Přízemí tvoří klasický výčep s masivním barem, zatímco v patře se nachází několik pokojů, které se nepronajímají – alespoň ne oficiálně.\r\n' +
+      '\r\n' +
+      'Pověsti praví, že se zde scházeli špióni během války a že pod podlahou je zazděná tajná místnost. Obyčejní hosté si chodí zahrát karty nebo zazpívat za doprovodu rozladěného piana, ale pár vnímavějších čarodějů může pocítit lehké zakřivení magie – jako by tu cosi zůstalo z minulosti.\r\n' +
+      '\r\n' +
+      '**Zajímavost:**\r\n' +
+      'Za barem často stojí postarší majitelka, paní Edith Graftonová – vdova po padlém vojákovi, která „vidí víc, než říká“. Možná má ve sklepě zapečetěnou láhev s velmi zvláštní whisky, kterou prý kdysi dostala od muže s očima jako ocel.',
+    password: null
+  },
+  {
+    id: 36,
+    name: 'Doupě neřesti',
+    description: 'Sídlo/Vila Obří sídlo  - Amálie Zoufalá',
+    is_public: false,
+    created_at: '2025-06-08T15:14:53.763',
+    category_id: 12,
+    sort_order: 0,
+    long_description: '**INFORMACE O BYDLENÍ**\r\n' +
+      '\r\n' +
+      '📍 **Adresa:**  Doupě neřesti\r\n' +
+      '🏠 **Typ:** Sídlo/Vila\r\n' +
+      '📏 **Velikost:** Obří sídlo \r\n' +
+      '👥 **Vlastník:** Amálie Zoufalá\r\n' +
+      '📅 **Přiděleno:** 8. 6. 2025\r\n' +
+      '\r\n' +
+      '**POPIS:**\r\n' +
+      'Test',
+    password: 'tester'
+  },
+  {
+    id: 38,
+    name: 'Tady je Bubákovo',
+    description: 'Dům Dostatečně na stádo hipogryfu  - Zoe Higgins',
+    is_public: false,
+    created_at: '2025-06-08T15:33:42.158',
+    category_id: 13,
+    sort_order: 0,
+    long_description: '**INFORMACE O BYDLENÍ**\r\n' +
+      '\r\n' +
+      '📍 **Adresa:** Tady je Bubákovo\r\n' +
+      '🏠 **Typ:** Dům\r\n' +
+      '📏 **Velikost:** Dostatečně na stádo hipogryfu \r\n' +
+      '👥 **Vlastník:** Zoe Higgins\r\n' +
+    password: null
+  },
+  {
+    id: 9,
+    name: 'Zlomená hůlka',
+    description: 'Obchod s podezřelými kouzelnými předměty',
+    is_public: true,
+    created_at: '2025-05-29T18:28:17.933',
+    category_id: 3,
+    sort_order: 14,
+    long_description: '*„Všechno má svou cenu – i to, co by mělo zůstat zakázáno.“*\r\n' +
+      '\r\n' +
+      'Zasunutý do úzkého průchodu mezi dvěma polorozpadlými domy, obchod Stínové relikvie nemá vývěsní štít, jen železné dveře s vrytou lebkou a třemi očima. Uvnitř vládne šero, vzduch je hutný a voní po sušené krvi, kadidlu a prastarém pergamenu. Poličky praskají pod tíhou zakázaných předmětů – láhve s neidentifikovatelnými tekutinami, zrcadla, co šeptají ve spánku, zuby neznámých tvorů, svitky omotané lidskými vlasy i části těl v konzervačních lektvarech.\r\n' +
+      '\r\n' +
+      'Za pultem stojí hubený, vybledlý čaroděj jménem Morwen Szilas, jenž nikdy nemrká a zná cenu duše přesněji než jejího nositele. Kromě zboží nabízí i „služby": vyvolání ducha bez souhlasu, odklon sledování Ministerstva, zakrytí magických stop, prokletí na míru – nebo ticho.\r\n' +
+      '\r\n' +
+      'Obchod je přístupný jen těm, kteří znají správné zaklepání – a ti, co ho popletou, už většinou nikdy nezaklepou znovu.',
+    password: null
+  },
+  {
+    id: 18,
+    name: 'Pošmourná ulička',
+    description: 'Temné zákoutí Obrtlé ulice',
+    is_public: true,
+    created_at: '2025-05-31T20:25:55.518',
+    category_id: 3,
+    sort_order: 15,
+    long_description: null,
+    password: null
+  },
+  {
+    id: 4,
+    name: 'Gringottovi',
+    description: 'Banka pro čaroděje a kouzelníky',
+    is_public: true,
+    created_at: '2025-05-29T18:28:17.727',
+    category_id: 2,
+    sort_order: 16,
+    long_description: '*„Nevěř nikomu. Ani sobě. Ale svůj trezor nech u nás.“*\r\n' +
+      '\r\n' +
+      '**Vstupní hala**\r\n' +
+      'Uvnitř návštěvníka pohltí obrovská mramorová hala s vysokým stropem a dlouhou řadou masivních, vyřezávaných stolů, za nimiž sedí skřeti v tmavých hábitech. Vzduch voní pergamenem, olejem a kovem. Hala je tichá, téměř posvátná – každý krok zní dutě a ostré pohledy skřetů proříznou i kouzelnickou sebejistotu.\r\n' +
+      'Po stěnách visí bezpečnostní vývěsky v několika jazycích a výstrahy před podvodníky i artefakty, které „si žijí svým vlastním životem“. Některé dveře jsou střežené nejen runami, ale i subtilními mechanickými systémy, jejichž původ není zcela lidský.\r\n' +
+      '\r\n' +
+      '**Podzemí**\r\n' +
+      'Kovové vozíky se říkají na zakázku – vedou po spletité síti kolejnic, klikatících se v temnotě, hluboko pod zemský povrch. Skřeti je řídí s přesností, s jakou čarodějové kouzlí. Dráhy bývají chráněny nejen fyzickými zámky, ale i magickými iluzemi, labyrinty a poplašnými kouzly. Některé oblasti jsou dnes uzavřeny a „nejsou určeny veřejnosti“ – spekuluje se, že zde skřeti schovávají válečné artefakty nebo staré kletby.\r\n' +
+      'Jednoduché trezory nižších vrstev jsou stísněné, kovové a těsně chráněné magií. Bohatší trezory mají tvar kamenných krypt s vlastní atmosférou a obrannými mechanismy – některé reagují na krev, jiné na magický podpis, jiné prý poznají samotné srdce majitele.\r\n' +
+      'Existují hluboké úrovně, kam se nesmí – podle legend je tam uloženo „Zlato bohů“, zapečetěné relikvie staré magie a poklady, které nesmí být nikdy znovu probuzeny. Skřeti je hlídají mlčky – a žádné otázky nejsou vítané.\r\n' +
+      '\r\n',
+    password: null
+  },
+  {
+    id: 10,
+    name: 'Ministerstvo kouzel',
+    description: 'Úřad kouzelné vlády',
+    is_public: true,
+    created_at: '2025-05-29T18:28:17.97',
+    category_id: 4,
+    sort_order: 17,
+    long_description: '"Ne vše, co se třpytí, je kouzelné. A ne vše kouzelné je správné."\r\n' +
+      '\r\n' +
+      'Skryté hluboko pod ulicemi Londýna, přístupné krbem, toaletou či tajnými chodbami v kavárnách, se rozprostírá komplex Ministerstva kouzel – srdce byrokratické moci kouzelnické Británie. V roce 1925 je to místo napětí, tichých dohod a šeptaných intrik – důsledky sílící hrozby z kontinentu jsou cítit v každé dlaždici.\r\n' +
+      '\r\n' +
+      'Vstupní hala\r\n' +
+      'Velkolepá, vysoká jako chrám – s temně zelenými cihlovými stěnami, lesklou černou podlahou a zlatými fontánami magie uprostřed. Lidé sem proudí jako proud myšlenek, přemístění nebo krbem, pod dozorem pracovníků Odboru magického práva.\r\n' +
+      '\r\n' +
+      'Oddělení a kanceláře\r\n' +
+      'Bludiště chodeb a pater – od Odboru záhad, kam vstupují jen ti vyvolení, přes Odbor pro uplatňování kouzelnických zákonů až po kanceláře Regulace magických tvorů. Stěny jsou pokryty pohyblivými nástěnkami, na nichž se objevují vyhlášky, zatykače i falešné zprávy. Vzduch je prosycen vůní pergamenu, vosku a politiky.\r\n' +
+      '\r\n' +
+      '\r\n' +
+      'V dnešních dnech je Ministerstvo nejen správním centrem, ale i místem strachu a ostražitosti. Byrokraté a bystrozoři se míjejí v temných kuloárech, informace se filtrují, jména mizí ze seznamů. Každý krok je sledován, každý šepot může být zradou.',
+    password: null
+  },
+  {
+    id: 6,
+    name: 'Černá vrána',
+    description: 'Pohřební služba pro kouzelný svět',
+    is_public: true,
+    created_at: '2025-05-29T18:28:17.821',
+    category_id: 2,
+    sort_order: 18,
+    long_description: 'Na Příčné ulici stojí temně laděná budova. Její fasáda je natřená sytou černou barvou s matnými detaily v šedé. Okna jsou vysoká a úzká, s černými závěsy, za nimiž je vidět jen matný odraz světla svíček. Nad vchodem visí elegantní dřevěná tabule s nápisem „Černá vrána" ve stříbrném písmu, ozdobená drobným reliéfem letící vrány. Dvoukřídlé dveře, vyřezávané z temného dřeva, jsou opatřeny mosazným klepadlem ve tvaru havraní hlavy. Před vchodem stojí dvě černé lucerny, jejichž mihotavé plamínky dodávají atmosféře tajemný nádech. Vzduch kolem budovy je naplněn lehkou vůní kadidla a na dlažbě u vchodu je vyryt symbol vrány.\r\n' +
+      '\r\n' +
+      'Jakmile zákazník vstoupí, ucítí jemnou vůni vosku, bylin a starého dřeva. Interiér je v přítmí, osvětlovaný pouze světlem svíček, které stojí na masivních kandelábrech rozestavěných po místnosti. Podlahu pokrývají tmavě šedé kamenné dlaždice, občas ozdobené složitými ornamenty v podobě vran a větví. Na levé straně místnosti je dlouhý pult, vyrobený z ebenového dřeva, na němž stojí černá pokladna a několik dekorativních krabiček. Za pultem jsou police plné katalogů, drobných pohřebních artefaktů, vzorků vyřezávaných urn ale i různých pomůcek pro média či snad komunikaci s duchy? Na pravé straně se nachází vitríny, ve kterých jsou vystaveny pohřební dekorace – od honosných pohřebních šperků až po drobné ozdobné lahvičky, do nichž se údajně mohou uchovat vzpomínky. V rohu je pohodlné křeslo s malým stolkem, kde si zákazníci mohou prohlédnout katalogy v soukromí. V zadní části místnosti jsou těžké sametové závěsy, které oddělují hlavní prostor od neveřejných částí podniku. Za pultem stojí - po domluvení schůzky - v černém hábitu Morgause Birchwood - majitelka - a mluví tlumeným, uklidňujícím hlasem. Každé gesto, každý pohyb je promyšlený a důstojný, jako by každý zákazník byl důležitou součástí rituálu. Atmosféra celého prostoru je klidná, téměř posvátná. Zdá se, že místo oplývá jakousi zvláštní magií, která vytváří dojem, že čas uvnitř plyne pomaleji než venku. Za pultem je pak vchod do zadní části obchodu, kde se nacházejí zřejmě sklady a zázemí. A také průchod do sklepa. Ten je vybaven lékařským stolem, několika světly a spoustou roztodivných nástrojů. Inu, někde se k tomu dlouhému odpočinku musí nebožtíci připravit. Nicméně, to není pro oči truchlících, jednoduše… pouze na pozvání paní majitelky. Hodně štěstí.\r\n',
+    password: null
+  },
+  {
+    id: 11,
+    name: 'Nemocnice u sv. Munga',
+    description: 'Nemocnice pro kouzelné nemoci a úrazy',
+    is_public: true,
+    created_at: '2025-05-29T18:28:18.037',
+    category_id: 5,
+    sort_order: 19,
+    long_description: '"Léčíme, co se léčit dá – a zbytek alespoň utěšíme."\r\n' +
+      '\r\n' +
+      'Za nenápadnou výlohou starého obchodního domu "Purcell & Syn – obuv pro pány" na londýnské Panské ulici se skrývá jedno z nejdůležitějších míst kouzelnického světa. Vstup je umožněn pouze těm, kdo vědí, že mají poklepat na rozbitou figurínu v rohu výlohy a vyslovit své přání pomoci.\r\n' +
+      '\r\n' +
+      'Exteriér a vstup\r\n' +
+      'Z ulice vypadá budova omšele – výlohy plné prachu, zrezivělé písmo a zapomenuté figuríny. Jen pozorné oko si všimne, že figuríny mění občas postoj… a že výloha klame.\r\n' +
+      '\r\n' +
+      'Hlavní vstupní hala\r\n' +
+      'Po průchodu výlohou se návštěvník ocitne v živé, přesto přísně organizované vstupní hale. Stěny z leštěného dřeva, lavice s výšivkami a velká nástěnná tabule s rozpisem pater, nemocí a pohotovostí. Vzduch je cítit bylinkami, lektvary a něčím nepojmenovatelným, co trochu připomíná rozpuštěné kletby.\r\n' +
+      '\r\n' +
+      'Rozvržení pater\r\n' +
+      'Nemocnice je rozdělena do několika specializovaných oddělení – každé patro se věnuje jiné oblasti:\r\n' +
+      '\r\n' +
+      'Přízemí – Recepce, pohotovost, administrativa a uklidňující lektvary.\r\n' +
+      '\r\n' +
+      '1. patro – Zranění způsobená kouzly: explodující kotlíky, omylem uříznuté končetiny a kletby.\r\n' +
+      '\r\n' +
+      '2. patro – Nemoci způsobené magickými tvory: upíří kousnutí, dračí horečky, vlkodlačí škrábance.\r\n' +
+      '\r\n' +
+      '3. patro – Magické viry a nakažlivé choroby: mluvící neštovice, samovolné zmizení končetin.\r\n' +
+      '\r\n' +
+      '4. patro – Poškození mysli a duše: následky černé magie, přetížení paměťových kouzel, magické trauma.\r\n' +
+      '\r\n' +
+      '5. patro – Experimentální léčby, léčitelé specialisté a výzkumná laboratoř.\r\n' +
+      '\r\n' +
+      'Suterén – Přísně střežené oddělení pro trvale poškozené případy, oběti temné magie a pacienty neschopné návratu do běžného života.\r\n' +
+      '\r\n' +
+      'Personál\r\n' +
+      'Léčitelé nosí zelené hábity s emblémem sv. Munga držícího hůlku a kost. Jsou odhodlaní, unavení a neskutečně schopní. Učňové léčitelství běhají s tácem lektvarů, přičemž se snaží nezakopnout o pacienta proměněného v želvu.\r\n' +
+      '\r\n' +
+      '\r\n' +
+      'V dnešní době je nemocnice přeplněná – přijímají raněné z kontinentu, oběti utajených útoků i ty, kdo se snaží ukrýt před zlověstnou budoucností. Vznikají tajná oddělení, kde jsou zkoumány nové formy magie – a ne vždy s vědomím vedení nemocnice.',
+    password: null
+  },
+  {
+    id: 7,
+    name: 'Čarokáva',
+    description: 'Kavárna pro čaroděje',
+    is_public: true,
+    created_at: '2025-05-29T18:28:17.858',
+    category_id: 2,
+    sort_order: 20,
+    long_description: 'Čarokáva je místem, kde se zastavil čas. Malá dřevěná vývěska nad vchodem nese zlaté, jemně pulsující runy, které se mění podle fáze měsíce. Dveře, těžké a tmavé, se otevírají téměř samy, jako by zvědavě vítaly každého nového hosta. Uvnitř kavárny vládne podmanivá atmosféra. Stěny jsou vyzdobené starými pergameny a pohyblivými ilustracemi, které se líně přeskupují. Ve vzduchu se vznáší směs vůní – pražených kávových zrn, čerstvých bylin a slabého náznaku kouřové magie. Po místnosti se rozléhá tiché šumění – šeptající stránky knih, tlumený rozhovor čarodějů a jemné cinkání porcelánu. Stoly jsou rozestavěné nepravidelně, každý trochu jiný, jako by si žil vlastním životem. Nad některými se vznášejí drobné lucerny, které se naklání ke svým hostům, nad jinými se tetelí sotva znatelná mlha. V rohu místnosti je ukrytý výklenek s velkým oknem, které neukazuje ven, ale do jiné části světa – občas v něm zasvítí vzdálené hvězdy nebo se mihne silueta někoho, kdo zde možná kdysi sedával. Čarokáva není jen obyčejná kavárna. Je to místo setkání těch, kteří hledají odpovědi, i těch, kteří se chtějí ztratit. Někteří návštěvníci se tu zdrží jen na chvíli, jiní mají pocit, že tu seděli celé hodiny, přestože ručičky starožitných hodin nad pultem se téměř nepohnuly. A možná právě to je na Čarokávě to kouzelné – že nikdy nevíš, kolik času v ní vlastně strávíš.\r\n',
+    password: null
+  },
+  {
+    id: 12,
+    name: 'Katakomby',
+    description: 'Podzemní bludiště pod Londýnem',
+    is_public: true,
+    created_at: '2025-05-29T18:28:18.073',
+    category_id: 6,
+    sort_order: 21,
+    long_description: 'Jenom stíny šeptají, co zde bude.',
+    password: null
+  }
+]
+[CHAT][ROOMS] Returning 30 rooms
+8:36:20 PM [express] GET /api/chat/rooms 304 in 421ms :: [{"id":37,"name":"Bažina","description":"Sí…
+WebSocket disconnected: Casey
+[DEBUG] GET /api/chat/categories
+Decoded JWT user: {
+  id: 5,
+  username: 'Casey',
+  role: 'admin',
+  iat: 1750758838,
+  exp: 1751363638
+}
+[CHAT][CATEGORIES] User Casey (admin) requesting categories
+[DEBUG] GET /favicon.ico
+[CHAT][CATEGORIES] Returning 4 categories
+8:36:32 PM [express] GET /api/chat/categories 304 in 638ms :: [{"id":1,"name":"Kouzelnický Londýn","…
+[DEBUG] GET /api/characters/online
+Decoded JWT user: {
+  id: 5,
+  username: 'Casey',
+  role: 'admin',
+  iat: 1750758838,
+  exp: 1751363638
+}
+8:36:33 PM [express] GET /api/characters/online 304 in 1ms :: []
+[DEBUG] GET /api/influence-bar
+Decoded JWT user: {
+  id: 5,
+  username: 'Casey',
+  role: 'admin',
+  iat: 1750758838,
+  exp: 1751363638
+}
+[DEBUG] GET /api/characters/all
+Decoded JWT user: {
+  id: 5,
+  username: 'Casey',
+  role: 'admin',
+  iat: 1750758838,
+  exp: 1751363638
+}
+[DEBUG] GET /api/characters/7/last-chat
+Decoded JWT user: {
+  id: 5,
+  username: 'Casey',
+  role: 'admin',
+  iat: 1750758838,
+  exp: 1751363638
+}
+8:36:33 PM [express] GET /api/characters/7/last-chat 304 in 2ms
+[DEBUG] GET /api/influence-history
+Decoded JWT user: {
+  id: 5,
+  username: 'Casey',
+  role: 'admin',
+  iat: 1750758838,
+  exp: 1751363638
+}
+[DEBUG] GET /api/owl-post/unread-count/7
+Decoded JWT user: {
+  id: 5,
+  username: 'Casey',
+  role: 'admin',
+  iat: 1750758838,
+  exp: 1751363638
+}
+8:36:33 PM [express] GET /api/influence-bar 304 in 209ms :: {"grindelwaldPoints":0,"dumbledorePoints…
+Loaded 15 characters {
+  data: [
+    {
+      id: 17,
+      user_id: 12,
+      first_name: 'Matthew',
+      middle_name: 'Elias',
+      last_name: 'Parker',
+      birth_date: '1900-10-12T00:00:00',
+      is_active: true,
+      created_at: '2025-06-08T15:04:47.049',
+      updated_at: '2025-06-08T15:19:45.225',
+      school: 'Bradavice',
+      description: '',
+      death_date: null,
+      death_reason: null,
+      avatar: null,
+      height: 178,
+      weight: 76,
+      height_set_at: '2025-06-08T15:19:45.225',
+      school_set_at: '2025-06-08T15:19:45.225',
+      residence: null,
+      is_system: false,
+      character_history: null,
+      show_history_to_others: true
+    },
+    {
+      id: 13,
+      user_id: 8,
+      first_name: 'Zoe',
+      middle_name: '',
+      last_name: 'Higgins',
+      birth_date: '1900-01-01T00:00:00',
+      is_active: true,
+      created_at: '2025-06-01T20:09:08.736',
+      updated_at: '2025-06-08T15:33:42.047',
+      school: null,
+      description: null,
+      death_date: null,
+      death_reason: null,
+      avatar: null,
+      height: null,
+      weight: null,
+      height_set_at: null,
+      school_set_at: null,
+      residence: 'Tady je Bubákovo',
+      is_system: false,
+      character_history: null,
+      show_history_to_others: true
+    },
+    {
+      id: 16,
+      user_id: 11,
+      first_name: 'Jožin',
+      middle_name: 'Z',
+      last_name: 'Bažin',
+      birth_date: '1860-01-01T00:00:00',
+      is_active: true,
+      created_at: '2025-06-08T15:03:05.085',
+      updated_at: '2025-06-08T15:44:02.264',
+      school: 'Domácí vzdělávání',
+      description: 'Je fakt hnusny hajzl, <b>nechcete</b> se snim kamaradit faktycki',
+      death_date: null,
+      death_reason: null,
+      avatar: null,
+      height: 250,
+      weight: 300,
+      height_set_at: '2025-06-08T15:16:42.967',
+      school_set_at: '2025-06-08T15:16:42.967',
+      residence: 'Londýn - Ubytovna U starého Šeptáka',
+      is_system: false,
+      character_history: 'Narodil se v bažině \r\n' +
+        '\r\n' +
+        'Snědl čaroděje \r\n' +
+        '\r\n' +
+        'Nabyl kouzelných schopností \r\n' +
+        '\r\n' +
+        'Teď jde jíst čarodějů víc ',
+      show_history_to_others: true
+    },
+    {
+      id: 15,
+      user_id: 10,
+      first_name: 'Shantae',
+      middle_name: '',
+      last_name: 'Okoro',
+      birth_date: '1902-04-02T00:00:00',
+      is_active: true,
+      created_at: '2025-06-08T14:37:54.459',
+      updated_at: '2025-06-08T15:49:28.756',
+      school: 'Uagadou',
+      description: '',
+      death_date: null,
+      death_reason: null,
+      avatar: null,
+      height: 160,
+      weight: 55,
+      height_set_at: '2025-06-08T15:49:28.756',
+      school_set_at: '2025-06-08T15:49:28.756',
+      residence: null,
+      is_system: false,
+      character_history: null,
+      show_history_to_others: true
+    },
+    {
+      id: 8,
+      user_id: 1,
+      first_name: 'Mrtvý',
+      middle_name: '',
+      last_name: 'Skřet',
+      birth_date: '1860-06-14T00:00:00',
+      is_active: false,
+      created_at: '2025-05-30T11:10:39.36',
+      updated_at: '2025-05-30T12:27:51.733',
+      school: '',
+      description: '',
+      death_date: '2025-05-30T00:00:00',
+      death_reason: 'tester',
+      avatar: null,
+      height: null,
+      weight: null,
+      height_set_at: null,
+      school_set_at: null,
+      residence: null,
+      is_system: false,
+      character_history: null,
+      show_history_to_others: true
+    },
+    {
+      id: 1,
+      user_id: 1,
+      first_name: 'Gandalf',
+      middle_name: 'the',
+      last_name: 'Grey',
+      birth_date: '1880-01-15T00:00:00',
+      is_active: false,
+      created_at: '2025-05-28T14:17:30.39',
+      updated_at: '2025-05-31T20:27:10.463',
+      school: 'Domácí vzdělávání',
+      description: '...',
+      death_date: null,
+      death_reason: null,
+      avatar: null,
+      height: 190,
+      weight: 80,
+      height_set_at: '2025-05-31T20:27:10.463',
+      school_set_at: '2025-05-31T20:27:10.463',
+      residence: null,
+      is_system: false,
+      character_history: null,
+      show_history_to_others: true
+    },
+    {
+      id: 2,
+      user_id: 1,
+      first_name: 'Aragorn',
+      middle_name: null,
+      last_name: 'Ranger',
+      birth_date: '1895-03-20T00:00:00',
+      is_active: true,
+      created_at: '2025-05-28T14:17:30.39',
+      updated_at: '2025-05-30T11:32:27.392',
+      school: null,
+      description: null,
+      death_date: null,
+      death_reason: null,
+      avatar: null,
+      height: null,
+      weight: null,
+      height_set_at: null,
+      school_set_at: null,
+      residence: 'Londýn - Ubytovna U starého Šeptáka',
+      is_system: false,
+      character_history: null,
+      show_history_to_others: true
+    },
+    {
+      id: 12,
+      user_id: 7,
+      first_name: 'Příšera',
+      middle_name: 'z',
+      last_name: 'Bažin',
+      birth_date: '1910-06-01T00:00:00',
+      is_active: true,
+      created_at: '2025-06-01T19:43:12.39',
+      updated_at: '2025-06-01T19:43:12.381',
+      school: null,
+      description: null,
+      death_date: null,
+      death_reason: null,
+      avatar: null,
+      height: null,
+      weight: null,
+      height_set_at: null,
+      school_set_at: null,
+      residence: null,
+      is_system: false,
+      character_history: null,
+      show_history_to_others: true
+    },
+    {
+      id: 14,
+      user_id: 9,
+      first_name: 'Nickolas',
+      middle_name: '',
+      last_name: 'Sinclair',
+      birth_date: '1895-01-24T00:00:00',
+      is_active: true,
+      created_at: '2025-06-01T20:15:46.926',
+      updated_at: '2025-06-01T20:15:46.917',
+      school: null,
+      description: null,
+      death_date: null,
+      death_reason: null,
+      avatar: null,
+      height: null,
+      weight: null,
+      height_set_at: null,
+      school_set_at: null,
+      residence: null,
+      is_system: false,
+      character_history: null,
+      show_history_to_others: true
+    },
+    {
+      id: 7,
+      user_id: 5,
+      first_name: 'Kira',
+      middle_name: 'Mae',
+      last_name: 'Spencer',
+      birth_date: '1907-08-25T00:00:00',
+      is_active: true,
+      created_at: '2025-05-30T09:46:17.825',
+      updated_at: '2025-06-02T14:33:15.755',
+      school: 'Bradavice',
+      description: '',
+      death_date: null,
+      death_reason: null,
+      avatar: 'data:image/jpeg;base64,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',
+      height: null,
+      weight: null,
+      height_set_at: null,
+      school_set_at: null,
+      residence: 'Londýn - Ubytovna U starého Šeptáka',
+      is_system: false,
+      character_history: null,
+      show_history_to_others: true
+    },
+    {
+      id: 3,
+      user_id: 2,
+      first_name: 'Frodo',
+      middle_name: '',
+      last_name: 'Pytlík',
+      birth_date: '1902-09-22T00:00:00',
+      is_active: true,
+      created_at: '2025-05-28T14:17:30.39',
+      updated_at: '2025-06-02T14:41:45.98',
+      school: '',
+      description: '',
+      death_date: null,
+      death_reason: null,
+      avatar: 'data:image/jpeg;base64,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',
+      height: null,
+      weight: null,
+      height_set_at: null,
+      school_set_at: null,
+      residence: null,
+      is_system: false,
+      character_history: 'Mě se na nic neptej, ale dávali to včera na Nova Cinema!',
+      show_history_to_others: true
+    },
+    {
+      id: 6,
+      user_id: 5,
+      first_name: 'Casey',
+      middle_name: 'Lotte',
+      last_name: 'Benett',
+      birth_date: '1902-12-16T00:00:00',
+      is_active: true,
+      created_at: '2025-05-30T06:47:39.391',
+      updated_at: '2025-06-08T14:48:53.094',
+      school: 'Bradavice',
+      description: '<b>Popisek</b> Tady bude popisek',
+      death_date: null,
+      death_reason: null,
+      avatar: null,
+      height: null,
+      weight: null,
+      height_set_at: null,
+      school_set_at: '2025-06-01T17:44:16.399',
+      residence: null,
+      is_system: false,
+      character_history: '123\r\n\r\nMy jsme bratři ',
+      show_history_to_others: true
+    },
+    {
+      id: 18,
+      user_id: 13,
+      first_name: 'Amálie',
+      middle_name: '',
+      last_name: 'Zoufalá',
+      birth_date: '1906-02-07T00:00:00',
+      is_active: true,
+      created_at: '2025-06-08T15:11:13.524',
+      updated_at: '2025-06-08T15:14:53.651',
+      school: null,
+      description: null,
+      death_date: null,
+      death_reason: null,
+      avatar: null,
+      height: null,
+      weight: null,
+      height_set_at: null,
+      school_set_at: null,
+      residence: ' Doupě neřesti',
+      is_system: false,
+      character_history: null,
+      show_history_to_others: true
+    },
+    {
+      id: 9,
+      user_id: 1,
+      first_name: 'Sám',
+      middle_name: '',
+      last_name: 'Doma',
+      birth_date: '1899-12-08T00:00:00',
+      is_active: false,
+      created_at: '2025-05-30T21:49:10.672',
+      updated_at: '2025-06-17T09:38:09.938',
+      school: 'Bradavice',
+      description: '',
+      death_date: null,
+      death_reason: null,
+      avatar: null,
+      height: null,
+      weight: null,
+      height_set_at: null,
+      school_set_at: null,
+      residence: 'někde v háji',
+      is_system: false,
+      character_history: 'ablbalblalbalbal',
+      show_history_to_others: true
+    },
+    {
+      id: 20,
+      user_id: 1,
+      first_name: 'Bažina',
+      middle_name: '',
+      last_name: 'Jóžová',
+      birth_date: '1900-01-01T00:00:00',
+      is_active: true,
+      created_at: '2025-06-08T15:44:22.859',
+      updated_at: '2025-06-17T09:45:45.63',
+      school: 'Vysoká škola života ',
+      description: 'To byste chtěli vědět hajzli',
+      death_date: null,
+      death_reason: null,
+      avatar: null,
+      height: null,
+      weight: null,
+      height_set_at: null,
+      school_set_at: null,
+      residence: null,
+      is_system: false,
+      character_history: 'vyschla bažina. zasraný globální oteplování',
+      show_history_to_others: true
+    }
+  ]
+}
+8:36:33 PM [express] GET /api/characters/all 200 in 305ms :: [{"id":17,"userId":12,"firstName":"Matt…
+8:36:33 PM [express] GET /api/owl-post/unread-count/7 200 in 242ms :: {"count":0}
+8:36:33 PM [express] GET /api/influence-history 304 in 301ms :: [{"id":12,"changeType":"manual","poi…
+[DEBUG] GET /api/characters/7/wand
+Decoded JWT user: {
+  id: 5,
+  username: 'Casey',
+  role: 'admin',
+  iat: 1750758838,
+  exp: 1751363638
+}
+[DEBUG] GET /favicon.ico
+8:36:33 PM [express] GET /api/characters/7/wand 304 in 213ms :: {"id":3,"characterId":7,"wood":"Boro…
