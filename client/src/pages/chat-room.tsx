@@ -164,7 +164,7 @@ export default function ChatRoom() {
     if (!selectedCharacter && userCharacters.length > 0 && !charactersLoading && !isNarratorMode) {
       console.log('Auto-selecting first character:', userCharacters[0]);
       setSelectedCharacter(userCharacters[0]);
-    } else if (!selectedCharacter && userCharacters.length === 0 && canSendAsNarrator && !isNarratorMode) {
+    } else if (!selectedCharacter && userCharacters.length === 0 && user?.role === 'admin' && !isNarratorMode) {
       console.log('Admin has no own characters, enabling narrator mode');
       setIsNarratorMode(true);
     }
@@ -586,12 +586,12 @@ export default function ChatRoom() {
     }
   };
 
+  // Check if user can send as narrator
+  const canSendAsNarrator = user?.role === 'admin' || user?.canNarrate;
+
   const formatMessageTime = (dateString: string) => {
     return format(new Date(dateString), "dd.MM.yyyy HH:mm");
   };
-
-  // Check if user can send as narrator
-  const canSendAsNarrator = user?.role === 'admin' || user?.canNarrate;
 
   if (!user) {
     return (

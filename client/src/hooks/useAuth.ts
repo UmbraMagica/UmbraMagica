@@ -1,4 +1,3 @@
-
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest, getQueryFn, getAuthToken } from "@/lib/queryClient";
 import { useLocation } from "wouter";
@@ -38,9 +37,9 @@ function processCharacters(charactersData: any): Character[] {
     console.log('[processCharacters] FULL DEBUG - Input data:', charactersData);
     console.log('[processCharacters] FULL DEBUG - Input type:', typeof charactersData);
     console.log('[processCharacters] FULL DEBUG - Is array:', Array.isArray(charactersData));
-    
+
     let charactersArray: any[] = [];
-    
+
     if (Array.isArray(charactersData)) {
       charactersArray = charactersData;
       console.log('[processCharacters] FULL DEBUG - Using direct array');
@@ -59,13 +58,13 @@ function processCharacters(charactersData: any): Character[] {
 
     console.log('[processCharacters] FULL DEBUG - Characters array:', charactersArray);
     console.log('[processCharacters] FULL DEBUG - Characters array length:', charactersArray.length);
-    
+
     const validCharacters = charactersArray.filter((char, index) => {
       console.log(`[processCharacters] FULL DEBUG - Checking character ${index}:`, char);
-      
+
       const isValid = isValidCharacter(char);
       console.log(`[processCharacters] FULL DEBUG - Character ${index} valid:`, isValid);
-      
+
       if (!isValid && char) {
         console.log(`[processCharacters] FULL DEBUG - Invalid character ${index}:`, {
           id: char.id,
@@ -78,7 +77,7 @@ function processCharacters(charactersData: any): Character[] {
       }
       return isValid;
     });
-    
+
     console.log('[processCharacters] FULL DEBUG - Valid characters:', validCharacters);
     console.log('[processCharacters] FULL DEBUG - Valid characters count:', validCharacters.length);
     return validCharacters;
@@ -129,15 +128,15 @@ export function useAuth() {
               'Content-Type': 'application/json'
             }
           });
-          
+
           console.log('[useAuth] FULL DEBUG - Characters response status:', charactersResponse.status);
-          
+
           if (charactersResponse.ok) {
             const charactersData = await charactersResponse.json();
             console.log('[useAuth] FULL DEBUG - Raw characters data:', charactersData);
             console.log('[useAuth] FULL DEBUG - Characters data type:', typeof charactersData);
             console.log('[useAuth] FULL DEBUG - Is array:', Array.isArray(charactersData));
-            
+
             userData.characters = processCharacters(charactersData);
             console.log('[useAuth] FULL DEBUG - Processed characters:', userData.characters);
             console.log('[useAuth] FULL DEBUG - Processed characters count:', userData.characters?.length || 0);
