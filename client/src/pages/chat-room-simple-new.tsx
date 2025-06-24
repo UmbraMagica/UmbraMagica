@@ -1027,7 +1027,7 @@ export default function ChatRoom() {
                             href={`/characters/${message.characterId}`}
                             className="font-medium text-sm hover:text-primary hover:underline cursor-pointer"
                           >
-                            {safeCharacter.firstName} {safeCharacter.lastName}
+                            {safeCharacter.firstName} {safeCharacter.middleName ? `${safeCharacter.middleName} ` : ''}{safeCharacter.lastName}
                           </Link>
                         );
                       }

@@ -147,7 +147,6 @@ export default function ChatRoom() {
     userCharactersRaw.filter(char => 
       char && 
       !char.deathDate && 
-      !char.isSystem &&
       char.userId === user?.id &&
       char.firstName !== 'Systém' &&
       char.firstName !== 'Správa'
