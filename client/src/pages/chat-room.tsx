@@ -139,7 +139,7 @@ export default function ChatRoom() {
       const isNotSystem = !char.isSystem;
       
       // IMPORTANT: Only include characters that belong to the current user
-      // Admin can see all characters in user.characters, but can only send messages as their own characters
+      // Even admin can only send messages as their own characters, not as other users' characters
       const belongsToUser = char.userId === user?.id;
       
       return hasValidId && hasValidFirstName && isAlive && isNotSystem && belongsToUser;
@@ -159,13 +159,16 @@ export default function ChatRoom() {
     enabled: !!currentRoomId,
   });
 
-  // Auto-select first character when characters load
+  // Auto-select first character when characters load, or enable narrator mode for admin without characters
   useEffect(() => {
     if (!selectedCharacter && userCharacters.length > 0 && !charactersLoading && !isNarratorMode) {
       console.log('Auto-selecting first character:', userCharacters[0]);
       setSelectedCharacter(userCharacters[0]);
+    } else if (!selectedCharacter && userCharacters.length === 0 && canSendAsNarrator && !isNarratorMode) {
+      console.log('Admin has no own characters, enabling narrator mode');
+      setIsNarratorMode(true);
     }
-  }, [userCharacters, selectedCharacter, charactersLoading, isNarratorMode]);
+  }, [userCharacters, selectedCharacter, charactersLoading, isNarratorMode, canSendAsNarrator]);
 
   // Initialize WebSocket connection
   useEffect(() => {
@@ -760,9 +763,10 @@ export default function ChatRoom() {
                   if (char) setSelectedCharacter(char);
                 }
               }}
+              disabled={userCharacters.length === 0}
             >
               <SelectTrigger className="w-[180px] h-8">
-                <SelectValue placeholder="Vyber postavu" />
+                <SelectValue placeholder={userCharacters.length === 0 ? "Žádné postavy" : "Vyber postavu"} />
               </SelectTrigger>
               <SelectContent>
                 {userCharacters.map(char => (
