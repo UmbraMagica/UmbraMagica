@@ -1,0 +1,49 @@
+[useAuth] Loaded user data: Object
+index-46jL-i97.js:488 User data: Object
+index-46jL-i97.js:488 User characters from query: Array(0)
+index-46jL-i97.js:488 Selected character: null
+index-46jL-i97.js:488 Connecting to WebSocket: wss://umbra-dev.onrender.com/ws?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwidXNlcm5hbWUiOiJDYXNleSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1MDc1NDg1OCwiZXhwIjoxNzUxMzU5NjU4fQ.tTXRNXiOsRZuD_rwC8xPeFKWmTYqyZp7pqaj_snEsBY
+index-46jL-i97.js:488 Character effect - selectedCharacter: null availableCharacters: 0
+index-46jL-i97.js:488 User data: Object
+index-46jL-i97.js:488 User characters from query: Array(0)
+index-46jL-i97.js:488 Selected character: null
+index-46jL-i97.js:488 User data: Object
+index-46jL-i97.js:488 User characters from query: Array(0)
+index-46jL-i97.js:488 Selected character: null
+index-46jL-i97.js:488 User data: Object
+index-46jL-i97.js:488 User characters from query: Array(15)
+index-46jL-i97.js:488 Selected character: null
+index-46jL-i97.js:488 Character effect - selectedCharacter: null availableCharacters: 14
+index-46jL-i97.js:488 Auto-selecting first character: Object
+index-46jL-i97.js:488 User data: Object
+index-46jL-i97.js:488 User characters from query: Array(15)
+index-46jL-i97.js:488 Selected character: Object
+index-46jL-i97.js:488 Character effect - selectedCharacter: Object availableCharacters: 14
+index-46jL-i97.js:488 User data: Object
+index-46jL-i97.js:488 User characters from query: Array(15)
+index-46jL-i97.js:488 Selected character: Object
+index-46jL-i97.js:488 WebSocket připojen
+index-46jL-i97.js:488 User data: Object
+index-46jL-i97.js:488 User characters from query: Array(15)
+index-46jL-i97.js:488 Selected character: Object
+index-46jL-i97.js:488 User data: Object
+index-46jL-i97.js:488 User characters from query: Array(15)
+index-46jL-i97.js:488 Selected character: Object
+index-46jL-i97.js:488 User data: Object
+index-46jL-i97.js:488 User characters from query: Array(15)
+index-46jL-i97.js:488 Selected character: Object
+index-46jL-i97.js:488 User data: Object
+index-46jL-i97.js:488 User characters from query: Array(15)
+index-46jL-i97.js:488 Selected character: Object
+index-46jL-i97.js:488 Uncaught TypeError: Cannot read properties of undefined (reading 'firstName')
+    at X (index-46jL-i97.js:488:107139)
+    at index-46jL-i97.js:488:110646
+    at Array.map (<anonymous>)
+    at tI (index-46jL-i97.js:488:110444)
+    at xg (index-46jL-i97.js:48:34152)
+    at Ax (index-46jL-i97.js:48:62028)
+    at D1 (index-46jL-i97.js:48:72485)
+    at sS (index-46jL-i97.js:48:106413)
+    at p4 (index-46jL-i97.js:48:105476)
+    at xp (index-46jL-i97.js:48:105306)Nechte si tuto chybu vysvětlit
+index-46jL-i97.js:488 WebSocket odpojen 1005 
