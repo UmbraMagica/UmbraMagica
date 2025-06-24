@@ -59,8 +59,8 @@ export function useAuth() {
             }
           });
           if (charactersResponse.ok) {
-            const charactersData = await charactersResponse.json();
-            userData.characters = Array.isArray(charactersData) ? charactersData : (charactersData.characters || []);
+            const characters = await charactersResponse.json();
+            userData.characters = characters;
           } else {
             userData.characters = [];
           }
@@ -69,8 +69,6 @@ export function useAuth() {
           userData.characters = [];
         }
       }
-      
-      console.log('[useAuth] Final user data with characters:', userData);
       
       return userData;
     },
