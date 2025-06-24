@@ -988,7 +988,7 @@ export class DatabaseStorage implements IStorage {
       action: 'approve_character',
       targetUserId: request.userId,
       targetRequestId: requestId,
-      details: `Approved character request: ${request.firstName} ${request.lastName}\``
+      details: `Approved character request: ${request.firstName} ${request.lastName}`
     });
     return character;
   }
@@ -1002,7 +1002,7 @@ export class DatabaseStorage implements IStorage {
       action: 'reject_character',
       targetUserId: request.userId,
       targetRequestId: requestId,
-      details: `Rejected character request: ${request.firstName} ${request.lastName}\``
+      details: `Rejected character request: ${request.firstName} ${request.lastName}`
     });
     return { ...request, status: 'rejected', reviewNote };
   }

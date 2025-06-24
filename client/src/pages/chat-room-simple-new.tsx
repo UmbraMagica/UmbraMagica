@@ -112,6 +112,7 @@ export default function ChatRoom() {
   }>>([]);
   const [showSpellDialog, setShowSpellDialog] = useState(false);
   const [selectedSpell, setSelectedSpell] = useState<any>(null);
+  const [isSending, setIsSending] = useState(false);
   const [chatCharacter, setChatCharacter] = useState<any>(null);
   const [isNarratorMode, setIsNarratorMode] = useState(false);
   const [narratorMessage, setNarratorMessage] = useState("");
@@ -405,118 +406,75 @@ export default function ChatRoom() {
   }
 
   const handleSendMessage = async () => {
-    if (!currentRoomId) return;
+    if (!messageInput.trim() || isSending || !currentRoomId || !chatCharacter) return;
 
-    // For non-admin users, require a character
-    if (needsCharacter && !currentCharacter) return;
+    const messageToSend = messageInput.trim();
+    setMessageInput('');
+    setIsSending(true);
 
     try {
-      // If spell is selected, cast it with the message (even if message is empty)
+      const token = localStorage.getItem('jwt_token');
+      if (!token) {
+        throw new Error("No authentication token");
+      }
+
+      let endpoint = `${API_URL}/api/chat/messages`;
+      let messageData: any = {
+        roomId: currentRoomId,
+        characterId: chatCharacter.id,
+        content: messageToSend,
+        messageType: 'message'
+      };
+
+      // Handle spell casting
       if (selectedSpell) {
-        try {
-          const token = localStorage.getItem('jwt_token');
-          const response = await fetch(`${API_URL}/api/game/cast-spell`, {
-            method: "POST",
-            headers: { 
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${token}`
-            },
-            body: JSON.stringify({
-              roomId: currentRoomId,
-              characterId: currentCharacter?.id,
-              spellId: selectedSpell.id,
-              message: messageInput.trim()
-            }),
-            credentials: "include",
-          });
-
-          if (!response.ok) {
-            // Try to get the error message from the response
-            try {
-              const errorData = await response.json();
-              throw new Error(errorData.message || "Vaše postava potřebuje hůlku pro sesílání kouzel.");
-            } catch {
-              throw new Error("Vaše postava potřebuje hůlku pro sesílání kouzel.");
-            }
-          }
-
-          setSelectedSpell(null);
-          setMessageInput("");
-        } catch (spellError: any) {
-          // Re-throw the original error to preserve the server message
-          throw spellError;
-        }
-      } else if (messageInput.trim()) {
-        // Send regular message only if there's content
-        const token = localStorage.getItem('jwt_token');
-        const response = await fetch(`${API_URL}/api/chat/messages`, {
-          method: "POST",
-          headers: { 
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-          },
-          body: JSON.stringify({
-            roomId: currentRoomId,
-            characterId: currentCharacter?.id,
-            content: messageInput.trim(),
-            messageType: isNarratorMode ? 'narrator' : 'text'
-          }),
-          credentials: "include",
-        });
-
-        if (!response.ok) {
-          throw new Error("Nepodařilo se odeslat zprávu");
-        }
-
-        setMessageInput("");
+        endpoint = `${API_URL}/api/chat/cast-spell`;
+        messageData = {
+          roomId: currentRoomId,
+          characterId: chatCharacter.id,
+          spellId: selectedSpell.id,
+          content: messageToSend
+        };
       }
-    } catch (error: any) {
-      console.log('Cast spell error:', error); // Debug log
-      let errorMessage = "Nepodařilo se odeslat zprávu.";
-
-      // Use the actual server error message for spell casting errors
-      if (selectedSpell && error.message) {
-        if (error.message.includes("Character doesn't know this spell")) {
-          errorMessage = "Vaše postava nezná toto kouzlo.";
-        } else {
-          // Use the server's Czech error message directly
-          errorMessage = error.message;
-        }
-        console.log('SPELL ERROR DETECTED - Using server message:', errorMessage);
-      } else if (error.message && error.message.includes("Character doesn't know this spell")) {
-        errorMessage = "Vaše postava nezná toto kouzlo.";
-      } else if (error.message) {
-        errorMessage = error.message;
+      // Handle narrator mode
+      else if (isNarratorMode) {
+        endpoint = `${API_URL}/api/chat/narrator-message`;
+        messageData = {
+          roomId: currentRoomId,
+          characterId: chatCharacter.id,
+          content: messageToSend
+        };
       }
 
-      console.log('Final error message:', errorMessage); // Debug log
-
-      // Show error as both toast and system message in chat
-      toast({
-        title: "Chyba",
-        description: errorMessage,
-        variant: "destructive",
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        credentials: "include",
+        body: JSON.stringify(messageData)
       });
 
-      // Also add error as a system message to the chat
-      const systemMessage: ChatMessage = {
-        id: Date.now(),
-        roomId: currentRoomId,
-        characterId: 0, // Use 0 for system messages
-        content: `🚫 ${errorMessage}`,
-        messageType: 'system',
-        createdAt: new Date().toISOString(),
-        character: {
-          firstName: 'Systém',
-          middleName: null,
-          lastName: '',
-          avatar: null
-        }
-      };
-      setLocalMessages(prev => [systemMessage, ...prev]);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Nepodařilo se odeslat zprávu');
+      }
 
-      // Clear the selected spell to reset the state
+      // Reset states
       setSelectedSpell(null);
+
+      // Refresh messages
+      queryClient.invalidateQueries({ 
+        queryKey: ["/api/chat/rooms", currentRoomId, "messages"] 
+      });
+
+    } catch (error: any) {
+      console.error('Send message error:', error);
+      console.error('Final error message:', error.message);
+      setMessageInput(messageToSend); // Restore message on error
+    } finally {
+      setIsSending(false);
     }
   };
 
@@ -946,7 +904,7 @@ export default function ChatRoom() {
                       <p className="text-sm text-muted-foreground mt-1">{currentRoom.description}</p>
                     )}
                   </div>
-                  {user?.role === 'admin' && (
+{user?.role === 'admin' && (
                     <Button
                       onClick={handleEditName}
                       variant="ghost"
