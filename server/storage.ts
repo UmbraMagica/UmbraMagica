@@ -349,7 +349,12 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getCharactersByUserId(userId: number): Promise<Character[]> {
-    const { data, error } = await supabase.from('characters').select('*').eq('user_id', userId).order('created_at', { ascending: false });
+    const { data, error } = await supabase
+      .from('characters')
+      .select('*')
+      .eq('user_id', userId)
+      .or('is_system.eq.false,is_system.is.null')
+      .order('created_at', { ascending: false });
     if (error) {
       console.error("getCharactersByUserId error:", { userId, error });
       return [];
@@ -364,10 +369,25 @@ export class DatabaseStorage implements IStorage {
     try {
       console.log(`[STORAGE] Fetching messages for room ${roomId}`);
 
-      // Fetch all messages for the room
+      // Fetch all messages for the room with character data using JOIN
       const { data, error } = await supabase
         .from('messages')
-        .select('*')
+        .select(`
+          id,
+          room_id,
+          character_id,
+          content,
+          message_type,
+          created_at,
+          characters (
+            id,
+            first_name,
+            middle_name,
+            last_name,
+            avatar,
+            user_id
+          )
+        `)
         .eq('room_id', roomId)
         .order('created_at', { ascending: true });
 
@@ -380,36 +400,11 @@ export class DatabaseStorage implements IStorage {
         return [];
       }
 
-      // Get all unique character IDs (excluding 0 which is for narrator/system)
-      const characterIds = [...new Set(data.filter(msg => msg.character_id && msg.character_id !== 0).map(msg => msg.character_id))];
-      
-      // Fetch character data for all characters at once
-      let charactersMap = new Map();
-      if (characterIds.length > 0) {
-        const { data: charactersData, error: charactersError } = await supabase
-          .from('characters')
-          .select('id, first_name, middle_name, last_name, avatar, user_id')
-          .in('id', characterIds);
-
-        if (!charactersError && charactersData) {
-          charactersData.forEach(char => {
-            charactersMap.set(char.id, {
-              id: char.id,
-              firstName: char.first_name,
-              middleName: char.middle_name,
-              lastName: char.last_name,
-              avatar: char.avatar,
-              userId: char.user_id
-            });
-          });
-        }
-      }
-
       // Process all messages
       const processedMessages = data.map(msg => {
         let character;
         
-        if (!msg.character_id || msg.character_id === 0) {
+        if (!msg.character_id || msg.character_id === 0 || msg.message_type === 'narrator') {
           // Narrator/system message
           character = {
             id: 0,
@@ -419,9 +414,19 @@ export class DatabaseStorage implements IStorage {
             avatar: null,
             userId: 0
           };
+        } else if (msg.characters) {
+          // Regular character message with loaded character data
+          character = {
+            id: msg.characters.id,
+            firstName: msg.characters.first_name,
+            middleName: msg.characters.middle_name,
+            lastName: msg.characters.last_name,
+            avatar: msg.characters.avatar,
+            userId: msg.characters.user_id
+          };
         } else {
-          // Regular character message
-          character = charactersMap.get(msg.character_id) || {
+          // Fallback for missing character data
+          character = {
             id: msg.character_id,
             firstName: 'Neznámá',
             middleName: null,
@@ -460,8 +465,9 @@ export class DatabaseStorage implements IStorage {
     try {
       console.log(`[STORAGE] Creating message:`, messageData);
 
-      // For narrator/system messages, use character_id = 0
-      const characterId = (!messageData.characterId || messageData.messageType === 'narrator') ? 0 : messageData.characterId;
+      // For narrator messages, always use character_id = null and messageType = 'narrator'
+      const characterId = messageData.messageType === 'narrator' ? null : messageData.characterId;
+      const messageType = messageData.messageType || 'text';
 
       // Insert the message
       const { data: insertData, error: insertError } = await supabase
@@ -470,7 +476,7 @@ export class DatabaseStorage implements IStorage {
           room_id: messageData.roomId,
           character_id: characterId,
           content: messageData.content,
-          message_type: messageData.messageType,
+          message_type: messageType,
           created_at: new Date().toISOString()
         })
         .select('*')
@@ -483,8 +489,8 @@ export class DatabaseStorage implements IStorage {
 
       console.log(`[STORAGE] Message inserted:`, insertData);
 
-      // Handle narrator/system messages
-      if (insertData.character_id === 0) {
+      // Handle narrator messages
+      if (messageType === 'narrator' || !insertData.character_id) {
         const message = {
           id: insertData.id,
           roomId: insertData.room_id,
@@ -494,13 +500,14 @@ export class DatabaseStorage implements IStorage {
           createdAt: insertData.created_at,
           character: {
             id: 0,
-            firstName: messageData.messageType === 'narrator' ? 'Vypravěč' : 'Systém',
+            firstName: 'Vypravěč',
             middleName: null,
             lastName: '',
             avatar: null,
-            userId: 0
+            userId: messageData.userId
           }
         };
+        console.log(`[STORAGE] Returning narrator message:`, message);
         return message;
       }
 

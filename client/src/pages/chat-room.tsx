@@ -148,7 +148,9 @@ export default function ChatRoom() {
       char && 
       !char.deathDate && 
       !char.isSystem &&
-      char.userId === user?.id
+      char.userId === user?.id &&
+      char.firstName !== 'Systém' &&
+      char.firstName !== 'Správa'
     ) : [];
 
   // Fetch current room info

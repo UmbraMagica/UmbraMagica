@@ -664,21 +664,20 @@ export async function registerRoutes(app: Express): Promise<void> {
     try {
       console.log(`[NARRATOR][POST] Creating narrator message for room ${roomId}`);
       
-      // Use storage method for consistency
+      // Create narrator message with messageType 'narrator'
       const message = await storage.createChatMessage({
         roomId: Number(roomId),
-        characterId: 0, // Use 0 for narrator messages (will be handled in createChatMessage)
+        characterId: 0,
         userId: req.user!.id,
         content: content.trim(),
         messageType: 'narrator'
       });
 
       console.log(`[NARRATOR][POST] Message created successfully:`, { messageId: message.id });
-      res.json(message);
+      res.status(201).json(message);
     } catch (error) {
-      console.error("Database error in narrator message:", error);
       console.error("Error sending narrator message:", error);
-      res.status(500).json({ message: "Failed to send narrator message", error: error.message });
+      res.status(500).json({ message: "Failed to send narrator message", error: error?.message || 'Unknown error' });
     }
   });
 
