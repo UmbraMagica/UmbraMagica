@@ -1,5 +1,5 @@
 
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
@@ -10,10 +10,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { MessageCircle, Send, Download, Archive, ArrowLeft, User, Dices, Coins } from "lucide-react";
+import { MessageCircle, Send, Download, Archive, ArrowLeft, Dices, Coins } from "lucide-react";
 import { format } from "date-fns";
-import { apiFetch } from "@/lib/queryClient";
-import { useSelectedCharacter } from "@/contexts/SelectedCharacterContext";
 
 interface ChatRoom {
   id: number;
@@ -41,26 +39,20 @@ const MAX_MESSAGE_LENGTH = 5000;
 const MIN_MESSAGE_LENGTH = 1;
 const API_URL = import.meta.env.VITE_API_URL || '';
 
-// Helper function to validate character object
-function isValidCharacter(char: any): boolean {
-  return char && 
-         typeof char === 'object' && 
-         typeof char.id === 'number' && 
-         typeof char.firstName === 'string' && 
-         char.firstName.trim() !== '';
-}
-
 // Helper function to safely get character name
 function getCharacterName(character: any): string {
-  if (!isValidCharacter(character)) {
+  if (!character || typeof character !== 'object') {
     return 'Neznámá postava';
   }
-  return `${character.firstName}${character.middleName ? ` ${character.middleName}` : ''} ${character.lastName || ''}`.trim();
+  const firstName = character.firstName || '';
+  const middleName = character.middleName || '';
+  const lastName = character.lastName || '';
+  return `${firstName}${middleName ? ` ${middleName}` : ''} ${lastName}`.trim() || 'Neznámá postava';
 }
 
 // Helper function to safely get character initials
 function getCharacterInitials(character: any): string {
-  if (!isValidCharacter(character)) {
+  if (!character || typeof character !== 'object') {
     return 'N';
   }
   const firstInitial = character.firstName?.charAt(0) || 'N';
@@ -75,17 +67,27 @@ export default function ChatRoom() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [messageInput, setMessageInput] = useState("");
+  const [selectedCharacter, setSelectedCharacter] = useState<any>(null);
   const [ws, setWs] = useState<WebSocket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { selectedCharacter, changeCharacter, userCharacters, isLoading: charactersLoading, canSendAsNarrator } = useSelectedCharacter();
 
   const currentRoomId = roomId ? parseInt(roomId) : null;
 
-  // Debug user data with safe logging
-  console.log("User data:", user ? { id: user.id, username: user.username, role: user.role } : null);
-  console.log("User characters from query:", Array.isArray(userCharacters) ? userCharacters.length : 0);
-  console.log("Selected character:", selectedCharacter ? { id: selectedCharacter.id, firstName: selectedCharacter.firstName } : null);
+  // Fetch user's characters
+  const { data: userCharactersRaw = [], isLoading: charactersLoading } = useQuery<any[]>({
+    queryKey: ["/api/characters"],
+    enabled: !!user,
+  });
+
+  // Process user characters - only alive, non-system characters belonging to the user
+  const userCharacters = Array.isArray(userCharactersRaw) ? 
+    userCharactersRaw.filter(char => 
+      char && 
+      !char.deathDate && 
+      !char.isSystem &&
+      char.userId === user?.id
+    ) : [];
 
   // Fetch current room info
   const { data: rooms = [] } = useQuery<ChatRoom[]>({
@@ -101,31 +103,68 @@ export default function ChatRoom() {
     enabled: !!currentRoomId,
   });
 
-  // Get influence bar
-  const { data: influenceBar } = useQuery({
-    queryKey: ["/api/influence-bar"],
-    enabled: !!user,
-    queryFn: async () => {
-      return apiFetch(`${API_URL}/api/influence-bar`);
-    },
-  });
+  // Auto-select first character when characters load
+  useEffect(() => {
+    if (!selectedCharacter && userCharacters.length > 0) {
+      setSelectedCharacter(userCharacters[0]);
+    }
+  }, [userCharacters, selectedCharacter]);
 
-  // Get influence history
-  const { data: influenceHistory } = useQuery({
-    queryKey: ["/api/influence-history"],
-    enabled: !!user,
-    queryFn: async () => {
-      return apiFetch(`${API_URL}/api/influence-history`);
-    },
-  });
+  // Initialize WebSocket connection
+  useEffect(() => {
+    if (!user || !roomId) return;
+
+    const token = localStorage.getItem('jwt_token');
+    if (!token) return;
+
+    try {
+      const wsUrl = `${import.meta.env.VITE_WS_URL || 'wss://umbra-dev.onrender.com'}/ws?token=${encodeURIComponent(token)}`;
+      const ws = new WebSocket(wsUrl);
+      setWs(ws);
+
+      ws.onopen = () => {
+        setIsConnected(true);
+      };
+
+      ws.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          if (data.type === 'new_message') {
+            queryClient.invalidateQueries({ 
+              queryKey: ["/api/chat/rooms", currentRoomId, "messages"] 
+            });
+          }
+        } catch (err) {
+          // Ignore parsing errors
+        }
+      };
+
+      ws.onclose = () => {
+        setIsConnected(false);
+      };
+
+      ws.onerror = () => {
+        setIsConnected(false);
+      };
+
+      return () => {
+        if (ws.readyState === WebSocket.OPEN) {
+          ws.close();
+        }
+      };
+    } catch (error) {
+      console.error('Failed to create WebSocket connection:', error);
+    }
+  }, [user, roomId, currentRoomId, queryClient]);
+
+  // Auto-scroll to bottom when new messages arrive
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   // Send message mutation
   const sendMessageMutation = useMutation({
     mutationFn: async (messageData: { content: string; messageType?: string; characterId: number }) => {
-      if (messageData.content.length < MIN_MESSAGE_LENGTH || messageData.content.length > MAX_MESSAGE_LENGTH) {
-        throw new Error(`Zpráva musí mít ${MIN_MESSAGE_LENGTH}-${MAX_MESSAGE_LENGTH} znaků`);
-      }
-
       const token = localStorage.getItem('jwt_token');
       const response = await fetch(`${API_URL}/api/chat/messages`, {
         method: 'POST',
@@ -150,6 +189,42 @@ export default function ChatRoom() {
     },
     onSuccess: () => {
       setMessageInput("");
+      queryClient.invalidateQueries({ queryKey: ["/api/chat/rooms", currentRoomId, "messages"] });
+    },
+    onError: (error) => {
+      toast({
+        title: "Chyba při odesílání zprávy",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Send narrator message mutation
+  const sendNarratorMessageMutation = useMutation({
+    mutationFn: async (content: string) => {
+      const token = localStorage.getItem('jwt_token');
+      const response = await fetch(`${API_URL}/api/chat/narrator-message`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          roomId: currentRoomId,
+          content: content.trim()
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Nepodařilo se odeslat vypravěčskou zprávu');
+      }
+
+      return response.json();
+    },
+    onSuccess: () => {
+      setMessageInput("");
+      queryClient.invalidateQueries({ queryKey: ["/api/chat/rooms", currentRoomId, "messages"] });
     },
     onError: (error) => {
       toast({
@@ -163,13 +238,14 @@ export default function ChatRoom() {
   // Archive messages mutation
   const archiveMessagesMutation = useMutation({
     mutationFn: async (roomId: number) => {
+      const token = localStorage.getItem('jwt_token');
       const response = await fetch(`${API_URL}/api/chat/rooms/${roomId}/archive`, {
         method: "POST",
         headers: {
+          "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         credentials: "include",
-        body: JSON.stringify({}),
       });
 
       if (!response.ok) {
@@ -196,20 +272,32 @@ export default function ChatRoom() {
 
   // Dice roll mutation
   const diceRollMutation = useMutation({
-    mutationFn: () => {
-      return new Promise<void>((resolve, reject) => {
-        if (!ws || !isConnected) {
-          reject(new Error("WebSocket není připojen"));
-          return;
-        }
+    mutationFn: async () => {
+      if (!selectedCharacter) {
+        throw new Error("Vyberte postavu");
+      }
 
-        ws.send(JSON.stringify({
-          type: 'dice_roll',
+      const token = localStorage.getItem('jwt_token');
+      const response = await fetch(`${API_URL}/api/game/dice-roll`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
           roomId: currentRoomId,
-        }));
-
-        resolve();
+          characterId: selectedCharacter.id
+        })
       });
+
+      if (!response.ok) {
+        throw new Error('Nepodařilo se hodit kostkou');
+      }
+
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/chat/rooms", currentRoomId, "messages"] });
     },
     onError: (error) => {
       toast({
@@ -222,20 +310,32 @@ export default function ChatRoom() {
 
   // Coin flip mutation
   const coinFlipMutation = useMutation({
-    mutationFn: () => {
-      return new Promise<void>((resolve, reject) => {
-        if (!ws || !isConnected) {
-          reject(new Error("WebSocket není připojen"));
-          return;
-        }
+    mutationFn: async () => {
+      if (!selectedCharacter) {
+        throw new Error("Vyberte postavu");
+      }
 
-        ws.send(JSON.stringify({
-          type: 'coin_flip',
+      const token = localStorage.getItem('jwt_token');
+      const response = await fetch(`${API_URL}/api/game/coin-flip`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
           roomId: currentRoomId,
-        }));
-
-        resolve();
+          characterId: selectedCharacter.id
+        })
       });
+
+      if (!response.ok) {
+        throw new Error('Nepodařilo se hodit mincí');
+      }
+
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/chat/rooms", currentRoomId, "messages"] });
     },
     onError: (error) => {
       toast({
@@ -251,7 +351,11 @@ export default function ChatRoom() {
     if (!currentRoomId) return;
 
     try {
+      const token = localStorage.getItem('jwt_token');
       const response = await fetch(`${API_URL}/api/chat/rooms/${currentRoomId}/export`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
         credentials: 'include',
       });
 
@@ -281,137 +385,12 @@ export default function ChatRoom() {
     }
   };
 
-  // Initialize WebSocket connection
-  useEffect(() => {
-    if (!user || !roomId) return;
-
-    const token = localStorage.getItem('jwt_token');
-    if (!token) {
-      console.error('No JWT token found for WebSocket connection');
-      return;
-    }
-
-    try {
-      const wsUrl = `${import.meta.env.VITE_WS_URL || 'wss://umbra-dev.onrender.com'}/ws?token=${encodeURIComponent(token)}`;
-      console.log('Connecting to WebSocket:', wsUrl);
-
-      const ws = new WebSocket(wsUrl);
-      setWs(ws);
-
-      ws.onopen = () => {
-        console.log('WebSocket připojen');
-        setIsConnected(true);
-      };
-
-      ws.onmessage = (event) => {
-        try {
-          const data = JSON.parse(event.data);
-          console.log('WebSocket zpráva:', data);
-          
-          if (data.type === 'new_message') {
-            queryClient.invalidateQueries({ 
-              queryKey: ["/api/chat/rooms", currentRoomId, "messages"] 
-            });
-          }
-        } catch (err) {
-          console.log('WebSocket raw message:', event.data);
-        }
-      };
-
-      ws.onclose = (event) => {
-        console.log('WebSocket odpojen', event.code, event.reason);
-        setIsConnected(false);
-      };
-
-      ws.onerror = (error) => {
-        console.error('WebSocket chyba:', error);
-        setIsConnected(false);
-      };
-
-      return () => {
-        if (ws.readyState === WebSocket.OPEN) {
-          ws.close();
-        }
-      };
-    } catch (error) {
-      console.error('Failed to create WebSocket connection:', error);
-    }
-  }, [user, roomId, currentRoomId, queryClient]);
-
-  // Auto-scroll to bottom when new messages arrive
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
-  // Filter available characters with proper validation
-  const availableCharacters = Array.isArray(userCharacters) 
-    ? userCharacters.filter(char => 
-        isValidCharacter(char) &&
-        !char.deathDate && 
-        !char.isSystem
-      )
-    : [];
-
-  // Create all available options (characters + narrator if allowed)
-  const allCharacterOptions = [
-    ...availableCharacters.filter(char => isValidCharacter(char)),
-    ...(canSendAsNarrator ? [{ id: 0, firstName: 'Vypravěč', lastName: '', isNarrator: true }] : [])
-  ];
-
-  // Update current chat character when selectedCharacter changes
-  useEffect(() => {
-    console.log("Character effect - selectedCharacter:", selectedCharacter, "availableCharacters:", availableCharacters.length);
-
-    if (selectedCharacter && isValidCharacter(selectedCharacter)) {
-      // Selected character is valid, keep it
-    } else if (availableCharacters.length > 0) {
-      // Auto-select first available character if none selected
-      const firstChar = availableCharacters[0];
-      if (isValidCharacter(firstChar)) {
-        console.log("Auto-selecting first character:", firstChar);
-        changeCharacter(firstChar);
-      }
-    } else {
-      changeCharacter(null);
-    }
-  }, [selectedCharacter, availableCharacters.length, changeCharacter]);
-
-  const handleSelectChange = (value: string) => {
-    if (value === '0') {
-      changeCharacter({ id: 0, firstName: 'Vypravěč', lastName: '', name: 'Vypravěč' });
-    } else {
-      const char = userCharacters.find((c) => c.id === parseInt(value));
-      if (char && isValidCharacter(char)) {
-        changeCharacter(char);
-      }
-    }
-  };
-
   const handleSendMessage = () => {
     if (!messageInput.trim() || !currentRoomId || !selectedCharacter) return;
     
-    if (selectedCharacter.id === 0 || selectedCharacter.id === 'narrator') {
-      // Vypravěčská zpráva - použij narrator endpoint
-      fetch(`${API_URL}/api/chat/narrator-message`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('jwt_token')}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          roomId: currentRoomId,
-          content: messageInput.trim()
-        })
-      }).then(() => {
-        setMessageInput("");
-        queryClient.invalidateQueries({ queryKey: ["/api/chat/rooms", currentRoomId, "messages"] });
-      }).catch(error => {
-        toast({
-          title: "Chyba při odesílání zprávy",
-          description: error.message,
-          variant: "destructive",
-        });
-      });
+    if (selectedCharacter.id === 'narrator') {
+      // Vypravěčská zpráva
+      sendNarratorMessageMutation.mutate(messageInput.trim());
     } else {
       // Běžná zpráva
       sendMessageMutation.mutate({
@@ -425,17 +404,14 @@ export default function ChatRoom() {
     return format(new Date(dateString), "dd.MM.yyyy HH:mm");
   };
 
-  const getCurrentUserInitials = () => {
-    try {
-      if (!user?.characters?.[0]) return "U";
-      const character = user.characters[0];
-      if (!isValidCharacter(character)) return "U";
-      return `${character.firstName.charAt(0)}${character.lastName?.charAt(0) || ''}`;
-    } catch (error) {
-      console.error("Error getting user initials:", error);
-      return "U";
-    }
-  };
+  // Check if user can send as narrator
+  const canSendAsNarrator = user?.role === 'admin' || user?.canNarrate;
+
+  // Create character options (user's characters + narrator if allowed)
+  const characterOptions = [
+    ...userCharacters,
+    ...(canSendAsNarrator ? [{ id: 'narrator', firstName: 'Vypravěč', lastName: '', isNarrator: true }] : [])
+  ];
 
   if (!user) {
     return (
@@ -461,7 +437,7 @@ export default function ChatRoom() {
     );
   }
 
-  if (!userCharacters || userCharacters.length === 0) {
+  if (userCharacters.length === 0 && !canSendAsNarrator) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Card>
@@ -495,10 +471,10 @@ export default function ChatRoom() {
   const isMessageValid = messageInputLength >= MIN_MESSAGE_LENGTH && messageInputLength <= MAX_MESSAGE_LENGTH;
 
   return (
-    <div className="container mx-auto p-6 max-w-4xl">
-      <Card className="h-[calc(100vh-8rem)] flex flex-col">
+    <div className="container mx-auto p-4 h-screen flex flex-col">
+      <Card className="flex-1 flex flex-col">
         {/* Header */}
-        <CardHeader className="border-b">
+        <CardHeader className="border-b flex-shrink-0">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Button
@@ -520,29 +496,7 @@ export default function ChatRoom() {
               </div>
             </div>
 
-            {/* Výběr postavy/role */}
             <div className="flex items-center gap-2">
-              <Select onValueChange={handleSelectChange} value={selectedCharacter?.id?.toString() || ''}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Vyber postavu" />
-                </SelectTrigger>
-                <SelectContent>
-                  {canSendAsNarrator && (
-                    <SelectItem key={0} value="0">Vypravěč</SelectItem>
-                  )}
-                  {availableCharacters
-                    .filter(char => isValidCharacter(char))
-                    .map((char) => (
-                      <SelectItem key={char.id} value={char.id.toString()}>
-                        {getCharacterName(char)}
-                      </SelectItem>
-                    ))
-                  }
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="flex items-center gap-2 ml-4">
               <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`} />
               <span className="text-sm text-muted-foreground">
                 {isConnected ? 'Připojeno' : 'Odpojeno'}
@@ -557,15 +511,17 @@ export default function ChatRoom() {
                   <Download className="h-4 w-4 mr-2" />
                   Export
                 </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => currentRoomId && archiveMessagesMutation.mutate(currentRoomId)}
-                  disabled={archiveMessagesMutation.isPending}
-                >
-                  <Archive className="h-4 w-4 mr-2" />
-                  Archivovat
-                </Button>
+                {(user?.role === 'admin') && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => currentRoomId && archiveMessagesMutation.mutate(currentRoomId)}
+                    disabled={archiveMessagesMutation.isPending}
+                  >
+                    <Archive className="h-4 w-4 mr-2" />
+                    Archivovat a smazat
+                  </Button>
+                )}
               </div>
             </div>
           </div>
@@ -580,7 +536,7 @@ export default function ChatRoom() {
                 <Avatar className="w-10 h-10 flex-shrink-0">
                   <AvatarImage src="" />
                   <AvatarFallback className="bg-primary/10 text-primary font-semibold">
-                    {getCharacterInitials(message.character)}
+                    {message.messageType === 'narrator' ? 'V' : getCharacterInitials(message.character)}
                   </AvatarFallback>
                 </Avatar>
 
@@ -588,7 +544,7 @@ export default function ChatRoom() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-baseline gap-2 mb-1">
                     <span className="font-semibold text-foreground">
-                      {getCharacterName(message.character)}
+                      {message.messageType === 'narrator' ? 'Vypravěč' : getCharacterName(message.character)}
                     </span>
                     <span className="text-xs text-muted-foreground">
                       {formatMessageTime(message.createdAt)}
@@ -605,17 +561,17 @@ export default function ChatRoom() {
         </ScrollArea>
 
         {/* Message Input */}
-        <div className="border-t p-4">
+        <div className="border-t p-4 flex-shrink-0">
           <div className="flex gap-3 items-end">
             {/* Character Avatar */}
             <Avatar className="w-10 h-10 flex-shrink-0">
               <AvatarImage src="" />
               <AvatarFallback className={`font-semibold ${
-                selectedCharacter?.id === 0 || selectedCharacter?.id === 'narrator'
+                selectedCharacter?.isNarrator
                   ? `text-white` 
                   : 'bg-secondary/50 text-secondary-foreground'
               }`} style={{
-                backgroundColor: selectedCharacter?.id === 0 || selectedCharacter?.id === 'narrator' ? (
+                backgroundColor: selectedCharacter?.isNarrator ? (
                   user?.narratorColor === 'yellow' ? '#fbbf24' :
                   user?.narratorColor === 'red' ? '#ef4444' :
                   user?.narratorColor === 'blue' ? '#3b82f6' :
@@ -624,10 +580,8 @@ export default function ChatRoom() {
                   '#8b5cf6'
                 ) : undefined
               }}>
-                {selectedCharacter?.id === 0 || selectedCharacter?.id === 'narrator' ? 'V' :
-                 selectedCharacter && isValidCharacter(selectedCharacter) ? 
-                  getCharacterInitials(selectedCharacter) : 
-                  getCurrentUserInitials()}
+                {selectedCharacter?.isNarrator ? 'V' :
+                 selectedCharacter ? getCharacterInitials(selectedCharacter) : 'U'}
               </AvatarFallback>
             </Avatar>
 
@@ -647,28 +601,73 @@ export default function ChatRoom() {
                 disabled={!isConnected}
                 maxLength={MAX_MESSAGE_LENGTH}
               />
-              <div className="flex justify-between items-center mt-1">
-                <span className={`text-xs ${isMessageValid ? 'text-muted-foreground' : 'text-destructive'}`}>
-                  {messageInputLength}/{MAX_MESSAGE_LENGTH} znaků
-                </span>
-                {!isMessageValid && messageInputLength > 0 && (
-                  <span className="text-xs text-destructive">
-                    {messageInputLength < MIN_MESSAGE_LENGTH 
-                      ? `Minimum ${MIN_MESSAGE_LENGTH} znak` 
-                      : `Maximum ${MAX_MESSAGE_LENGTH} znaků`
-                    }
+              <div className="flex justify-between items-center mt-2">
+                <div className="flex items-center gap-2">
+                  {/* Character selector */}
+                  <Select 
+                    value={selectedCharacter?.id?.toString() || selectedCharacter?.id || ''} 
+                    onValueChange={(value) => {
+                      if (value === 'narrator') {
+                        setSelectedCharacter({ id: 'narrator', firstName: 'Vypravěč', lastName: '', isNarrator: true });
+                      } else {
+                        const char = userCharacters.find((c) => c.id === parseInt(value));
+                        if (char) {
+                          setSelectedCharacter(char);
+                        }
+                      }
+                    }}
+                  >
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Vyber postavu" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {canSendAsNarrator && (
+                        <SelectItem value="narrator">Vypravěč</SelectItem>
+                      )}
+                      {userCharacters.map((char) => (
+                        <SelectItem key={char.id} value={char.id.toString()}>
+                          {getCharacterName(char)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+
+                  {/* Action buttons */}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => diceRollMutation.mutate()}
+                    disabled={!selectedCharacter || selectedCharacter.isNarrator || diceRollMutation.isPending}
+                  >
+                    <Dices className="h-4 w-4 mr-1" />
+                    1d10
+                  </Button>
+
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => coinFlipMutation.mutate()}
+                    disabled={!selectedCharacter || selectedCharacter.isNarrator || coinFlipMutation.isPending}
+                  >
+                    <Coins className="h-4 w-4 mr-1" />
+                    Mince
+                  </Button>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <span className={`text-xs ${isMessageValid ? 'text-muted-foreground' : 'text-destructive'}`}>
+                    {messageInputLength}/{MAX_MESSAGE_LENGTH} znaků
                   </span>
-                )}
-              </div>
-              <div className="flex justify-end mt-2">
-                <Button
-                  onClick={handleSendMessage}
-                  disabled={!isMessageValid || !isConnected || !selectedCharacter}
-                  size="sm"
-                >
-                  <Send className="h-4 w-4 mr-2" />
-                  Odeslat
-                </Button>
+                  
+                  <Button
+                    onClick={handleSendMessage}
+                    disabled={!isMessageValid || !isConnected || !selectedCharacter}
+                    size="sm"
+                  >
+                    <Send className="h-4 w-4 mr-2" />
+                    Odeslat
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
