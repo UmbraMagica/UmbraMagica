@@ -30,7 +30,11 @@ export function SelectedCharacterProvider({ children, roomId, canSendAsNarrator 
     queryKey: ["/api/characters"],
     staleTime: 1000 * 60 * 5, // 5 minutes
     queryFn: async () => {
-      const res = await fetch('/api/characters', { credentials: 'include' });
+      const token = localStorage.getItem('jwt_token');
+      const res = await fetch('/api/characters', {
+        credentials: 'include',
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
       return await res.json();
     }
   });
