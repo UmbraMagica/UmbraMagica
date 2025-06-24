@@ -44,12 +44,15 @@ const API_URL = import.meta.env.VITE_API_URL || '';
 
 // Helper function to safely get character name
 function getCharacterName(message: any): string {
-  // Pokud je characterId 0, jedná se o vypravěčskou zprávu
-  if (message.characterId === 0) {
-    return message.character?.firstName || 'Vypravěč';
+  // Handle narrator/system messages
+  if (!message.characterId || message.characterId === 0) {
+    if (message.character?.firstName) {
+      return message.character.firstName;
+    }
+    return message.messageType === 'narrator' ? 'Vypravěč' : 'Systém';
   }
   
-  // Pokud je message objekt postavy (ne zpráva)
+  // Handle direct character object (not a message)
   if (message.firstName) {
     const firstName = message.firstName || '';
     const middleName = message.middleName || '';
@@ -57,14 +60,13 @@ function getCharacterName(message: any): string {
     return `${firstName}${middleName ? ` ${middleName}` : ''} ${lastName}`.trim() || 'Neznámá postava';
   }
   
-  // Pokud je to zpráva s vnořenou postavou
+  // Handle message with nested character
   const character = message.character;
   if (!character || typeof character !== 'object') {
-    console.warn('Missing character data for message:', message);
     return 'Neznámá postava';
   }
   
-  // Ensure we have the necessary fields
+  // Get character name with fallbacks
   const firstName = character.firstName || character.first_name || '';
   const middleName = character.middleName || character.middle_name || '';
   const lastName = character.lastName || character.last_name || '';
@@ -74,12 +76,15 @@ function getCharacterName(message: any): string {
 
 // Helper function to safely get character initials
 function getCharacterInitials(message: any): string {
-  // Pokud je characterId 0, jedná se o vypravěčskou zprávu
-  if (message.characterId === 0) {
-    return message.character?.firstName?.charAt(0) || 'V';
+  // Handle narrator/system messages
+  if (!message.characterId || message.characterId === 0) {
+    if (message.character?.firstName) {
+      return message.character.firstName.charAt(0) || 'V';
+    }
+    return message.messageType === 'narrator' ? 'V' : 'S';
   }
   
-  // Pokud je message objekt postavy (ne zpráva)
+  // Handle direct character object (not a message)
   if (message.firstName) {
     const firstInitial = message.firstName?.charAt(0) || 'N';
     const lastInitial = message.lastName?.charAt(0) || 'P';
@@ -91,7 +96,7 @@ function getCharacterInitials(message: any): string {
     return 'NP';
   }
   
-  // Support both camelCase and snake_case
+  // Get initials with fallbacks
   const firstName = character.firstName || character.first_name || '';
   const lastName = character.lastName || character.last_name || '';
   const firstInitial = firstName.charAt(0) || 'N';

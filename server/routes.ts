@@ -646,14 +646,41 @@ export async function registerRoutes(app: Express): Promise<void> {
     }
 
     try {
-      // Use the storage layer for consistency
-      const message = await storage.createChatMessage({
-        roomId: Number(roomId),
-        characterId: 0, // Use 0 for narrator messages
-        userId: req.user!.id,
-        content: content.trim(),
-        messageType: 'narrator'
-      });
+      // Insert directly with null character_id for narrator messages
+      const { data, error } = await supabase
+        .from('messages')
+        .insert({
+          room_id: Number(roomId),
+          character_id: null, // Use null for narrator messages
+          content: content.trim(),
+          message_type: 'narrator',
+          created_at: new Date().toISOString()
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Database error in narrator message:', error);
+        throw error;
+      }
+
+      // Format response
+      const message = {
+        id: data.id,
+        roomId: data.room_id,
+        characterId: null,
+        content: data.content,
+        messageType: data.message_type,
+        createdAt: data.created_at,
+        character: {
+          id: 0,
+          firstName: 'Vypravěč',
+          middleName: null,
+          lastName: '',
+          avatar: null,
+          userId: 0
+        }
+      };
 
       res.json(message);
     } catch (error) {

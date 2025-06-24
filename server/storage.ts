@@ -378,13 +378,11 @@ export class DatabaseStorage implements IStorage {
         return [];
       }
 
-      console.log(`[STORAGE] Found ${data?.length || 0} messages`, data);
+      console.log(`[STORAGE] Found ${data?.length || 0} messages`);
 
       const messages = (data || []).map(msg => {
-        console.log(`[STORAGE] Processing message:`, msg);
-        
-        // Handle narrator/system messages (character_id = 0)
-        if (msg.character_id === 0) {
+        // Handle narrator/system messages (character_id = 0 or null)
+        if (!msg.character_id || msg.character_id === 0) {
           return {
             id: msg.id,
             roomId: msg.room_id,
@@ -403,11 +401,11 @@ export class DatabaseStorage implements IStorage {
           };
         }
 
-        // Handle regular character messages - improve fallback handling
+        // Handle regular character messages
         let characterData;
-        if (msg.character && typeof msg.character === 'object') {
+        if (msg.character && typeof msg.character === 'object' && msg.character.id) {
           characterData = {
-            id: msg.character.id || msg.character_id,
+            id: msg.character.id,
             firstName: msg.character.first_name || 'Neznámá',
             middleName: msg.character.middle_name || null,
             lastName: msg.character.last_name || 'postava',
@@ -415,10 +413,10 @@ export class DatabaseStorage implements IStorage {
             userId: msg.character.user_id || 0
           };
         } else {
-          // If character relation failed to load, try to fetch it separately
+          // Fallback for missing character data
           console.warn(`[STORAGE] Character data missing for message ${msg.id}, character_id: ${msg.character_id}`);
           characterData = {
-            id: msg.character_id,
+            id: msg.character_id || 0,
             firstName: 'Neznámá',
             middleName: null,
             lastName: 'postava',
@@ -430,7 +428,7 @@ export class DatabaseStorage implements IStorage {
         return {
           id: msg.id,
           roomId: msg.room_id,
-          characterId: msg.character_id,
+          characterId: msg.character_id || 0,
           content: msg.content,
           messageType: msg.message_type,
           createdAt: msg.created_at,
@@ -438,7 +436,7 @@ export class DatabaseStorage implements IStorage {
         };
       });
 
-      console.log(`[STORAGE] Processed ${messages.length} messages`, messages);
+      console.log(`[STORAGE] Processed ${messages.length} messages successfully`);
       return messages;
     } catch (error) {
       console.error('Error fetching chat messages:', error);
