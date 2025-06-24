@@ -70,6 +70,7 @@ export default function ChatRoom() {
   const [selectedCharacter, setSelectedCharacter] = useState<any>(null);
   const [ws, setWs] = useState<WebSocket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
+  const [isNarratorMode, setIsNarratorMode] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const currentRoomId = roomId ? parseInt(roomId) : null;
@@ -224,6 +225,7 @@ export default function ChatRoom() {
     },
     onSuccess: () => {
       setMessageInput("");
+      setIsNarratorMode(false);
       queryClient.invalidateQueries({ queryKey: ["/api/chat/rooms", currentRoomId, "messages"] });
     },
     onError: (error) => {
@@ -386,12 +388,12 @@ export default function ChatRoom() {
   };
 
   const handleSendMessage = () => {
-    if (!messageInput.trim() || !currentRoomId || !selectedCharacter) return;
+    if (!messageInput.trim() || !currentRoomId) return;
     
-    if (selectedCharacter.id === 'narrator') {
+    if (isNarratorMode) {
       // Vypravěčská zpráva
       sendNarratorMessageMutation.mutate(messageInput.trim());
-    } else {
+    } else if (selectedCharacter) {
       // Běžná zpráva
       sendMessageMutation.mutate({
         content: messageInput.trim(),
@@ -406,12 +408,6 @@ export default function ChatRoom() {
 
   // Check if user can send as narrator
   const canSendAsNarrator = user?.role === 'admin' || user?.canNarrate;
-
-  // Create character options (user's characters + narrator if allowed)
-  const characterOptions = [
-    ...userCharacters,
-    ...(canSendAsNarrator ? [{ id: 'narrator', firstName: 'Vypravěč', lastName: '', isNarrator: true }] : [])
-  ];
 
   if (!user) {
     return (
@@ -471,7 +467,7 @@ export default function ChatRoom() {
   const isMessageValid = messageInputLength >= MIN_MESSAGE_LENGTH && messageInputLength <= MAX_MESSAGE_LENGTH;
 
   return (
-    <div className="container mx-auto p-4 h-screen flex flex-col">
+    <div className="container mx-auto p-4 h-screen flex flex-col max-w-6xl">
       <Card className="flex-1 flex flex-col">
         {/* Header */}
         <CardHeader className="border-b flex-shrink-0">
@@ -483,7 +479,7 @@ export default function ChatRoom() {
                 onClick={() => setLocation('/chat')}
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
-                Zpět
+                Opustit chat
               </Button>
               <div className="flex items-center gap-3">
                 <MessageCircle className="h-5 w-5 text-primary" />
@@ -496,20 +492,22 @@ export default function ChatRoom() {
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
-              <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`} />
-              <span className="text-sm text-muted-foreground">
-                {isConnected ? 'Připojeno' : 'Odpojeno'}
-              </span>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`} />
+                <span className="text-sm text-muted-foreground">
+                  {isConnected ? 'Připojeno' : 'Odpojeno'}
+                </span>
+              </div>
 
-              <div className="flex gap-2 ml-4">
+              <div className="flex gap-2">
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={exportChat}
                 >
                   <Download className="h-4 w-4 mr-2" />
-                  Export
+                  Stáhnout
                 </Button>
                 {(user?.role === 'admin') && (
                   <Button
@@ -519,7 +517,7 @@ export default function ChatRoom() {
                     disabled={archiveMessagesMutation.isPending}
                   >
                     <Archive className="h-4 w-4 mr-2" />
-                    Archivovat a smazat
+                    Archivovat
                   </Button>
                 )}
               </div>
@@ -528,30 +526,73 @@ export default function ChatRoom() {
         </CardHeader>
 
         {/* Messages Area */}
-        <ScrollArea className="flex-1 p-4">
-          <div className="space-y-4">
+        <ScrollArea className="flex-1 p-6">
+          <div className="space-y-6">
             {messages.map((message) => (
-              <div key={message.id} className="flex gap-3">
+              <div key={message.id} className="flex gap-4">
                 {/* Avatar */}
                 <Avatar className="w-10 h-10 flex-shrink-0">
                   <AvatarImage src="" />
-                  <AvatarFallback className="bg-primary/10 text-primary font-semibold">
-                    {message.messageType === 'narrator' ? 'V' : getCharacterInitials(message.character)}
+                  <AvatarFallback className={`font-semibold ${
+                    message.messageType === 'narrator' || message.characterId === 0
+                      ? 'text-white'
+                      : 'bg-primary/10 text-primary'
+                  }`} style={{
+                    backgroundColor: message.messageType === 'narrator' || message.characterId === 0 ? (
+                      user?.narratorColor === 'yellow' ? '#fbbf24' :
+                      user?.narratorColor === 'red' ? '#ef4444' :
+                      user?.narratorColor === 'blue' ? '#3b82f6' :
+                      user?.narratorColor === 'green' ? '#10b981' :
+                      user?.narratorColor === 'pink' ? '#ec4899' :
+                      '#8b5cf6'
+                    ) : undefined
+                  }}>
+                    {message.messageType === 'narrator' || message.characterId === 0 ? 'V' : getCharacterInitials(message.character)}
                   </AvatarFallback>
                 </Avatar>
 
                 {/* Message Content */}
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-baseline gap-2 mb-1">
-                    <span className="font-semibold text-foreground">
-                      {message.messageType === 'narrator' ? 'Vypravěč' : getCharacterName(message.character)}
+                  <div className="flex items-baseline gap-2 mb-2">
+                    <span className={`font-semibold text-sm ${
+                      message.messageType === 'narrator' || message.characterId === 0 ? 'italic' : ''
+                    }`} style={{
+                      color: message.messageType === 'narrator' || message.characterId === 0 ? (
+                        user?.narratorColor === 'yellow' ? '#fbbf24' :
+                        user?.narratorColor === 'red' ? '#ef4444' :
+                        user?.narratorColor === 'blue' ? '#3b82f6' :
+                        user?.narratorColor === 'green' ? '#10b981' :
+                        user?.narratorColor === 'pink' ? '#ec4899' :
+                        '#8b5cf6'
+                      ) : undefined
+                    }}>
+                      {message.messageType === 'narrator' || message.characterId === 0 ? 'Vypravěč' : getCharacterName(message.character)}
                     </span>
                     <span className="text-xs text-muted-foreground">
                       {formatMessageTime(message.createdAt)}
                     </span>
                   </div>
-                  <div className="bg-muted/30 rounded-lg p-3">
-                    <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
+                  <div className={`text-sm whitespace-pre-wrap break-words ${
+                    message.messageType === 'narrator' || message.characterId === 0 
+                      ? 'italic font-medium p-3 rounded-lg border-l-4' 
+                      : 'text-foreground'
+                  }`} style={{
+                    ...(message.messageType === 'narrator' || message.characterId === 0 && {
+                      backgroundColor: user?.narratorColor === 'yellow' ? 'rgba(251, 191, 36, 0.1)' :
+                                     user?.narratorColor === 'red' ? 'rgba(239, 68, 68, 0.1)' :
+                                     user?.narratorColor === 'blue' ? 'rgba(59, 130, 246, 0.1)' :
+                                     user?.narratorColor === 'green' ? 'rgba(16, 185, 129, 0.1)' :
+                                     user?.narratorColor === 'pink' ? 'rgba(236, 72, 153, 0.1)' :
+                                     'rgba(139, 92, 246, 0.1)',
+                      borderLeftColor: user?.narratorColor === 'yellow' ? '#fbbf24' :
+                                      user?.narratorColor === 'red' ? '#ef4444' :
+                                      user?.narratorColor === 'blue' ? '#3b82f6' :
+                                      user?.narratorColor === 'green' ? '#10b981' :
+                                      user?.narratorColor === 'pink' ? '#ec4899' :
+                                      '#8b5cf6'
+                    })
+                  }}>
+                    {message.content}
                   </div>
                 </div>
               </div>
@@ -561,17 +602,17 @@ export default function ChatRoom() {
         </ScrollArea>
 
         {/* Message Input */}
-        <div className="border-t p-4 flex-shrink-0">
-          <div className="flex gap-3 items-end">
+        <div className="border-t p-4 flex-shrink-0 bg-muted/30">
+          <div className="flex gap-3 items-start">
             {/* Character Avatar */}
-            <Avatar className="w-10 h-10 flex-shrink-0">
+            <Avatar className="w-12 h-12 flex-shrink-0 mt-1">
               <AvatarImage src="" />
               <AvatarFallback className={`font-semibold ${
-                selectedCharacter?.isNarrator
-                  ? `text-white` 
-                  : 'bg-secondary/50 text-secondary-foreground'
+                isNarratorMode 
+                  ? 'text-white' 
+                  : 'bg-primary/10 text-primary'
               }`} style={{
-                backgroundColor: selectedCharacter?.isNarrator ? (
+                backgroundColor: isNarratorMode ? (
                   user?.narratorColor === 'yellow' ? '#fbbf24' :
                   user?.narratorColor === 'red' ? '#ef4444' :
                   user?.narratorColor === 'blue' ? '#3b82f6' :
@@ -580,15 +621,15 @@ export default function ChatRoom() {
                   '#8b5cf6'
                 ) : undefined
               }}>
-                {selectedCharacter?.isNarrator ? 'V' :
+                {isNarratorMode ? 'V' :
                  selectedCharacter ? getCharacterInitials(selectedCharacter) : 'U'}
               </AvatarFallback>
             </Avatar>
 
             {/* Input Area */}
-            <div className="flex-1">
+            <div className="flex-1 space-y-3">
               <Textarea
-                placeholder="Napište zprávu..."
+                placeholder={isNarratorMode ? "Vypravěčská zpráva..." : "Napište zprávu..."}
                 value={messageInput}
                 onChange={(e) => setMessageInput(e.target.value)}
                 onKeyDown={(e) => {
@@ -601,67 +642,88 @@ export default function ChatRoom() {
                 disabled={!isConnected}
                 maxLength={MAX_MESSAGE_LENGTH}
               />
-              <div className="flex justify-between items-center mt-2">
+              
+              <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  {/* Character selector */}
-                  <Select 
-                    value={selectedCharacter?.id?.toString() || selectedCharacter?.id || ''} 
-                    onValueChange={(value) => {
-                      if (value === 'narrator') {
-                        setSelectedCharacter({ id: 'narrator', firstName: 'Vypravěč', lastName: '', isNarrator: true });
-                      } else {
+                  {/* Character selector - only user's characters */}
+                  {!isNarratorMode && (
+                    <Select 
+                      value={selectedCharacter?.id?.toString() || ''} 
+                      onValueChange={(value) => {
                         const char = userCharacters.find((c) => c.id === parseInt(value));
                         if (char) {
                           setSelectedCharacter(char);
                         }
-                      }
-                    }}
-                  >
-                    <SelectTrigger className="w-[180px]">
-                      <SelectValue placeholder="Vyber postavu" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {canSendAsNarrator && (
-                        <SelectItem value="narrator">Vypravěč</SelectItem>
-                      )}
-                      {userCharacters.map((char) => (
-                        <SelectItem key={char.id} value={char.id.toString()}>
-                          {getCharacterName(char)}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                      }}
+                    >
+                      <SelectTrigger className="w-[180px]">
+                        <SelectValue placeholder="Vyber postavu" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {userCharacters.map((char) => (
+                          <SelectItem key={char.id} value={char.id.toString()}>
+                            {getCharacterName(char)}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
 
-                  {/* Action buttons */}
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => diceRollMutation.mutate()}
-                    disabled={!selectedCharacter || selectedCharacter.isNarrator || diceRollMutation.isPending}
-                  >
-                    <Dices className="h-4 w-4 mr-1" />
-                    1d10
-                  </Button>
+                  {/* Narrator toggle button */}
+                  {canSendAsNarrator && (
+                    <Button
+                      variant={isNarratorMode ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setIsNarratorMode(!isNarratorMode)}
+                      style={{
+                        backgroundColor: isNarratorMode ? (
+                          user?.narratorColor === 'yellow' ? '#fbbf24' :
+                          user?.narratorColor === 'red' ? '#ef4444' :
+                          user?.narratorColor === 'blue' ? '#3b82f6' :
+                          user?.narratorColor === 'green' ? '#10b981' :
+                          user?.narratorColor === 'pink' ? '#ec4899' :
+                          '#8b5cf6'
+                        ) : undefined
+                      }}
+                    >
+                      Vypravěč
+                    </Button>
+                  )}
 
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => coinFlipMutation.mutate()}
-                    disabled={!selectedCharacter || selectedCharacter.isNarrator || coinFlipMutation.isPending}
-                  >
-                    <Coins className="h-4 w-4 mr-1" />
-                    Mince
-                  </Button>
+                  {/* Action buttons - only for character mode */}
+                  {!isNarratorMode && selectedCharacter && (
+                    <>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => diceRollMutation.mutate()}
+                        disabled={diceRollMutation.isPending}
+                      >
+                        <Dices className="h-4 w-4 mr-1" />
+                        Kostka
+                      </Button>
+
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => coinFlipMutation.mutate()}
+                        disabled={coinFlipMutation.isPending}
+                      >
+                        <Coins className="h-4 w-4 mr-1" />
+                        Mince
+                      </Button>
+                    </>
+                  )}
                 </div>
 
                 <div className="flex items-center gap-2">
                   <span className={`text-xs ${isMessageValid ? 'text-muted-foreground' : 'text-destructive'}`}>
-                    {messageInputLength}/{MAX_MESSAGE_LENGTH} znaků
+                    {messageInputLength}/{MAX_MESSAGE_LENGTH}
                   </span>
                   
                   <Button
                     onClick={handleSendMessage}
-                    disabled={!isMessageValid || !isConnected || !selectedCharacter}
+                    disabled={!isMessageValid || !isConnected || (!selectedCharacter && !isNarratorMode)}
                     size="sm"
                   >
                     <Send className="h-4 w-4 mr-2" />
