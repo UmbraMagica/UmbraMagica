@@ -319,25 +319,27 @@ export default function ChatRoom() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Filter available characters
-  const availableCharacters = userCharacters.filter(char => !char.deathDate && !char.isSystem);
+  // Available characters are already filtered in context
+  const availableCharacters = userCharacters;
 
   // Update current chat character when selectedCharacter changes
   useEffect(() => {
-    console.log("Character effect - selectedCharacter:", selectedCharacter, "availableCharacters:", availableCharacters.length);
+    console.log("Chat room - Character effect:", {
+      selectedCharacter: selectedCharacter?.firstName,
+      availableCount: availableCharacters.length,
+      currentChat: currentChatCharacter?.firstName
+    });
     
-    if (selectedCharacter) {
+    if (selectedCharacter && availableCharacters.find(c => c.id === selectedCharacter.id)) {
       setCurrentChatCharacter(selectedCharacter);
-    } else if (availableCharacters.length > 0) {
+    } else if (availableCharacters.length > 0 && !currentChatCharacter) {
       // Auto-select first available character if none selected
       const firstChar = availableCharacters[0];
       console.log("Auto-selecting first character:", firstChar);
       setCurrentChatCharacter(firstChar);
       changeCharacter(firstChar);
-    } else {
-      setCurrentChatCharacter(null);
     }
-  }, [selectedCharacter, availableCharacters.length, changeCharacter]);
+  }, [selectedCharacter, availableCharacters, currentChatCharacter, changeCharacter]);
 
   const handleSendMessage = () => {
     if (!messageInput.trim() || !currentRoomId || !currentChatCharacter) return;
@@ -531,16 +533,15 @@ export default function ChatRoom() {
           <div className="mb-3">
             <div className="flex items-center gap-3">
               <span className="text-sm font-medium">Píšu za:</span>
-              {availableCharacters.length > 1 ? (
+              {!charactersLoading && availableCharacters.length > 1 ? (
                 <Select 
                   value={currentChatCharacter?.id?.toString() || ""} 
                   onValueChange={(value) => {
                     const character = availableCharacters.find(c => c.id === parseInt(value));
                     if (character) {
+                      console.log("Character selection changed to:", character);
                       setCurrentChatCharacter(character);
-                      if (changeCharacter) {
-                        changeCharacter(character);
-                      }
+                      changeCharacter(character);
                     }
                   }}
                 >
@@ -559,9 +560,13 @@ export default function ChatRoom() {
                     ))}
                   </SelectContent>
                 </Select>
-              ) : availableCharacters.length === 1 ? (
+              ) : !charactersLoading && availableCharacters.length === 1 ? (
                 <span className="text-sm font-medium text-primary">
                   {availableCharacters[0].firstName} {availableCharacters[0].lastName}
+                </span>
+              ) : charactersLoading ? (
+                <span className="text-sm font-medium text-muted-foreground">
+                  Načítání postav...
                 </span>
               ) : (
                 <span className="text-sm font-medium text-red-500">

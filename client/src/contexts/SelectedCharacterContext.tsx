@@ -2,6 +2,8 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 
+const API_URL = import.meta.env.VITE_API_URL || '';
+
 interface Character {
   id: number;
   firstName: string;
@@ -15,6 +17,7 @@ interface Character {
 interface SelectedCharacterContextType {
   selectedCharacter: Character | null;
   userCharacters: Character[];
+  allUserCharacters: Character[];
   changeCharacter: (char: Character) => void;
   isLoading: boolean;
 }
@@ -25,32 +28,46 @@ export function SelectedCharacterProvider({ children }: { children: React.ReactN
   const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(null);
 
   // Fetch user's characters
-  const { data: userCharacters = [], isLoading } = useQuery<Character[]>({
+  const { data: allUserCharacters = [], isLoading } = useQuery<Character[]>({
     queryKey: ["/api/characters"],
     staleTime: 1000 * 60 * 5, // 5 minutes
+    queryFn: async () => {
+      const token = localStorage.getItem('jwt_token');
+      if (!token) return [];
+      
+      const response = await fetch(`${API_URL}/api/characters`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch characters');
+      }
+      
+      const data = await response.json();
+      console.log('Context: Raw character data:', data);
+      return Array.isArray(data) ? data : (data.characters || []);
+    }
   });
 
+  // Filter available characters (alive and not system)
+  const userCharacters = allUserCharacters.filter((char: Character) => !char.deathDate && !char.isSystem);
+
   useEffect(() => {
-    console.log("Context: userCharacters updated:", userCharacters.length);
+    console.log("Context: Characters updated - all:", allUserCharacters.length, "available:", userCharacters.length);
     
     if (userCharacters && userCharacters.length > 0) {
-      const availableChars = userCharacters.filter((c: Character) => !c.deathDate && !c.isSystem);
-      
-      if (availableChars.length === 0) {
-        setSelectedCharacter(null);
-        localStorage.removeItem("selectedCharacterId");
-        return;
-      }
-
       const savedId = localStorage.getItem("selectedCharacterId");
       let char: Character | null = null;
       
       if (savedId) {
-        char = availableChars.find((c: Character) => c.id === parseInt(savedId)) || null;
+        char = userCharacters.find((c: Character) => c.id === parseInt(savedId)) || null;
       }
       
       if (!char) {
-        char = availableChars.find((c: Character) => c.isActive) || availableChars[0];
+        char = userCharacters.find((c: Character) => c.isActive) || userCharacters[0];
       }
       
       if (char && char.id !== selectedCharacter?.id) {
@@ -60,10 +77,11 @@ export function SelectedCharacterProvider({ children }: { children: React.ReactN
       }
     } else if (userCharacters.length === 0 && !isLoading) {
       // No characters available
+      console.log("Context: No available characters");
       setSelectedCharacter(null);
       localStorage.removeItem("selectedCharacterId");
     }
-  }, [userCharacters, isLoading]);
+  }, [userCharacters.length, allUserCharacters.length, isLoading, selectedCharacter?.id]);
 
   const changeCharacter = (char: Character) => {
     console.log("Context: Changing character to:", char);
@@ -74,6 +92,7 @@ export function SelectedCharacterProvider({ children }: { children: React.ReactN
   const contextValue: SelectedCharacterContextType = {
     selectedCharacter,
     userCharacters,
+    allUserCharacters,
     changeCharacter,
     isLoading,
   };
