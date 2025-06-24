@@ -525,7 +525,7 @@ export default function ChatRoom() {
                   {(canSendAsNarrator ? [
                     <SelectItem key={0} value="0">Vypravěč</SelectItem>
                   ] : []).concat(
-                    userCharacters.map((char) => (
+                    userCharacters.filter(char => char && typeof char.firstName === 'string').map((char) => (
                       <SelectItem key={char.id} value={char.id.toString()}>
                         {char.firstName + (char.lastName ? ' ' + char.lastName : '')}
                       </SelectItem>
