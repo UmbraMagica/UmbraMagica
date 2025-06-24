@@ -28,7 +28,8 @@ function isValidCharacter(char: any): char is Character {
          typeof char === 'object' && 
          typeof char.id === 'number' && 
          typeof char.firstName === 'string' && 
-         char.firstName.trim() !== '';
+         char.firstName.trim() !== '' &&
+         typeof char.userId === 'number';
 }
 
 // Helper function to safely process characters

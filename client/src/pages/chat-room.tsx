@@ -146,19 +146,29 @@ export default function ChatRoom() {
   // Process user characters - only alive, non-system characters belonging to the user
   const userCharacters = Array.isArray(userCharactersRaw) ? 
     userCharactersRaw.filter(char => {
-      const isValid = char && 
-        typeof char === 'object' &&
-        typeof char.id === 'number' &&
+      if (!char || typeof char !== 'object') {
+        console.log('[chat-room] Invalid character object:', char);
+        return false;
+      }
+      
+      const isValid = typeof char.id === 'number' &&
         typeof char.firstName === 'string' &&
         char.firstName.trim() !== '' &&
         !char.deathDate && 
-        char.userId === user?.id &&
-        char.firstName !== 'Systém' &&
-        char.firstName !== 'Správa' &&
+        (user?.role === 'admin' || char.userId === user?.id) &&
         !char.isSystem;
       
       if (!isValid && char) {
-        console.log('[chat-room] Filtered out character:', char);
+        console.log('[chat-room] Filtered out character:', {
+          id: char.id,
+          firstName: char.firstName,
+          lastName: char.lastName,
+          deathDate: char.deathDate,
+          userId: char.userId,
+          isSystem: char.isSystem,
+          currentUserId: user?.id,
+          userRole: user?.role
+        });
       }
       return isValid;
     }) : [];

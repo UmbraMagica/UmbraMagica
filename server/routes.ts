@@ -66,14 +66,26 @@ function validateAndFilterCharacters(characters: any[]): any[] {
   }
 
   return characters.filter(char => {
-    const isValid = char && 
-                   typeof char === 'object' && 
-                   typeof char.id === 'number' && 
+    if (!char || typeof char !== 'object') {
+      console.warn('Invalid character object:', char);
+      return false;
+    }
+
+    const isValid = typeof char.id === 'number' && 
                    typeof char.firstName === 'string' && 
-                   char.firstName.trim() !== '';
+                   char.firstName.trim() !== '' &&
+                   typeof char.userId === 'number';
 
     if (!isValid) {
-      console.warn('Invalid character filtered out:', char);
+      console.warn('Invalid character filtered out:', {
+        id: char.id,
+        firstName: char.firstName,
+        lastName: char.lastName,
+        userId: char.userId,
+        hasValidId: typeof char.id === 'number',
+        hasValidFirstName: typeof char.firstName === 'string' && char.firstName.trim() !== '',
+        hasValidUserId: typeof char.userId === 'number'
+      });
     }
 
     return isValid;
@@ -279,11 +291,23 @@ export async function registerRoutes(app: Express): Promise<void> {
         characters = await storage.getCharactersByUserId(req.user!.id);
       }
 
-      console.log(`[CHARACTERS] Raw characters for user ${req.user!.username}:`, JSON.stringify(characters, null, 2));
+      console.log(`[CHARACTERS] User ${req.user!.username} (${req.user!.role}) requesting characters`);
+      console.log(`[CHARACTERS] Raw count: ${characters?.length || 0}`);
       
       const validCharacters = validateAndFilterCharacters(characters);
-      console.log(`[CHARACTERS] User ${req.user!.username} requested characters, returning ${validCharacters.length} valid characters`);
-      console.log(`[CHARACTERS] Valid characters:`, JSON.stringify(validCharacters, null, 2));
+      console.log(`[CHARACTERS] Valid count: ${validCharacters.length}`);
+      
+      // Log sample of characters for debug
+      if (validCharacters.length > 0) {
+        console.log(`[CHARACTERS] First character sample:`, {
+          id: validCharacters[0].id,
+          firstName: validCharacters[0].firstName,
+          lastName: validCharacters[0].lastName,
+          userId: validCharacters[0].userId,
+          isSystem: validCharacters[0].isSystem,
+          deathDate: validCharacters[0].deathDate
+        });
+      }
 
       // Always return in { characters: [] } format for consistency
       res.json({ characters: validCharacters });
