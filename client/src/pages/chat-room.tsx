@@ -121,38 +121,14 @@ export default function ChatRoom() {
 
   const currentRoomId = roomId ? parseInt(roomId) : null;
 
-  // Fetch user's characters
-  const { data: userCharactersRaw = [], isLoading: charactersLoading } = useQuery<any[]>({
-    queryKey: ["/api/characters"],
-    enabled: !!user,
-    queryFn: async () => {
-      const token = localStorage.getItem('jwt_token');
-      const response = await fetch(`${API_URL}/api/characters`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      if (!response.ok) {
-        throw new Error('Failed to fetch characters');
-      }
-      const data = await response.json();
-      console.log('[chat-room] Raw characters response:', data);
-      // Backend může vrátit data v různých formátech
-      return data.characters || data || [];
-    }
-  });
+  // Use characters from useAuth instead of separate query
+  const userCharactersRaw = user?.characters || [];
+  const charactersLoading = isLoading;
 
-  // Process user characters - only alive, non-system characters belonging to the user
-  console.log('[chat-room] FULL DEBUG - Raw characters:', userCharactersRaw);
-  console.log('[chat-room] FULL DEBUG - User:', { id: user?.id, role: user?.role, username: user?.username });
-  
+  // Process user characters - only alive, non-system characters
   const userCharacters = Array.isArray(userCharactersRaw) ? 
-    userCharactersRaw.filter((char, index) => {
-      console.log(`[chat-room] FULL DEBUG - Processing character ${index}:`, char);
-      
+    userCharactersRaw.filter((char) => {
       if (!char || typeof char !== 'object') {
-        console.log(`[chat-room] REJECTED - Invalid object:`, char);
         return false;
       }
       
@@ -162,38 +138,8 @@ export default function ChatRoom() {
       const isAlive = !char.deathDate;
       const isNotSystem = !char.isSystem;
       
-      // Check ownership - admin can access all, users only their own
-      const hasAccess = user?.role === 'admin' || char.userId === user?.id;
-      
-      console.log(`[chat-room] FULL DEBUG - Character ${char.firstName} ${char.lastName} validation:`, {
-        hasValidId,
-        hasValidFirstName,
-        isAlive,
-        isNotSystem,
-        hasAccess,
-        charUserId: char.userId,
-        currentUserId: user?.id,
-        userRole: user?.role
-      });
-      
-      const isValid = hasValidId && hasValidFirstName && isAlive && isNotSystem && hasAccess;
-      
-      if (!isValid) {
-        console.log(`[chat-room] REJECTED - Character ${char.firstName} ${char.lastName}:`, {
-          reason: !hasValidId ? 'invalid ID' : 
-                  !hasValidFirstName ? 'invalid firstName' :
-                  !isAlive ? 'dead character' :
-                  !isNotSystem ? 'system character' :
-                  !hasAccess ? 'no access' : 'unknown'
-        });
-      } else {
-        console.log(`[chat-room] ACCEPTED - Character ${char.firstName} ${char.lastName}`);
-      }
-      
-      return isValid;
+      return hasValidId && hasValidFirstName && isAlive && isNotSystem;
     }) : [];
-
-  console.log('[chat-room] FULL DEBUG - Final userCharacters:', userCharacters);
 
   // Fetch current room info
   const { data: rooms = [] } = useQuery<ChatRoom[]>({
