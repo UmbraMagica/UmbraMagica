@@ -626,7 +626,7 @@ export default function ChatRoom() {
               <Send className="h-4 w-4" />
             </Button>
           </div>
-          
+
           {/* Druhý řádek: Výběr postavy a akční tlačítka */}
           <div className="flex gap-2 items-center">
             <Select
@@ -649,7 +649,7 @@ export default function ChatRoom() {
                 ))}
               </SelectContent>
             </Select>
-            
+
             <Button 
               variant="outline" 
               size="sm" 
@@ -659,7 +659,7 @@ export default function ChatRoom() {
             >
               <Dices className="h-4 w-4" />
             </Button>
-            
+
             <Button 
               variant="outline" 
               size="sm" 
@@ -669,7 +669,7 @@ export default function ChatRoom() {
             >
               <Coins className="h-4 w-4" />
             </Button>
-            
+
             <Button 
               variant="outline" 
               size="sm" 
@@ -678,7 +678,7 @@ export default function ChatRoom() {
             >
               <Wand2 className="h-4 w-4" />
             </Button>
-            
+
             {canSendAsNarrator && (
               <Button 
                 variant={isNarratorMode ? "default" : "outline"} 
@@ -695,23 +695,28 @@ export default function ChatRoom() {
       {/* Pravý panel: Popis místnosti a tlačítko Upravit pro admina */}
       <div className="w-80 border-l bg-muted/20 overflow-y-auto flex flex-col">
         <div className="flex items-center justify-between p-4 border-b">
-          <h3 className="font-semibold text-sm mb-0">Informace o místnosti</h3>
-          {user?.role === 'admin' && !isEditingDescription && (
-            <Button variant="outline" size="sm" onClick={handleEditDescription}>
-              Upravit
-            </Button>
-          )}
-          {isEditingDescription && (
-            <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={handleCancelEdit}>
-                Zrušit
+            <h3 className="font-semibold text-sm mb-0">Informace o místnosti</h3>
+            {!isEditingDescription && user?.role === 'admin' && (
+              <Button variant="outline" size="sm" onClick={handleEditDescription}>
+                Upravit
               </Button>
-              <Button variant="default" size="sm" onClick={handleSaveDescription}>
-                Uložit
-              </Button>
-            </div>
-          )}
-        </div>
+            )}
+            {isEditingDescription && (
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" onClick={handleCancelEdit}>
+                  Zrušit
+                </Button>
+                <Button 
+                  variant="default" 
+                  size="sm" 
+                  onClick={handleSaveDescription}
+                  disabled={updateRoomDescriptionMutation.isPending}
+                >
+                  {updateRoomDescriptionMutation.isPending ? 'Ukládá...' : 'Uložit'}
+                </Button>
+              </div>
+            )}
+          </div>
         <div className="p-4">
           <h4 className="font-semibold text-sm mb-3">Popis místnosti</h4>
           {isEditingDescription ? (
