@@ -63,7 +63,9 @@ export default function ChatRoom() {
   
   // Debug user data
   console.log("User data:", user);
-  console.log("User characters:", user?.characters);
+  console.log("User characters from query:", userCharacters);
+  console.log("Selected character:", selectedCharacter);
+  console.log("Current chat character:", currentChatCharacter);
 
   // Fetch current room info
   const { data: rooms = [] } = useQuery<ChatRoom[]>({
@@ -325,13 +327,21 @@ export default function ChatRoom() {
 
   // Update current chat character when selectedCharacter changes
   useEffect(() => {
+    console.log("Effect triggered - selectedCharacter:", selectedCharacter, "userCharacters:", userCharacters.length);
+    
     if (selectedCharacter) {
       setCurrentChatCharacter(selectedCharacter);
-    } else if (userCharacters.length > 0 && !currentChatCharacter) {
-      // If no character is selected but we have characters, use the first one
-      setCurrentChatCharacter(userCharacters[0]);
+    } else if (userCharacters.length > 0) {
+      // If no character is selected but we have characters, use the first available one
+      const firstAvailableChar = userCharacters.find(char => !char.deathDate && !char.isSystem) || userCharacters[0];
+      console.log("Setting first available character:", firstAvailableChar);
+      setCurrentChatCharacter(firstAvailableChar);
+      // Also update the global selected character
+      if (firstAvailableChar && changeCharacter) {
+        changeCharacter(firstAvailableChar);
+      }
     }
-  }, [selectedCharacter, userCharacters, currentChatCharacter]);
+  }, [selectedCharacter, userCharacters, changeCharacter]);
 
   const handleSendMessage = () => {
     if (!messageInput.trim() || !currentRoomId || !currentChatCharacter) return;
@@ -513,34 +523,46 @@ export default function ChatRoom() {
           <div className="mb-3">
             <div className="flex items-center gap-3">
               <span className="text-sm font-medium">Píšu za:</span>
-              {userCharacters.length > 1 ? (
-                <Select 
-                  value={currentChatCharacter?.id?.toString() || ""} 
-                  onValueChange={(value) => {
-                    const character = userCharacters.find(c => c.id === parseInt(value));
-                    if (character) {
-                      setCurrentChatCharacter(character);
-                    }
-                  }}
-                >
-                  <SelectTrigger className="w-64">
-                    <SelectValue placeholder="Vyberte postavu" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {userCharacters
-                      .filter(char => !char.deathDate && !char.isSystem)
-                      .map((character) => (
-                        <SelectItem key={character.id} value={character.id.toString()}>
-                          {character.firstName} {character.middleName ? character.middleName + ' ' : ''}{character.lastName}
-                        </SelectItem>
-                      ))}
-                  </SelectContent>
-                </Select>
+              {userCharacters.length > 0 ? (
+                userCharacters.filter(char => !char.deathDate && !char.isSystem).length > 1 ? (
+                  <Select 
+                    value={currentChatCharacter?.id?.toString() || ""} 
+                    onValueChange={(value) => {
+                      const character = userCharacters.find(c => c.id === parseInt(value));
+                      if (character) {
+                        setCurrentChatCharacter(character);
+                        // Also update global selected character
+                        if (changeCharacter) {
+                          changeCharacter(character);
+                        }
+                      }
+                    }}
+                  >
+                    <SelectTrigger className="w-64">
+                      <SelectValue placeholder="Vyberte postavu">
+                        {currentChatCharacter && `${currentChatCharacter.firstName} ${currentChatCharacter.lastName}`}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {userCharacters
+                        .filter(char => !char.deathDate && !char.isSystem)
+                        .map((character) => (
+                          <SelectItem key={character.id} value={character.id.toString()}>
+                            {character.firstName} {character.middleName ? character.middleName + ' ' : ''}{character.lastName}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+                ) : (
+                  <span className="text-sm font-medium text-primary">
+                    {currentChatCharacter ? 
+                      `${currentChatCharacter.firstName} ${currentChatCharacter.lastName}` : 
+                      'Načítám postavu...'}
+                  </span>
+                )
               ) : (
-                <span className="text-sm font-medium text-primary">
-                  {currentChatCharacter ? 
-                    `${currentChatCharacter.firstName} ${currentChatCharacter.lastName}` : 
-                    'Žádná postava'}
+                <span className="text-sm font-medium text-red-500">
+                  Žádné postavy k dispozici
                 </span>
               )}
             </div>
