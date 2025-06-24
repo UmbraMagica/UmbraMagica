@@ -7,15 +7,27 @@ export function SelectedCharacterProvider({ userCharacters, children }: { userCh
 
   useEffect(() => {
     if (userCharacters && userCharacters.length > 0) {
+      const availableChars = userCharacters.filter((c: any) => !c.deathDate && !c.isSystem);
+      if (availableChars.length === 0) {
+        setSelectedCharacter(null);
+        return;
+      }
+
       const savedId = localStorage.getItem("selectedCharacterId");
       let char = null;
+      
       if (savedId) {
-        char = userCharacters.find((c: any) => c.id === parseInt(savedId));
+        char = availableChars.find((c: any) => c.id === parseInt(savedId));
       }
+      
       if (!char) {
-        char = userCharacters.find((c: any) => c.isActive && !c.deathDate) || userCharacters.find((c: any) => !c.deathDate);
+        char = availableChars.find((c: any) => c.isActive) || availableChars[0];
       }
-      setSelectedCharacter(char);
+      
+      if (char && char.id !== selectedCharacter?.id) {
+        setSelectedCharacter(char);
+        localStorage.setItem("selectedCharacterId", char.id.toString());
+      }
     }
   }, [userCharacters]);
 
