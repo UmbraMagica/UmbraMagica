@@ -1,0 +1,56 @@
+[useAuth] FULL DEBUG - Loaded user data: Object
+index-BEcqGv1r.js:447 [useAuth] FULL DEBUG - Characters response status: 200
+index-BEcqGv1r.js:447 [useAuth] FULL DEBUG - Raw characters data: Object
+index-BEcqGv1r.js:447 [useAuth] FULL DEBUG - Characters data type: object
+index-BEcqGv1r.js:447 [useAuth] FULL DEBUG - Is array: false
+index-BEcqGv1r.js:447 [processCharacters] FULL DEBUG - Input data: Object
+index-BEcqGv1r.js:447 [processCharacters] FULL DEBUG - Input type: object
+index-BEcqGv1r.js:447 [processCharacters] FULL DEBUG - Is array: false
+index-BEcqGv1r.js:447 [processCharacters] FULL DEBUG - Using charactersData.characters
+index-BEcqGv1r.js:447 [processCharacters] FULL DEBUG - Characters array: Array(15)
+index-BEcqGv1r.js:447 [processCharacters] FULL DEBUG - Characters array length: 15
+index-BEcqGv1r.js:447 [processCharacters] FULL DEBUG - Checking character 0: Object
+index-BEcqGv1r.js:447 [processCharacters] FULL DEBUG - Character 0 valid: true
+index-BEcqGv1r.js:447 [processCharacters] FULL DEBUG - Checking character 1: Object
+index-BEcqGv1r.js:447 [processCharacters] FULL DEBUG - Character 1 valid: true
+index-BEcqGv1r.js:447 [processCharacters] FULL DEBUG - Checking character 2: Object
+index-BEcqGv1r.js:447 [processCharacters] FULL DEBUG - Character 2 valid: true
+index-BEcqGv1r.js:447 [processCharacters] FULL DEBUG - Checking character 3: Object
+index-BEcqGv1r.js:447 [processCharacters] FULL DEBUG - Character 3 valid: true
+index-BEcqGv1r.js:447 [processCharacters] FULL DEBUG - Checking character 4: Object
+index-BEcqGv1r.js:447 [processCharacters] FULL DEBUG - Character 4 valid: true
+index-BEcqGv1r.js:447 [processCharacters] FULL DEBUG - Checking character 5: Object
+index-BEcqGv1r.js:447 [processCharacters] FULL DEBUG - Character 5 valid: true
+index-BEcqGv1r.js:447 [processCharacters] FULL DEBUG - Checking character 6: Object
+index-BEcqGv1r.js:447 [processCharacters] FULL DEBUG - Character 6 valid: true
+index-BEcqGv1r.js:447 [processCharacters] FULL DEBUG - Checking character 7: Object
+index-BEcqGv1r.js:447 [processCharacters] FULL DEBUG - Character 7 valid: true
+index-BEcqGv1r.js:447 [processCharacters] FULL DEBUG - Checking character 8: Object
+index-BEcqGv1r.js:447 [processCharacters] FULL DEBUG - Character 8 valid: true
+index-BEcqGv1r.js:447 [processCharacters] FULL DEBUG - Checking character 9: Object
+index-BEcqGv1r.js:447 [processCharacters] FULL DEBUG - Character 9 valid: true
+index-BEcqGv1r.js:447 [processCharacters] FULL DEBUG - Checking character 10: Object
+index-BEcqGv1r.js:447 [processCharacters] FULL DEBUG - Character 10 valid: true
+index-BEcqGv1r.js:447 [processCharacters] FULL DEBUG - Checking character 11: Object
+index-BEcqGv1r.js:447 [processCharacters] FULL DEBUG - Character 11 valid: true
+index-BEcqGv1r.js:447 [processCharacters] FULL DEBUG - Checking character 12: Object
+index-BEcqGv1r.js:447 [processCharacters] FULL DEBUG - Character 12 valid: true
+index-BEcqGv1r.js:447 [processCharacters] FULL DEBUG - Checking character 13: Object
+index-BEcqGv1r.js:447 [processCharacters] FULL DEBUG - Character 13 valid: true
+index-BEcqGv1r.js:447 [processCharacters] FULL DEBUG - Checking character 14: Object
+index-BEcqGv1r.js:447 [processCharacters] FULL DEBUG - Character 14 valid: true
+index-BEcqGv1r.js:447 [processCharacters] FULL DEBUG - Valid characters: Array(15)
+index-BEcqGv1r.js:447 [processCharacters] FULL DEBUG - Valid characters count: 15
+index-BEcqGv1r.js:447 [useAuth] FULL DEBUG - Processed characters: Array(15)
+index-BEcqGv1r.js:447 [useAuth] FULL DEBUG - Processed characters count: 15
+index-BEcqGv1r.js:500 Uncaught ReferenceError: Cannot access 'fe' before initialization
+    at OU (index-BEcqGv1r.js:500:2667)
+    at xg (index-BEcqGv1r.js:48:34152)
+    at Tx (index-BEcqGv1r.js:48:62028)
+    at P1 (index-BEcqGv1r.js:48:72485)
+    at iS (index-BEcqGv1r.js:48:106413)
+    at g4 (index-BEcqGv1r.js:48:105476)
+    at fp (index-BEcqGv1r.js:48:105306)
+    at sS (index-BEcqGv1r.js:48:102428)
+    at i0 (index-BEcqGv1r.js:48:113881)
+    at mu (index-BEcqGv1r.js:48:112471)
