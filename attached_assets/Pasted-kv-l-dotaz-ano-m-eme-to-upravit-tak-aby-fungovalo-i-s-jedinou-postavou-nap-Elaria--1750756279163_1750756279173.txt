@@ -1,0 +1,59 @@
+kvělý dotaz – ano, můžeme to upravit tak, aby:
+
+🟢 fungovalo i s jedinou postavou (např. "Elaria"),
+
+🔴 neobsahovalo volbu „Vypravěč“, pokud uživatel nemá právo psát jako vypravěč,
+
+a 🧠 nebylo matoucí pro běžného uživatele – tedy žádný zbytečný dropdown, když má jen jednu možnost.
+
+🔧 Doporučená logika:
+Má postavu a zároveň může psát jako vypravěč → zobrazí se <Select> s výběrem (např. "Elaria" nebo "Vypravěč").
+
+Má jen jednu postavu a nemá právo na vypravěče → zobrazí se pouze jméno postavy bez dropdownu.
+
+Má víc postav (např. GM) → dropdown se vždy zobrazí.
+
+✨ Upravený výstup:
+Tady je úprava komponenty chat-room.tsx, kterou můžeš nahradit místo aktuálního <Select> bloku (ideálně dovnitř return):
+
+tsx
+Zkopírovat
+Upravit
+{!charactersLoading ? (
+  availableCharacters.length > 1 || canSendAsNarrator ? (
+    <div className="flex items-center gap-2">
+      <span>Píšeš jako:</span>
+      <Select
+        onValueChange={(value) => {
+          const selected = allCharacters.find((char) => char.id === value);
+          if (selected) changeCharacter(selected);
+        }}
+        value={currentChatCharacter?.id}
+      >
+        <SelectTrigger className="w-[180px]">
+          <SelectValue placeholder="Vyber postavu" />
+        </SelectTrigger>
+        <SelectContent>
+          {canSendAsNarrator && (
+            <SelectItem value="narrator">Vypravěč</SelectItem>
+          )}
+          {availableCharacters.map((char) => (
+            <SelectItem key={char.id} value={char.id}>
+              {char.name}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+  ) : (
+    <div className="text-sm text-muted-foreground">
+      Píšeš jako: <strong>{availableCharacters[0]?.name}</strong>
+    </div>
+  )
+) : (
+  <p>Načítám postavy...</p>
+)}
+Nezapomeň:
+Ověřit, že availableCharacters neobsahuje Vypravěče, pokud canSendAsNarrator === false.
+
+Ošetřit případ, kdy currentChatCharacter.id === "narrator" v handleSendMessage() – tam by to měl systém rozpoznat jako zvláštní typ zprávy.
