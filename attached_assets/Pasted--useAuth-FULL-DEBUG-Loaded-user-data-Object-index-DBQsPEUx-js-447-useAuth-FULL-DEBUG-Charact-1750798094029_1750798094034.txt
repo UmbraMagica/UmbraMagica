@@ -1,0 +1,1065 @@
+[useAuth] FULL DEBUG - Loaded user data: Object
+index-DBQsPEUx.js:447 [useAuth] FULL DEBUG - Characters response status: 200
+index-DBQsPEUx.js:447 [useAuth] FULL DEBUG - Raw characters data: Object
+index-DBQsPEUx.js:447 [useAuth] FULL DEBUG - Characters data type: object
+index-DBQsPEUx.js:447 [useAuth] FULL DEBUG - Is array: false
+index-DBQsPEUx.js:447 [processCharacters] FULL DEBUG - Input data: Object
+index-DBQsPEUx.js:447 [processCharacters] FULL DEBUG - Input type: object
+index-DBQsPEUx.js:447 [processCharacters] FULL DEBUG - Is array: false
+index-DBQsPEUx.js:447 [processCharacters] FULL DEBUG - Using charactersData.characters
+index-DBQsPEUx.js:447 [processCharacters] FULL DEBUG - Characters array: Array(15)
+index-DBQsPEUx.js:447 [processCharacters] FULL DEBUG - Characters array length: 15
+index-DBQsPEUx.js:447 [processCharacters] FULL DEBUG - Checking character 0: Object
+index-DBQsPEUx.js:447 [processCharacters] FULL DEBUG - Character 0 valid: true
+index-DBQsPEUx.js:447 [processCharacters] FULL DEBUG - Checking character 1: Object
+index-DBQsPEUx.js:447 [processCharacters] FULL DEBUG - Character 1 valid: true
+index-DBQsPEUx.js:447 [processCharacters] FULL DEBUG - Checking character 2: Object
+index-DBQsPEUx.js:447 [processCharacters] FULL DEBUG - Character 2 valid: true
+index-DBQsPEUx.js:447 [processCharacters] FULL DEBUG - Checking character 3: Object
+index-DBQsPEUx.js:447 [processCharacters] FULL DEBUG - Character 3 valid: true
+index-DBQsPEUx.js:447 [processCharacters] FULL DEBUG - Checking character 4: Object
+index-DBQsPEUx.js:447 [processCharacters] FULL DEBUG - Character 4 valid: true
+index-DBQsPEUx.js:447 [processCharacters] FULL DEBUG - Checking character 5: Object
+index-DBQsPEUx.js:447 [processCharacters] FULL DEBUG - Character 5 valid: true
+index-DBQsPEUx.js:447 [processCharacters] FULL DEBUG - Checking character 6: Object
+index-DBQsPEUx.js:447 [processCharacters] FULL DEBUG - Character 6 valid: true
+index-DBQsPEUx.js:447 [processCharacters] FULL DEBUG - Checking character 7: Object
+index-DBQsPEUx.js:447 [processCharacters] FULL DEBUG - Character 7 valid: true
+index-DBQsPEUx.js:447 [processCharacters] FULL DEBUG - Checking character 8: Object
+index-DBQsPEUx.js:447 [processCharacters] FULL DEBUG - Character 8 valid: true
+index-DBQsPEUx.js:447 [processCharacters] FULL DEBUG - Checking character 9: Object
+index-DBQsPEUx.js:447 [processCharacters] FULL DEBUG - Character 9 valid: true
+index-DBQsPEUx.js:447 [processCharacters] FULL DEBUG - Checking character 10: Object
+index-DBQsPEUx.js:447 [processCharacters] FULL DEBUG - Character 10 valid: true
+index-DBQsPEUx.js:447 [processCharacters] FULL DEBUG - Checking character 11: Object
+index-DBQsPEUx.js:447 [processCharacters] FULL DEBUG - Character 11 valid: true
+index-DBQsPEUx.js:447 [processCharacters] FULL DEBUG - Checking character 12: Object
+index-DBQsPEUx.js:447 [processCharacters] FULL DEBUG - Character 12 valid: true
+index-DBQsPEUx.js:447 [processCharacters] FULL DEBUG - Checking character 13: Object
+index-DBQsPEUx.js:447 [processCharacters] FULL DEBUG - Character 13 valid: true
+index-DBQsPEUx.js:447 [processCharacters] FULL DEBUG - Checking character 14: Object
+index-DBQsPEUx.js:447 [processCharacters] FULL DEBUG - Character 14 valid: true
+index-DBQsPEUx.js:447 [processCharacters] FULL DEBUG - Valid characters: Array(15)
+index-DBQsPEUx.js:447 [processCharacters] FULL DEBUG - Valid characters count: 15
+index-DBQsPEUx.js:447 [useAuth] FULL DEBUG - Processed characters: Array(15)
+index-DBQsPEUx.js:447 [useAuth] FULL DEBUG - Processed characters count: 15
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Raw characters: Array(0)
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - User: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Final userCharacters: Array(0)
+index-DBQsPEUx.js:500 Connecting to WebSocket: wss://umbra-dev.onrender.com/ws?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwidXNlcm5hbWUiOiJDYXNleSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1MDc1ODgzOCwiZXhwIjoxNzUxMzYzNjM4fQ.R7nifFeRLX5A5PRaGNR2vjQgiZuXv7VFRLG3kOtV6kk
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Raw characters: Array(0)
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - User: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Final userCharacters: Array(0)
+index-DBQsPEUx.js:500 [chat-room] Raw characters response: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Raw characters: Array(15)
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - User: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 0: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Matthew Parker validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Matthew Parker
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 1: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Zoe Higgins validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Zoe Higgins
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 2: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Jožin Bažin validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Jožin Bažin
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 3: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Shantae Okoro validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Shantae Okoro
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 4: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Mrtvý Skřet validation: Object
+index-DBQsPEUx.js:500 [chat-room] REJECTED - Character Mrtvý Skřet: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 5: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Gandalf Grey validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Gandalf Grey
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 6: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Aragorn Ranger validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Aragorn Ranger
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 7: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Příšera Bažin validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Příšera Bažin
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 8: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Nickolas Sinclair validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Nickolas Sinclair
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 9: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Kira Spencer validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Kira Spencer
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 10: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Frodo Pytlík validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Frodo Pytlík
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 11: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Casey Benett validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Casey Benett
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 12: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Amálie Zoufalá validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Amálie Zoufalá
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 13: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Sám Doma validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Sám Doma
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 14: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Bažina Jóžová validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Bažina Jóžová
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Final userCharacters: Array(14)
+index-DBQsPEUx.js:500 Auto-selecting first character: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Raw characters: Array(15)
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - User: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 0: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Matthew Parker validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Matthew Parker
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 1: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Zoe Higgins validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Zoe Higgins
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 2: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Jožin Bažin validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Jožin Bažin
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 3: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Shantae Okoro validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Shantae Okoro
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 4: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Mrtvý Skřet validation: Object
+index-DBQsPEUx.js:500 [chat-room] REJECTED - Character Mrtvý Skřet: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 5: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Gandalf Grey validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Gandalf Grey
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 6: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Aragorn Ranger validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Aragorn Ranger
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 7: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Příšera Bažin validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Příšera Bažin
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 8: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Nickolas Sinclair validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Nickolas Sinclair
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 9: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Kira Spencer validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Kira Spencer
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 10: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Frodo Pytlík validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Frodo Pytlík
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 11: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Casey Benett validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Casey Benett
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 12: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Amálie Zoufalá validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Amálie Zoufalá
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 13: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Sám Doma validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Sám Doma
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 14: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Bažina Jóžová validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Bažina Jóžová
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Final userCharacters: Array(14)
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Raw characters: Array(15)
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - User: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 0: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Matthew Parker validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Matthew Parker
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 1: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Zoe Higgins validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Zoe Higgins
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 2: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Jožin Bažin validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Jožin Bažin
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 3: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Shantae Okoro validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Shantae Okoro
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 4: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Mrtvý Skřet validation: Object
+index-DBQsPEUx.js:500 [chat-room] REJECTED - Character Mrtvý Skřet: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 5: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Gandalf Grey validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Gandalf Grey
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 6: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Aragorn Ranger validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Aragorn Ranger
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 7: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Příšera Bažin validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Příšera Bažin
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 8: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Nickolas Sinclair validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Nickolas Sinclair
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 9: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Kira Spencer validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Kira Spencer
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 10: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Frodo Pytlík validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Frodo Pytlík
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 11: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Casey Benett validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Casey Benett
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 12: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Amálie Zoufalá validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Amálie Zoufalá
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 13: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Sám Doma validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Sám Doma
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 14: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Bažina Jóžová validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Bažina Jóžová
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Final userCharacters: Array(14)
+index-DBQsPEUx.js:500 WebSocket connected
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Raw characters: Array(15)
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - User: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 0: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Matthew Parker validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Matthew Parker
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 1: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Zoe Higgins validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Zoe Higgins
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 2: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Jožin Bažin validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Jožin Bažin
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 3: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Shantae Okoro validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Shantae Okoro
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 4: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Mrtvý Skřet validation: Object
+index-DBQsPEUx.js:500 [chat-room] REJECTED - Character Mrtvý Skřet: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 5: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Gandalf Grey validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Gandalf Grey
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 6: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Aragorn Ranger validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Aragorn Ranger
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 7: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Příšera Bažin validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Příšera Bažin
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 8: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Nickolas Sinclair validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Nickolas Sinclair
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 9: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Kira Spencer validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Kira Spencer
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 10: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Frodo Pytlík validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Frodo Pytlík
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 11: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Casey Benett validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Casey Benett
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 12: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Amálie Zoufalá validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Amálie Zoufalá
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 13: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Sám Doma validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Sám Doma
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 14: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Bažina Jóžová validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Bažina Jóžová
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Final userCharacters: Array(14)
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Raw characters: Array(15)
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - User: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 0: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Matthew Parker validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Matthew Parker
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 1: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Zoe Higgins validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Zoe Higgins
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 2: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Jožin Bažin validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Jožin Bažin
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 3: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Shantae Okoro validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Shantae Okoro
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 4: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Mrtvý Skřet validation: Object
+index-DBQsPEUx.js:500 [chat-room] REJECTED - Character Mrtvý Skřet: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 5: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Gandalf Grey validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Gandalf Grey
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 6: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Aragorn Ranger validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Aragorn Ranger
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 7: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Příšera Bažin validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Příšera Bažin
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 8: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Nickolas Sinclair validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Nickolas Sinclair
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 9: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Kira Spencer validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Kira Spencer
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 10: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Frodo Pytlík validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Frodo Pytlík
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 11: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Casey Benett validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Casey Benett
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 12: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Amálie Zoufalá validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Amálie Zoufalá
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 13: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Sám Doma validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Sám Doma
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 14: Object
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Bažina Jóžová validation: Object
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Bažina Jóžová
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Final userCharacters: Array(14)
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Raw characters: (15) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - User: {id: 5, role: 'admin', username: 'Casey'}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 0: {id: 17, userId: 12, firstName: 'Matthew', middleName: 'Elias', lastName: 'Parker', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Matthew Parker validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Matthew Parker
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 1: {id: 13, userId: 8, firstName: 'Zoe', middleName: '', lastName: 'Higgins', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Zoe Higgins validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Zoe Higgins
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 2: {id: 16, userId: 11, firstName: 'Jožin', middleName: 'Z', lastName: 'Bažin', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Jožin Bažin validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Jožin Bažin
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 3: {id: 15, userId: 10, firstName: 'Shantae', middleName: '', lastName: 'Okoro', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Shantae Okoro validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Shantae Okoro
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 4: {id: 8, userId: 1, firstName: 'Mrtvý', middleName: '', lastName: 'Skřet', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Mrtvý Skřet validation: {hasValidId: true, hasValidFirstName: true, isAlive: false, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] REJECTED - Character Mrtvý Skřet: {reason: 'dead character'}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 5: {id: 1, userId: 1, firstName: 'Gandalf', middleName: 'the', lastName: 'Grey', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Gandalf Grey validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Gandalf Grey
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 6: {id: 2, userId: 1, firstName: 'Aragorn', middleName: null, lastName: 'Ranger', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Aragorn Ranger validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Aragorn Ranger
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 7: {id: 12, userId: 7, firstName: 'Příšera', middleName: 'z', lastName: 'Bažin', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Příšera Bažin validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Příšera Bažin
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 8: {id: 14, userId: 9, firstName: 'Nickolas', middleName: '', lastName: 'Sinclair', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Nickolas Sinclair validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Nickolas Sinclair
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 9: {id: 7, userId: 5, firstName: 'Kira', middleName: 'Mae', lastName: 'Spencer', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Kira Spencer validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Kira Spencer
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 10: {id: 3, userId: 2, firstName: 'Frodo', middleName: '', lastName: 'Pytlík', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Frodo Pytlík validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Frodo Pytlík
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 11: {id: 6, userId: 5, firstName: 'Casey', middleName: 'Lotte', lastName: 'Benett', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Casey Benett validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Casey Benett
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 12: {id: 18, userId: 13, firstName: 'Amálie', middleName: '', lastName: 'Zoufalá', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Amálie Zoufalá validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Amálie Zoufalá
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 13: {id: 9, userId: 1, firstName: 'Sám', middleName: '', lastName: 'Doma', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Sám Doma validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Sám Doma
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 14: {id: 20, userId: 1, firstName: 'Bažina', middleName: '', lastName: 'Jóžová', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Bažina Jóžová validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Bažina Jóžová
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Final userCharacters: (14) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Raw characters: (15) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - User: {id: 5, role: 'admin', username: 'Casey'}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 0: {id: 17, userId: 12, firstName: 'Matthew', middleName: 'Elias', lastName: 'Parker', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Matthew Parker validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Matthew Parker
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 1: {id: 13, userId: 8, firstName: 'Zoe', middleName: '', lastName: 'Higgins', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Zoe Higgins validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Zoe Higgins
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 2: {id: 16, userId: 11, firstName: 'Jožin', middleName: 'Z', lastName: 'Bažin', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Jožin Bažin validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Jožin Bažin
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 3: {id: 15, userId: 10, firstName: 'Shantae', middleName: '', lastName: 'Okoro', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Shantae Okoro validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Shantae Okoro
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 4: {id: 8, userId: 1, firstName: 'Mrtvý', middleName: '', lastName: 'Skřet', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Mrtvý Skřet validation: {hasValidId: true, hasValidFirstName: true, isAlive: false, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] REJECTED - Character Mrtvý Skřet: {reason: 'dead character'}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 5: {id: 1, userId: 1, firstName: 'Gandalf', middleName: 'the', lastName: 'Grey', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Gandalf Grey validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Gandalf Grey
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 6: {id: 2, userId: 1, firstName: 'Aragorn', middleName: null, lastName: 'Ranger', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Aragorn Ranger validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Aragorn Ranger
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 7: {id: 12, userId: 7, firstName: 'Příšera', middleName: 'z', lastName: 'Bažin', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Příšera Bažin validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Příšera Bažin
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 8: {id: 14, userId: 9, firstName: 'Nickolas', middleName: '', lastName: 'Sinclair', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Nickolas Sinclair validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Nickolas Sinclair
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 9: {id: 7, userId: 5, firstName: 'Kira', middleName: 'Mae', lastName: 'Spencer', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Kira Spencer validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Kira Spencer
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 10: {id: 3, userId: 2, firstName: 'Frodo', middleName: '', lastName: 'Pytlík', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Frodo Pytlík validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Frodo Pytlík
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 11: {id: 6, userId: 5, firstName: 'Casey', middleName: 'Lotte', lastName: 'Benett', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Casey Benett validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Casey Benett
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 12: {id: 18, userId: 13, firstName: 'Amálie', middleName: '', lastName: 'Zoufalá', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Amálie Zoufalá validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Amálie Zoufalá
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 13: {id: 9, userId: 1, firstName: 'Sám', middleName: '', lastName: 'Doma', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Sám Doma validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Sám Doma
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 14: {id: 20, userId: 1, firstName: 'Bažina', middleName: '', lastName: 'Jóžová', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Bažina Jóžová validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Bažina Jóžová
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Final userCharacters: (14) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Raw characters: (15) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - User: {id: 5, role: 'admin', username: 'Casey'}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 0: {id: 17, userId: 12, firstName: 'Matthew', middleName: 'Elias', lastName: 'Parker', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Matthew Parker validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Matthew Parker
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 1: {id: 13, userId: 8, firstName: 'Zoe', middleName: '', lastName: 'Higgins', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Zoe Higgins validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Zoe Higgins
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 2: {id: 16, userId: 11, firstName: 'Jožin', middleName: 'Z', lastName: 'Bažin', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Jožin Bažin validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Jožin Bažin
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 3: {id: 15, userId: 10, firstName: 'Shantae', middleName: '', lastName: 'Okoro', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Shantae Okoro validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Shantae Okoro
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 4: {id: 8, userId: 1, firstName: 'Mrtvý', middleName: '', lastName: 'Skřet', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Mrtvý Skřet validation: {hasValidId: true, hasValidFirstName: true, isAlive: false, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] REJECTED - Character Mrtvý Skřet: {reason: 'dead character'}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 5: {id: 1, userId: 1, firstName: 'Gandalf', middleName: 'the', lastName: 'Grey', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Gandalf Grey validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Gandalf Grey
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 6: {id: 2, userId: 1, firstName: 'Aragorn', middleName: null, lastName: 'Ranger', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Aragorn Ranger validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Aragorn Ranger
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 7: {id: 12, userId: 7, firstName: 'Příšera', middleName: 'z', lastName: 'Bažin', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Příšera Bažin validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Příšera Bažin
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 8: {id: 14, userId: 9, firstName: 'Nickolas', middleName: '', lastName: 'Sinclair', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Nickolas Sinclair validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Nickolas Sinclair
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 9: {id: 7, userId: 5, firstName: 'Kira', middleName: 'Mae', lastName: 'Spencer', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Kira Spencer validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Kira Spencer
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 10: {id: 3, userId: 2, firstName: 'Frodo', middleName: '', lastName: 'Pytlík', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Frodo Pytlík validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Frodo Pytlík
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 11: {id: 6, userId: 5, firstName: 'Casey', middleName: 'Lotte', lastName: 'Benett', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Casey Benett validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Casey Benett
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 12: {id: 18, userId: 13, firstName: 'Amálie', middleName: '', lastName: 'Zoufalá', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Amálie Zoufalá validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Amálie Zoufalá
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 13: {id: 9, userId: 1, firstName: 'Sám', middleName: '', lastName: 'Doma', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Sám Doma validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Sám Doma
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 14: {id: 20, userId: 1, firstName: 'Bažina', middleName: '', lastName: 'Jóžová', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Bažina Jóžová validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Bažina Jóžová
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Final userCharacters: (14) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Raw characters: (15) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - User: {id: 5, role: 'admin', username: 'Casey'}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 0: {id: 17, userId: 12, firstName: 'Matthew', middleName: 'Elias', lastName: 'Parker', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Matthew Parker validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Matthew Parker
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 1: {id: 13, userId: 8, firstName: 'Zoe', middleName: '', lastName: 'Higgins', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Zoe Higgins validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Zoe Higgins
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 2: {id: 16, userId: 11, firstName: 'Jožin', middleName: 'Z', lastName: 'Bažin', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Jožin Bažin validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Jožin Bažin
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 3: {id: 15, userId: 10, firstName: 'Shantae', middleName: '', lastName: 'Okoro', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Shantae Okoro validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Shantae Okoro
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 4: {id: 8, userId: 1, firstName: 'Mrtvý', middleName: '', lastName: 'Skřet', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Mrtvý Skřet validation: {hasValidId: true, hasValidFirstName: true, isAlive: false, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] REJECTED - Character Mrtvý Skřet: {reason: 'dead character'}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 5: {id: 1, userId: 1, firstName: 'Gandalf', middleName: 'the', lastName: 'Grey', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Gandalf Grey validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Gandalf Grey
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 6: {id: 2, userId: 1, firstName: 'Aragorn', middleName: null, lastName: 'Ranger', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Aragorn Ranger validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Aragorn Ranger
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 7: {id: 12, userId: 7, firstName: 'Příšera', middleName: 'z', lastName: 'Bažin', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Příšera Bažin validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Příšera Bažin
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 8: {id: 14, userId: 9, firstName: 'Nickolas', middleName: '', lastName: 'Sinclair', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Nickolas Sinclair validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Nickolas Sinclair
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 9: {id: 7, userId: 5, firstName: 'Kira', middleName: 'Mae', lastName: 'Spencer', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Kira Spencer validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Kira Spencer
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 10: {id: 3, userId: 2, firstName: 'Frodo', middleName: '', lastName: 'Pytlík', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Frodo Pytlík validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Frodo Pytlík
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 11: {id: 6, userId: 5, firstName: 'Casey', middleName: 'Lotte', lastName: 'Benett', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Casey Benett validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Casey Benett
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 12: {id: 18, userId: 13, firstName: 'Amálie', middleName: '', lastName: 'Zoufalá', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Amálie Zoufalá validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Amálie Zoufalá
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 13: {id: 9, userId: 1, firstName: 'Sám', middleName: '', lastName: 'Doma', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Sám Doma validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Sám Doma
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 14: {id: 20, userId: 1, firstName: 'Bažina', middleName: '', lastName: 'Jóžová', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Bažina Jóžová validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Bažina Jóžová
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Final userCharacters: (14) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Raw characters: (15) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - User: {id: 5, role: 'admin', username: 'Casey'}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 0: {id: 17, userId: 12, firstName: 'Matthew', middleName: 'Elias', lastName: 'Parker', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Matthew Parker validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Matthew Parker
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 1: {id: 13, userId: 8, firstName: 'Zoe', middleName: '', lastName: 'Higgins', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Zoe Higgins validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Zoe Higgins
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 2: {id: 16, userId: 11, firstName: 'Jožin', middleName: 'Z', lastName: 'Bažin', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Jožin Bažin validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Jožin Bažin
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 3: {id: 15, userId: 10, firstName: 'Shantae', middleName: '', lastName: 'Okoro', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Shantae Okoro validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Shantae Okoro
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 4: {id: 8, userId: 1, firstName: 'Mrtvý', middleName: '', lastName: 'Skřet', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Mrtvý Skřet validation: {hasValidId: true, hasValidFirstName: true, isAlive: false, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] REJECTED - Character Mrtvý Skřet: {reason: 'dead character'}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 5: {id: 1, userId: 1, firstName: 'Gandalf', middleName: 'the', lastName: 'Grey', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Gandalf Grey validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Gandalf Grey
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 6: {id: 2, userId: 1, firstName: 'Aragorn', middleName: null, lastName: 'Ranger', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Aragorn Ranger validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Aragorn Ranger
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 7: {id: 12, userId: 7, firstName: 'Příšera', middleName: 'z', lastName: 'Bažin', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Příšera Bažin validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Příšera Bažin
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 8: {id: 14, userId: 9, firstName: 'Nickolas', middleName: '', lastName: 'Sinclair', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Nickolas Sinclair validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Nickolas Sinclair
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 9: {id: 7, userId: 5, firstName: 'Kira', middleName: 'Mae', lastName: 'Spencer', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Kira Spencer validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Kira Spencer
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 10: {id: 3, userId: 2, firstName: 'Frodo', middleName: '', lastName: 'Pytlík', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Frodo Pytlík validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Frodo Pytlík
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 11: {id: 6, userId: 5, firstName: 'Casey', middleName: 'Lotte', lastName: 'Benett', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Casey Benett validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Casey Benett
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 12: {id: 18, userId: 13, firstName: 'Amálie', middleName: '', lastName: 'Zoufalá', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Amálie Zoufalá validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Amálie Zoufalá
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 13: {id: 9, userId: 1, firstName: 'Sám', middleName: '', lastName: 'Doma', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Sám Doma validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Sám Doma
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 14: {id: 20, userId: 1, firstName: 'Bažina', middleName: '', lastName: 'Jóžová', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Bažina Jóžová validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Bažina Jóžová
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Final userCharacters: (14) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Raw characters: (15) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - User: {id: 5, role: 'admin', username: 'Casey'}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 0: {id: 17, userId: 12, firstName: 'Matthew', middleName: 'Elias', lastName: 'Parker', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Matthew Parker validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Matthew Parker
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 1: {id: 13, userId: 8, firstName: 'Zoe', middleName: '', lastName: 'Higgins', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Zoe Higgins validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Zoe Higgins
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 2: {id: 16, userId: 11, firstName: 'Jožin', middleName: 'Z', lastName: 'Bažin', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Jožin Bažin validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Jožin Bažin
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 3: {id: 15, userId: 10, firstName: 'Shantae', middleName: '', lastName: 'Okoro', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Shantae Okoro validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Shantae Okoro
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 4: {id: 8, userId: 1, firstName: 'Mrtvý', middleName: '', lastName: 'Skřet', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Mrtvý Skřet validation: {hasValidId: true, hasValidFirstName: true, isAlive: false, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] REJECTED - Character Mrtvý Skřet: {reason: 'dead character'}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 5: {id: 1, userId: 1, firstName: 'Gandalf', middleName: 'the', lastName: 'Grey', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Gandalf Grey validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Gandalf Grey
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 6: {id: 2, userId: 1, firstName: 'Aragorn', middleName: null, lastName: 'Ranger', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Aragorn Ranger validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Aragorn Ranger
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 7: {id: 12, userId: 7, firstName: 'Příšera', middleName: 'z', lastName: 'Bažin', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Příšera Bažin validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Příšera Bažin
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 8: {id: 14, userId: 9, firstName: 'Nickolas', middleName: '', lastName: 'Sinclair', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Nickolas Sinclair validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Nickolas Sinclair
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 9: {id: 7, userId: 5, firstName: 'Kira', middleName: 'Mae', lastName: 'Spencer', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Kira Spencer validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Kira Spencer
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 10: {id: 3, userId: 2, firstName: 'Frodo', middleName: '', lastName: 'Pytlík', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Frodo Pytlík validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Frodo Pytlík
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 11: {id: 6, userId: 5, firstName: 'Casey', middleName: 'Lotte', lastName: 'Benett', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Casey Benett validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Casey Benett
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 12: {id: 18, userId: 13, firstName: 'Amálie', middleName: '', lastName: 'Zoufalá', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Amálie Zoufalá validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Amálie Zoufalá
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 13: {id: 9, userId: 1, firstName: 'Sám', middleName: '', lastName: 'Doma', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Sám Doma validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Sám Doma
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 14: {id: 20, userId: 1, firstName: 'Bažina', middleName: '', lastName: 'Jóžová', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Bažina Jóžová validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Bažina Jóžová
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Final userCharacters: (14) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Raw characters: (15) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - User: {id: 5, role: 'admin', username: 'Casey'}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 0: {id: 17, userId: 12, firstName: 'Matthew', middleName: 'Elias', lastName: 'Parker', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Matthew Parker validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Matthew Parker
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 1: {id: 13, userId: 8, firstName: 'Zoe', middleName: '', lastName: 'Higgins', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Zoe Higgins validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Zoe Higgins
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 2: {id: 16, userId: 11, firstName: 'Jožin', middleName: 'Z', lastName: 'Bažin', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Jožin Bažin validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Jožin Bažin
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 3: {id: 15, userId: 10, firstName: 'Shantae', middleName: '', lastName: 'Okoro', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Shantae Okoro validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Shantae Okoro
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 4: {id: 8, userId: 1, firstName: 'Mrtvý', middleName: '', lastName: 'Skřet', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Mrtvý Skřet validation: {hasValidId: true, hasValidFirstName: true, isAlive: false, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] REJECTED - Character Mrtvý Skřet: {reason: 'dead character'}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 5: {id: 1, userId: 1, firstName: 'Gandalf', middleName: 'the', lastName: 'Grey', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Gandalf Grey validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Gandalf Grey
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 6: {id: 2, userId: 1, firstName: 'Aragorn', middleName: null, lastName: 'Ranger', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Aragorn Ranger validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Aragorn Ranger
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 7: {id: 12, userId: 7, firstName: 'Příšera', middleName: 'z', lastName: 'Bažin', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Příšera Bažin validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Příšera Bažin
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 8: {id: 14, userId: 9, firstName: 'Nickolas', middleName: '', lastName: 'Sinclair', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Nickolas Sinclair validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Nickolas Sinclair
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 9: {id: 7, userId: 5, firstName: 'Kira', middleName: 'Mae', lastName: 'Spencer', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Kira Spencer validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Kira Spencer
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 10: {id: 3, userId: 2, firstName: 'Frodo', middleName: '', lastName: 'Pytlík', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Frodo Pytlík validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Frodo Pytlík
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 11: {id: 6, userId: 5, firstName: 'Casey', middleName: 'Lotte', lastName: 'Benett', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Casey Benett validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Casey Benett
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 12: {id: 18, userId: 13, firstName: 'Amálie', middleName: '', lastName: 'Zoufalá', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Amálie Zoufalá validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Amálie Zoufalá
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 13: {id: 9, userId: 1, firstName: 'Sám', middleName: '', lastName: 'Doma', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Sám Doma validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Sám Doma
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 14: {id: 20, userId: 1, firstName: 'Bažina', middleName: '', lastName: 'Jóžová', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Bažina Jóžová validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Bažina Jóžová
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Final userCharacters: (14) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Raw characters: (15) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - User: {id: 5, role: 'admin', username: 'Casey'}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 0: {id: 17, userId: 12, firstName: 'Matthew', middleName: 'Elias', lastName: 'Parker', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Matthew Parker validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Matthew Parker
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 1: {id: 13, userId: 8, firstName: 'Zoe', middleName: '', lastName: 'Higgins', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Zoe Higgins validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Zoe Higgins
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 2: {id: 16, userId: 11, firstName: 'Jožin', middleName: 'Z', lastName: 'Bažin', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Jožin Bažin validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Jožin Bažin
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 3: {id: 15, userId: 10, firstName: 'Shantae', middleName: '', lastName: 'Okoro', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Shantae Okoro validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Shantae Okoro
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 4: {id: 8, userId: 1, firstName: 'Mrtvý', middleName: '', lastName: 'Skřet', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Mrtvý Skřet validation: {hasValidId: true, hasValidFirstName: true, isAlive: false, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] REJECTED - Character Mrtvý Skřet: {reason: 'dead character'}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 5: {id: 1, userId: 1, firstName: 'Gandalf', middleName: 'the', lastName: 'Grey', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Gandalf Grey validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Gandalf Grey
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 6: {id: 2, userId: 1, firstName: 'Aragorn', middleName: null, lastName: 'Ranger', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Aragorn Ranger validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Aragorn Ranger
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 7: {id: 12, userId: 7, firstName: 'Příšera', middleName: 'z', lastName: 'Bažin', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Příšera Bažin validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Příšera Bažin
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 8: {id: 14, userId: 9, firstName: 'Nickolas', middleName: '', lastName: 'Sinclair', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Nickolas Sinclair validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Nickolas Sinclair
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 9: {id: 7, userId: 5, firstName: 'Kira', middleName: 'Mae', lastName: 'Spencer', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Kira Spencer validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Kira Spencer
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 10: {id: 3, userId: 2, firstName: 'Frodo', middleName: '', lastName: 'Pytlík', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Frodo Pytlík validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Frodo Pytlík
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 11: {id: 6, userId: 5, firstName: 'Casey', middleName: 'Lotte', lastName: 'Benett', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Casey Benett validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Casey Benett
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 12: {id: 18, userId: 13, firstName: 'Amálie', middleName: '', lastName: 'Zoufalá', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Amálie Zoufalá validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Amálie Zoufalá
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 13: {id: 9, userId: 1, firstName: 'Sám', middleName: '', lastName: 'Doma', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Sám Doma validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Sám Doma
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 14: {id: 20, userId: 1, firstName: 'Bažina', middleName: '', lastName: 'Jóžová', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Bažina Jóžová validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Bažina Jóžová
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Final userCharacters: (14) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+index-DBQsPEUx.js:500 Sending message: {isNarratorMode: false, selectedCharacter: {…}, canSendAsNarrator: true, messageInput: '123...'}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Raw characters: (15) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - User: {id: 5, role: 'admin', username: 'Casey'}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 0: {id: 17, userId: 12, firstName: 'Matthew', middleName: 'Elias', lastName: 'Parker', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Matthew Parker validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Matthew Parker
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 1: {id: 13, userId: 8, firstName: 'Zoe', middleName: '', lastName: 'Higgins', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Zoe Higgins validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Zoe Higgins
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 2: {id: 16, userId: 11, firstName: 'Jožin', middleName: 'Z', lastName: 'Bažin', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Jožin Bažin validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Jožin Bažin
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 3: {id: 15, userId: 10, firstName: 'Shantae', middleName: '', lastName: 'Okoro', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Shantae Okoro validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Shantae Okoro
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 4: {id: 8, userId: 1, firstName: 'Mrtvý', middleName: '', lastName: 'Skřet', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Mrtvý Skřet validation: {hasValidId: true, hasValidFirstName: true, isAlive: false, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] REJECTED - Character Mrtvý Skřet: {reason: 'dead character'}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 5: {id: 1, userId: 1, firstName: 'Gandalf', middleName: 'the', lastName: 'Grey', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Gandalf Grey validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Gandalf Grey
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 6: {id: 2, userId: 1, firstName: 'Aragorn', middleName: null, lastName: 'Ranger', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Aragorn Ranger validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Aragorn Ranger
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 7: {id: 12, userId: 7, firstName: 'Příšera', middleName: 'z', lastName: 'Bažin', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Příšera Bažin validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Příšera Bažin
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 8: {id: 14, userId: 9, firstName: 'Nickolas', middleName: '', lastName: 'Sinclair', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Nickolas Sinclair validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Nickolas Sinclair
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 9: {id: 7, userId: 5, firstName: 'Kira', middleName: 'Mae', lastName: 'Spencer', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Kira Spencer validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Kira Spencer
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 10: {id: 3, userId: 2, firstName: 'Frodo', middleName: '', lastName: 'Pytlík', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Frodo Pytlík validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Frodo Pytlík
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 11: {id: 6, userId: 5, firstName: 'Casey', middleName: 'Lotte', lastName: 'Benett', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Casey Benett validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Casey Benett
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 12: {id: 18, userId: 13, firstName: 'Amálie', middleName: '', lastName: 'Zoufalá', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Amálie Zoufalá validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Amálie Zoufalá
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 13: {id: 9, userId: 1, firstName: 'Sám', middleName: '', lastName: 'Doma', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Sám Doma validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Sám Doma
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 14: {id: 20, userId: 1, firstName: 'Bažina', middleName: '', lastName: 'Jóžová', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Bažina Jóžová validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Bažina Jóžová
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Final userCharacters: (14) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Raw characters: (15) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - User: {id: 5, role: 'admin', username: 'Casey'}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 0: {id: 17, userId: 12, firstName: 'Matthew', middleName: 'Elias', lastName: 'Parker', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Matthew Parker validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Matthew Parker
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 1: {id: 13, userId: 8, firstName: 'Zoe', middleName: '', lastName: 'Higgins', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Zoe Higgins validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Zoe Higgins
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 2: {id: 16, userId: 11, firstName: 'Jožin', middleName: 'Z', lastName: 'Bažin', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Jožin Bažin validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Jožin Bažin
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 3: {id: 15, userId: 10, firstName: 'Shantae', middleName: '', lastName: 'Okoro', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Shantae Okoro validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Shantae Okoro
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 4: {id: 8, userId: 1, firstName: 'Mrtvý', middleName: '', lastName: 'Skřet', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Mrtvý Skřet validation: {hasValidId: true, hasValidFirstName: true, isAlive: false, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] REJECTED - Character Mrtvý Skřet: {reason: 'dead character'}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 5: {id: 1, userId: 1, firstName: 'Gandalf', middleName: 'the', lastName: 'Grey', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Gandalf Grey validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Gandalf Grey
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 6: {id: 2, userId: 1, firstName: 'Aragorn', middleName: null, lastName: 'Ranger', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Aragorn Ranger validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Aragorn Ranger
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 7: {id: 12, userId: 7, firstName: 'Příšera', middleName: 'z', lastName: 'Bažin', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Příšera Bažin validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Příšera Bažin
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 8: {id: 14, userId: 9, firstName: 'Nickolas', middleName: '', lastName: 'Sinclair', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Nickolas Sinclair validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Nickolas Sinclair
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 9: {id: 7, userId: 5, firstName: 'Kira', middleName: 'Mae', lastName: 'Spencer', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Kira Spencer validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Kira Spencer
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 10: {id: 3, userId: 2, firstName: 'Frodo', middleName: '', lastName: 'Pytlík', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Frodo Pytlík validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Frodo Pytlík
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 11: {id: 6, userId: 5, firstName: 'Casey', middleName: 'Lotte', lastName: 'Benett', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Casey Benett validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Casey Benett
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 12: {id: 18, userId: 13, firstName: 'Amálie', middleName: '', lastName: 'Zoufalá', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Amálie Zoufalá validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Amálie Zoufalá
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 13: {id: 9, userId: 1, firstName: 'Sám', middleName: '', lastName: 'Doma', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Sám Doma validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Sám Doma
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 14: {id: 20, userId: 1, firstName: 'Bažina', middleName: '', lastName: 'Jóžová', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Bažina Jóžová validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Bažina Jóžová
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Final userCharacters: (14) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Raw characters: (15) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - User: {id: 5, role: 'admin', username: 'Casey'}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 0: {id: 17, userId: 12, firstName: 'Matthew', middleName: 'Elias', lastName: 'Parker', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Matthew Parker validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Matthew Parker
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 1: {id: 13, userId: 8, firstName: 'Zoe', middleName: '', lastName: 'Higgins', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Zoe Higgins validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Zoe Higgins
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 2: {id: 16, userId: 11, firstName: 'Jožin', middleName: 'Z', lastName: 'Bažin', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Jožin Bažin validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Jožin Bažin
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 3: {id: 15, userId: 10, firstName: 'Shantae', middleName: '', lastName: 'Okoro', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Shantae Okoro validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Shantae Okoro
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 4: {id: 8, userId: 1, firstName: 'Mrtvý', middleName: '', lastName: 'Skřet', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Mrtvý Skřet validation: {hasValidId: true, hasValidFirstName: true, isAlive: false, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] REJECTED - Character Mrtvý Skřet: {reason: 'dead character'}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 5: {id: 1, userId: 1, firstName: 'Gandalf', middleName: 'the', lastName: 'Grey', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Gandalf Grey validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Gandalf Grey
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 6: {id: 2, userId: 1, firstName: 'Aragorn', middleName: null, lastName: 'Ranger', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Aragorn Ranger validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Aragorn Ranger
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 7: {id: 12, userId: 7, firstName: 'Příšera', middleName: 'z', lastName: 'Bažin', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Příšera Bažin validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Příšera Bažin
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 8: {id: 14, userId: 9, firstName: 'Nickolas', middleName: '', lastName: 'Sinclair', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Nickolas Sinclair validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Nickolas Sinclair
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 9: {id: 7, userId: 5, firstName: 'Kira', middleName: 'Mae', lastName: 'Spencer', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Kira Spencer validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Kira Spencer
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 10: {id: 3, userId: 2, firstName: 'Frodo', middleName: '', lastName: 'Pytlík', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Frodo Pytlík validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Frodo Pytlík
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 11: {id: 6, userId: 5, firstName: 'Casey', middleName: 'Lotte', lastName: 'Benett', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Casey Benett validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Casey Benett
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 12: {id: 18, userId: 13, firstName: 'Amálie', middleName: '', lastName: 'Zoufalá', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Amálie Zoufalá validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Amálie Zoufalá
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 13: {id: 9, userId: 1, firstName: 'Sám', middleName: '', lastName: 'Doma', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Sám Doma validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Sám Doma
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 14: {id: 20, userId: 1, firstName: 'Bažina', middleName: '', lastName: 'Jóžová', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Bažina Jóžová validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Bažina Jóžová
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Final userCharacters: (14) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Raw characters: (15) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - User: {id: 5, role: 'admin', username: 'Casey'}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 0: {id: 17, userId: 12, firstName: 'Matthew', middleName: 'Elias', lastName: 'Parker', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Matthew Parker validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Matthew Parker
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 1: {id: 13, userId: 8, firstName: 'Zoe', middleName: '', lastName: 'Higgins', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Zoe Higgins validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Zoe Higgins
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 2: {id: 16, userId: 11, firstName: 'Jožin', middleName: 'Z', lastName: 'Bažin', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Jožin Bažin validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Jožin Bažin
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 3: {id: 15, userId: 10, firstName: 'Shantae', middleName: '', lastName: 'Okoro', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Shantae Okoro validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Shantae Okoro
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 4: {id: 8, userId: 1, firstName: 'Mrtvý', middleName: '', lastName: 'Skřet', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Mrtvý Skřet validation: {hasValidId: true, hasValidFirstName: true, isAlive: false, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] REJECTED - Character Mrtvý Skřet: {reason: 'dead character'}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 5: {id: 1, userId: 1, firstName: 'Gandalf', middleName: 'the', lastName: 'Grey', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Gandalf Grey validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Gandalf Grey
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 6: {id: 2, userId: 1, firstName: 'Aragorn', middleName: null, lastName: 'Ranger', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Aragorn Ranger validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Aragorn Ranger
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 7: {id: 12, userId: 7, firstName: 'Příšera', middleName: 'z', lastName: 'Bažin', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Příšera Bažin validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Příšera Bažin
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 8: {id: 14, userId: 9, firstName: 'Nickolas', middleName: '', lastName: 'Sinclair', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Nickolas Sinclair validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Nickolas Sinclair
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 9: {id: 7, userId: 5, firstName: 'Kira', middleName: 'Mae', lastName: 'Spencer', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Kira Spencer validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Kira Spencer
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 10: {id: 3, userId: 2, firstName: 'Frodo', middleName: '', lastName: 'Pytlík', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Frodo Pytlík validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Frodo Pytlík
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 11: {id: 6, userId: 5, firstName: 'Casey', middleName: 'Lotte', lastName: 'Benett', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Casey Benett validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Casey Benett
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 12: {id: 18, userId: 13, firstName: 'Amálie', middleName: '', lastName: 'Zoufalá', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Amálie Zoufalá validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Amálie Zoufalá
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 13: {id: 9, userId: 1, firstName: 'Sám', middleName: '', lastName: 'Doma', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Sám Doma validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Sám Doma
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 14: {id: 20, userId: 1, firstName: 'Bažina', middleName: '', lastName: 'Jóžová', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Bažina Jóžová validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Bažina Jóžová
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Final userCharacters: (14) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Raw characters: (15) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - User: {id: 5, role: 'admin', username: 'Casey'}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 0: {id: 17, userId: 12, firstName: 'Matthew', middleName: 'Elias', lastName: 'Parker', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Matthew Parker validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Matthew Parker
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 1: {id: 13, userId: 8, firstName: 'Zoe', middleName: '', lastName: 'Higgins', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Zoe Higgins validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Zoe Higgins
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 2: {id: 16, userId: 11, firstName: 'Jožin', middleName: 'Z', lastName: 'Bažin', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Jožin Bažin validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Jožin Bažin
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 3: {id: 15, userId: 10, firstName: 'Shantae', middleName: '', lastName: 'Okoro', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Shantae Okoro validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Shantae Okoro
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 4: {id: 8, userId: 1, firstName: 'Mrtvý', middleName: '', lastName: 'Skřet', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Mrtvý Skřet validation: {hasValidId: true, hasValidFirstName: true, isAlive: false, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] REJECTED - Character Mrtvý Skřet: {reason: 'dead character'}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 5: {id: 1, userId: 1, firstName: 'Gandalf', middleName: 'the', lastName: 'Grey', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Gandalf Grey validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Gandalf Grey
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 6: {id: 2, userId: 1, firstName: 'Aragorn', middleName: null, lastName: 'Ranger', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Aragorn Ranger validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Aragorn Ranger
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 7: {id: 12, userId: 7, firstName: 'Příšera', middleName: 'z', lastName: 'Bažin', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Příšera Bažin validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Příšera Bažin
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 8: {id: 14, userId: 9, firstName: 'Nickolas', middleName: '', lastName: 'Sinclair', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Nickolas Sinclair validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Nickolas Sinclair
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 9: {id: 7, userId: 5, firstName: 'Kira', middleName: 'Mae', lastName: 'Spencer', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Kira Spencer validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Kira Spencer
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 10: {id: 3, userId: 2, firstName: 'Frodo', middleName: '', lastName: 'Pytlík', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Frodo Pytlík validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Frodo Pytlík
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 11: {id: 6, userId: 5, firstName: 'Casey', middleName: 'Lotte', lastName: 'Benett', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Casey Benett validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Casey Benett
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 12: {id: 18, userId: 13, firstName: 'Amálie', middleName: '', lastName: 'Zoufalá', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Amálie Zoufalá validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Amálie Zoufalá
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 13: {id: 9, userId: 1, firstName: 'Sám', middleName: '', lastName: 'Doma', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Sám Doma validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Sám Doma
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 14: {id: 20, userId: 1, firstName: 'Bažina', middleName: '', lastName: 'Jóžová', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Bažina Jóžová validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Bažina Jóžová
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Final userCharacters: (14) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Raw characters: (15) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - User: {id: 5, role: 'admin', username: 'Casey'}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 0: {id: 17, userId: 12, firstName: 'Matthew', middleName: 'Elias', lastName: 'Parker', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Matthew Parker validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Matthew Parker
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 1: {id: 13, userId: 8, firstName: 'Zoe', middleName: '', lastName: 'Higgins', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Zoe Higgins validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Zoe Higgins
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 2: {id: 16, userId: 11, firstName: 'Jožin', middleName: 'Z', lastName: 'Bažin', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Jožin Bažin validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Jožin Bažin
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 3: {id: 15, userId: 10, firstName: 'Shantae', middleName: '', lastName: 'Okoro', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Shantae Okoro validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Shantae Okoro
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 4: {id: 8, userId: 1, firstName: 'Mrtvý', middleName: '', lastName: 'Skřet', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Mrtvý Skřet validation: {hasValidId: true, hasValidFirstName: true, isAlive: false, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] REJECTED - Character Mrtvý Skřet: {reason: 'dead character'}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 5: {id: 1, userId: 1, firstName: 'Gandalf', middleName: 'the', lastName: 'Grey', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Gandalf Grey validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Gandalf Grey
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 6: {id: 2, userId: 1, firstName: 'Aragorn', middleName: null, lastName: 'Ranger', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Aragorn Ranger validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Aragorn Ranger
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 7: {id: 12, userId: 7, firstName: 'Příšera', middleName: 'z', lastName: 'Bažin', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Příšera Bažin validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Příšera Bažin
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 8: {id: 14, userId: 9, firstName: 'Nickolas', middleName: '', lastName: 'Sinclair', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Nickolas Sinclair validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Nickolas Sinclair
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 9: {id: 7, userId: 5, firstName: 'Kira', middleName: 'Mae', lastName: 'Spencer', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Kira Spencer validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Kira Spencer
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 10: {id: 3, userId: 2, firstName: 'Frodo', middleName: '', lastName: 'Pytlík', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Frodo Pytlík validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Frodo Pytlík
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 11: {id: 6, userId: 5, firstName: 'Casey', middleName: 'Lotte', lastName: 'Benett', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Casey Benett validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Casey Benett
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 12: {id: 18, userId: 13, firstName: 'Amálie', middleName: '', lastName: 'Zoufalá', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Amálie Zoufalá validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Amálie Zoufalá
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 13: {id: 9, userId: 1, firstName: 'Sám', middleName: '', lastName: 'Doma', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Sám Doma validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Sám Doma
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 14: {id: 20, userId: 1, firstName: 'Bažina', middleName: '', lastName: 'Jóžová', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Bažina Jóžová validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Bažina Jóžová
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Final userCharacters: (14) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+index-DBQsPEUx.js:500 Sending message: {isNarratorMode: false, selectedCharacter: {…}, canSendAsNarrator: true, messageInput: '123...'}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Raw characters: (15) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - User: {id: 5, role: 'admin', username: 'Casey'}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 0: {id: 17, userId: 12, firstName: 'Matthew', middleName: 'Elias', lastName: 'Parker', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Matthew Parker validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Matthew Parker
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 1: {id: 13, userId: 8, firstName: 'Zoe', middleName: '', lastName: 'Higgins', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Zoe Higgins validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Zoe Higgins
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 2: {id: 16, userId: 11, firstName: 'Jožin', middleName: 'Z', lastName: 'Bažin', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Jožin Bažin validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Jožin Bažin
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 3: {id: 15, userId: 10, firstName: 'Shantae', middleName: '', lastName: 'Okoro', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Shantae Okoro validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Shantae Okoro
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 4: {id: 8, userId: 1, firstName: 'Mrtvý', middleName: '', lastName: 'Skřet', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Mrtvý Skřet validation: {hasValidId: true, hasValidFirstName: true, isAlive: false, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] REJECTED - Character Mrtvý Skřet: {reason: 'dead character'}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 5: {id: 1, userId: 1, firstName: 'Gandalf', middleName: 'the', lastName: 'Grey', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Gandalf Grey validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Gandalf Grey
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 6: {id: 2, userId: 1, firstName: 'Aragorn', middleName: null, lastName: 'Ranger', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Aragorn Ranger validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Aragorn Ranger
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 7: {id: 12, userId: 7, firstName: 'Příšera', middleName: 'z', lastName: 'Bažin', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Příšera Bažin validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Příšera Bažin
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 8: {id: 14, userId: 9, firstName: 'Nickolas', middleName: '', lastName: 'Sinclair', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Nickolas Sinclair validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Nickolas Sinclair
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 9: {id: 7, userId: 5, firstName: 'Kira', middleName: 'Mae', lastName: 'Spencer', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Kira Spencer validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Kira Spencer
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 10: {id: 3, userId: 2, firstName: 'Frodo', middleName: '', lastName: 'Pytlík', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Frodo Pytlík validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Frodo Pytlík
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 11: {id: 6, userId: 5, firstName: 'Casey', middleName: 'Lotte', lastName: 'Benett', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Casey Benett validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Casey Benett
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 12: {id: 18, userId: 13, firstName: 'Amálie', middleName: '', lastName: 'Zoufalá', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Amálie Zoufalá validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Amálie Zoufalá
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 13: {id: 9, userId: 1, firstName: 'Sám', middleName: '', lastName: 'Doma', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Sám Doma validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Sám Doma
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 14: {id: 20, userId: 1, firstName: 'Bažina', middleName: '', lastName: 'Jóžová', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Bažina Jóžová validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Bažina Jóžová
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Final userCharacters: (14) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Raw characters: (15) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - User: {id: 5, role: 'admin', username: 'Casey'}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 0: {id: 17, userId: 12, firstName: 'Matthew', middleName: 'Elias', lastName: 'Parker', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Matthew Parker validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Matthew Parker
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 1: {id: 13, userId: 8, firstName: 'Zoe', middleName: '', lastName: 'Higgins', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Zoe Higgins validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Zoe Higgins
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 2: {id: 16, userId: 11, firstName: 'Jožin', middleName: 'Z', lastName: 'Bažin', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Jožin Bažin validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Jožin Bažin
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 3: {id: 15, userId: 10, firstName: 'Shantae', middleName: '', lastName: 'Okoro', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Shantae Okoro validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Shantae Okoro
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 4: {id: 8, userId: 1, firstName: 'Mrtvý', middleName: '', lastName: 'Skřet', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Mrtvý Skřet validation: {hasValidId: true, hasValidFirstName: true, isAlive: false, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] REJECTED - Character Mrtvý Skřet: {reason: 'dead character'}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 5: {id: 1, userId: 1, firstName: 'Gandalf', middleName: 'the', lastName: 'Grey', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Gandalf Grey validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Gandalf Grey
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 6: {id: 2, userId: 1, firstName: 'Aragorn', middleName: null, lastName: 'Ranger', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Aragorn Ranger validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Aragorn Ranger
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 7: {id: 12, userId: 7, firstName: 'Příšera', middleName: 'z', lastName: 'Bažin', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Příšera Bažin validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Příšera Bažin
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 8: {id: 14, userId: 9, firstName: 'Nickolas', middleName: '', lastName: 'Sinclair', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Nickolas Sinclair validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Nickolas Sinclair
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 9: {id: 7, userId: 5, firstName: 'Kira', middleName: 'Mae', lastName: 'Spencer', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Kira Spencer validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Kira Spencer
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 10: {id: 3, userId: 2, firstName: 'Frodo', middleName: '', lastName: 'Pytlík', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Frodo Pytlík validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Frodo Pytlík
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 11: {id: 6, userId: 5, firstName: 'Casey', middleName: 'Lotte', lastName: 'Benett', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Casey Benett validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Casey Benett
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 12: {id: 18, userId: 13, firstName: 'Amálie', middleName: '', lastName: 'Zoufalá', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Amálie Zoufalá validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Amálie Zoufalá
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 13: {id: 9, userId: 1, firstName: 'Sám', middleName: '', lastName: 'Doma', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Sám Doma validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Sám Doma
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Processing character 14: {id: 20, userId: 1, firstName: 'Bažina', middleName: '', lastName: 'Jóžová', …}
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Character Bažina Jóžová validation: {hasValidId: true, hasValidFirstName: true, isAlive: true, isNotSystem: true, hasAccess: true, …}
+index-DBQsPEUx.js:500 [chat-room] ACCEPTED - Character Bažina Jóžová
+index-DBQsPEUx.js:500 [chat-room] FULL DEBUG - Final userCharacters: (14) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
