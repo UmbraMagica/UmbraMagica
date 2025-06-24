@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { MessageCircle, Send, Download, Archive, ArrowLeft, User, Dices, Coins } from "lucide-react";
 import { format } from "date-fns";
@@ -49,9 +50,16 @@ export default function ChatRoom() {
   const [ws, setWs] = useState<WebSocket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { selectedCharacter } = useSelectedCharacter();
+  const { selectedCharacter, changeCharacter } = useSelectedCharacter();
+  const [currentChatCharacter, setCurrentChatCharacter] = useState(selectedCharacter);
   
   const currentRoomId = roomId ? parseInt(roomId) : null;
+
+  // Fetch user's characters for chat selection
+  const { data: userCharacters = [] } = useQuery({
+    queryKey: ["/api/characters"],
+    enabled: !!user,
+  });
   
   // Debug user data
   console.log("User data:", user);
@@ -91,28 +99,32 @@ export default function ChatRoom() {
 
   // Send message mutation
   const sendMessageMutation = useMutation({
-    mutationFn: (messageData: { content: string; messageType?: string; characterId: number }) => {
-      return new Promise<void>((resolve, reject) => {
-        if (!ws || !isConnected) {
-          reject(new Error("WebSocket není připojen"));
-          return;
-        }
+    mutationFn: async (messageData: { content: string; messageType?: string; characterId: number }) => {
+      if (messageData.content.length < MIN_MESSAGE_LENGTH || messageData.content.length > MAX_MESSAGE_LENGTH) {
+        throw new Error(`Zpráva musí mít ${MIN_MESSAGE_LENGTH}-${MAX_MESSAGE_LENGTH} znaků`);
+      }
 
-        if (messageData.content.length < MIN_MESSAGE_LENGTH || messageData.content.length > MAX_MESSAGE_LENGTH) {
-          reject(new Error(`Zpráva musí mít ${MIN_MESSAGE_LENGTH}-${MAX_MESSAGE_LENGTH} znaků`));
-          return;
-        }
-
-        ws.send(JSON.stringify({
-          type: 'chat_message',
+      const token = localStorage.getItem('jwt_token');
+      const response = await fetch(`${API_URL}/api/chat/messages`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify({
           roomId: currentRoomId,
           content: messageData.content,
-          messageType: messageData.messageType || 'message',
+          messageType: messageData.messageType || 'text',
           characterId: messageData.characterId,
-        }));
-
-        resolve();
+        }),
       });
+
+      if (!response.ok) {
+        throw new Error('Nepodařilo se odeslat zprávu');
+      }
+
+      return response.json();
     },
     onSuccess: () => {
       setMessageInput("");
@@ -311,11 +323,18 @@ export default function ChatRoom() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // Update current chat character when selectedCharacter changes
+  useEffect(() => {
+    if (selectedCharacter) {
+      setCurrentChatCharacter(selectedCharacter);
+    }
+  }, [selectedCharacter]);
+
   const handleSendMessage = () => {
-    if (!messageInput.trim() || !currentRoomId || !selectedCharacter) return;
+    if (!messageInput.trim() || !currentRoomId || !currentChatCharacter) return;
     sendMessageMutation.mutate({
       content: messageInput.trim(),
-      characterId: selectedCharacter.id,
+      characterId: currentChatCharacter.id,
     });
   };
 
@@ -364,12 +383,12 @@ export default function ChatRoom() {
     );
   }
 
-  if (!selectedCharacter) {
+  if (!userCharacters || userCharacters.length === 0) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Card>
           <CardContent className="p-6">
-            <p className="text-muted-foreground">Nemáte vybranou žádnou postavu. Vyberte si postavu pro přístup k chatu.</p>
+            <p className="text-muted-foreground">Nemáte žádnou postavu. Pro přístup k chatu potřebujete alespoň jednu postavu.</p>
           </CardContent>
         </Card>
       </div>
@@ -487,18 +506,45 @@ export default function ChatRoom() {
 
         {/* Message Input */}
         <div className="border-t p-4">
-          <div style={{backgroundColor: 'red', padding: '10px', marginBottom: '10px'}}>
-            TESTOVACÍ TLAČÍTKA:
-            <button onClick={() => diceRollMutation.mutate()} style={{margin: '5px', padding: '5px'}}>KOSTKA</button>
-            <button onClick={() => coinFlipMutation.mutate()} style={{margin: '5px', padding: '5px'}}>MINCE</button>
+          {/* Character Selection */}
+          <div className="mb-3">
+            <div className="flex items-center gap-3">
+              <span className="text-sm font-medium">Píšu za:</span>
+              <Select 
+                value={currentChatCharacter?.id?.toString() || ""} 
+                onValueChange={(value) => {
+                  const character = userCharacters.find(c => c.id === parseInt(value));
+                  if (character) {
+                    setCurrentChatCharacter(character);
+                  }
+                }}
+              >
+                <SelectTrigger className="w-64">
+                  <SelectValue placeholder="Vyberte postavu">
+                    {currentChatCharacter && `${currentChatCharacter.firstName} ${currentChatCharacter.lastName}`}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                  {userCharacters
+                    .filter(char => !char.deathDate && !char.isSystem)
+                    .map((character) => (
+                      <SelectItem key={character.id} value={character.id.toString()}>
+                        {character.firstName} {character.middleName ? character.middleName + ' ' : ''}{character.lastName}
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
           
           <div className="flex gap-3 items-end">
-            {/* User Avatar */}
+            {/* Character Avatar */}
             <Avatar className="w-10 h-10 flex-shrink-0">
               <AvatarImage src="" />
               <AvatarFallback className="bg-secondary/50 text-secondary-foreground font-semibold">
-                {getCurrentUserInitials()}
+                {currentChatCharacter ? 
+                  `${currentChatCharacter.firstName.charAt(0)}${currentChatCharacter.lastName.charAt(0)}` : 
+                  getCurrentUserInitials()}
               </AvatarFallback>
             </Avatar>
             
@@ -530,7 +576,7 @@ export default function ChatRoom() {
             {/* Send Button */}
             <Button
               onClick={handleSendMessage}
-              disabled={!isMessageValid || !isConnected || sendMessageMutation.isPending}
+              disabled={!isMessageValid || !currentChatCharacter || sendMessageMutation.isPending}
               className="h-[60px] px-6"
             >
               <Send className="h-4 w-4" />

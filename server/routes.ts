@@ -384,11 +384,24 @@ export async function registerRoutes(app: Express): Promise<void> {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
+    if (!characterId || characterId === 0) {
+      return res.status(400).json({ message: "Character ID is required" });
+    }
+
     try {
+      // Verify that the character belongs to the user (unless admin)
+      if (req.user!.role !== 'admin') {
+        const userCharacters = await storage.getCharactersByUserId(req.user!.id);
+        const hasCharacter = userCharacters.some((char: any) => char.id === Number(characterId));
+        if (!hasCharacter) {
+          return res.status(403).json({ message: "Character does not belong to user" });
+        }
+      }
+
       // Use the storage layer for consistency
       const message = await storage.createChatMessage({
         roomId: Number(roomId),
-        characterId: Number(characterId) || 0,
+        characterId: Number(characterId),
         userId: req.user!.id,
         content: content.trim(),
         messageType: messageType || 'text'
