@@ -967,7 +967,14 @@ export default function ChatRoom() {
 
         {/* Messages */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {localMessages.map((message) => {
+          {localMessages.map((message, idx) => {
+            // DEBUG: Log every message and its character
+            console.log('[DEBUG][MSG]', idx, JSON.stringify(message, null, 2));
+            if (message && typeof message === 'object') {
+              console.log('[DEBUG][MSG-CHAR]', idx, JSON.stringify(message.character, null, 2));
+              console.log('[DEBUG][MSG-CHARID]', idx, message.characterId);
+              console.log('[DEBUG][MSG-MSGTYPE]', idx, message.messageType);
+            }
             // Bezpečné mapování postavy
             const safeCharacter = (message.character && typeof message.character === 'object' && typeof message.character.firstName === 'string')
               ? message.character

@@ -391,6 +391,14 @@ export class DatabaseStorage implements IStorage {
         .eq('room_id', roomId)
         .order('created_at', { ascending: true });
 
+      console.log('[DEBUG][getChatMessages] Raw DB data:', JSON.stringify(data, null, 2));
+      if (data) {
+        data.forEach((msg, idx) => {
+          console.log(`[DEBUG][getChatMessages][RAW][${idx}]`, JSON.stringify(msg, null, 2));
+          console.log(`[DEBUG][getChatMessages][RAW][${idx}] typeof characters:`, typeof msg.characters, 'Array:', Array.isArray(msg.characters));
+        });
+      }
+
       if (error) {
         console.error('Error fetching messages:', error);
         return [];
@@ -401,7 +409,7 @@ export class DatabaseStorage implements IStorage {
       }
 
       // Process all messages
-      const processedMessages = data.map(msg => {
+      const processedMessages = data.map((msg, idx) => {
         let character;
         if (msg.character_id === 0 || msg.message_type === 'narrator') {
           // Narrator message
@@ -414,7 +422,6 @@ export class DatabaseStorage implements IStorage {
             userId: 0
           };
         } else if (msg.characters) {
-          // msg.characters může být pole nebo objekt
           let charObj = null;
           if (Array.isArray(msg.characters)) {
             if (msg.characters.length > 0) {
@@ -423,6 +430,7 @@ export class DatabaseStorage implements IStorage {
           } else if (typeof msg.characters === 'object' && msg.characters !== null) {
             charObj = msg.characters;
           }
+          console.log(`[DEBUG][getChatMessages][${idx}] charObj:`, JSON.stringify(charObj, null, 2));
           if (
             charObj &&
             typeof charObj === 'object' &&
@@ -439,7 +447,6 @@ export class DatabaseStorage implements IStorage {
               userId: charObj.user_id
             };
           } else {
-            // Fallback pro chybějící data
             character = {
               id: msg.character_id,
               firstName: 'Neznámá',
@@ -450,7 +457,6 @@ export class DatabaseStorage implements IStorage {
             };
           }
         } else {
-          // Fallback pro chybějící data
           character = {
             id: msg.character_id,
             firstName: 'Neznámá',
@@ -460,8 +466,7 @@ export class DatabaseStorage implements IStorage {
             userId: 0
           };
         }
-
-        return {
+        const processed = {
           id: msg.id,
           roomId: msg.room_id,
           characterId: msg.character_id || 0,
@@ -470,6 +475,9 @@ export class DatabaseStorage implements IStorage {
           createdAt: msg.created_at,
           character
         };
+        console.log(`[DEBUG][getChatMessages][${idx}] msg.id=${msg.id} char_id=${msg.character_id} type=${msg.message_type}`);
+        console.log(`[DEBUG][getChatMessages][${idx}] processed:`, JSON.stringify(processed, null, 2));
+        return processed;
       });
 
       console.log(`[STORAGE] Retrieved ${processedMessages.length} total messages for room ${roomId}`);
@@ -507,12 +515,16 @@ export class DatabaseStorage implements IStorage {
         .select('*')
         .single();
 
+      console.log('[DEBUG][createChatMessage] Inserted:', JSON.stringify(insertData, null, 2));
+      if (insertData) {
+        console.log('[DEBUG][createChatMessage] typeof insertData:', typeof insertData);
+        console.log('[DEBUG][createChatMessage] insertData.character_id:', insertData.character_id);
+      }
+
       if (insertError) {
         console.error('Database error in createChatMessage:', insertError);
         throw insertError;
       }
-
-      console.log(`[STORAGE] Message inserted:`, insertData);
 
       // Handle narrator messages
       if (messageType === 'narrator' || !insertData.character_id) {
@@ -532,7 +544,7 @@ export class DatabaseStorage implements IStorage {
             userId: messageData.userId
           }
         };
-        console.log(`[STORAGE] Returning narrator message:`, message);
+        console.log(`[DEBUG][createChatMessage] narrator/system:`, JSON.stringify(message, null, 2));
         return message;
       }
 
@@ -542,6 +554,12 @@ export class DatabaseStorage implements IStorage {
         .select('id, first_name, middle_name, last_name, avatar, user_id')
         .eq('id', insertData.character_id)
         .single();
+
+      console.log('[DEBUG][createChatMessage] characterData:', JSON.stringify(characterData, null, 2));
+      if (characterData) {
+        console.log('[DEBUG][createChatMessage] typeof characterData:', typeof characterData);
+        console.log('[DEBUG][createChatMessage] characterData.id:', characterData.id);
+      }
 
       if (characterError) {
         console.error('Error fetching character for message:', characterError);
@@ -581,7 +599,7 @@ export class DatabaseStorage implements IStorage {
         }
       };
 
-      console.log(`[STORAGE] Returning complete message:`, message);
+      console.log(`[DEBUG][createChatMessage] complete:`, JSON.stringify(message, null, 2));
       return message;
     } catch (error) {
       console.error('Error creating chat message:', error);
