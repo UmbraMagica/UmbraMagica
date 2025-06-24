@@ -369,22 +369,7 @@ export class DatabaseStorage implements IStorage {
     try {
       const { data, error } = await supabase
         .from("messages")
-        .select(`
-          id,
-          room_id,
-          character_id,
-          content,
-          message_type,
-          created_at,
-          character (
-            id,
-            first_name,
-            middle_name,
-            last_name,
-            avatar,
-            user_id
-          )
-        `)
+        .select('*')
         .eq("room_id", roomId)
         .order("created_at", { ascending: true });
 
