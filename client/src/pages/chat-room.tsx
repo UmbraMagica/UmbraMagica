@@ -52,6 +52,8 @@ export default function ChatRoom() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { selectedCharacter, changeCharacter, userCharacters, isLoading: charactersLoading } = useSelectedCharacter();
   const [currentChatCharacter, setCurrentChatCharacter] = useState(selectedCharacter);
+  const [characters, setCharacters] = useState<any[]>(user?.characters || []);
+  const [canSendAsNarrator, setCanSendAsNarrator] = useState(false);
   
   const currentRoomId = roomId ? parseInt(roomId) : null;
   
@@ -348,6 +350,25 @@ export default function ChatRoom() {
     }
   }, [selectedCharacter, availableCharacters.length, changeCharacter]);
 
+  useEffect(() => {
+    setCharacters(user?.characters || []);
+    setCanSendAsNarrator(user?.role === 'admin' || user?.role === 'narrator');
+  }, [user]);
+
+  const handleSelectChange = (value: string) => {
+    if (value === 'narrator') {
+      changeCharacter({ id: 0, firstName: 'Vypravěč', lastName: '', isNarrator: true });
+    } else {
+      const char = characters.find((c) => c.id.toString() === value);
+      if (char) changeCharacter(char);
+    }
+  };
+
+  const availableOptions = [
+    ...(canSendAsNarrator ? [{ id: 0, firstName: 'Vypravěč', lastName: '', name: 'Vypravěč' }] : []),
+    ...characters.map((c) => ({ ...c, name: c.firstName + (c.lastName ? ' ' + c.lastName : '') })),
+  ];
+
   const handleSendMessage = () => {
     if (!messageInput.trim() || !currentRoomId || !currentChatCharacter) return;
     
@@ -510,7 +531,29 @@ export default function ChatRoom() {
               </div>
             </div>
             
+            {/* Výběr postavy/role */}
             <div className="flex items-center gap-2">
+              {availableOptions.length <= 1 ? (
+                <p className="text-sm text-muted-foreground">
+                  Píšeš jako: {availableOptions[0]?.name || "neznámá postava"}
+                </p>
+              ) : (
+                <Select onValueChange={handleSelectChange} value={selectedCharacter?.id?.toString() || ''}>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Vyber postavu" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {availableOptions.map((char) => (
+                      <SelectItem key={char.id} value={char.id.toString()}>
+                        {char.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            </div>
+            {/* Konec výběru postavy/role */}
+            <div className="flex items-center gap-2 ml-4">
               <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`} />
               <span className="text-sm text-muted-foreground">
                 {isConnected ? 'Připojeno' : 'Odpojeno'}
@@ -574,94 +617,6 @@ export default function ChatRoom() {
 
         {/* Message Input */}
         <div className="border-t p-4">
-          {/* Character Selection */}
-          <div className="mb-3">
-            <div className="flex items-center gap-3">
-              <span className="text-sm font-medium">Píšu za:</span>
-              {!charactersLoading ? (
-                allCharacterOptions.length > 1 ? (
-                  <Select 
-                    value={currentChatCharacter?.id === 'narrator' ? 'narrator' : currentChatCharacter?.id?.toString() || ""} 
-                    onValueChange={(value) => {
-                      if (value === 'narrator') {
-                        setCurrentChatCharacter({ id: 'narrator', firstName: 'Vypravěč', lastName: '', isNarrator: true });
-                      } else {
-                        const character = availableCharacters.find(c => c.id === parseInt(value));
-                        if (character) {
-                          setCurrentChatCharacter(character);
-                          changeCharacter(character);
-                        }
-                      }
-                    }}
-                  >
-                    <SelectTrigger className="w-64">
-                      <SelectValue>
-                        {currentChatCharacter?.id === 'narrator' ? 'Vypravěč' :
-                         currentChatCharacter ? 
-                        `${currentChatCharacter.firstName} ${currentChatCharacter.lastName}` : 
-                        "Vyberte postavu"}
-                      </SelectValue>
-                    </SelectTrigger>
-                    <SelectContent>
-                      {availableCharacters.map((character) => (
-                        <SelectItem key={character.id} value={character.id.toString()}>
-                          {character.firstName} {character.middleName ? `${character.middleName} ` : ''}{character.lastName}
-                        </SelectItem>
-                      ))}
-                      {canSendAsNarrator && (
-                        <SelectItem value="narrator">Vypravěč</SelectItem>
-                      )}
-                    </SelectContent>
-                  </Select>
-                ) : availableCharacters.length === 1 && !canSendAsNarrator ? (
-                  <span className="text-sm font-medium text-primary">
-                    {availableCharacters[0].firstName} {availableCharacters[0].lastName}
-                  </span>
-                ) : availableCharacters.length === 0 ? (
-                  <span className="text-sm font-medium text-red-500">
-                    Žádné postavy k dispozici
-                  </span>
-                ) : (
-                  <Select 
-                    value={currentChatCharacter?.id === 'narrator' ? 'narrator' : currentChatCharacter?.id?.toString() || ""} 
-                    onValueChange={(value) => {
-                      if (value === 'narrator') {
-                        setCurrentChatCharacter({ id: 'narrator', firstName: 'Vypravěč', lastName: '', isNarrator: true });
-                      } else {
-                        const character = availableCharacters.find(c => c.id === parseInt(value));
-                        if (character) {
-                          setCurrentChatCharacter(character);
-                          changeCharacter(character);
-                        }
-                      }
-                    }}
-                  >
-                    <SelectTrigger className="w-64">
-                      <SelectValue>
-                        {currentChatCharacter?.id === 'narrator' ? 'Vypravěč' :
-                         currentChatCharacter ? 
-                        `${currentChatCharacter.firstName} ${currentChatCharacter.lastName}` : 
-                        "Vyberte postavu"}
-                      </SelectValue>
-                    </SelectTrigger>
-                    <SelectContent>
-                      {availableCharacters.map((character) => (
-                        <SelectItem key={character.id} value={character.id.toString()}>
-                          {character.firstName} {character.middleName ? `${character.middleName} ` : ''}{character.lastName}
-                        </SelectItem>
-                      ))}
-                      {canSendAsNarrator && (
-                        <SelectItem value="narrator">Vypravěč</SelectItem>
-                      )}
-                    </SelectContent>
-                  </Select>
-                )
-              ) : (
-                <span className="text-sm text-muted-foreground">Načítání postav...</span>
-              )}
-            </div>
-          </div>
-          
           <div className="flex gap-3 items-end">
             {/* Character Avatar */}
             <Avatar className="w-10 h-10 flex-shrink-0">
