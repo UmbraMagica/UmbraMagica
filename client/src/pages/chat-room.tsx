@@ -596,6 +596,12 @@ export default function ChatRoom() {
     return format(new Date(dateString), "dd.MM.yyyy HH:mm");
   };
 
+  useEffect(() => {
+    if (user && userCharacters.length === 0 && !canSendAsNarrator) {
+      setLocation('/');
+    }
+  }, [user, userCharacters, canSendAsNarrator, setLocation]);
+
   // Loading states
   if (authLoading || roomsLoading) {
     return (
@@ -623,22 +629,7 @@ export default function ChatRoom() {
   }
 
   if (userCharacters.length === 0 && !canSendAsNarrator) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Card>
-          <CardContent className="p-6">
-            <p className="text-muted-foreground">Nemáte žádnou postavu. Pro přístup k chatu potřebujete alespoň jednu postavu.</p>
-            <div className="mt-4 text-xs text-muted-foreground">
-              <p>Debug info:</p>
-              <p>Raw characters count: {userCharactersRaw.length}</p>
-              <p>Filtered characters count: {userCharacters.length}</p>
-              <p>User ID: {user?.id}</p>
-              <p>Can narrate: {canSendAsNarrator ? 'Yes' : 'No'}</p>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
+    return null;
   }
 
   if (!currentRoom) {
