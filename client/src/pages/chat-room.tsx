@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams, useLocation } from "wouter";
@@ -40,6 +41,33 @@ const MAX_MESSAGE_LENGTH = 5000;
 const MIN_MESSAGE_LENGTH = 1;
 const API_URL = import.meta.env.VITE_API_URL || '';
 
+// Helper function to validate character object
+function isValidCharacter(char: any): boolean {
+  return char && 
+         typeof char === 'object' && 
+         typeof char.id === 'number' && 
+         typeof char.firstName === 'string' && 
+         char.firstName.trim() !== '';
+}
+
+// Helper function to safely get character name
+function getCharacterName(character: any): string {
+  if (!isValidCharacter(character)) {
+    return 'Neznámá postava';
+  }
+  return `${character.firstName}${character.middleName ? ` ${character.middleName}` : ''} ${character.lastName || ''}`.trim();
+}
+
+// Helper function to safely get character initials
+function getCharacterInitials(character: any): string {
+  if (!isValidCharacter(character)) {
+    return 'N';
+  }
+  const firstInitial = character.firstName?.charAt(0) || 'N';
+  const lastInitial = character.lastName?.charAt(0) || '';
+  return `${firstInitial}${lastInitial}`;
+}
+
 export default function ChatRoom() {
   const { roomId } = useParams<{ roomId: string }>();
   const [, setLocation] = useLocation();
@@ -54,10 +82,10 @@ export default function ChatRoom() {
 
   const currentRoomId = roomId ? parseInt(roomId) : null;
 
-  // Debug user data
-  console.log("User data:", user);
-  console.log("User characters from query:", userCharacters);
-  console.log("Selected character:", selectedCharacter);
+  // Debug user data with safe logging
+  console.log("User data:", user ? { id: user.id, username: user.username, role: user.role } : null);
+  console.log("User characters from query:", Array.isArray(userCharacters) ? userCharacters.length : 0);
+  console.log("Selected character:", selectedCharacter ? { id: selectedCharacter.id, firstName: selectedCharacter.firstName } : null);
 
   // Fetch current room info
   const { data: rooms = [] } = useQuery<ChatRoom[]>({
@@ -263,7 +291,6 @@ export default function ChatRoom() {
       return;
     }
 
-    // Ensure we have a valid token before attempting connection
     try {
       const wsUrl = `${import.meta.env.VITE_WS_URL || 'wss://umbra-dev.onrender.com'}/ws?token=${encodeURIComponent(token)}`;
       console.log('Connecting to WebSocket:', wsUrl);
@@ -281,7 +308,6 @@ export default function ChatRoom() {
           const data = JSON.parse(event.data);
           console.log('WebSocket zpráva:', data);
           
-          // Pokud je to nová zpráva, invaliduj query cache
           if (data.type === 'new_message') {
             queryClient.invalidateQueries({ 
               queryKey: ["/api/chat/rooms", currentRoomId, "messages"] 
@@ -310,7 +336,7 @@ export default function ChatRoom() {
     } catch (error) {
       console.error('Failed to create WebSocket connection:', error);
     }
-  }, [user, roomId]);
+  }, [user, roomId, currentRoomId, queryClient]);
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -320,10 +346,7 @@ export default function ChatRoom() {
   // Filter available characters with proper validation
   const availableCharacters = Array.isArray(userCharacters) 
     ? userCharacters.filter(char => 
-        char && 
-        typeof char === 'object' && 
-        typeof char.firstName === 'string' && 
-        char.firstName.trim() !== '' &&
+        isValidCharacter(char) &&
         !char.deathDate && 
         !char.isSystem
       )
@@ -331,72 +354,39 @@ export default function ChatRoom() {
 
   // Create all available options (characters + narrator if allowed)
   const allCharacterOptions = [
-    ...availableCharacters.filter(char => char && char.firstName),
-    ...(canSendAsNarrator ? [{ id: 'narrator', firstName: 'Vypravěč', lastName: '', isNarrator: true }] : [])
+    ...availableCharacters.filter(char => isValidCharacter(char)),
+    ...(canSendAsNarrator ? [{ id: 0, firstName: 'Vypravěč', lastName: '', isNarrator: true }] : [])
   ];
 
   // Update current chat character when selectedCharacter changes
   useEffect(() => {
     console.log("Character effect - selectedCharacter:", selectedCharacter, "availableCharacters:", availableCharacters.length);
 
-    if (selectedCharacter) {
-      changeCharacter(selectedCharacter);
+    if (selectedCharacter && isValidCharacter(selectedCharacter)) {
+      // Selected character is valid, keep it
     } else if (availableCharacters.length > 0) {
       // Auto-select first available character if none selected
       const firstChar = availableCharacters[0];
-      console.log("Auto-selecting first character:", firstChar);
-      changeCharacter(firstChar);
+      if (isValidCharacter(firstChar)) {
+        console.log("Auto-selecting first character:", firstChar);
+        changeCharacter(firstChar);
+      }
     } else {
       changeCharacter(null);
     }
   }, [selectedCharacter, availableCharacters.length, changeCharacter]);
-
-  // 1. Výběr postavy per chat/okno
-  useEffect(() => {
-    if (selectedCharacter && roomId) {
-      localStorage.setItem(`selectedCharacterId_${roomId}`, selectedCharacter.id.toString());
-    }
-  }, [selectedCharacter, roomId]);
-
-  useEffect(() => {
-    if (roomId && userCharacters.length > 0) {
-      const savedId = localStorage.getItem(`selectedCharacterId_${roomId}`);
-      let char = null;
-      if (savedId) {
-        char = userCharacters.find((c) => c.id === parseInt(savedId));
-      }
-      if (!char) {
-        char = userCharacters.find((c) => c.isActive) || userCharacters[0];
-      }
-      if (char && char.id !== selectedCharacter?.id) {
-        changeCharacter(char);
-      }
-    }
-  }, [roomId, userCharacters, changeCharacter]);
-
-  // 3. Kouzla pouze pro postavy s hůlkou
-  const characterHasWand = useMemo(() => {
-    if (!selectedCharacter) return false;
-    const char = userCharacters.find((c) => c.id === selectedCharacter.id);
-    return !!char?.wandId; // nebo jiný příznak
-  }, [selectedCharacter, userCharacters]);
-
-  // 4. Výběr postavy/vypravěče
-  const availableOptions = useMemo(() => [
-    ...(canSendAsNarrator ? [{ id: 0, firstName: 'Vypravěč', lastName: '', name: 'Vypravěč' }] : []),
-    ...userCharacters.map((c) => ({ ...c, name: c.firstName + (c.lastName ? ' ' + c.lastName : '') })),
-  ], [canSendAsNarrator, userCharacters]);
 
   const handleSelectChange = (value: string) => {
     if (value === '0') {
       changeCharacter({ id: 0, firstName: 'Vypravěč', lastName: '', name: 'Vypravěč' });
     } else {
       const char = userCharacters.find((c) => c.id === parseInt(value));
-      if (char) changeCharacter(char);
+      if (char && isValidCharacter(char)) {
+        changeCharacter(char);
+      }
     }
   };
 
-  // 5. Odesílání zprávy
   const handleSendMessage = () => {
     if (!messageInput.trim() || !currentRoomId || !selectedCharacter) return;
     
@@ -431,30 +421,16 @@ export default function ChatRoom() {
     }
   };
 
-  // 6. Změna postavy u zprávy (editace)
-  // U zprávy, kterou uživatel sám odeslal a je mladší než 5 minut:
-  // {canEditMessage(message) && <Button onClick={() => openChangeCharacterDialog(message)}>Změnit postavu</Button>}
-
   const formatMessageTime = (dateString: string) => {
     return format(new Date(dateString), "dd.MM.yyyy HH:mm");
-  };
-
-  const getCharacterFullName = (character: ChatMessage['character']) => {
-    return `${character.firstName}${character.middleName ? ` ${character.middleName}` : ''} ${character.lastName}`;
-  };
-
-  const getCharacterInitials = (character: ChatMessage['character']) => {
-    const firstInitial = character.firstName.charAt(0);
-    const lastInitial = character.lastName.charAt(0);
-    return `${firstInitial}${lastInitial}`;
   };
 
   const getCurrentUserInitials = () => {
     try {
       if (!user?.characters?.[0]) return "U";
       const character = user.characters[0];
-      if (!character?.firstName || !character?.lastName) return "U";
-      return `${character.firstName.charAt(0)}${character.lastName.charAt(0)}`;
+      if (!isValidCharacter(character)) return "U";
+      return `${character.firstName.charAt(0)}${character.lastName?.charAt(0) || ''}`;
     } catch (error) {
       console.error("Error getting user initials:", error);
       return "U";
@@ -555,22 +531,17 @@ export default function ChatRoom() {
                     <SelectItem key={0} value="0">Vypravěč</SelectItem>
                   )}
                   {availableCharacters
-                    .filter(char => 
-                      char && 
-                      typeof char === 'object' && 
-                      typeof char.firstName === 'string' && 
-                      char.firstName.trim() !== ''
-                    )
+                    .filter(char => isValidCharacter(char))
                     .map((char) => (
                       <SelectItem key={char.id} value={char.id.toString()}>
-                        {char.firstName + (char.lastName ? ' ' + char.lastName : '')}
+                        {getCharacterName(char)}
                       </SelectItem>
                     ))
                   }
                 </SelectContent>
               </Select>
             </div>
-            {/* Konec výběru postavy/role */}
+
             <div className="flex items-center gap-2 ml-4">
               <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`} />
               <span className="text-sm text-muted-foreground">
@@ -617,7 +588,7 @@ export default function ChatRoom() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-baseline gap-2 mb-1">
                     <span className="font-semibold text-foreground">
-                      {getCharacterFullName(message.character)}
+                      {getCharacterName(message.character)}
                     </span>
                     <span className="text-xs text-muted-foreground">
                       {formatMessageTime(message.createdAt)}
@@ -640,11 +611,11 @@ export default function ChatRoom() {
             <Avatar className="w-10 h-10 flex-shrink-0">
               <AvatarImage src="" />
               <AvatarFallback className={`font-semibold ${
-                selectedCharacter?.id === 'narrator' 
+                selectedCharacter?.id === 0 || selectedCharacter?.id === 'narrator'
                   ? `text-white` 
                   : 'bg-secondary/50 text-secondary-foreground'
               }`} style={{
-                backgroundColor: selectedCharacter?.id === 'narrator' ? (
+                backgroundColor: selectedCharacter?.id === 0 || selectedCharacter?.id === 'narrator' ? (
                   user?.narratorColor === 'yellow' ? '#fbbf24' :
                   user?.narratorColor === 'red' ? '#ef4444' :
                   user?.narratorColor === 'blue' ? '#3b82f6' :
@@ -653,9 +624,9 @@ export default function ChatRoom() {
                   '#8b5cf6'
                 ) : undefined
               }}>
-                {selectedCharacter?.id === 'narrator' ? 'V' :
-                 selectedCharacter ? 
-                  `${selectedCharacter.firstName.charAt(0)}${selectedCharacter.lastName.charAt(0)}` : 
+                {selectedCharacter?.id === 0 || selectedCharacter?.id === 'narrator' ? 'V' :
+                 selectedCharacter && isValidCharacter(selectedCharacter) ? 
+                  getCharacterInitials(selectedCharacter) : 
                   getCurrentUserInitials()}
               </AvatarFallback>
             </Avatar>
@@ -666,7 +637,12 @@ export default function ChatRoom() {
                 placeholder="Napište zprávu..."
                 value={messageInput}
                 onChange={(e) => setMessageInput(e.target.value)}
-                onKeyDown={handleSendMessage}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSendMessage();
+                  }
+                }}
                 className="min-h-[60px] max-h-[120px] resize-none"
                 disabled={!isConnected}
                 maxLength={MAX_MESSAGE_LENGTH}
@@ -683,6 +659,16 @@ export default function ChatRoom() {
                     }
                   </span>
                 )}
+              </div>
+              <div className="flex justify-end mt-2">
+                <Button
+                  onClick={handleSendMessage}
+                  disabled={!isMessageValid || !isConnected || !selectedCharacter}
+                  size="sm"
+                >
+                  <Send className="h-4 w-4 mr-2" />
+                  Odeslat
+                </Button>
               </div>
             </div>
           </div>

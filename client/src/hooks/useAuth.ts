@@ -1,3 +1,4 @@
+
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest, getQueryFn, getAuthToken } from "@/lib/queryClient";
 import { useLocation } from "wouter";
@@ -15,9 +16,45 @@ interface Character {
   lastName: string;
   birthDate: string;
   isActive: boolean;
+  deathDate?: string;
+  isSystem?: boolean;
 }
 
 const API_URL = import.meta.env.VITE_API_URL || '';
+
+// Helper function to validate character object
+function isValidCharacter(char: any): char is Character {
+  return char && 
+         typeof char === 'object' && 
+         typeof char.id === 'number' && 
+         typeof char.firstName === 'string' && 
+         char.firstName.trim() !== '';
+}
+
+// Helper function to safely process characters
+function processCharacters(charactersData: any): Character[] {
+  try {
+    let charactersArray: any[] = [];
+    
+    if (Array.isArray(charactersData)) {
+      charactersArray = charactersData;
+    } else if (charactersData && Array.isArray(charactersData.characters)) {
+      charactersArray = charactersData.characters;
+    } else if (charactersData && typeof charactersData === 'object') {
+      // Try to find any array in the object
+      const values = Object.values(charactersData);
+      const arrayValue = values.find(val => Array.isArray(val));
+      if (arrayValue) {
+        charactersArray = arrayValue as any[];
+      }
+    }
+
+    return charactersArray.filter(isValidCharacter);
+  } catch (error) {
+    console.error('Error processing characters data:', error);
+    return [];
+  }
+}
 
 export function useAuth() {
   const queryClient = useQueryClient();
@@ -29,64 +66,70 @@ export function useAuth() {
       const token = getAuthToken();
       if (!token) return null;
 
-      const response = await fetch(`${API_URL}/api/auth/user`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+      try {
+        const response = await fetch(`${API_URL}/api/auth/user`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (response.status === 401 || response.status === 404) {
+          localStorage.removeItem('jwt_token');
+          return null;
         }
-      });
 
-      if (response.status === 401 || response.status === 404) {
-        localStorage.removeItem('jwt_token');
-        return null;
-      }
+        if (!response.ok) {
+          console.error('Failed to fetch user:', response.status, response.statusText);
+          throw new Error('Failed to fetch user');
+        }
 
-      if (!response.ok) {
-        console.error('Failed to fetch user:', response.status, response.statusText);
-        throw new Error('Failed to fetch user');
-      }
+        const userData = await response.json();
+        console.log('[useAuth] Loaded user data:', userData ? { id: userData.id, username: userData.username, role: userData.role } : null);
 
-      const userData = await response.json();
-      console.log('[useAuth] Loaded user data:', userData);
+        if (!userData) return null;
 
-      // Pokud user nemá characters property, načti je zvlášť
-      if (userData && !userData.characters) {
-        try {
-          const charactersResponse = await fetch(`${API_URL}/api/characters`, {
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json'
+        // Pokud user nemá characters property, načti je zvlášť
+        if (!userData.characters) {
+          try {
+            const charactersResponse = await fetch(`${API_URL}/api/characters`, {
+              headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+              }
+            });
+            
+            if (charactersResponse.ok) {
+              const charactersData = await charactersResponse.json();
+              userData.characters = processCharacters(charactersData);
+            } else {
+              console.warn('Failed to fetch characters separately');
+              userData.characters = [];
             }
-          });
-          if (charactersResponse.ok) {
-            const charactersData = await charactersResponse.json();
-            // API může vrátit buď pole nebo objekt s characters property
-            userData.characters = Array.isArray(charactersData) ? charactersData : (charactersData.characters || []);
-          } else {
+          } catch (error) {
+            console.error('[useAuth] Failed to fetch characters:', error);
             userData.characters = [];
           }
-        } catch (error) {
-          console.error('[useAuth] Failed to fetch characters:', error);
-          userData.characters = [];
+        } else {
+          // Process existing characters
+          userData.characters = processCharacters(userData.characters);
         }
+
+        return userData;
+      } catch (error) {
+        console.error('[useAuth] Query error:', error);
+        throw error;
       }
-
-      // Zajisti, že characters je vždy pole a obsahuje pouze validní objekty
-      userData.characters = Array.isArray(userData.characters) 
-        ? userData.characters.filter(char => 
-            char && 
-            typeof char === 'object' && 
-            typeof char.id === 'number' && 
-            typeof char.firstName === 'string' && 
-            char.firstName.trim() !== ''
-          )
-        : [];
-
-      return userData;
     },
-    retry: false,
+    retry: (failureCount, error) => {
+      // Don't retry on authentication errors
+      if (error instanceof Error && error.message.includes('401')) {
+        return false;
+      }
+      return failureCount < 2;
+    },
     staleTime: 5 * 60 * 1000, // 5 minutes
-    enabled: !!getAuthToken(), // dotazuj jen pokud je token
+    enabled: !!getAuthToken(),
   });
 
   const loginMutation = useMutation({
@@ -99,7 +142,7 @@ export function useAuth() {
       return data.user || null;
     },
     onSuccess: (data) => {
-      queryClient.setQueryData([`${API_URL}/api/auth/user`], data);
+      queryClient.setQueryData(['/api/auth/user'], data);
       setLocation("/");
     },
   });
@@ -107,7 +150,7 @@ export function useAuth() {
   const logoutMutation = useMutation({
     mutationFn: async () => {
       localStorage.removeItem('jwt_token');
-      queryClient.setQueryData([`${API_URL}/api/auth/user`], null);
+      queryClient.setQueryData(['/api/auth/user'], null);
     },
     onSuccess: () => {
       queryClient.removeQueries();
@@ -131,7 +174,7 @@ export function useAuth() {
       return response.json();
     },
     onSuccess: (data) => {
-      queryClient.setQueryData([`${API_URL}/api/auth/user`], data);
+      queryClient.setQueryData(['/api/auth/user'], data);
       queryClient.invalidateQueries();
       setLocation("/");
     },

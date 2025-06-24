@@ -1,3 +1,4 @@
+
 import type { Express } from "express";
 import { createServer } from "http";
 import { WebSocketServer } from "ws";
@@ -55,6 +56,28 @@ function requireAdmin(req: any, res: any, next: any) {
       return res.status(403).json({ message: "Admin access required" });
     }
     next();
+  });
+}
+
+// Helper function to validate and filter characters
+function validateAndFilterCharacters(characters: any[]): any[] {
+  if (!Array.isArray(characters)) {
+    console.warn('Characters is not an array:', typeof characters);
+    return [];
+  }
+  
+  return characters.filter(char => {
+    const isValid = char && 
+                   typeof char === 'object' && 
+                   typeof char.id === 'number' && 
+                   typeof char.firstName === 'string' && 
+                   char.firstName.trim() !== '';
+    
+    if (!isValid) {
+      console.warn('Invalid character filtered out:', char);
+    }
+    
+    return isValid;
   });
 }
 
@@ -145,6 +168,7 @@ export async function registerRoutes(app: Express): Promise<void> {
       if (!user) return res.status(401).json({ message: "Invalid credentials" });
       const token = generateJwt(user);
       const characters = await storage.getCharactersByUserId(user.id);
+      const validCharacters = validateAndFilterCharacters(characters);
       res.json({
         token,
         user: {
@@ -152,7 +176,7 @@ export async function registerRoutes(app: Express): Promise<void> {
           username: user.username,
           email: user.email,
           role: user.role,
-          characters,
+          characters: validCharacters,
         }
       });
     } catch (error) {
@@ -221,21 +245,50 @@ export async function registerRoutes(app: Express): Promise<void> {
 
   // GET USER
   app.get("/api/auth/user", requireAuth, async (req, res) => {
-    const user = await storage.getUser(req.user!.id);
-    if (!user) return res.status(404).json({ message: "User not found" });
-    const characters = await storage.getCharactersByUserId(user.id);
-    res.json({
-      id: user.id,
-      username: user.username,
-      email: user.email,
-      role: user.role,
-      canNarrate: user.canNarrate,
-      characterOrder: user.characterOrder ? JSON.parse(user.characterOrder) : null,
-      highlightWords: user.highlightWords,
-      highlightColor: user.highlightColor,
-      narratorColor: user.narratorColor,
-      characters,
-    });
+    try {
+      const user = await storage.getUser(req.user!.id);
+      if (!user) return res.status(404).json({ message: "User not found" });
+      
+      const characters = await storage.getCharactersByUserId(user.id);
+      const validCharacters = validateAndFilterCharacters(characters);
+      
+      res.json({
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        canNarrate: user.canNarrate,
+        characterOrder: user.characterOrder ? JSON.parse(user.characterOrder) : null,
+        highlightWords: user.highlightWords,
+        highlightColor: user.highlightColor,
+        narratorColor: user.narratorColor,
+        characters: validCharacters,
+      });
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
+
+  // Endpoint pro seznam všech postav (HLAVNÍ ENDPOINT)
+  app.get("/api/characters", requireAuth, async (req, res) => {
+    try {
+      let characters;
+      if (req.user!.role === 'admin') {
+        characters = await storage.getAllCharacters();
+      } else {
+        characters = await storage.getCharactersByUserId(req.user!.id);
+      }
+      
+      const validCharacters = validateAndFilterCharacters(characters);
+      console.log(`[CHARACTERS] User ${req.user!.username} requested characters, returning ${validCharacters.length} valid characters`);
+      
+      // Always return in { characters: [] } format for consistency
+      res.json({ characters: validCharacters });
+    } catch (error) {
+      console.error("Chyba při načítání postav:", error);
+      res.status(500).json({ message: "Chyba serveru", error: error?.message });
+    }
   });
 
   // Soví pošta: počet nepřečtených zpráv pro postavu
@@ -324,17 +377,7 @@ export async function registerRoutes(app: Express): Promise<void> {
         characters = await storage.getCharactersByUserId(req.user!.id);
       }
       
-      // Filter out invalid characters on server side
-      const validCharacters = Array.isArray(characters) 
-        ? characters.filter(char => 
-            char && 
-            typeof char === 'object' && 
-            typeof char.id === 'number' && 
-            typeof char.firstName === 'string' && 
-            char.firstName.trim() !== ''
-          )
-        : [];
-      
+      const validCharacters = validateAndFilterCharacters(characters);
       res.json(validCharacters);
     } catch (error) {
       console.error("Error fetching characters:", error);
@@ -702,34 +745,6 @@ export async function registerRoutes(app: Express): Promise<void> {
     }
   });
 
-  // Endpoint pro seznam všech postav (bez parametrů)
-  app.get("/api/characters", requireAuth, async (req, res) => {
-    try {
-      let characters;
-      if (req.user!.role === 'admin') {
-        characters = await storage.getAllCharacters();
-      } else {
-        characters = await storage.getCharactersByUserId(req.user!.id);
-      }
-      
-      // Filter out invalid characters on server side
-      const validCharacters = Array.isArray(characters) 
-        ? characters.filter(char => 
-            char && 
-            typeof char === 'object' && 
-            typeof char.id === 'number' && 
-            typeof char.firstName === 'string' && 
-            char.firstName.trim() !== ''
-          )
-        : [];
-      
-      res.json({ characters: validCharacters });
-    } catch (error) {
-      console.error("Chyba při načítání postav:", error);
-      res.status(500).json({ message: "Chyba serveru" });
-    }
-  });
-
   // Aktualizace historie postavy
   app.put("/api/characters/:id/history", requireAuth, async (req, res) => {
     const characterId = Number(req.params.id);
@@ -1064,22 +1079,6 @@ export async function registerRoutes(app: Express): Promise<void> {
     }
   });
 
-  // Characters endpoint - hlavní endpoint pro načítání postav uživatele
-  app.get("/api/characters", requireAuth, async (req, res) => {
-    try {
-      if (req.user!.role === 'admin') {
-        const characters = await storage.getAllCharacters();
-        res.json(Array.isArray(characters) ? characters : []);
-      } else {
-        const characters = await storage.getCharactersByUserId(req.user!.id);
-        res.json(Array.isArray(characters) ? characters : []);
-      }
-    } catch (error) {
-      console.error("Error fetching user characters:", error);
-      res.status(500).json({ message: "Failed to fetch characters" });
-    }
-  });
-
   // Get all spells
   app.get("/api/spells", requireAuth, async (req, res) => {
     try {
@@ -1347,7 +1346,7 @@ export async function registerRoutes(app: Express): Promise<void> {
   });
 
   app.get("/api/owl-post/sent/:characterId", requireAuth, async (req, res) => {
-    const characterId =Number(req.params.characterId);
+    const characterId = Number(req.params.characterId);
     if (!characterId || isNaN(characterId)) {
       return res.status(400).json({ message: "Invalid characterId" });
     }
@@ -1669,7 +1668,4 @@ export async function registerRoutes(app: Express): Promise<void> {
       res.status(500).json({ error: error.message });
     }
   });
-  // ... další endpointy (např. /api/user/character-order, /api/user/highlight-words, atd.) ...
-  // Všude používej pouze req.user!.id a req.user!.role
-  // ŽÁDNÉ req.session, req.cookies, SessionData, debug endpointy na session/cookie!
 }

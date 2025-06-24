@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 
@@ -15,12 +16,30 @@ interface Character {
 interface SelectedCharacterContextType {
   selectedCharacter: Character | null;
   userCharacters: Character[];
-  changeCharacter: (char: Character) => void;
+  changeCharacter: (char: Character | null) => void;
   isLoading: boolean;
   canSendAsNarrator: boolean;
 }
 
 const SelectedCharacterContext = createContext<SelectedCharacterContextType | null>(null);
+
+// Helper function to validate character object
+function isValidCharacter(char: any): char is Character {
+  return char && 
+         typeof char === 'object' && 
+         typeof char.id === 'number' && 
+         typeof char.firstName === 'string' && 
+         char.firstName.trim() !== '';
+}
+
+// Helper function to filter and validate characters
+function filterValidCharacters(characters: any[]): Character[] {
+  if (!Array.isArray(characters)) {
+    return [];
+  }
+  
+  return characters.filter(isValidCharacter);
+}
 
 export function SelectedCharacterProvider({ children, roomId, canSendAsNarrator }: { children: React.ReactNode, roomId: string, canSendAsNarrator: boolean }) {
   const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(null);
@@ -35,77 +54,93 @@ export function SelectedCharacterProvider({ children, roomId, canSendAsNarrator 
         credentials: 'include',
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
+      
+      if (!res.ok) {
+        throw new Error('Failed to fetch characters');
+      }
+      
       return await res.json();
     }
   });
-  const userCharacters: Character[] = Array.isArray(userCharactersRaw.characters)
-    ? userCharactersRaw.characters.filter(
-        (c) => c && 
-               typeof c === 'object' && 
-               typeof c.id === 'number' && 
-               typeof c.firstName === 'string' && 
-               c.firstName.trim() !== ''
-      )
-    : [];
+
+  // Process and validate characters
+  const userCharacters: Character[] = (() => {
+    try {
+      // Handle different response formats
+      let charactersArray: any[] = [];
+      
+      if (Array.isArray(userCharactersRaw)) {
+        charactersArray = userCharactersRaw;
+      } else if (userCharactersRaw && Array.isArray(userCharactersRaw.characters)) {
+        charactersArray = userCharactersRaw.characters;
+      } else if (userCharactersRaw && typeof userCharactersRaw === 'object') {
+        // If it's an object but not in expected format, try to extract characters
+        charactersArray = Object.values(userCharactersRaw).filter(Array.isArray).flat();
+      }
+
+      return filterValidCharacters(charactersArray);
+    } catch (error) {
+      console.error('Error processing characters:', error);
+      return [];
+    }
+  })();
 
   useEffect(() => {
     if (!roomId) return;
     
-    // Validate userCharacters array and filter out invalid entries
-    const validCharacters = Array.isArray(userCharacters) 
-      ? userCharacters.filter((c: Character) => 
-          c && 
-          typeof c === 'object' && 
-          typeof c.id === 'number' && 
-          typeof c.firstName === 'string' && 
-          c.firstName.trim() !== ''
-        )
-      : [];
+    // Get available characters (alive, non-system)
+    const availableChars = userCharacters.filter((c: Character) => 
+      isValidCharacter(c) && !c.deathDate && !c.isSystem
+    );
     
-    if (validCharacters.length > 0) {
-      const availableChars = validCharacters.filter((c: Character) => !c.deathDate && !c.isSystem);
-      let options = [...availableChars];
-      if (canSendAsNarrator) {
-        options = [{ id: 0, firstName: 'Vypravěč', lastName: '', name: 'Vypravěč' }, ...options];
-      }
-      if (options.length === 0) {
-        setSelectedCharacter(null);
-        localStorage.removeItem(`selectedCharacterId_${roomId}`);
-        return;
-      }
-      const savedId = localStorage.getItem(`selectedCharacterId_${roomId}`);
-      let char: Character | null = null;
-      if (savedId) {
-        if (savedId === '0' && canSendAsNarrator) {
-          char = { id: 0, firstName: 'Vypravěč', lastName: '', name: 'Vypravěč' };
-        } else {
-          char = options.find((c: Character) => c && c.id === parseInt(savedId)) || null;
-        }
-      }
-      if (!char) {
-        char = options.find((c: Character) => c && c.isActive) || options[0] || null;
-      }
-      if (char && char.id !== selectedCharacter?.id) {
-        setSelectedCharacter(char);
-        localStorage.setItem(`selectedCharacterId_${roomId}`, char.id.toString());
-      }
-    } else if (!isLoading) {
+    // Create all options including narrator if allowed
+    let allOptions: Character[] = [...availableChars];
+    if (canSendAsNarrator) {
+      allOptions = [{ id: 0, firstName: 'Vypravěč', lastName: '', name: 'Vypravěč' }, ...allOptions];
+    }
+    
+    if (allOptions.length === 0) {
       setSelectedCharacter(null);
       if (roomId) localStorage.removeItem(`selectedCharacterId_${roomId}`);
+      return;
     }
-  }, [userCharacters, isLoading, roomId, canSendAsNarrator]);
+
+    // Try to restore saved character or select default
+    const savedId = localStorage.getItem(`selectedCharacterId_${roomId}`);
+    let targetCharacter: Character | null = null;
+
+    if (savedId) {
+      if (savedId === '0' && canSendAsNarrator) {
+        targetCharacter = { id: 0, firstName: 'Vypravěč', lastName: '', name: 'Vypravěč' };
+      } else {
+        targetCharacter = allOptions.find((c: Character) => c.id === parseInt(savedId)) || null;
+      }
+    }
+
+    // If no saved character or invalid, select first active or first available
+    if (!targetCharacter) {
+      targetCharacter = allOptions.find((c: Character) => c.isActive) || allOptions[0] || null;
+    }
+
+    // Only update if different from current
+    if (targetCharacter && (!selectedCharacter || targetCharacter.id !== selectedCharacter.id)) {
+      console.log('Setting selected character:', targetCharacter.firstName);
+      setSelectedCharacter(targetCharacter);
+      if (roomId) localStorage.setItem(`selectedCharacterId_${roomId}`, targetCharacter.id.toString());
+    }
+  }, [userCharacters, isLoading, roomId, canSendAsNarrator, selectedCharacter]);
 
   const changeCharacter = (char: Character | null) => {
     // Validate character data before setting
-    if (char && (!char.id || !char.firstName)) {
+    if (char && !isValidCharacter(char)) {
       console.error('Invalid character data:', char);
       return;
     }
 
     setSelectedCharacter(char);
-    if (char) {
+    if (char && roomId) {
       localStorage.setItem(`selectedCharacterId_${roomId}`, char.id.toString());
-    } else {
+    } else if (roomId) {
       localStorage.removeItem(`selectedCharacterId_${roomId}`);
     }
   };
