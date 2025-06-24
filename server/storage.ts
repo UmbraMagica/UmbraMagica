@@ -521,7 +521,9 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createCharacter(insertCharacter: InsertCharacter): Promise<Character> {
-    const { data, error } = await supabase.from('characters').insert([{ ...insertCharacter, updatedAt: new Date() }]).select().single();
+    // Odstraním id, pokud je v insertCharacter
+    const { id, ...characterData } = insertCharacter;
+    const { data, error } = await supabase.from('characters').insert([{ ...characterData, updated_at: new Date() }]).select().single();
     if (error) throw new Error(error.message);
     return data;
   }
