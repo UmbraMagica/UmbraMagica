@@ -128,10 +128,25 @@ export default function ChatRoom() {
   const userCharactersRaw = user?.characters || [];
   const charactersLoading = authLoading;
 
+  console.log('[ChatRoom] FULL DEBUG - User characters raw:', userCharactersRaw);
+  console.log('[ChatRoom] FULL DEBUG - User characters count:', userCharactersRaw.length);
+  console.log('[ChatRoom] FULL DEBUG - Current user ID:', user?.id);
+
   // Process user characters - only alive, non-system characters that belong to the current user
   const userCharacters = Array.isArray(userCharactersRaw) ? 
     userCharactersRaw.filter((char) => {
+      console.log('[ChatRoom] FULL DEBUG - Processing character:', {
+        id: char.id,
+        firstName: char.firstName,
+        lastName: char.lastName,
+        userId: char.userId,
+        deathDate: char.deathDate,
+        isSystem: char.isSystem,
+        currentUserId: user?.id
+      });
+      
       if (!char || typeof char !== 'object') {
+        console.log('[ChatRoom] FULL DEBUG - Character invalid (not object)');
         return false;
       }
       
@@ -145,8 +160,22 @@ export default function ChatRoom() {
       // Even admin can only send messages as their own characters, not as other users' characters
       const belongsToUser = char.userId === user?.id;
       
-      return hasValidId && hasValidFirstName && isAlive && isNotSystem && belongsToUser;
+      const isValid = hasValidId && hasValidFirstName && isAlive && isNotSystem && belongsToUser;
+      
+      console.log('[ChatRoom] FULL DEBUG - Character validation:', {
+        hasValidId,
+        hasValidFirstName,
+        isAlive,
+        isNotSystem,
+        belongsToUser,
+        isValid
+      });
+      
+      return isValid;
     }) : [];
+
+  console.log('[ChatRoom] FULL DEBUG - Filtered user characters:', userCharacters);
+  console.log('[ChatRoom] FULL DEBUG - Filtered characters count:', userCharacters.length);
 
   // Fetch current room info
   const { data: rooms = [], isLoading: roomsLoading } = useQuery<ChatRoom[]>({
@@ -168,11 +197,19 @@ export default function ChatRoom() {
 
   // Auto-select first character when characters load, or enable narrator mode for admin without characters
   useEffect(() => {
+    console.log('[ChatRoom] useEffect - Character selection check:', {
+      selectedCharacter: selectedCharacter ? { id: selectedCharacter.id, name: getCharacterName(selectedCharacter) } : null,
+      userCharactersLength: userCharacters.length,
+      charactersLoading,
+      isNarratorMode,
+      userRole: user?.role
+    });
+
     if (!selectedCharacter && userCharacters.length > 0 && !charactersLoading && !isNarratorMode) {
-      console.log('Auto-selecting first character:', userCharacters[0]);
+      console.log('[ChatRoom] Auto-selecting first character:', userCharacters[0]);
       setSelectedCharacter(userCharacters[0]);
     } else if (!selectedCharacter && userCharacters.length === 0 && user?.role === 'admin' && !isNarratorMode) {
-      console.log('Admin has no own characters, enabling narrator mode');
+      console.log('[ChatRoom] Admin has no own characters, enabling narrator mode');
       setIsNarratorMode(true);
     }
   }, [userCharacters, selectedCharacter, charactersLoading, isNarratorMode, user?.role]);
@@ -632,6 +669,13 @@ export default function ChatRoom() {
         <Card>
           <CardContent className="p-6">
             <p className="text-muted-foreground">Nemáte žádnou postavu. Pro přístup k chatu potřebujete alespoň jednu postavu.</p>
+            <div className="mt-4 text-xs text-muted-foreground">
+              <p>Debug info:</p>
+              <p>Raw characters count: {userCharactersRaw.length}</p>
+              <p>Filtered characters count: {userCharacters.length}</p>
+              <p>User ID: {user?.id}</p>
+              <p>Can narrate: {canSendAsNarrator ? 'Yes' : 'No'}</p>
+            </div>
           </CardContent>
         </Card>
       </div>
