@@ -107,7 +107,6 @@ function getCharacterInitials(message: any): string {
 export default function ChatRoom() {
   const { roomId } = useParams<{ roomId: string }>();
   const [, setLocation] = useLocation();
-  const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [messageInput, setMessageInput] = useState("");
@@ -122,6 +121,7 @@ export default function ChatRoom() {
   const currentRoomId = roomId ? parseInt(roomId) : null;
 
   // Use characters from useAuth instead of separate query
+  const { user, isLoading } = useAuth();
   const userCharactersRaw = user?.characters || [];
   const charactersLoading = isLoading;
 
