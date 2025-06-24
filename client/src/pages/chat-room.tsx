@@ -125,7 +125,7 @@ export default function ChatRoom() {
   const userCharactersRaw = user?.characters || [];
   const charactersLoading = isLoading;
 
-  // Process user characters - only alive, non-system characters
+  // Process user characters - only alive, non-system characters that belong to the current user
   const userCharacters = Array.isArray(userCharactersRaw) ? 
     userCharactersRaw.filter((char) => {
       if (!char || typeof char !== 'object') {
@@ -138,7 +138,11 @@ export default function ChatRoom() {
       const isAlive = !char.deathDate;
       const isNotSystem = !char.isSystem;
       
-      return hasValidId && hasValidFirstName && isAlive && isNotSystem;
+      // IMPORTANT: Only include characters that belong to the current user
+      // Admin can see all characters in user.characters, but can only send messages as their own characters
+      const belongsToUser = char.userId === user?.id;
+      
+      return hasValidId && hasValidFirstName && isAlive && isNotSystem && belongsToUser;
     }) : [];
 
   // Fetch current room info
