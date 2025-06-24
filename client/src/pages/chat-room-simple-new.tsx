@@ -967,197 +967,203 @@ export default function ChatRoom() {
 
         {/* Messages */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {localMessages.map((message) => (
-            <div key={message.id} className="flex items-start gap-3">
-              {/* Avatar - special handling for narrator messages */}
-              {(() => {
-                const isNarratorMessage = message.messageType === 'narrator' || message.characterId === 0;
-                return isNarratorMessage ? (
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
-                       style={{
-                         backgroundColor: 
-                           user?.narratorColor === 'yellow' ? '#fbbf24' :
-                           user?.narratorColor === 'red' ? '#ef4444' :
-                           user?.narratorColor === 'blue' ? '#3b82f6' :
-                           user?.narratorColor === 'green' ? '#10b981' :
-                           user?.narratorColor === 'pink' ? '#ec4899' :
-                           '#8b5cf6' // Default purple for narrator
-                       }}>
-                    <span className="text-xs font-bold text-white">V</span>
-                  </div>
-                ) : (
-                  <CharacterAvatar character={message.character} size="sm" />
-                );
-              })()}
+          {localMessages.map((message) => {
+            // Bezpečné mapování postavy
+            const safeCharacter = (message.character && typeof message.character === 'object' && typeof message.character.firstName === 'string')
+              ? message.character
+              : { firstName: 'Neznámá', lastName: 'postava', avatar: null };
+            return (
+              <div key={message.id} className="flex items-start gap-3">
+                {/* Avatar - special handling for narrator messages */}
+                {(() => {
+                  const isNarratorMessage = message.messageType === 'narrator' || message.characterId === 0;
+                  return isNarratorMessage ? (
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+                         style={{
+                           backgroundColor: 
+                             user?.narratorColor === 'yellow' ? '#fbbf24' :
+                             user?.narratorColor === 'red' ? '#ef4444' :
+                             user?.narratorColor === 'blue' ? '#3b82f6' :
+                             user?.narratorColor === 'green' ? '#10b981' :
+                             user?.narratorColor === 'pink' ? '#ec4899' :
+                             '#8b5cf6' // Default purple for narrator
+                         }}>
+                      <span className="text-xs font-bold text-white">V</span>
+                    </div>
+                  ) : (
+                    <CharacterAvatar character={safeCharacter} size="sm" />
+                  );
+                })()}
 
-              <div className="flex-1 min-w-0">
-                <div className="flex items-baseline gap-2 mb-1">
-                  {(() => {
-                    const isNarratorMessage = message.messageType === 'narrator' || message.characterId === 0;
-                    if (isNarratorMessage) {
-                      return (
-                        <span className="font-medium text-sm italic"
-                              style={{ 
-                                color: 
-                                  user?.narratorColor === 'yellow' ? '#fbbf24' :
-                                  user?.narratorColor === 'red' ? '#ef4444' :
-                                  user?.narratorColor === 'blue' ? '#3b82f6' :
-                                  user?.narratorColor === 'green' ? '#10b981' :
-                                  user?.narratorColor === 'pink' ? '#ec4899' :
-                                  '#8b5cf6'
-                              }}>
-                          Vypravěč
-                        </span>
-                      );
-                    } else {
-                      return (
-                        <Link 
-                          href={`/characters/${message.characterId}`}
-                          className="font-medium text-sm hover:text-primary hover:underline cursor-pointer"
-                        >
-                          {message.character.firstName} {message.character.lastName}
-                        </Link>
-                      );
-                    }
-                  })()}
-                  <span className="text-xs text-muted-foreground">
-                    {new Date(message.createdAt).toLocaleString('cs-CZ', {
-                      day: '2-digit',
-                      month: '2-digit',
-                      year: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit'
-                    })}
-                  </span>
-                  {/* Action buttons for own messages */}
-                  {(() => {
-                    const isNarratorMessage = message.messageType === 'narrator' || message.characterId === 0;
-                    const messageTime = new Date(message.createdAt);
-                    const now = new Date();
-                    const timeDiffMinutes = (now.getTime() - messageTime.getTime()) / (1000 * 60);
-                    if (isNarratorMessage) {
-                      const canDeleteNarrator = message.userId === user?.id && timeDiffMinutes <= 2;
-                      return canDeleteNarrator ? (
-                        <Button
-                          onClick={() => {
-                            if (confirm('Opravdu chcete smazat tuto vypravěčskou zprávu?')) {
-                              const token = localStorage.getItem('jwt_token');
-                              fetch(`${API_URL}/api/chat/messages/${message.id}`, {
-                                method: "DELETE",
-                                headers: {
-                                  "Authorization": `Bearer ${token}`
-                                },
-                                credentials: "include",
-                              })
-                                .then(() => {
-                                  queryClient.invalidateQueries({ queryKey: ["/api/chat/rooms", currentRoomId, "messages"] });
-                                  toast({
-                                    title: "Zpráva smazána",
-                                    description: "Vypravěčská zpráva byla úspěšně smazána",
-                                  });
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-baseline gap-2 mb-1">
+                    {(() => {
+                      const isNarratorMessage = message.messageType === 'narrator' || message.characterId === 0;
+                      if (isNarratorMessage) {
+                        return (
+                          <span className="font-medium text-sm italic"
+                                style={{ 
+                                  color: 
+                                    user?.narratorColor === 'yellow' ? '#fbbf24' :
+                                    user?.narratorColor === 'red' ? '#ef4444' :
+                                    user?.narratorColor === 'blue' ? '#3b82f6' :
+                                    user?.narratorColor === 'green' ? '#10b981' :
+                                    user?.narratorColor === 'pink' ? '#ec4899' :
+                                    '#8b5cf6'
+                                }}>
+                            Vypravěč
+                          </span>
+                        );
+                      } else {
+                        return (
+                          <Link 
+                            href={`/characters/${message.characterId}`}
+                            className="font-medium text-sm hover:text-primary hover:underline cursor-pointer"
+                          >
+                            {safeCharacter.firstName} {safeCharacter.lastName}
+                          </Link>
+                        );
+                      }
+                    })()}
+                    <span className="text-xs text-muted-foreground">
+                      {new Date(message.createdAt).toLocaleString('cs-CZ', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </span>
+                    {/* Action buttons for own messages */}
+                    {(() => {
+                      const isNarratorMessage = message.messageType === 'narrator' || message.characterId === 0;
+                      const messageTime = new Date(message.createdAt);
+                      const now = new Date();
+                      const timeDiffMinutes = (now.getTime() - messageTime.getTime()) / (1000 * 60);
+                      if (isNarratorMessage) {
+                        const canDeleteNarrator = message.userId === user?.id && timeDiffMinutes <= 2;
+                        return canDeleteNarrator ? (
+                          <Button
+                            onClick={() => {
+                              if (confirm('Opravdu chcete smazat tuto vypravěčskou zprávu?')) {
+                                const token = localStorage.getItem('jwt_token');
+                                fetch(`${API_URL}/api/chat/messages/${message.id}`, {
+                                  method: "DELETE",
+                                  headers: {
+                                    "Authorization": `Bearer ${token}`
+                                  },
+                                  credentials: "include",
                                 })
-                                .catch(() => {
-                                  toast({
-                                    title: "Chyba",
-                                    description: "Nepodařilo se smazat zprávu",
-                                    variant: "destructive",
+                                  .then(() => {
+                                    queryClient.invalidateQueries({ queryKey: ["/api/chat/rooms", currentRoomId, "messages"] });
+                                    toast({
+                                      title: "Zpráva smazána",
+                                      description: "Vypravěčská zpráva byla úspěšně smazána",
+                                    });
+                                  })
+                                  .catch(() => {
+                                    toast({
+                                      title: "Chyba",
+                                      description: "Nepodařilo se smazat zprávu",
+                                      variant: "destructive",
+                                    });
                                   });
-                                });
-                            }
-                          }}
-                          variant="ghost"
-                          size="sm"
-                          className="h-5 w-5 p-0 text-xs"
-                          title="Smazat vypravěčskou zprávu"
-                        >
-                          <X className="h-3 w-3" />
-                        </Button>
+                              }
+                            }}
+                            variant="ghost"
+                            size="sm"
+                            className="h-5 w-5 p-0 text-xs"
+                            title="Smazat vypravěčskou zprávu"
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        ) : null;
+                      }
+                      // For regular character messages - show character change option
+                      const isOwnMessage = userCharacters.some((char: any) => char.id === message.characterId);
+                      const canChangeCharacter = isOwnMessage && timeDiffMinutes <= 5;
+                      return canChangeCharacter && userCharacters.length > 1 ? (
+                        <div className="ml-2">
+                          <select 
+                            className="text-xs bg-muted/50 border border-border rounded px-2 py-1"
+                            value={message.characterId}
+                            onChange={(e) => {
+                              const newCharacterId = parseInt(e.target.value);
+                              if (newCharacterId !== message.characterId) {
+                                const token = localStorage.getItem('jwt_token');
+                                fetch(`${API_URL}/api/chat/messages/${message.id}/character`, {
+                                  method: "PATCH",
+                                  headers: { 
+                                    "Content-Type": "application/json",
+                                    "Authorization": `Bearer ${token}`
+                                  },
+                                  body: JSON.stringify({
+                                    characterId: newCharacterId
+                                  }),
+                                  credentials: "include",
+                                })
+                                  .then(() => {
+                                    queryClient.invalidateQueries({ queryKey: ["/api/chat/rooms", currentRoomId, "messages"] });
+                                    const newCharacter = userCharacters.find((char: any) => char.id === newCharacterId);
+                                    toast({
+                                      title: "Postava změněna",
+                                      description: `Zpráva nyní patří postavě ${newCharacter?.firstName} ${newCharacter?.lastName}`,
+                                    });
+                                  })
+                                  .catch(() => {
+                                    toast({
+                                      title: "Chyba",
+                                      description: "Nepodařilo se změnit postavu zprávy",
+                                      variant: "destructive",
+                                    });
+                                  });
+                              }
+                            }}
+                          >
+                            {userCharacters.map((character: any) => (
+                              <option key={character.id} value={character.id}>
+                                {character.firstName} {character.lastName}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
                       ) : null;
-                    }
-                    // For regular character messages - show character change option
-                    const isOwnMessage = userCharacters.some((char: any) => char.id === message.characterId);
-                    const canChangeCharacter = isOwnMessage && timeDiffMinutes <= 5;
-                    return canChangeCharacter && userCharacters.length > 1 ? (
-                      <div className="ml-2">
-                        <select 
-                          className="text-xs bg-muted/50 border border-border rounded px-2 py-1"
-                          value={message.characterId}
-                          onChange={(e) => {
-                            const newCharacterId = parseInt(e.target.value);
-                            if (newCharacterId !== message.characterId) {
-                              const token = localStorage.getItem('jwt_token');
-                              fetch(`${API_URL}/api/chat/messages/${message.id}/character`, {
-                                method: "PATCH",
-                                headers: { 
-                                  "Content-Type": "application/json",
-                                  "Authorization": `Bearer ${token}`
-                                },
-                                body: JSON.stringify({
-                                  characterId: newCharacterId
-                                }),
-                                credentials: "include",
-                              })
-                                .then(() => {
-                                  queryClient.invalidateQueries({ queryKey: ["/api/chat/rooms", currentRoomId, "messages"] });
-                                  const newCharacter = userCharacters.find((char: any) => char.id === newCharacterId);
-                                  toast({
-                                    title: "Postava změněna",
-                                    description: `Zpráva nyní patří postavě ${newCharacter?.firstName} ${newCharacter?.lastName}`,
-                                  });
-                                })
-                                .catch(() => {
-                                  toast({
-                                    title: "Chyba",
-                                    description: "Nepodařilo se změnit postavu zprávy",
-                                    variant: "destructive",
-                                  });
-                                });
-                            }
-                          }}
-                        >
-                          {userCharacters.map((character: any) => (
-                            <option key={character.id} value={character.id}>
-                              {character.firstName} {character.lastName}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    ) : null;
-                  })()}
-                </div>
-                {/* Message content with special styling for narrator messages */}
-                <div className={`text-sm !break-words !whitespace-pre-wrap !overflow-wrap-anywhere !word-break-break-all max-w-full ${
-                  (message.messageType === 'narrator' || message.characterId === 0) ? 'italic font-medium p-3 rounded-lg border-l-4' : ''
-                } ${
-                  message.character.firstName === 'Správa' && message.character.lastName === 'ubytování' 
-                    ? 'text-blue-600 dark:text-blue-400' 
-                    : 'text-foreground'
-                }`} style={{ 
-                  wordWrap: 'break-word',
-                  overflowWrap: 'anywhere', 
-                  wordBreak: 'break-all',
-                  whiteSpace: 'pre-wrap',
-                  maxWidth: '100%',
-                  ...((message.messageType === 'narrator' || message.characterId === 0) && {
-                    backgroundColor: user?.narratorColor === 'yellow' ? 'rgba(251, 191, 36, 0.1)' :
-                                   user?.narratorColor === 'red' ? 'rgba(239, 68, 68, 0.1)' :
-                                   user?.narratorColor === 'blue' ? 'rgba(59, 130, 246, 0.1)' :
-                                   user?.narratorColor === 'green' ? 'rgba(16, 185, 129, 0.1)' :
-                                   user?.narratorColor === 'pink' ? 'rgba(236, 72, 153, 0.1)' :
-                                   'rgba(139, 92, 246, 0.1)',
-                    borderLeftColor: user?.narratorColor === 'yellow' ? '#fbbf24' :
-                                   user?.narratorColor === 'red' ? '#ef4444' :
-                                   user?.narratorColor === 'blue' ? '#3b82f6' :
-                                   user?.narratorColor === 'green' ? '#10b981' :
-                                   user?.narratorColor === 'pink' ? '#ec4899' :
-                                   '#8b5cf6'
-                  })
-                }}>
-                  {renderMessageWithHighlight(message.content, user?.highlightWords, user?.highlightColor)}
+                    })()}
+                  </div>
+                  {/* Message content with special styling for narrator messages */}
+                  <div className={`text-sm !break-words !whitespace-pre-wrap !overflow-wrap-anywhere !word-break-break-all max-w-full ${
+                    (message.messageType === 'narrator' || message.characterId === 0) ? 'italic font-medium p-3 rounded-lg border-l-4' : ''
+                  } ${
+                    safeCharacter.firstName === 'Správa' && safeCharacter.lastName === 'ubytování' 
+                      ? 'text-blue-600 dark:text-blue-400' 
+                      : 'text-foreground'
+                  }`} style={{ 
+                    wordWrap: 'break-word',
+                    overflowWrap: 'anywhere', 
+                    wordBreak: 'break-all',
+                    whiteSpace: 'pre-wrap',
+                    maxWidth: '100%',
+                    ...((message.messageType === 'narrator' || message.characterId === 0) && {
+                      backgroundColor: user?.narratorColor === 'yellow' ? 'rgba(251, 191, 36, 0.1)' :
+                                     user?.narratorColor === 'red' ? 'rgba(239, 68, 68, 0.1)' :
+                                     user?.narratorColor === 'blue' ? 'rgba(59, 130, 246, 0.1)' :
+                                     user?.narratorColor === 'green' ? 'rgba(16, 185, 129, 0.1)' :
+                                     user?.narratorColor === 'pink' ? 'rgba(236, 72, 153, 0.1)' :
+                                     'rgba(139, 92, 246, 0.1)',
+                      borderLeftColor: user?.narratorColor === 'yellow' ? '#fbbf24' :
+                                     user?.narratorColor === 'red' ? '#ef4444' :
+                                     user?.narratorColor === 'blue' ? '#3b82f6' :
+                                     user?.narratorColor === 'green' ? '#10b981' :
+                                     user?.narratorColor === 'pink' ? '#ec4899' :
+                                     '#8b5cf6'
+                    })
+                  }}>
+                    {renderMessageWithHighlight(message.content, user?.highlightWords, user?.highlightColor)}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
           <div ref={messagesEndRef} />
         </div>
 
