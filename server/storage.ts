@@ -465,8 +465,8 @@ export class DatabaseStorage implements IStorage {
     try {
       console.log(`[STORAGE] Creating message:`, messageData);
 
-      // For narrator messages, always use character_id = null and messageType = 'narrator'
-      const characterId = messageData.messageType === 'narrator' ? null : messageData.characterId;
+      // For narrator messages, always use character_id = 0 and messageType = 'narrator'
+      const characterId = messageData.messageType === 'narrator' ? 0 : messageData.characterId;
       const messageType = messageData.messageType || 'text';
 
       // Insert the message
