@@ -10,13 +10,14 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { MessageCircle, Send, Download, Archive, ArrowLeft, Dices, Coins } from "lucide-react";
+import { MessageCircle, Send, Download, Archive, ArrowLeft, Dices, Coins, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 
 interface ChatRoom {
   id: number;
   name: string;
   description?: string;
+  longDescription?: string;
   isPublic: boolean;
   createdAt: string;
 }
@@ -29,9 +30,11 @@ interface ChatMessage {
   messageType: string;
   createdAt: string;
   character: {
+    id: number;
     firstName: string;
     middleName?: string | null;
     lastName: string;
+    userId: number;
   };
 }
 
@@ -158,9 +161,12 @@ export default function ChatRoom() {
     }
   }, [user, roomId, currentRoomId, queryClient]);
 
-  // Auto-scroll to bottom when new messages arrive
+  // Auto-scroll to top when new messages arrive (newest first)
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    const scrollArea = document.querySelector('[data-radix-scroll-area-viewport]');
+    if (scrollArea) {
+      scrollArea.scrollTop = 0;
+    }
   }, [messages]);
 
   // Send message mutation
@@ -466,11 +472,16 @@ export default function ChatRoom() {
   const messageInputLength = messageInput.length;
   const isMessageValid = messageInputLength >= MIN_MESSAGE_LENGTH && messageInputLength <= MAX_MESSAGE_LENGTH;
 
+  // Sort messages - newest first
+  const sortedMessages = [...messages].sort((a, b) => 
+    new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
+
   return (
-    <div className="container mx-auto p-4 h-screen flex flex-col max-w-6xl">
-      <Card className="flex-1 flex flex-col">
-        {/* Header */}
-        <CardHeader className="border-b flex-shrink-0">
+    <div className="h-screen flex flex-col">
+      {/* Header - Fixed */}
+      <div className="border-b bg-background z-10 flex-shrink-0">
+        <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Button
@@ -484,7 +495,7 @@ export default function ChatRoom() {
               <div className="flex items-center gap-3">
                 <MessageCircle className="h-5 w-5 text-primary" />
                 <div>
-                  <CardTitle>{currentRoom.name}</CardTitle>
+                  <h1 className="text-xl font-semibold">{currentRoom.name}</h1>
                   <p className="text-sm text-muted-foreground">
                     {currentRoom.description}
                   </p>
@@ -511,53 +522,48 @@ export default function ChatRoom() {
                 </Button>
                 {(user?.role === 'admin') && (
                   <Button
-                    variant="outline"
+                    variant="destructive"
                     size="sm"
                     onClick={() => currentRoomId && archiveMessagesMutation.mutate(currentRoomId)}
                     disabled={archiveMessagesMutation.isPending}
                   >
-                    <Archive className="h-4 w-4 mr-2" />
-                    Archivovat
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    Archivovat a smazat
                   </Button>
                 )}
               </div>
             </div>
           </div>
-        </CardHeader>
+        </div>
+      </div>
 
-        {/* Messages Area */}
-        <ScrollArea className="flex-1 p-6">
-          <div className="space-y-6">
-            {messages.map((message) => (
-              <div key={message.id} className="flex gap-4">
-                {/* Avatar */}
-                <Avatar className="w-10 h-10 flex-shrink-0">
-                  <AvatarImage src="" />
-                  <AvatarFallback className={`font-semibold ${
-                    message.messageType === 'narrator' || message.characterId === 0
-                      ? 'text-white'
-                      : 'bg-primary/10 text-primary'
-                  }`} style={{
-                    backgroundColor: message.messageType === 'narrator' || message.characterId === 0 ? (
-                      user?.narratorColor === 'yellow' ? '#fbbf24' :
-                      user?.narratorColor === 'red' ? '#ef4444' :
-                      user?.narratorColor === 'blue' ? '#3b82f6' :
-                      user?.narratorColor === 'green' ? '#10b981' :
-                      user?.narratorColor === 'pink' ? '#ec4899' :
-                      '#8b5cf6'
-                    ) : undefined
-                  }}>
-                    {message.messageType === 'narrator' || message.characterId === 0 ? 'V' : getCharacterInitials(message.character)}
-                  </AvatarFallback>
-                </Avatar>
+      {/* Room Description */}
+      {currentRoom.longDescription && (
+        <div className="border-b bg-muted/20">
+          <div className="container mx-auto px-4 py-3">
+            <div className="text-sm text-muted-foreground whitespace-pre-wrap">
+              {currentRoom.longDescription}
+            </div>
+          </div>
+        </div>
+      )}
 
-                {/* Message Content */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-baseline gap-2 mb-2">
-                    <span className={`font-semibold text-sm ${
-                      message.messageType === 'narrator' || message.characterId === 0 ? 'italic' : ''
+      {/* Messages Area - Scrollable */}
+      <div className="flex-1 overflow-hidden">
+        <ScrollArea className="h-full">
+          <div className="container mx-auto px-4 py-6">
+            <div className="space-y-6">
+              {sortedMessages.map((message) => (
+                <div key={message.id} className="flex gap-4">
+                  {/* Avatar */}
+                  <Avatar className="w-10 h-10 flex-shrink-0">
+                    <AvatarImage src="" />
+                    <AvatarFallback className={`font-semibold ${
+                      message.messageType === 'narrator' || message.characterId === 0
+                        ? 'text-white'
+                        : 'bg-primary/10 text-primary'
                     }`} style={{
-                      color: message.messageType === 'narrator' || message.characterId === 0 ? (
+                      backgroundColor: message.messageType === 'narrator' || message.characterId === 0 ? (
                         user?.narratorColor === 'yellow' ? '#fbbf24' :
                         user?.narratorColor === 'red' ? '#ef4444' :
                         user?.narratorColor === 'blue' ? '#3b82f6' :
@@ -566,43 +572,64 @@ export default function ChatRoom() {
                         '#8b5cf6'
                       ) : undefined
                     }}>
-                      {message.messageType === 'narrator' || message.characterId === 0 ? 'Vypravěč' : getCharacterName(message.character)}
-                    </span>
-                    <span className="text-xs text-muted-foreground">
-                      {formatMessageTime(message.createdAt)}
-                    </span>
-                  </div>
-                  <div className={`text-sm whitespace-pre-wrap break-words ${
-                    message.messageType === 'narrator' || message.characterId === 0 
-                      ? 'italic font-medium p-3 rounded-lg border-l-4' 
-                      : 'text-foreground'
-                  }`} style={{
-                    ...(message.messageType === 'narrator' || message.characterId === 0 && {
-                      backgroundColor: user?.narratorColor === 'yellow' ? 'rgba(251, 191, 36, 0.1)' :
-                                     user?.narratorColor === 'red' ? 'rgba(239, 68, 68, 0.1)' :
-                                     user?.narratorColor === 'blue' ? 'rgba(59, 130, 246, 0.1)' :
-                                     user?.narratorColor === 'green' ? 'rgba(16, 185, 129, 0.1)' :
-                                     user?.narratorColor === 'pink' ? 'rgba(236, 72, 153, 0.1)' :
-                                     'rgba(139, 92, 246, 0.1)',
-                      borderLeftColor: user?.narratorColor === 'yellow' ? '#fbbf24' :
-                                      user?.narratorColor === 'red' ? '#ef4444' :
-                                      user?.narratorColor === 'blue' ? '#3b82f6' :
-                                      user?.narratorColor === 'green' ? '#10b981' :
-                                      user?.narratorColor === 'pink' ? '#ec4899' :
-                                      '#8b5cf6'
-                    })
-                  }}>
-                    {message.content}
+                      {message.messageType === 'narrator' || message.characterId === 0 ? 'V' : getCharacterInitials(message.character)}
+                    </AvatarFallback>
+                  </Avatar>
+
+                  {/* Message Content */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-baseline gap-2 mb-2">
+                      <span className={`font-semibold text-sm ${
+                        message.messageType === 'narrator' || message.characterId === 0 ? 'italic' : ''
+                      }`} style={{
+                        color: message.messageType === 'narrator' || message.characterId === 0 ? (
+                          user?.narratorColor === 'yellow' ? '#fbbf24' :
+                          user?.narratorColor === 'red' ? '#ef4444' :
+                          user?.narratorColor === 'blue' ? '#3b82f6' :
+                          user?.narratorColor === 'green' ? '#10b981' :
+                          user?.narratorColor === 'pink' ? '#ec4899' :
+                          '#8b5cf6'
+                        ) : undefined
+                      }}>
+                        {message.messageType === 'narrator' || message.characterId === 0 ? 'Vypravěč' : getCharacterName(message.character)}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        {formatMessageTime(message.createdAt)}
+                      </span>
+                    </div>
+                    <div className={`text-sm whitespace-pre-wrap break-words ${
+                      message.messageType === 'narrator' || message.characterId === 0 
+                        ? 'italic font-medium p-3 rounded-lg border-l-4' 
+                        : 'text-foreground'
+                    }`} style={{
+                      ...(message.messageType === 'narrator' || message.characterId === 0 && {
+                        backgroundColor: user?.narratorColor === 'yellow' ? 'rgba(251, 191, 36, 0.1)' :
+                                       user?.narratorColor === 'red' ? 'rgba(239, 68, 68, 0.1)' :
+                                       user?.narratorColor === 'blue' ? 'rgba(59, 130, 246, 0.1)' :
+                                       user?.narratorColor === 'green' ? 'rgba(16, 185, 129, 0.1)' :
+                                       user?.narratorColor === 'pink' ? 'rgba(236, 72, 153, 0.1)' :
+                                       'rgba(139, 92, 246, 0.1)',
+                        borderLeftColor: user?.narratorColor === 'yellow' ? '#fbbf24' :
+                                        user?.narratorColor === 'red' ? '#ef4444' :
+                                        user?.narratorColor === 'blue' ? '#3b82f6' :
+                                        user?.narratorColor === 'green' ? '#10b981' :
+                                        user?.narratorColor === 'pink' ? '#ec4899' :
+                                        '#8b5cf6'
+                      })
+                    }}>
+                      {message.content}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-            <div ref={messagesEndRef} />
+              ))}
+            </div>
           </div>
         </ScrollArea>
+      </div>
 
-        {/* Message Input */}
-        <div className="border-t p-4 flex-shrink-0 bg-muted/30">
+      {/* Message Input - Fixed at bottom */}
+      <div className="border-t bg-background z-10 flex-shrink-0">
+        <div className="container mx-auto px-4 py-4">
           <div className="flex gap-3 items-start">
             {/* Character Avatar */}
             <Avatar className="w-12 h-12 flex-shrink-0 mt-1">
@@ -700,7 +727,7 @@ export default function ChatRoom() {
                         disabled={diceRollMutation.isPending}
                       >
                         <Dices className="h-4 w-4 mr-1" />
-                        Kostka
+                        Kostka (1d10)
                       </Button>
 
                       <Button
@@ -710,7 +737,7 @@ export default function ChatRoom() {
                         disabled={coinFlipMutation.isPending}
                       >
                         <Coins className="h-4 w-4 mr-1" />
-                        Mince
+                        Mince (1d2)
                       </Button>
                     </>
                   )}
@@ -734,7 +761,7 @@ export default function ChatRoom() {
             </div>
           </div>
         </div>
-      </Card>
+      </div>
     </div>
   );
 }
