@@ -1,0 +1,48 @@
+[useAuth] Loaded user data: Object
+index-DFiM3qWk.js:488 User data: Object
+index-DFiM3qWk.js:488 User characters from query: Array(0)
+index-DFiM3qWk.js:488 Selected character: null
+index-DFiM3qWk.js:488 Character effect - selectedCharacter: null availableCharacters: 0
+index-DFiM3qWk.js:488 User data: Object
+index-DFiM3qWk.js:488 User characters from query: Array(0)
+index-DFiM3qWk.js:488 Selected character: null
+index-DFiM3qWk.js:488 User data: Object
+index-DFiM3qWk.js:488 User characters from query: Array(0)
+index-DFiM3qWk.js:488 Selected character: null
+index-DFiM3qWk.js:488 User data: Object
+index-DFiM3qWk.js:488 User characters from query: Array(0)
+index-DFiM3qWk.js:488 Selected character: null
+index-DFiM3qWk.js:488 User data: Object
+index-DFiM3qWk.js:488 User characters from query: Array(15)
+index-DFiM3qWk.js:488 Selected character: null
+index-DFiM3qWk.js:488 Character effect - selectedCharacter: null availableCharacters: 14
+index-DFiM3qWk.js:488 Auto-selecting first character: Object
+index-DFiM3qWk.js:488 User data: Object
+index-DFiM3qWk.js:488 User characters from query: Array(15)
+index-DFiM3qWk.js:488 Selected character: Object
+index-DFiM3qWk.js:488 Character effect - selectedCharacter: Object availableCharacters: 14
+index-DFiM3qWk.js:488 User data: Object
+index-DFiM3qWk.js:488 User characters from query: Array(15)
+index-DFiM3qWk.js:488 Selected character: Object
+index-DFiM3qWk.js:488 User data: Object
+index-DFiM3qWk.js:488 User characters from query: Array(15)
+index-DFiM3qWk.js:488 Selected character: Object
+index-DFiM3qWk.js:488 User data: Object
+index-DFiM3qWk.js:488 User characters from query: Array(15)
+index-DFiM3qWk.js:488 Selected character: Object
+index-DFiM3qWk.js:488 Uncaught TypeError: Cannot read properties of undefined (reading 'firstName')
+    at X (index-DFiM3qWk.js:488:106226)
+    at index-DFiM3qWk.js:488:109699
+    at Array.map (<anonymous>)
+    at tU (index-DFiM3qWk.js:488:109497)
+    at xg (index-DFiM3qWk.js:48:34152)
+    at Ax (index-DFiM3qWk.js:48:62028)
+    at D1 (index-DFiM3qWk.js:48:72485)
+    at sS (index-DFiM3qWk.js:48:106413)
+    at h4 (index-DFiM3qWk.js:48:105476)
+    at xp (index-DFiM3qWk.js:48:105306)Nechte si tuto chybu vysvětlit
+index-DFiM3qWk.js:488 WebSocket connection to 'wss://umbra-dev.onrender.com/ws' failed: WebSocket is closed before the connection is established.
+(anonymní) @ index-DFiM3qWk.js:488Nechte si toto upozornění vysvětlit
+index-DFiM3qWk.js:488 WebSocket chyba: Event
+ee.onerror @ index-DFiM3qWk.js:488Nechte si tuto chybu vysvětlit
+index-DFiM3qWk.js:488 WebSocket odpojen
