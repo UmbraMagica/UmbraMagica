@@ -1581,7 +1581,6 @@ export async function registerRoutes(app: Express): Promise<void> {
       const userId = req.user!.id;
 
       // Check if character belongs to user
-      ```typescript
       const character = await storage.getCharacterById(characterId);
       if (!character || character.userId !== userId) {
         return res.status(403).json({ error: "Character not found or access denied" });
