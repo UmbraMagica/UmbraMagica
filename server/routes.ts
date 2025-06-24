@@ -1,4 +1,3 @@
-
 import type { Express } from "express";
 import { createServer } from "http";
 import { WebSocketServer } from "ws";
@@ -65,18 +64,18 @@ function validateAndFilterCharacters(characters: any[]): any[] {
     console.warn('Characters is not an array:', typeof characters);
     return [];
   }
-  
+
   return characters.filter(char => {
     const isValid = char && 
                    typeof char === 'object' && 
                    typeof char.id === 'number' && 
                    typeof char.firstName === 'string' && 
                    char.firstName.trim() !== '';
-    
+
     if (!isValid) {
       console.warn('Invalid character filtered out:', char);
     }
-    
+
     return isValid;
   });
 }
@@ -84,13 +83,13 @@ function validateAndFilterCharacters(characters: any[]): any[] {
 export async function registerRoutes(app: Express): Promise<void> {
   // HTTP a WebSocket server
   const httpServer = createServer(app);
-  
+
   // Start HTTP server first
   const serverPort = parseInt(process.env.PORT || "5000", 10) || 5000;
   httpServer.listen(serverPort, "0.0.0.0", () => {
     console.log(`Server running on port ${serverPort}`);
   });
-  
+
   const wss = new WebSocketServer({ 
     server: httpServer, 
     path: '/ws',
@@ -98,7 +97,7 @@ export async function registerRoutes(app: Express): Promise<void> {
       try {
         const url = new URL(info.req.url!, `http://${info.req.headers.host}`);
         const token = url.searchParams.get('token');
-        
+
         if (!token) {
           console.log('WebSocket: No token provided');
           return false;
@@ -248,10 +247,10 @@ export async function registerRoutes(app: Express): Promise<void> {
     try {
       const user = await storage.getUser(req.user!.id);
       if (!user) return res.status(404).json({ message: "User not found" });
-      
+
       const characters = await storage.getCharactersByUserId(user.id);
       const validCharacters = validateAndFilterCharacters(characters);
-      
+
       res.json({
         id: user.id,
         username: user.username,
@@ -279,10 +278,10 @@ export async function registerRoutes(app: Express): Promise<void> {
       } else {
         characters = await storage.getCharactersByUserId(req.user!.id);
       }
-      
+
       const validCharacters = validateAndFilterCharacters(characters);
       console.log(`[CHARACTERS] User ${req.user!.username} requested characters, returning ${validCharacters.length} valid characters`);
-      
+
       // Always return in { characters: [] } format for consistency
       res.json({ characters: validCharacters });
     } catch (error) {
@@ -376,7 +375,7 @@ export async function registerRoutes(app: Express): Promise<void> {
       } else {
         characters = await storage.getCharactersByUserId(req.user!.id);
       }
-      
+
       const validCharacters = validateAndFilterCharacters(characters);
       res.json(validCharacters);
     } catch (error) {
@@ -434,7 +433,7 @@ export async function registerRoutes(app: Express): Promise<void> {
   // Send chat message
   app.post("/api/chat/messages", requireAuth, async (req, res) => {
     const { roomId, characterId, content, messageType } = req.body;
-    
+
     if (!roomId || !content) {
       return res.status(400).json({ message: "Missing required fields" });
     }
@@ -461,7 +460,7 @@ export async function registerRoutes(app: Express): Promise<void> {
         content: content.trim(),
         messageType: messageType || 'text'
       });
-      
+
       res.status(201).json(message);
     } catch (error) {
       console.error("Error creating chat message:", error);
@@ -472,7 +471,7 @@ export async function registerRoutes(app: Express): Promise<void> {
   // Game actions - dice roll
   app.post("/api/game/dice-roll", requireAuth, async (req, res) => {
     const { roomId, characterId } = req.body;
-    
+
     if (!roomId || !characterId) {
       return res.status(400).json({ message: "Missing required fields" });
     }
@@ -480,7 +479,7 @@ export async function registerRoutes(app: Express): Promise<void> {
     try {
       const result = Math.floor(Math.random() * 10) + 1;
       const character = await storage.getCharacterById(characterId);
-      
+
       if (!character) {
         return res.status(404).json({ message: "Character not found" });
       }
@@ -492,7 +491,7 @@ export async function registerRoutes(app: Express): Promise<void> {
         content: `🎲 ${character.firstName} ${character.lastName} hodil kostkou a padlo: ${result}`,
         messageType: 'dice'
       });
-      
+
       res.json({ result, message });
     } catch (error) {
       console.error("Error rolling dice:", error);
@@ -503,7 +502,7 @@ export async function registerRoutes(app: Express): Promise<void> {
   // Game actions - coin flip
   app.post("/api/game/coin-flip", requireAuth, async (req, res) => {
     const { roomId, characterId } = req.body;
-    
+
     if (!roomId || !characterId) {
       return res.status(400).json({ message: "Missing required fields" });
     }
@@ -511,7 +510,7 @@ export async function registerRoutes(app: Express): Promise<void> {
     try {
       const result = Math.random() < 0.5 ? "Panna" : "Orel";
       const character = await storage.getCharacterById(characterId);
-      
+
       if (!character) {
         return res.status(404).json({ message: "Character not found" });
       }
@@ -523,7 +522,7 @@ export async function registerRoutes(app: Express): Promise<void> {
         content: `🪙 ${character.firstName} ${character.lastName} hodil mincí a padl: ${result}`,
         messageType: 'coin'
       });
-      
+
       res.json({ result, message });
     } catch (error) {
       console.error("Error flipping coin:", error);
@@ -570,7 +569,7 @@ export async function registerRoutes(app: Express): Promise<void> {
   // Cast spell endpoint
   app.post("/api/game/cast-spell", requireAuth, async (req, res) => {
     const { roomId, characterId, spellId, message } = req.body;
-    
+
     if (!roomId || !characterId || !spellId) {
       return res.status(400).json({ message: "Missing required fields" });
     }
@@ -606,7 +605,7 @@ export async function registerRoutes(app: Express): Promise<void> {
         content: spellContent,
         messageType: 'spell'
       });
-      
+
       res.json({ spell, message: chatMessage });
     } catch (error) {
       console.error("Error casting spell:", error);
@@ -617,7 +616,7 @@ export async function registerRoutes(app: Express): Promise<void> {
   // Narrator message endpoint
   app.post("/api/chat/narrator-message", requireAuth, async (req, res) => {
     const { roomId, content } = req.body;
-    
+
     if (!roomId || !content) {
       return res.status(400).json({ message: "Missing required fields" });
     }
@@ -637,7 +636,7 @@ export async function registerRoutes(app: Express): Promise<void> {
         content: content.trim(),
         messageType: 'narrator'
       });
-      
+
       res.json(message);
     } catch (error) {
       console.error("Error sending narrator message:", error);
@@ -1333,7 +1332,7 @@ export async function registerRoutes(app: Express): Promise<void> {
           recipient: recipient ? {
             firstName: recipient.firstName,
             middleName: recipient.middleName,
-            lastName: recipient.lastName
+            lastName: sender.lastName
           } : null
         };
       }));
@@ -1377,7 +1376,7 @@ export async function registerRoutes(app: Express): Promise<void> {
           recipient: recipient ? {
             firstName: recipient.firstName,
             middleName: recipient.middleName,
-            lastName: recipient.lastName
+            lastName: sender.lastName
           } : null
         };
       }));
@@ -1582,6 +1581,7 @@ export async function registerRoutes(app: Express): Promise<void> {
       const userId = req.user!.id;
 
       // Check if character belongs to user
+      ```typescript
       const character = await storage.getCharacterById(characterId);
       if (!character || character.userId !== userId) {
         return res.status(403).json({ error: "Character not found or access denied" });
