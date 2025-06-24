@@ -39,7 +39,9 @@ export function SelectedCharacterProvider({ children, roomId, canSendAsNarrator 
     }
   });
   const userCharacters: Character[] = Array.isArray(userCharactersRaw.characters)
-    ? userCharactersRaw.characters
+    ? userCharactersRaw.characters.filter(
+        (c) => c && typeof c.id === 'number' && typeof c.firstName === 'string'
+      )
     : [];
 
   useEffect(() => {
