@@ -1,0 +1,62 @@
+[useAuth] Loaded user data: Object
+index-j0BoxILq.js:447 [useAuth] Raw characters data: Object
+index-j0BoxILq.js:447 [processCharacters] Input data: Object
+index-j0BoxILq.js:447 [processCharacters] Characters array: Array(15)
+index-j0BoxILq.js:447 [processCharacters] Valid characters: Array(15)
+index-j0BoxILq.js:447 [useAuth] Processed characters: Array(15)
+index-j0BoxILq.js:500 Connecting to WebSocket: wss://umbra-dev.onrender.com/ws?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwidXNlcm5hbWUiOiJDYXNleSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1MDc1ODgzOCwiZXhwIjoxNzUxMzYzNjM4fQ.R7nifFeRLX5A5PRaGNR2vjQgiZuXv7VFRLG3kOtV6kk
+index-j0BoxILq.js:500 [chat-room] Raw characters response: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 Auto-selecting first character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 WebSocket connected
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
+index-j0BoxILq.js:500 [chat-room] Filtered out character: Object
