@@ -974,17 +974,16 @@ export default function ChatRoom() {
         {/* Messages */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
           {localMessages.map((message, idx) => {
-            // DEBUG: Log every message and its character
-            console.log('[DEBUG][MSG]', idx, JSON.stringify(message, null, 2));
-            if (message && typeof message === 'object') {
-              console.log('[DEBUG][MSG-CHAR]', idx, JSON.stringify(message.character, null, 2));
-              console.log('[DEBUG][MSG-CHARID]', idx, message.characterId);
-              console.log('[DEBUG][MSG-MSGTYPE]', idx, message.messageType);
-            }
-            // Bezpečné mapování postavy
-            const safeCharacter = (message.character && typeof message.character === 'object' && typeof message.character.firstName === 'string')
-              ? message.character
-              : { firstName: 'Neznámá', lastName: 'postava', avatar: null };
+            // Safely handle character data
+            const messageChar = message.character || null;
+            const isNarratorMessage = message.messageType === 'narrator' || message.characterId === 0;
+            
+            // For narrator messages, use special character data
+            const safeCharacter = isNarratorMessage 
+              ? { firstName: 'Vypravěč', lastName: '', avatar: null }
+              : (messageChar && typeof messageChar === 'object' && typeof messageChar.firstName === 'string')
+                ? messageChar
+                : { firstName: 'Neznámá', lastName: 'postava', avatar: null };
             return (
               <div key={message.id} className="flex items-start gap-3">
                 {/* Avatar - special handling for narrator messages */}
@@ -1145,7 +1144,7 @@ export default function ChatRoom() {
                   </div>
                   {/* Message content with special styling for narrator messages */}
                   <div className={`text-sm !break-words !whitespace-pre-wrap !overflow-wrap-anywhere !word-break-break-all max-w-full ${
-                    (message.messageType === 'narrator' || message.characterId === 0) ? 'italic font-medium p-3 rounded-lg border-l-4' : ''
+                    isNarratorMessage ? 'italic font-medium p-3 rounded-lg border-l-4' : ''
                   } ${
                     safeCharacter.firstName === 'Správa' && safeCharacter.lastName === 'ubytování' 
                       ? 'text-blue-600 dark:text-blue-400' 
@@ -1156,7 +1155,7 @@ export default function ChatRoom() {
                     wordBreak: 'break-all',
                     whiteSpace: 'pre-wrap',
                     maxWidth: '100%',
-                    ...((message.messageType === 'narrator' || message.characterId === 0) && {
+                    ...(isNarratorMessage && {
                       backgroundColor: user?.narratorColor === 'yellow' ? 'rgba(251, 191, 36, 0.1)' :
                                      user?.narratorColor === 'red' ? 'rgba(239, 68, 68, 0.1)' :
                                      user?.narratorColor === 'blue' ? 'rgba(59, 130, 246, 0.1)' :
@@ -1171,7 +1170,7 @@ export default function ChatRoom() {
                                      '#8b5cf6'
                     })
                   }}>
-                    {renderMessageWithHighlight(message.content, user?.highlightWords, user?.highlightColor)}
+                    {renderMessageWithHighlight(getMessageBody(message), user?.highlightWords, user?.highlightColor)}
                   </div>
                 </div>
               </div>

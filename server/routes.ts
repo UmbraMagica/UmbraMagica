@@ -298,15 +298,12 @@ export async function registerRoutes(app: Express): Promise<void> {
   // Endpoint pro seznam všech postav (HLAVNÍ ENDPOINT)
   app.get("/api/characters", requireAuth, async (req, res) => {
     try {
-      let characters;
-      if (req.user!.role === 'admin') {
-        characters = await storage.getAllCharacters();
-      } else {
-        characters = await storage.getCharactersByUserId(req.user!.id);
-      }
+      // ALWAYS return only user's own characters, regardless of admin status
+      // Admins can use /api/characters/all for all characters
+      const characters = await storage.getCharactersByUserId(req.user!.id);
 
-      console.log(`[CHARACTERS] FULL DEBUG - User ${req.user!.username} (${req.user!.role}) requesting characters`);
-      console.log(`[CHARACTERS] FULL DEBUG - Raw characters:`, characters);
+      console.log(`[CHARACTERS] FULL DEBUG - User ${req.user!.username} (${req.user!.role}) requesting OWN characters`);
+      console.log(`[CHARACTERS] FULL DEBUG - Raw characters for user ${req.user!.id}:`, characters);
       console.log(`[CHARACTERS] FULL DEBUG - Raw count: ${characters?.length || 0}`);
       
       const validCharacters = validateAndFilterCharacters(characters);
@@ -454,8 +451,30 @@ export async function registerRoutes(app: Express): Promise<void> {
 
     try {
       const messages = await storage.getChatMessages(roomId);
-      console.log(`[CHAT][MESSAGES] Returning ${messages?.length || 0} messages`);
-      res.json(messages || []);
+      console.log(`[CHAT][MESSAGES] Raw messages count: ${messages?.length || 0}`);
+      
+      // Ensure all messages have proper character data
+      const messagesWithCharacters = await Promise.all((messages || []).map(async (message: any) => {
+        if (message.characterId && message.characterId > 0) {
+          try {
+            const character = await storage.getCharacterById(message.characterId);
+            if (character) {
+              message.character = {
+                firstName: character.firstName,
+                middleName: character.middleName,
+                lastName: character.lastName,
+                avatar: character.avatar
+              };
+            }
+          } catch (error) {
+            console.error(`Error fetching character ${message.characterId}:`, error);
+          }
+        }
+        return message;
+      }));
+      
+      console.log(`[CHAT][MESSAGES] Returning ${messagesWithCharacters.length} messages with character data`);
+      res.json(messagesWithCharacters);
     } catch (error) {
       console.error("Error fetching chat messages:", error);
       res.status(500).json({ message: "Failed to fetch messages" });
