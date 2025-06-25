@@ -399,17 +399,10 @@ export class DatabaseStorage implements IStorage {
 
       // Process all messages
       const processedMessages = data.map((msg, idx) => {
-        let character;
+        let character = undefined;
+        // Pokud je to narativní/systémová zpráva
         if (msg.character_id === 0 || msg.message_type === 'narrator') {
-          // Narrator message
-          character = {
-            id: 0,
-            firstName: 'Vypravěč',
-            middleName: null,
-            lastName: '',
-            avatar: null,
-            userId: 0
-          };
+          character = undefined;
         } else if (msg.character) {
           let charObj = null;
           if (Array.isArray(msg.character)) {
@@ -419,7 +412,6 @@ export class DatabaseStorage implements IStorage {
           } else if (typeof msg.character === 'object' && msg.character !== null) {
             charObj = msg.character;
           }
-          console.log(`[DEBUG][getChatMessages][${idx}] charObj:`, JSON.stringify(charObj, null, 2));
           if (
             charObj &&
             typeof charObj === 'object' &&
@@ -435,25 +427,7 @@ export class DatabaseStorage implements IStorage {
               avatar: charObj.avatar,
               userId: charObj.user_id
             };
-          } else {
-            character = {
-              id: msg.character_id,
-              firstName: 'Neznámá',
-              middleName: null,
-              lastName: 'postava',
-              avatar: null,
-              userId: 0
-            };
           }
-        } else {
-          character = {
-            id: msg.character_id,
-            firstName: 'Neznámá',
-            middleName: null,
-            lastName: 'postava',
-            avatar: null,
-            userId: 0
-          };
         }
         const processed = {
           id: msg.id,
@@ -462,10 +436,8 @@ export class DatabaseStorage implements IStorage {
           content: msg.content,
           messageType: msg.message_type,
           createdAt: msg.created_at,
-          character
+          character: character
         };
-        console.log(`[DEBUG][getChatMessages][${idx}] msg.id=${msg.id} char_id=${msg.character_id} type=${msg.message_type}`);
-        console.log(`[DEBUG][getChatMessages][${idx}] processed:`, JSON.stringify(processed, null, 2));
         return processed;
       });
 
@@ -786,7 +758,7 @@ export class DatabaseStorage implements IStorage {
 
   async deleteChatRoom(id: number): Promise<boolean> {
     await supabase.from('messages').delete().eq('room_id', id);
-    const { error } = awaitsupabase.from('chat_rooms').delete().eq('id', id);
+    const { error } = await supabase.from('chat_rooms').delete().eq('id', id);
     return !error;
   }
 
