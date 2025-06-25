@@ -12,34 +12,8 @@ router.get('/rooms/:roomId/messages', async (req, res) => {
   const { roomId } = req.params;
 
   try {
-    // Načteme zprávy s JOIN na characters tabulku
-    const { data, error } = await supabase
-      .from('messages')
-      .select(`
-        id,
-        room_id,
-        character_id,
-        content,
-        message_type,
-        created_at,
-        characters!inner (
-          id,
-          first_name,
-          middle_name,
-          last_name,
-          user_id
-        )
-      `)
-      .eq('room_id', Number(roomId))
-      .order('created_at', { ascending: true });
-
-    if (error) {
-      console.error('Load messages error:', error);
-      return res.status(500).json({ error: 'Failed to load messages' });
-    }
-
-    // Načteme také zprávy vypravěče (character_id = 0) separátně
-    const { data: narratorData, error: narratorError } = await supabase
+    // Načteme všechny zprávy v místnosti (včetně vypravěče)
+    const { data: allMessages, error: messagesError } = await supabase
       .from('messages')
       .select(`
         id,
@@ -50,45 +24,66 @@ router.get('/rooms/:roomId/messages', async (req, res) => {
         created_at
       `)
       .eq('room_id', Number(roomId))
-      .eq('character_id', 0)
       .order('created_at', { ascending: true });
 
-    if (narratorError) {
-      console.error('Load narrator messages error:', narratorError);
+    if (messagesError) {
+      console.error('Load messages error:', messagesError);
+      return res.status(500).json({ error: 'Failed to load messages' });
     }
 
-    // Kombinuj zprávy od postav a vypravěče
-    const allMessages = [
-      ...(data || []).map(msg => ({
-        id: msg.id,
-        roomId: msg.room_id,
-        characterId: msg.character_id,
-        content: msg.content,
-        messageType: msg.message_type,
-        createdAt: msg.created_at,
-        character: msg.characters ? {
-          id: msg.characters.id,
-          firstName: msg.characters.first_name,
-          middleName: msg.characters.middle_name,
-          lastName: msg.characters.last_name,
-          userId: msg.characters.user_id
-        } : null
-      })),
-      ...(narratorData || []).map(msg => ({
-        id: msg.id,
-        roomId: msg.room_id,
-        characterId: msg.character_id,
-        content: msg.content,
-        messageType: msg.message_type,
-        createdAt: msg.created_at,
-        character: null
-      }))
-    ];
+    if (!allMessages || allMessages.length === 0) {
+      console.log(`[MESSAGES] No messages found for room ${roomId}`);
+      return res.json([]);
+    }
 
-    // Seřaď podle času
-    const transformedMessages = allMessages.sort((a, b) => 
-      new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-    );
+    // Najdeme všechny unikátní character_id (kromě 0 = vypravěč)
+    const characterIds = [...new Set(
+      allMessages
+        .map(msg => msg.character_id)
+        .filter(id => id && id !== 0)
+    )];
+
+    // Načteme data postav
+    let characterMap = new Map();
+    if (characterIds.length > 0) {
+      const { data: characters, error: charError } = await supabase
+        .from('characters')
+        .select(`
+          id,
+          first_name,
+          middle_name,
+          last_name,
+          user_id
+        `)
+        .in('id', characterIds);
+
+      if (charError) {
+        console.error('Load characters error:', charError);
+      } else if (characters) {
+        characters.forEach(char => {
+          characterMap.set(char.id, {
+            id: char.id,
+            firstName: char.first_name,
+            middleName: char.middle_name,
+            lastName: char.last_name,
+            userId: char.user_id
+          });
+        });
+      }
+    }
+
+    // Transformuj zprávy s připojenými postavami
+    const transformedMessages = allMessages.map(msg => ({
+      id: msg.id,
+      roomId: msg.room_id,
+      characterId: msg.character_id,
+      content: msg.content,
+      messageType: msg.message_type,
+      createdAt: msg.created_at,
+      character: msg.character_id === 0 || msg.message_type === 'narrator' 
+        ? null 
+        : characterMap.get(msg.character_id) || null
+    }));
 
     console.log(`[MESSAGES] Returning ${transformedMessages.length} messages for room ${roomId}`);
     res.json(transformedMessages);
