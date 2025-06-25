@@ -1,19 +1,7 @@
+
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.SUPABASE_URL || '';
-const supabaseKey = process.env.SUPABASE_ANON_KEY || '';
-
-console.log('[SUPABASE] Initializing client with:', {
-  hasUrl: !!supabaseUrl,
-  hasKey: !!supabaseKey,
-  url: supabaseUrl ? supabaseUrl.substring(0, 30) + '...' : 'missing'
-});
-
-if (!supabaseUrl || !supabaseKey) {
-  console.error('Missing Supabase configuration');
-  process.exit(1);
-}
+const supabaseUrl = 'https://mzwbvzrkyjooegttklcq.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im16d2J2enJreWpvb2VndHRrbGNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk0NTI4NTUsImV4cCI6MjA2NTAyODg1NX0.oRY1m83jybuB583GQBpHb_ulicbMsaAnyZ4WPrz2o0M';
 
 export const supabase = createClient(supabaseUrl, supabaseKey);
-
-console.log('[SUPABASE] Client created successfully');
