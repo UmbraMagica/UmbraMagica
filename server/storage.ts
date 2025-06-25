@@ -370,6 +370,8 @@ export class DatabaseStorage implements IStorage {
 
   async getChatMessages(roomId: number) {
     try {
+      console.log(`[STORAGE][getChatMessages] Starting fetch for room ${roomId}`);
+      
       // 1. Načti všechny zprávy v místnosti
       const { data: rawMessages, error: msgError } = await supabase
         .from("messages")
@@ -385,10 +387,16 @@ export class DatabaseStorage implements IStorage {
         .order("created_at", { ascending: true });
 
       if (msgError) {
-        console.error('Error fetching messages:', msgError);
+        console.error('[STORAGE][getChatMessages] Error fetching messages:', msgError);
         return [];
       }
-      if (!rawMessages || rawMessages.length === 0) return [];
+      if (!rawMessages || rawMessages.length === 0) {
+        console.log(`[STORAGE][getChatMessages] No messages found for room ${roomId}`);
+        return [];
+      }
+
+      console.log(`[STORAGE][getChatMessages] Found ${rawMessages.length} messages`);
+      console.log(`[STORAGE][getChatMessages] First 3 messages:`, rawMessages.slice(0, 3));
 
       // 2. Najdi všechny unikátní character_id (kromě 0)
       const characterIds = [
@@ -399,17 +407,23 @@ export class DatabaseStorage implements IStorage {
         ),
       ];
 
+      console.log(`[STORAGE][getChatMessages] Found character IDs:`, characterIds);
+
       // 3. Načti všechny postavy najednou
       let characterMap = new Map();
       if (characterIds.length > 0) {
+        console.log(`[STORAGE][getChatMessages] Fetching characters for IDs:`, characterIds);
+        
         const { data: characters, error: charError } = await supabase
           .from("characters")
           .select("id, first_name, middle_name, last_name, avatar, user_id")
           .in("id", characterIds);
 
         if (charError) {
-          console.error("Error fetching characters:", charError);
+          console.error("[STORAGE][getChatMessages] Error fetching characters:", charError);
         } else if (characters) {
+          console.log(`[STORAGE][getChatMessages] Fetched ${characters.length} characters:`, characters);
+          
           characters.forEach((c) => {
             characterMap.set(c.id, {
               id: c.id,
@@ -420,11 +434,17 @@ export class DatabaseStorage implements IStorage {
               userId: c.user_id,
             });
           });
+          
+          console.log(`[STORAGE][getChatMessages] Character map keys:`, Array.from(characterMap.keys()));
+        } else {
+          console.log(`[STORAGE][getChatMessages] No characters returned from query`);
         }
+      } else {
+        console.log(`[STORAGE][getChatMessages] No character IDs to fetch`);
       }
 
       // 4. Spoj zprávy s postavami
-      const messages = rawMessages.map((msg) => {
+      const messages = rawMessages.map((msg, index) => {
         const char =
           msg.character_id === 0 || msg.message_type === "narrator"
             ? undefined
@@ -432,8 +452,13 @@ export class DatabaseStorage implements IStorage {
 
         // Debug log for character mapping
         if (msg.character_id > 0 && msg.message_type !== "narrator" && !char) {
-          console.log(`Warning: Character not found for message ${msg.id}, characterId: ${msg.character_id}`);
-          console.log('Available character IDs in map:', Array.from(characterMap.keys()));
+          console.log(`[STORAGE][getChatMessages] Warning: Character not found for message ${msg.id}, characterId: ${msg.character_id}`);
+          console.log(`[STORAGE][getChatMessages] Available character IDs in map:`, Array.from(characterMap.keys()));
+          console.log(`[STORAGE][getChatMessages] Message type: ${msg.message_type}`);
+        }
+
+        if (index < 3) {
+          console.log(`[STORAGE][getChatMessages] Message ${index} - ID: ${msg.id}, CharID: ${msg.character_id}, Type: ${msg.message_type}, Character found: ${!!char}`);
         }
 
         return {
@@ -447,9 +472,10 @@ export class DatabaseStorage implements IStorage {
         };
       });
 
+      console.log(`[STORAGE][getChatMessages] Returning ${messages.length} messages`);
       return messages;
     } catch (error) {
-      console.error("Error fetching chat messages:", error);
+      console.error("[STORAGE][getChatMessages] Error fetching chat messages:", error);
       return [];
     }
   }

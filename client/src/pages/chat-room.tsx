@@ -104,7 +104,7 @@ export default function ChatRoom() {
 
   // Use characters from useAuth
   const { user, isLoading: authLoading } = useAuth();
-  
+
   // Safe character processing
   const userCharactersRaw = user?.characters || [];
   const charactersLoading = authLoading;
@@ -140,6 +140,40 @@ export default function ChatRoom() {
   // Fetch messages for current room
   const { data: messages = [], isLoading: messagesLoading } = useQuery<ChatMessage[]>({
     queryKey: ["/api/chat/rooms", currentRoomId, "messages"],
+    queryFn: async () => {
+      console.log(`[CHAT-ROOM][fetch] Fetching messages for room ${currentRoomId}`);
+      const token = localStorage.getItem('jwt_token');
+      const response = await fetch(`${API_URL}/api/chat/rooms/${currentRoomId}/messages`, {
+        headers: { 
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+      });
+      if (!response.ok) {
+        console.error(`[CHAT-ROOM][fetch] Failed to fetch messages: ${response.status} ${response.statusText}`);
+        throw new Error("Failed to fetch messages");
+      }
+      const data = await response.json();
+      console.log(`[CHAT-ROOM][fetch] Načtené zprávy z API:`, data);
+      console.log(`[CHAT-ROOM][fetch] Total messages: ${data.length}`);
+
+      // Debug: zkontroluj každou zprávu
+      data.forEach((msg: any, index: number) => {
+        if (index < 5) { // First 5 messages only
+          console.log(`[CHAT-ROOM][fetch] Message ${index}:`, {
+            id: msg.id,
+            characterId: msg.characterId,
+            messageType: msg.messageType,
+            hasCharacter: !!msg.character,
+            characterData: msg.character,
+            content: msg.content?.substring(0, 50) + "..."
+          });
+        }
+      });
+
+      return data;
+    },
     enabled: !!currentRoomId && !!user,
     retry: 3,
     staleTime: 10000,
@@ -178,7 +212,7 @@ export default function ChatRoom() {
       const wsBaseUrl = import.meta.env.VITE_WS_URL || window.location.protocol.replace('http', 'ws') + '//' + window.location.host;
       const wsUrl = `${wsBaseUrl}/ws?token=${encodeURIComponent(token)}`;
       console.log('Connecting to WebSocket:', wsUrl);
-      
+
       const ws = new WebSocket(wsUrl);
       setWs(ws);
 
@@ -602,7 +636,7 @@ export default function ChatRoom() {
   }, [messages]);
 
   // Loading states
-  if (authLoading || roomsLoading) {
+  if (authLoading || roomsLoading || messagesLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Card>
@@ -690,7 +724,7 @@ export default function ChatRoom() {
             )}
           </div>
         </div>
-        
+
         {/* Chat zprávy */}
         <ScrollArea className="flex-1 bg-muted/10 rounded-lg p-4 mb-2 mx-6">
           <div className="space-y-4">
@@ -743,7 +777,7 @@ export default function ChatRoom() {
             <div ref={messagesEndRef} />
           </div>
         </ScrollArea>
-        
+
         {/* Kompaktní dolní lišta */}
         <div className="flex flex-col gap-2 px-6 pb-4">
           {/* První řádek: Avatar + pole pro zprávu + tlačítko odeslat */}
@@ -855,71 +889,72 @@ export default function ChatRoom() {
 
             {canSendAsNarrator && (
               <Button 
-                variant={isNarratorMode ? "default" : "outline"} 
-                size="sm"
-                onClick={() => setIsNarratorMode(!isNarratorMode)}
-                className="h-8"
-              >
-                {isNarratorMode ? 'Vypravěč (aktivní)' : 'Vypravěč'}
+```text
+                  variant={isNarratorMode ? "default" : "outline"} 
+                  size="sm"
+                  onClick={() => setIsNarratorMode(!isNarratorMode)}
+                  className="h-8"
+                >
+                  {isNarratorMode ? 'Vypravěč (aktivní)' : 'Vypravěč'}
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Pravý panel: Popis místnosti a tlačítko Upravit pro admina */}
+        <div className="w-80 border-l bg-muted/20 overflow-y-auto flex flex-col">
+          <div className="flex items-center justify-between p-4 border-b">
+            <h3 className="font-semibold text-sm mb-0">Informace o místnosti</h3>
+            {!isEditingDescription && user?.role === 'admin' && (
+              <Button variant="outline" size="sm" onClick={handleEditDescription}>
+                Upravit
               </Button>
+            )}
+            {isEditingDescription && (
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" onClick={handleCancelEdit}>
+                  Zrušit
+                </Button>
+                <Button 
+                  variant="default" 
+                  size="sm" 
+                  onClick={handleSaveDescription}
+                  disabled={updateRoomDescriptionMutation.isPending}
+                >
+                  {updateRoomDescriptionMutation.isPending ? 'Ukládá...' : 'Uložit'}
+                </Button>
+              </div>
+            )}
+          </div>
+          <div className="p-4">
+            <h4 className="font-semibold text-sm mb-3">Popis místnosti</h4>
+            {isEditingDescription ? (
+              <div>
+                <Textarea
+                  value={editedDescription}
+                  onChange={(e) => setEditedDescription(e.target.value)}
+                  className="min-h-[200px] text-sm"
+                  placeholder="Zadejte popis místnosti..."
+                />
+                <div className="mt-3 p-3 bg-muted/30 rounded-lg border">
+                  <h5 className="text-xs font-semibold mb-2 text-muted-foreground">Nápověda k formátování:</h5>
+                  <div className="text-xs text-muted-foreground space-y-1">
+                    <div><strong>**text**</strong> - tučné písmo</div>
+                    <div><em>*text*</em> - kurzíva</div>
+                    <div><u>__text__</u> - podtržené</div>
+                    <div><span className="text-blue-500 underline">[Název místnosti]</span> - odkaz na jinou místnost</div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <RoomDescription 
+                description={currentRoom?.longDescription || 'Žádný popis není k dispozici.'} 
+                roomName={currentRoom?.name}
+              />
             )}
           </div>
         </div>
       </div>
-      
-      {/* Pravý panel: Popis místnosti a tlačítko Upravit pro admina */}
-      <div className="w-80 border-l bg-muted/20 overflow-y-auto flex flex-col">
-        <div className="flex items-center justify-between p-4 border-b">
-          <h3 className="font-semibold text-sm mb-0">Informace o místnosti</h3>
-          {!isEditingDescription && user?.role === 'admin' && (
-            <Button variant="outline" size="sm" onClick={handleEditDescription}>
-              Upravit
-            </Button>
-          )}
-          {isEditingDescription && (
-            <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={handleCancelEdit}>
-                Zrušit
-              </Button>
-              <Button 
-                variant="default" 
-                size="sm" 
-                onClick={handleSaveDescription}
-                disabled={updateRoomDescriptionMutation.isPending}
-              >
-                {updateRoomDescriptionMutation.isPending ? 'Ukládá...' : 'Uložit'}
-              </Button>
-            </div>
-          )}
-        </div>
-        <div className="p-4">
-          <h4 className="font-semibold text-sm mb-3">Popis místnosti</h4>
-          {isEditingDescription ? (
-            <div>
-              <Textarea
-                value={editedDescription}
-                onChange={(e) => setEditedDescription(e.target.value)}
-                className="min-h-[200px] text-sm"
-                placeholder="Zadejte popis místnosti..."
-              />
-              <div className="mt-3 p-3 bg-muted/30 rounded-lg border">
-                <h5 className="text-xs font-semibold mb-2 text-muted-foreground">Nápověda k formátování:</h5>
-                <div className="text-xs text-muted-foreground space-y-1">
-                  <div><strong>**text**</strong> - tučné písmo</div>
-                  <div><em>*text*</em> - kurzíva</div>
-                  <div><u>__text__</u> - podtržené</div>
-                  <div><span className="text-blue-500 underline">[Název místnosti]</span> - odkaz na jinou místnost</div>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <RoomDescription 
-              description={currentRoom?.longDescription || 'Žádný popis není k dispozici.'} 
-              roomName={currentRoom?.name}
-            />
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
+    );
+  }

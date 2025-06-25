@@ -469,7 +469,7 @@ export async function registerRoutes(app: Express): Promise<void> {
           try {
             const character = await storage.getCharacterById(message.characterId);
             console.log(`[CHAT][MESSAGES] Character lookup for ID ${message.characterId}:`, character ? 'FOUND' : 'NOT_FOUND');
-            
+
             if (character) {
               message.character = {
                 id: character.id,
@@ -522,7 +522,7 @@ export async function registerRoutes(app: Express): Promise<void> {
             avatar: null
           };
         }
-        
+
         return message;
       }));
 
@@ -795,7 +795,8 @@ export async function registerRoutes(app: Express): Promise<void> {
     try {
       const result = await storage.archiveChatMessages(roomId);
       res.json({ message: `Archivováno ${result.count} zpráv` });
-    } catch (error) {
+    } catch (error)```text
+{
       console.error("Error archiving messages:", error);
       res.status(500).json({ message: "Failed to archive messages" });
     }
@@ -1592,7 +1593,7 @@ export async function registerRoutes(app: Express): Promise<void> {
   });
 
   // Wand components route for admin interface
-  app.get("/api/admin/wand-components", requireAdmin, async (req, res) => {
+  app.get("/api/admin/wand-components", requireAuth, async (req, res) => {
     try {
       const components = await storage.getAllWandComponents();
       res.json(components);
@@ -1866,6 +1867,35 @@ export async function registerRoutes(app: Express): Promise<void> {
       res.json(debugInfo);
     } catch (error) {
       res.status(500).json({ error: error.message, stack: error.stack });
+    }
+  });
+
+  // Chat zprávy pro konkrétní místnost
+  app.get("/api/chat/:roomId/messages", requireAuth, async (req, res) => {
+    const roomId = Number(req.params.roomId);
+    if (!roomId || isNaN(roomId)) {
+      return res.status(400).json({ message: "Invalid room ID" });
+    }
+
+    try {
+      console.log(`[ROUTES][chat-messages] User ${req.user?.username} requesting messages for room ${roomId}`);
+      const messages = await storage.getChatMessages(roomId);
+      console.log(`[ROUTES][chat-messages] Returning ${messages.length} messages for room ${roomId}`);
+
+      if (messages.length > 0) {
+        console.log(`[ROUTES][chat-messages] First message sample:`, {
+          id: messages[0].id,
+          characterId: messages[0].characterId,
+          messageType: messages[0].messageType,
+          hasCharacter: !!messages[0].character,
+          characterData: messages[0].character
+        });
+      }
+
+      res.json(messages);
+    } catch (error) {
+      console.error("[ROUTES][chat-messages] Error fetching chat messages:", error);
+      res.status(500).json({ message: "Failed to fetch chat messages" });
     }
   });
 }
