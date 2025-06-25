@@ -796,7 +796,6 @@ export async function registerRoutes(app: Express): Promise<void> {
       const result = await storage.archiveChatMessages(roomId);
       res.json({ message: `Archivováno ${result.count} zpráv` });
     } catch (error) {
-{
       console.error("Error archiving messages:", error);
       res.status(500).json({ message: "Failed to archive messages" });
     }
