@@ -427,6 +427,12 @@ export class DatabaseStorage implements IStorage {
             ? undefined
             : characterMap.get(msg.character_id);
 
+        // Debug log for character mapping
+        if (msg.character_id > 0 && msg.message_type !== "narrator" && !char) {
+          console.log(`Warning: Character not found for message ${msg.id}, characterId: ${msg.character_id}`);
+          console.log('Available character IDs in map:', Array.from(characterMap.keys()));
+        }
+
         return {
           id: msg.id,
           roomId: msg.room_id,

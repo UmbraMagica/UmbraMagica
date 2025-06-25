@@ -220,13 +220,26 @@ export default function ChatRoom() {
     }
   }, [currentRoomId, queryClient]);
 
-  // Update local messages when server messages change
+  // Debug log pro načtené zprávy
   useEffect(() => {
     if (Array.isArray(messages)) {
       if (messages.length > 0) {
         console.log("Messages data:", messages);
         console.log("Messages loading:", messagesLoading);
         console.log("Current room ID:", currentRoomId);
+
+        // Debug each message to see character data
+        messages.forEach((msg, index) => {
+          console.log(`Message ${index}:`, {
+            id: msg.id,
+            characterId: msg.characterId,
+            character: msg.character,
+            hasCharacter: !!msg.character,
+            characterFirstName: msg.character?.firstName,
+            messageType: msg.messageType,
+            content: msg.content?.substring(0, 50) + '...'
+          });
+        });
 
         // Sort messages by creation date (newest first for display)
         const sortedMessages = [...messages].sort(
@@ -888,8 +901,7 @@ export default function ChatRoom() {
                   <Button
                     onClick={handleSaveName}
                     variant="default"
-                    size="sm"
-                    className="flex items-center gap-1"
+                    size="sm                    className="flex items-center gap-1"
                   >
                     <Save className="h-3 w-3" />
                   </Button>
@@ -977,7 +989,7 @@ export default function ChatRoom() {
             // Safely handle character data
             const messageChar = message.character || null;
             const isNarratorMessage = message.messageType === 'narrator' || message.characterId === 0;
-            
+
             // For narrator messages, use special character data
             const safeCharacter = isNarratorMessage 
               ? { firstName: 'Vypravěč', lastName: '', avatar: null }
