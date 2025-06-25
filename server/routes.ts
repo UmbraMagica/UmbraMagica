@@ -790,7 +790,7 @@ export async function registerRoutes(app: Express): Promise<void> {
       return res.status(400).json({ message: "Neplatné characterId" });
     }
 
-    const character = await storage.getCharacterById(characterId);
+        const character = await storage.getCharacterById(characterId);
     if (!character) {
       return res.status(404).json({ message: "Postava nenalezena" });
     }

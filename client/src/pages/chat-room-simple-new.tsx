@@ -151,7 +151,9 @@ export default function ChatRoom() {
       if (!response.ok) {
         throw new Error("Failed to fetch messages");
       }
-      return response.json();
+      const data = await response.json();
+      console.log('Raw API response for messages:', data);
+      return data;
     },
     enabled: !!currentRoomId && !!localStorage.getItem('jwt_token'),
     refetchInterval: 5000,
