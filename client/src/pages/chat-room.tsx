@@ -44,34 +44,19 @@ const API_URL = import.meta.env.VITE_API_URL || '';
 
 // Helper function to safely get character name
 function getCharacterName(message: any): string {
-  // Handle narrator/system messages
+  // 1. Pokud máme načtenou postavu, použijeme její jméno
+  if (message.character && message.character.firstName) {
+    const { firstName, middleName, lastName } = message.character;
+    return [firstName, middleName, lastName].filter(Boolean).join(' ');
+  }
+
+  // 2. Pokud není postava, ale je to systémová/narativní zpráva
   if (!message.characterId || message.characterId === 0) {
-    if (message.character?.firstName) {
-      return message.character.firstName;
-    }
     return message.messageType === 'narrator' ? 'Vypravěč' : 'Systém';
   }
-  
-  // Handle direct character object (not a message)
-  if (message.firstName) {
-    const firstName = message.firstName || '';
-    const middleName = message.middleName || '';
-    const lastName = message.lastName || '';
-    return `${firstName}${middleName ? ` ${middleName}` : ''} ${lastName}`.trim() || 'Neznámá postava';
-  }
-  
-  // Handle message with nested character
-  const character = message.character;
-  if (!character || typeof character !== 'object') {
-    return 'Neznámá postava';
-  }
-  
-  // Get character name with fallbacks
-  const firstName = character.firstName || character.first_name || '';
-  const middleName = character.middleName || character.middle_name || '';
-  const lastName = character.lastName || character.last_name || '';
-  const fullName = `${firstName}${middleName ? ` ${middleName}` : ''} ${lastName}`.trim();
-  return fullName || 'Neznámá postava';
+
+  // 3. Pokud má characterId, ale postava není načtená (chyba backendu)
+  return 'Neznámá postava';
 }
 
 // Helper function to safely get character initials
@@ -692,33 +677,39 @@ export default function ChatRoom() {
                 <p className="text-muted-foreground">Žádné zprávy v této místnosti.</p>
               </div>
             ) : (
-              sortedMessages.map((message) => (
-                <div key={message.id} className="flex gap-3 items-start">
-                  <Avatar className="w-10 h-10 flex-shrink-0">
-                    <AvatarImage src={message.character?.avatar || undefined} />
-                    <AvatarFallback className="bg-primary/10 text-primary font-semibold">
-                      {message.character?.firstName && message.character?.lastName
-                        ? message.character.firstName.charAt(0) + message.character.lastName.charAt(0)
-                        : (message.messageType === 'narrator' ? 'V' : 'S')}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-baseline gap-2 mb-1">
-                      <span className="font-semibold text-foreground">
-                        {message.character?.firstName
-                          ? `${message.character.firstName}${message.character.middleName ? ' ' + message.character.middleName : ''} ${message.character.lastName}`.trim()
-                          : (message.messageType === 'narrator' ? 'Vypravěč' : 'Systém')}
-                      </span>
-                      <span className="text-xs text-muted-foreground">
-                        {formatMessageTime(message.createdAt)}
-                      </span>
-                    </div>
-                    <div className="bg-muted/30 rounded-lg p-3">
-                      <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
+              sortedMessages.map((message) => {
+                // Debug logy pro ladění jmen a postav
+                console.log("Message:", message);
+                console.log("Character:", message.character);
+                console.log("Resolved name:", getCharacterName(message));
+                return (
+                  <div key={message.id} className="flex gap-3 items-start">
+                    <Avatar className="w-10 h-10 flex-shrink-0">
+                      <AvatarImage src={message.character?.avatar || undefined} />
+                      <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+                        {getCharacterName(message)
+                          .split(' ')
+                          .map((part) => part[0])
+                          .join('')
+                          .toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-baseline gap-2 mb-1">
+                        <span className="font-semibold text-foreground">
+                          {getCharacterName(message)}
+                        </span>
+                        <span className="text-xs text-muted-foreground">
+                          {formatMessageTime(message.createdAt)}
+                        </span>
+                      </div>
+                      <div className="bg-muted/30 rounded-lg p-3">
+                        <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))
+                );
+              })
             )}
             <div ref={messagesEndRef} />
           </div>
