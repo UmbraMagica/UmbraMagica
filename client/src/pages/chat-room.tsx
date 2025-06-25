@@ -256,9 +256,9 @@ export default function ChatRoom() {
     }
   }, [user, roomId, currentRoomId, queryClient]);
 
-  // Auto-scroll to bottom when new messages arrive
+  // Keep scroll position at top for newest messages
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    // No auto-scroll needed since newest messages appear at top
   }, [messages]);
 
   // Send message mutation
@@ -686,9 +686,9 @@ export default function ChatRoom() {
   const messageInputLength = messageInput.length;
   const isMessageValid = messageInputLength >= MIN_MESSAGE_LENGTH && messageInputLength <= MAX_MESSAGE_LENGTH;
 
-  // Sort messages - newest first (chronological order for better UX)
+  // Sort messages - newest first (latest at top)
   const sortedMessages = [...messages].sort((a, b) => 
-    new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+    new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   );
 
   return (
@@ -774,8 +774,8 @@ export default function ChatRoom() {
                 );
               })
             )}
-            <div ref={messagesEndRef} />
           </div>
+          <div ref={messagesEndRef} />
         </ScrollArea>
 
         {/* Kompaktní dolní lišta */}
