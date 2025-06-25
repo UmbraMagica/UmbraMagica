@@ -905,7 +905,7 @@ export default function ChatRoom() {
               ) : (
                 <div className="flex items-center gap-2">
                   <div>
-                    <h1 className="text-2xl font-bold text-foreground">{currentRoom.name}</h1>
+                    <h1 className="text-2xl font-boldtext-foreground">{currentRoom.name}</h1>
                     {currentRoom.description && (
                       <p className="text-sm text-muted-foreground mt-1">{currentRoom.description}</p>
                     )}
@@ -973,19 +973,26 @@ export default function ChatRoom() {
 
         {/* Messages */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {localMessages.map((message, idx) => {
-            // Safely handle character data
-            const messageChar = message.character || null;
-            const isNarratorMessage = message.messageType === 'narrator' || message.characterId === 0;
-            
-            // For narrator messages, use special character data
-            const safeCharacter = isNarratorMessage 
-              ? { firstName: 'Vypravěč', lastName: '', avatar: null }
-              : (messageChar && typeof messageChar === 'object' && typeof messageChar.firstName === 'string')
-                ? messageChar
-                : { firstName: 'Neznámá', lastName: 'postava', avatar: null };
-            return (
-              <div key={message.id} className="flex items-start gap-3">
+          {localMessages.map((message, index) => {
+                const isCurrentUser = message.character?.userId === user?.id;
+                const isNarrator = message.messageType === 'narrator' || message.characterId === 0;
+
+                // Debug log pro každou renderovanou zprávu
+                if (index < 5) { // Pouze první 5 zpráv aby nebylo moc spamu
+                  console.log(`[RENDER] Message ${index}:`, {
+                    id: message.id,
+                    characterId: message.characterId,
+                    hasCharacter: !!message.character,
+                    characterName: message.character ? `${message.character.firstName} ${message.character.lastName}` : 'none',
+                    isCurrentUser,
+                    isNarrator,
+                    userId: user?.id,
+                    messageCharacterUserId: message.character?.userId
+                  });
+                }
+
+                return (
+                  <div key={message.id} className={`flex items-start gap-3`}>
                 {/* Avatar - special handling for narrator messages */}
                 {(() => {
                   const isNarratorMessage = message.messageType === 'narrator' || message.characterId === 0;
@@ -1003,7 +1010,7 @@ export default function ChatRoom() {
                       <span className="text-xs font-bold text-white">V</span>
                     </div>
                   ) : (
-                    <CharacterAvatar character={safeCharacter} size="sm" />
+                    <CharacterAvatar character={message.character} size="sm" />
                   );
                 })()}
 
@@ -1032,7 +1039,7 @@ export default function ChatRoom() {
                             href={`/characters/${message.characterId}`}
                             className="font-medium text-sm hover:text-primary hover:underline cursor-pointer"
                           >
-                            {safeCharacter.firstName} {safeCharacter.middleName ? `${safeCharacter.middleName} ` : ''}{safeCharacter.lastName}
+                            {message.character?.firstName} {message.character?.middleName ? `${message.character?.middleName} ` : ''}{message.character?.lastName}
                           </Link>
                         );
                       }
@@ -1146,7 +1153,7 @@ export default function ChatRoom() {
                   <div className={`text-sm !break-words !whitespace-pre-wrap !overflow-wrap-anywhere !word-break-break-all max-w-full ${
                     isNarratorMessage ? 'italic font-medium p-3 rounded-lg border-l-4' : ''
                   } ${
-                    safeCharacter.firstName === 'Správa' && safeCharacter.lastName === 'ubytování' 
+                    message.character?.firstName === 'Správa' && message.character?.lastName === 'ubytování' 
                       ? 'text-blue-600 dark:text-blue-400' 
                       : 'text-foreground'
                   }`} style={{ 
@@ -1174,8 +1181,8 @@ export default function ChatRoom() {
                   </div>
                 </div>
               </div>
-            );
-          })}
+                );
+              })}
           <div ref={messagesEndRef} />
         </div>
 
