@@ -1,0 +1,57 @@
+==> Cloning from https://github.com/UmbraMagica/Umbra-dev
+==> Checking out commit 333dc68378922e07f2dcc19d942b8a1312b35735 in branch main
+==> Using Node.js version 22.16.0 (default)
+==> Docs on specifying a Node.js version: https://render.com/docs/node-version
+==> Using Bun version 1.1.0 (default)
+==> Docs on specifying a Bun version: https://render.com/docs/bun-version
+==> Running build command '   npm install && npm run build'...
+added 559 packages, and audited 560 packages in 11s
+75 packages are looking for funding
+  run `npm fund` for details
+9 vulnerabilities (1 low, 7 moderate, 1 high)
+To address issues that do not require attention, run:
+  npm audit fix
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+Run `npm audit` for details.
+> umbra-magica@1.0.0 build
+> npm run build:client && npm run postbuild:client && npm run build:server
+> umbra-magica@1.0.0 build:client
+> cd client && npm install && npm run build
+added 237 packages, and audited 238 packages in 6s
+43 packages are looking for funding
+  run `npm fund` for details
+3 vulnerabilities (1 low, 2 moderate)
+To address all issues, run:
+  npm audit fix
+Run `npm audit` for details.
+> client@1.0.0 build
+> vite build
+The CJS build of Vite's Node API is deprecated. See https://vitejs.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.
+vite v5.2.10 building for production...
+transforming...
+✓ 22 modules transformed.
+x Build failed in 1.25s
+error during build:
+Error: [vite:esbuild] Transform failed with 1 error:
+/opt/render/project/src/client/src/pages/chat-room.tsx:892:0: ERROR: Expected ">" but found "`"
+file: /opt/render/project/src/client/src/pages/chat-room.tsx:892:0
+Expected ">" but found "`"
+890|              {canSendAsNarrator && (
+891|                <Button 
+892|  ```text
+   |  ^
+893|                    variant={isNarratorMode ? "default" : "outline"} 
+894|                    size="sm"
+    at failureErrorWithLog (/opt/render/project/src/client/node_modules/esbuild/lib/main.js:1651:15)
+    at /opt/render/project/src/client/node_modules/esbuild/lib/main.js:849:29
+    at responseCallbacks.<computed> (/opt/render/project/src/client/node_modules/esbuild/lib/main.js:704:9)
+    at handleIncomingPacket (/opt/render/project/src/client/node_modules/esbuild/lib/main.js:764:9)
+    at Socket.readFromStdout (/opt/render/project/src/client/node_modules/esbuild/lib/main.js:680:7)
+    at Socket.emit (node:events:518:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Readable.push (node:internal/streams/readable:392:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)
+==> Build failed 😞
+==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
