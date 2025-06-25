@@ -27,6 +27,7 @@ interface ChatMessage {
   roomId: number;
   characterId: number;
   content: string;
+  body?: string;      // <-- přidat
   messageType: string;
   createdAt: string;
   character: {
@@ -37,6 +38,8 @@ interface ChatMessage {
     userId: number;
   };
 }
+const getMessageText = (msg: ChatMessage) =>
+  msg.content ?? msg.body ?? '';      // vrátí tělo zprávy
 
 const MAX_MESSAGE_LENGTH = 5000;
 const MIN_MESSAGE_LENGTH = 1;
@@ -102,6 +105,9 @@ export default function ChatRoom() {
   <p className="text-sm whitespace-pre-wrap break-words">
     {getMessageContent(message)}
   </p>
+  <p className="text-sm whitespace-pre-wrap break-words">
+  {getMessageText(message)}
+</p>
 </div>
 
   console.log('[ChatRoom] FULL DEBUG - User characters raw:', userCharactersRaw);
