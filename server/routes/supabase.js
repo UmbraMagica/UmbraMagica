@@ -1,6 +1,12 @@
 import express from 'express';
 import { supabase } from '../supabaseClient';
 
+export const supabase = createClient(
+  process.env.SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_KEY!    // <- service role key!
+);
+
+
 const router = express.Router();
 
 // GET /api/users
