@@ -1,27 +1,29 @@
 // server/routes/chatMessages.ts
-import { FastifyInstance } from 'express';
-import { supabaseAdmin } from '../supabase';          // už tam máte supabase.js
+import express from 'express';
+import { supabase } from '../supabaseClient';   // <- service-role klient
 
 const router = express.Router();
 
-  /**
-   * GET /api/chat/rooms/:roomId/messages
-   * Vrátí zprávy z view chat_messages_view
-   */
-  app.get('/api/chat/rooms/:roomId/messages', async (req, reply) => {
-    const { roomId } = req.params as { roomId: string };
+/**
+ * GET /api/chat/rooms/:roomId/messages
+ * Vrátí zprávy z view chat_messages_view
+ */
+router.get('/rooms/:roomId/messages', async (req, res) => {
+  const { roomId } = req.params;
 
-    const { data, error } = await supabaseAdmin
-      .from('chat_messages_view')                     // ⬅️ view, ne tabulka
-      .select('*')
-      .eq('room_id', Number(roomId))
-      .order('created_at', { ascending: true });
+  const { data, error } = await supabase
+    .from('chat_messages_view')          // VIEW, ne tabulka
+    .select('*')
+    .eq('room_id', Number(roomId))
+    .order('created_at', { ascending: true });
 
-    if (error) {
-      req.log.error(error);
-      return reply.code(500).send({ error: 'Failed to load messages' });
-    }
+  if (error) {
+    console.error('Load messages error:', error);
+    return res.status(500).json({ error: 'Failed to load messages' });
+  }
 
-    return reply.send(data);
-  });
-}
+  res.json(data);                        // ⚡ pole zpráv
+});
+
+export default router;
+
