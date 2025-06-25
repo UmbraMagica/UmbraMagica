@@ -1501,7 +1501,6 @@ export class DatabaseStorage implements IStorage {
       // Random selection
       const randomWood = availableWoods[Math.floor(Math.random() * availableWoods.length)];
       const randomCore = availableCores[Math.floor(Math.random() * availableCores.length)];
-```text
       const randomLength = availableLengths[Math.floor(Math.random() * availableLengths.length)];
       const randomFlexibility = availableFlexibilities[Math.floor(Math.random() * availableFlexibilities.length)];
 
