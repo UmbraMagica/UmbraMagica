@@ -1,0 +1,148 @@
+index-DG2MvKfk.js:447 [useAuth] FULL DEBUG - Loaded user data: Object
+index-DG2MvKfk.js:447 [useAuth] FULL DEBUG - Characters response status: 200
+index-DG2MvKfk.js:447 [useAuth] FULL DEBUG - Raw characters data: Object
+index-DG2MvKfk.js:447 [useAuth] FULL DEBUG - Characters data type: object
+index-DG2MvKfk.js:447 [useAuth] FULL DEBUG - Is array: false
+index-DG2MvKfk.js:447 [useAuth] FULL DEBUG - Extracted characters array: Array(2)
+index-DG2MvKfk.js:447 [processCharacters] FULL DEBUG - Input data: Array(2)
+index-DG2MvKfk.js:447 [processCharacters] FULL DEBUG - Input type: object
+index-DG2MvKfk.js:447 [processCharacters] FULL DEBUG - Is array: true
+index-DG2MvKfk.js:447 [processCharacters] FULL DEBUG - Using direct array
+index-DG2MvKfk.js:447 [processCharacters] FULL DEBUG - Characters array: Array(2)
+index-DG2MvKfk.js:447 [processCharacters] FULL DEBUG - Characters array length: 2
+index-DG2MvKfk.js:447 [processCharacters] FULL DEBUG - Checking character 0: Object
+index-DG2MvKfk.js:447 [processCharacters] FULL DEBUG - Character 0 valid: true
+index-DG2MvKfk.js:447 [processCharacters] FULL DEBUG - Checking character 1: Object
+index-DG2MvKfk.js:447 [processCharacters] FULL DEBUG - Character 1 valid: true
+index-DG2MvKfk.js:447 [processCharacters] FULL DEBUG - Valid characters: Array(2)
+index-DG2MvKfk.js:447 [processCharacters] FULL DEBUG - Valid characters count: 2
+index-DG2MvKfk.js:447 [useAuth] FULL DEBUG - Processed characters: Array(2)
+index-DG2MvKfk.js:447 [useAuth] FULL DEBUG - Processed characters count: 2
+index-DG2MvKfk.js:500 [ChatRoom] FULL DEBUG - User characters raw: Array(2)
+index-DG2MvKfk.js:500 [ChatRoom] FULL DEBUG - User characters count: 2
+index-DG2MvKfk.js:500 [ChatRoom] FULL DEBUG - Current user ID: 5
+index-DG2MvKfk.js:500 [ChatRoom] FULL DEBUG - Filtered user characters: Array(2)
+index-DG2MvKfk.js:500 [ChatRoom] FULL DEBUG - Filtered characters count: 2
+index-DG2MvKfk.js:500 [ChatRoom] useEffect - Character selection check: Object
+index-DG2MvKfk.js:500 [ChatRoom] Auto-selecting first character: Object
+index-DG2MvKfk.js:500 Connecting to WebSocket: wss://umbra-dev.onrender.com/ws?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwidXNlcm5hbWUiOiJDYXNleSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1MDg1MzE5NSwiZXhwIjoxNzUxNDU3OTk1fQ.DmnuIer4lZ4VCm4BF_ERw4NP312dIc_Ptk4joGRTGLM
+index-DG2MvKfk.js:500 Načtené zprávy z API: Array(0)
+index-DG2MvKfk.js:500 [ChatRoom] FULL DEBUG - User characters raw: Array(2)
+index-DG2MvKfk.js:500 [ChatRoom] FULL DEBUG - User characters count: 2
+index-DG2MvKfk.js:500 [ChatRoom] FULL DEBUG - Current user ID: 5
+index-DG2MvKfk.js:500 [ChatRoom] FULL DEBUG - Filtered user characters: Array(2)
+index-DG2MvKfk.js:500 [ChatRoom] FULL DEBUG - Filtered characters count: 2
+index-DG2MvKfk.js:500 [ChatRoom] useEffect - Character selection check: Object
+index-DG2MvKfk.js:500 Načtené zprávy z API: Array(0)
+index-DG2MvKfk.js:500 [ChatRoom] FULL DEBUG - User characters raw: Array(2)
+index-DG2MvKfk.js:500 [ChatRoom] FULL DEBUG - User characters count: 2
+index-DG2MvKfk.js:500 [ChatRoom] FULL DEBUG - Current user ID: 5
+index-DG2MvKfk.js:500 [ChatRoom] FULL DEBUG - Filtered user characters: Array(2)
+index-DG2MvKfk.js:500 [ChatRoom] FULL DEBUG - Filtered characters count: 2
+index-DG2MvKfk.js:500 [ChatRoom] useEffect - Character selection check: Object
+index-DG2MvKfk.js:500 Načtené zprávy z API: Array(0)
+index-DG2MvKfk.js:500 WebSocket connected
+index-DG2MvKfk.js:500 [ChatRoom] FULL DEBUG - User characters raw: Array(2)
+index-DG2MvKfk.js:500 [ChatRoom] FULL DEBUG - User characters count: 2
+index-DG2MvKfk.js:500 [ChatRoom] FULL DEBUG - Current user ID: 5
+index-DG2MvKfk.js:500 [ChatRoom] FULL DEBUG - Filtered user characters: Array(2)
+index-DG2MvKfk.js:500 [ChatRoom] FULL DEBUG - Filtered characters count: 2
+index-DG2MvKfk.js:500 [ChatRoom] useEffect - Character selection check: Object
+index-DG2MvKfk.js:500 Načtené zprávy z API: Array(0)
+index-DG2MvKfk.js:500 [ChatRoom] FULL DEBUG - User characters raw: Array(2)
+index-DG2MvKfk.js:500 [ChatRoom] FULL DEBUG - User characters count: 2
+index-DG2MvKfk.js:500 [ChatRoom] FULL DEBUG - Current user ID: 5
+index-DG2MvKfk.js:500 [ChatRoom] FULL DEBUG - Filtered user characters: Array(2)
+index-DG2MvKfk.js:500 [ChatRoom] FULL DEBUG - Filtered characters count: 2
+index-DG2MvKfk.js:500 Message: Object
+index-DG2MvKfk.js:500 Character: undefined
+index-DG2MvKfk.js:500 Resolved name: Systém
+index-DG2MvKfk.js:500 Message: Object
+index-DG2MvKfk.js:500 Character: undefined
+index-DG2MvKfk.js:500 Resolved name: Systém
+index-DG2MvKfk.js:500 Message: Object
+index-DG2MvKfk.js:500 Character: undefined
+index-DG2MvKfk.js:500 Resolved name: Systém
+index-DG2MvKfk.js:500 Message: Object
+index-DG2MvKfk.js:500 Character: undefined
+index-DG2MvKfk.js:500 Resolved name: Systém
+index-DG2MvKfk.js:500 Message: Object
+index-DG2MvKfk.js:500 Character: undefined
+index-DG2MvKfk.js:500 Resolved name: Systém
+index-DG2MvKfk.js:500 Message: Object
+index-DG2MvKfk.js:500 Character: undefined
+index-DG2MvKfk.js:500 Resolved name: Systém
+index-DG2MvKfk.js:500 Message: Object
+index-DG2MvKfk.js:500 Character: undefined
+index-DG2MvKfk.js:500 Resolved name: Systém
+index-DG2MvKfk.js:500 Message: Object
+index-DG2MvKfk.js:500 Character: undefined
+index-DG2MvKfk.js:500 Resolved name: Systém
+index-DG2MvKfk.js:500 Message: Object
+index-DG2MvKfk.js:500 Character: undefined
+index-DG2MvKfk.js:500 Resolved name: Systém
+index-DG2MvKfk.js:500 Message: Object
+index-DG2MvKfk.js:500 Character: undefined
+index-DG2MvKfk.js:500 Resolved name: Systém
+index-DG2MvKfk.js:500 Message: Object
+index-DG2MvKfk.js:500 Character: undefined
+index-DG2MvKfk.js:500 Resolved name: Systém
+index-DG2MvKfk.js:500 Message: Object
+index-DG2MvKfk.js:500 Character: undefined
+index-DG2MvKfk.js:500 Resolved name: Systém
+index-DG2MvKfk.js:500 Message: Object
+index-DG2MvKfk.js:500 Character: undefined
+index-DG2MvKfk.js:500 Resolved name: Systém
+index-DG2MvKfk.js:500 Message: Object
+index-DG2MvKfk.js:500 Character: undefined
+index-DG2MvKfk.js:500 Resolved name: Systém
+index-DG2MvKfk.js:500 Message: Object
+index-DG2MvKfk.js:500 Character: undefined
+index-DG2MvKfk.js:500 Resolved name: Systém
+index-DG2MvKfk.js:500 Message: Object
+index-DG2MvKfk.js:500 Character: undefined
+index-DG2MvKfk.js:500 Resolved name: Systém
+index-DG2MvKfk.js:500 Message: Object
+index-DG2MvKfk.js:500 Character: undefined
+index-DG2MvKfk.js:500 Resolved name: Systém
+index-DG2MvKfk.js:500 Message: Object
+index-DG2MvKfk.js:500 Character: undefined
+index-DG2MvKfk.js:500 Resolved name: Systém
+index-DG2MvKfk.js:500 Message: Object
+index-DG2MvKfk.js:500 Character: undefined
+index-DG2MvKfk.js:500 Resolved name: Systém
+index-DG2MvKfk.js:500 Message: Object
+index-DG2MvKfk.js:500 Character: undefined
+index-DG2MvKfk.js:500 Resolved name: Systém
+index-DG2MvKfk.js:500 Message: Object
+index-DG2MvKfk.js:500 Character: undefined
+index-DG2MvKfk.js:500 Resolved name: Systém
+index-DG2MvKfk.js:500 Message: Object
+index-DG2MvKfk.js:500 Character: undefined
+index-DG2MvKfk.js:500 Resolved name: Systém
+index-DG2MvKfk.js:500 Message: Object
+index-DG2MvKfk.js:500 Character: undefined
+index-DG2MvKfk.js:500 Resolved name: Systém
+index-DG2MvKfk.js:500 Message: Object
+index-DG2MvKfk.js:500 Character: undefined
+index-DG2MvKfk.js:500 Resolved name: Systém
+index-DG2MvKfk.js:500 Message: Object
+index-DG2MvKfk.js:500 Character: undefined
+index-DG2MvKfk.js:500 Resolved name: Systém
+index-DG2MvKfk.js:500 Message: Object
+index-DG2MvKfk.js:500 Character: undefined
+index-DG2MvKfk.js:500 Resolved name: Systém
+index-DG2MvKfk.js:500 Message: Object
+index-DG2MvKfk.js:500 Character: undefined
+index-DG2MvKfk.js:500 Resolved name: Systém
+index-DG2MvKfk.js:500 Message: Object
+index-DG2MvKfk.js:500 Character: undefined
+index-DG2MvKfk.js:500 Resolved name: Systém
+index-DG2MvKfk.js:500 Message: Object
+index-DG2MvKfk.js:500 Character: undefined
+index-DG2MvKfk.js:500 Resolved name: Systém
+index-DG2MvKfk.js:500 Message: Object
+index-DG2MvKfk.js:500 Character: undefined
+index-DG2MvKfk.js:500 Resolved name: Systém
+index-DG2MvKfk.js:500 [ChatRoom] useEffect - Character selection check: Object
+index-DG2MvKfk.js:500 Načtené zprávy z API: Array(30)
