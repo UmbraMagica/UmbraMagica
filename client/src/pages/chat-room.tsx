@@ -97,14 +97,7 @@ export default function ChatRoom() {
   const userCharactersRaw = user?.characters || [];
   const charactersLoading = authLoading;
   const getMessageContent = (msg: any) =>
-  msg?.content ?? msg?.body ?? msg?.text ?? "";
-
-// …
-// 2️⃣ V renderovací části
-  <p className="text-sm whitespace-pre-wrap break-words">
-  {getMessageText(message)}
-</p>
-</div>
+    msg?.content ?? msg?.body ?? msg?.text ?? "";
 
   console.log('[ChatRoom] FULL DEBUG - User characters raw:', userCharactersRaw);
   console.log('[ChatRoom] FULL DEBUG - User characters count:', userCharactersRaw.length);

@@ -367,7 +367,8 @@ export class DatabaseStorage implements IStorage {
 
   async getChatMessages(roomId: number) {
     try {
-      const { data, error } = await supabase
+      // 1. Načti všechny zprávy v místnosti
+      const { data: rawMessages, error: msgError } = await supabase
         .from("messages")
         .select(`
           id,
@@ -375,76 +376,71 @@ export class DatabaseStorage implements IStorage {
           character_id,
           content,
           message_type,
-          created_at,
-          character (
-            id,
-            first_name,
-            middle_name,
-            last_name,
-            avatar,
-            user_id
-          )
+          created_at
         `)
         .eq("room_id", roomId)
         .order("created_at", { ascending: true });
 
-      if (error) {
-        console.error('Error fetching messages:', error);
+      if (msgError) {
+        console.error('Error fetching messages:', msgError);
         return [];
       }
+      if (!rawMessages || rawMessages.length === 0) return [];
 
-      if (!data || data.length === 0) {
-        return [];
-      }
+      // 2. Najdi všechny unikátní character_id (kromě 0)
+      const characterIds = [
+        ...new Set(
+          rawMessages
+            .map((msg) => msg.character_id)
+            .filter((id) => id && id !== 0)
+        ),
+      ];
 
-      // Process all messages
-      const processedMessages = data.map((msg, idx) => {
-        let character = undefined;
-        // Pokud je to narativní/systémová zpráva
-        if (msg.character_id === 0 || msg.message_type === 'narrator') {
-          character = undefined;
-        } else if (msg.character) {
-          let charObj = null;
-          if (Array.isArray(msg.character)) {
-            if (msg.character.length > 0) {
-              charObj = msg.character[0];
-            }
-          } else if (typeof msg.character === 'object' && msg.character !== null) {
-            charObj = msg.character;
-          }
-          if (
-            charObj &&
-            typeof charObj === 'object' &&
-            !Array.isArray(charObj) &&
-            charObj !== null &&
-            charObj.id
-          ) {
-            character = {
-              id: charObj.id,
-              firstName: charObj.first_name,
-              middleName: charObj.middle_name,
-              lastName: charObj.last_name,
-              avatar: charObj.avatar,
-              userId: charObj.user_id
-            };
-          }
+      // 3. Načti všechny postavy najednou
+      let characterMap = new Map();
+      if (characterIds.length > 0) {
+        const { data: characters, error: charError } = await supabase
+          .from("characters")
+          .select("id, first_name, middle_name, last_name, avatar, user_id")
+          .in("id", characterIds);
+
+        if (charError) {
+          console.error("Error fetching characters:", charError);
+        } else if (characters) {
+          characters.forEach((c) => {
+            characterMap.set(c.id, {
+              id: c.id,
+              firstName: c.first_name,
+              middleName: c.middle_name,
+              lastName: c.last_name,
+              avatar: c.avatar,
+              userId: c.user_id,
+            });
+          });
         }
-        const processed = {
+      }
+
+      // 4. Spoj zprávy s postavami
+      const messages = rawMessages.map((msg) => {
+        const char =
+          msg.character_id === 0 || msg.message_type === "narrator"
+            ? undefined
+            : characterMap.get(msg.character_id);
+
+        return {
           id: msg.id,
           roomId: msg.room_id,
-          characterId: msg.character_id || 0,
+          characterId: msg.character_id,
           content: msg.content,
           messageType: msg.message_type,
           createdAt: msg.created_at,
-          character: character
+          character: char,
         };
-        return processed;
       });
 
-      console.log(`[STORAGE] Retrieved ${processedMessages.length} total messages for room ${roomId}`);
-      return processedMessages;
+      return messages;
     } catch (error) {
-      console.error('Error fetching chat messages:', error);
+      console.error("Error fetching chat messages:", error);
       return [];
     }
   }
