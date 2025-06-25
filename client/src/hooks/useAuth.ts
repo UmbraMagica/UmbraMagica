@@ -38,22 +38,15 @@ function processCharacters(charactersData: any): Character[] {
     console.log('[processCharacters] FULL DEBUG - Input type:', typeof charactersData);
     console.log('[processCharacters] FULL DEBUG - Is array:', Array.isArray(charactersData));
 
+    // Simplified logic - expect array directly since we extract it above
     let charactersArray: any[] = [];
 
     if (Array.isArray(charactersData)) {
       charactersArray = charactersData;
       console.log('[processCharacters] FULL DEBUG - Using direct array');
-    } else if (charactersData && Array.isArray(charactersData.characters)) {
-      charactersArray = charactersData.characters;
-      console.log('[processCharacters] FULL DEBUG - Using charactersData.characters');
-    } else if (charactersData && typeof charactersData === 'object') {
-      // Try to find any array in the object
-      const values = Object.values(charactersData);
-      const arrayValue = values.find(val => Array.isArray(val));
-      if (arrayValue) {
-        charactersArray = arrayValue as any[];
-        console.log('[processCharacters] FULL DEBUG - Found array in object values');
-      }
+    } else {
+      console.log('[processCharacters] FULL DEBUG - Expected array but got:', typeof charactersData);
+      return [];
     }
 
     console.log('[processCharacters] FULL DEBUG - Characters array:', charactersArray);
@@ -137,7 +130,11 @@ export function useAuth() {
             console.log('[useAuth] FULL DEBUG - Characters data type:', typeof charactersData);
             console.log('[useAuth] FULL DEBUG - Is array:', Array.isArray(charactersData));
 
-            userData.characters = processCharacters(charactersData);
+            // Backend vrací { characters: [...] }, takže extrahujme přímo characters array
+            const charactersArray = charactersData?.characters || charactersData || [];
+            console.log('[useAuth] FULL DEBUG - Extracted characters array:', charactersArray);
+            
+            userData.characters = processCharacters(charactersArray);
             console.log('[useAuth] FULL DEBUG - Processed characters:', userData.characters);
             console.log('[useAuth] FULL DEBUG - Processed characters count:', userData.characters?.length || 0);
           } else {
