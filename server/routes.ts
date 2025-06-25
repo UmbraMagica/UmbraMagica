@@ -463,14 +463,33 @@ export async function registerRoutes(app: Express): Promise<void> {
             const character = await storage.getCharacterById(message.characterId);
             if (character) {
               message.character = {
+                id: character.id,
+                userId: character.userId,
                 firstName: character.firstName,
                 middleName: character.middleName,
                 lastName: character.lastName,
                 avatar: character.avatar
               };
+            } else {
+              message.character = {
+                id: message.characterId,
+                userId: 0,
+                firstName: 'Neznámá',
+                middleName: null,
+                lastName: 'postava',
+                avatar: null
+              };
             }
           } catch (error) {
             console.error(`Error fetching character ${message.characterId}:`, error);
+            message.character = {
+              id: message.characterId,
+              userId: 0,
+              firstName: 'Neznámá',
+              middleName: null,
+              lastName: 'postava',
+              avatar: null
+            };
           }
         }
         return message;
