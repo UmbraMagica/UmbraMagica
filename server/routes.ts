@@ -8,7 +8,7 @@ import multer from "multer";
 import sharp from "sharp";
 import jwt from 'jsonwebtoken';
 import { supabase } from "./supabaseClient";
-import chatMassagesRoutes from './routes/chatMasssages';
+import chatMessagesRoutes from './routes/chatMessages';
 
 
   
