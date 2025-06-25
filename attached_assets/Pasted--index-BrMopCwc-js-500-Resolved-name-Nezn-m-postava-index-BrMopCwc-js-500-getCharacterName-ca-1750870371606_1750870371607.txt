@@ -1,0 +1,59 @@
+
+﻿
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: 
+{messageId: 38, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 getCharacterName called with: 
+{messageId: 38, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 getCharacterName called with: 
+{messageId: 7, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 [ChatRoom] useEffect - Character selection check: 
+{selectedCharacter: {…}, userCharactersLength: 2, charactersLoading: false, isNarratorMode: false, userRole: 'admin'}
+index-BrMopCwc.js:500 [ChatRoom] FULL DEBUG - User characters raw: 
+(2) [{…}, {…}]
+index-BrMopCwc.js:500 [ChatRoom] FULL DEBUG - User characters count: 2
+index-BrMopCwc.js:500 [ChatRoom] FULL DEBUG - Current user ID: 5
+index-BrMopCwc.js:500 [ChatRoom] FULL DEBUG - Filtered user characters: 
+(2) [{…}, {…}]
+index-BrMopCwc.js:500 [ChatRoom] FULL DEBUG - Filtered characters count: 2
+index-BrMopCwc.js:500 Message: 
+{id: 2, name: 'Testovací chat', description: 'Místnost pro testování a experimenty', isPublic: true, createdAt: '2025-05-28T15:01:05.856', …}
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: 
+{messageId: 2, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: 
+{messageId: 2, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 getCharacterName called with: 
+{messageId: 2, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Message: 
+{id: 3, name: 'Ulice', description: 'Hlavní ulice Příčné ulice', isPublic: true, createdAt: '2025-05-29T18:28:17.684', …}
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: 
+{messageId: 3, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: 
+{messageId: 3, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 getCharacterName called with: 
+{messageId: 3, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Message: 
+{id: 4, name: 'Gringottovi', description: 'Banka pro čaroděje a kouzelníky', isPublic: true, createdAt: '2025-05-29T18:28:17.727', …}
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: 
+{messageId: 4, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: 
+{messageId: 4, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 getCharacterName called with: 
+{messageId: 4, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Message: 
+{id: 5, name: 'Děravý kotel', description: 'Slavný hostinec a vstup do kouzelného světa', isPublic: true, createdAt: '2025-05-29T18:28:17.768', …}
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: 
+{messageId: 5, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: 
+{messageId: 5, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 getCharacterName called with: 
+{messageId: 5, characterId: undefined, character: undefined, messageType: undefined}
+﻿

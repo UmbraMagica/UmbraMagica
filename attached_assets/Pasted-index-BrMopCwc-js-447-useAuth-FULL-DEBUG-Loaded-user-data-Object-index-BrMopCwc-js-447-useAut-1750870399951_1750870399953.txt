@@ -1,0 +1,460 @@
+index-BrMopCwc.js:447 [useAuth] FULL DEBUG - Loaded user data: Object
+index-BrMopCwc.js:447 [useAuth] FULL DEBUG - Characters response status: 200
+index-BrMopCwc.js:447 [useAuth] FULL DEBUG - Raw characters data: Object
+index-BrMopCwc.js:447 [useAuth] FULL DEBUG - Characters data type: object
+index-BrMopCwc.js:447 [useAuth] FULL DEBUG - Is array: false
+index-BrMopCwc.js:447 [useAuth] FULL DEBUG - Extracted characters array: Array(2)
+index-BrMopCwc.js:447 [processCharacters] FULL DEBUG - Input data: Array(2)
+index-BrMopCwc.js:447 [processCharacters] FULL DEBUG - Input type: object
+index-BrMopCwc.js:447 [processCharacters] FULL DEBUG - Is array: true
+index-BrMopCwc.js:447 [processCharacters] FULL DEBUG - Using direct array
+index-BrMopCwc.js:447 [processCharacters] FULL DEBUG - Characters array: Array(2)
+index-BrMopCwc.js:447 [processCharacters] FULL DEBUG - Characters array length: 2
+index-BrMopCwc.js:447 [processCharacters] FULL DEBUG - Checking character 0: Object
+index-BrMopCwc.js:447 [processCharacters] FULL DEBUG - Character 0 valid: true
+index-BrMopCwc.js:447 [processCharacters] FULL DEBUG - Checking character 1: Object
+index-BrMopCwc.js:447 [processCharacters] FULL DEBUG - Character 1 valid: true
+index-BrMopCwc.js:447 [processCharacters] FULL DEBUG - Valid characters: Array(2)
+index-BrMopCwc.js:447 [processCharacters] FULL DEBUG - Valid characters count: 2
+index-BrMopCwc.js:447 [useAuth] FULL DEBUG - Processed characters: Array(2)
+index-BrMopCwc.js:447 [useAuth] FULL DEBUG - Processed characters count: 2
+index-BrMopCwc.js:500 [ChatRoom] FULL DEBUG - User characters raw: Array(2)
+index-BrMopCwc.js:500 [ChatRoom] FULL DEBUG - User characters count: 2
+index-BrMopCwc.js:500 [ChatRoom] FULL DEBUG - Current user ID: 5
+index-BrMopCwc.js:500 [ChatRoom] FULL DEBUG - Filtered user characters: Array(2)
+index-BrMopCwc.js:500 [ChatRoom] FULL DEBUG - Filtered characters count: 2
+index-BrMopCwc.js:500 [ChatRoom] useEffect - Character selection check: Object
+index-BrMopCwc.js:500 [ChatRoom] Auto-selecting first character: Object
+index-BrMopCwc.js:500 Connecting to WebSocket: wss://umbra-dev.onrender.com/ws?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwidXNlcm5hbWUiOiJDYXNleSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1MDc1NDg1OCwiZXhwIjoxNzUxMzU5NjU4fQ.tTXRNXiOsRZuD_rwC8xPeFKWmTYqyZp7pqaj_snEsBY
+index-BrMopCwc.js:500 Načtené zprávy z API: Array(0)
+index-BrMopCwc.js:500 [ChatRoom] FULL DEBUG - User characters raw: Array(2)
+index-BrMopCwc.js:500 [ChatRoom] FULL DEBUG - User characters count: 2
+index-BrMopCwc.js:500 [ChatRoom] FULL DEBUG - Current user ID: 5
+index-BrMopCwc.js:500 [ChatRoom] FULL DEBUG - Filtered user characters: Array(2)
+index-BrMopCwc.js:500 [ChatRoom] FULL DEBUG - Filtered characters count: 2
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 [ChatRoom] useEffect - Character selection check: Object
+index-BrMopCwc.js:500 Načtené zprávy z API: Array(0)
+index-BrMopCwc.js:500 [ChatRoom] FULL DEBUG - User characters raw: Array(2)
+index-BrMopCwc.js:500 [ChatRoom] FULL DEBUG - User characters count: 2
+index-BrMopCwc.js:500 [ChatRoom] FULL DEBUG - Current user ID: 5
+index-BrMopCwc.js:500 [ChatRoom] FULL DEBUG - Filtered user characters: Array(2)
+index-BrMopCwc.js:500 [ChatRoom] FULL DEBUG - Filtered characters count: 2
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 [ChatRoom] useEffect - Character selection check: Object
+index-BrMopCwc.js:500 Načtené zprávy z API: Array(0)
+index-BrMopCwc.js:500 WebSocket connected
+index-BrMopCwc.js:500 [ChatRoom] FULL DEBUG - User characters raw: Array(2)
+index-BrMopCwc.js:500 [ChatRoom] FULL DEBUG - User characters count: 2
+index-BrMopCwc.js:500 [ChatRoom] FULL DEBUG - Current user ID: 5
+index-BrMopCwc.js:500 [ChatRoom] FULL DEBUG - Filtered user characters: Array(2)
+index-BrMopCwc.js:500 [ChatRoom] FULL DEBUG - Filtered characters count: 2
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 [ChatRoom] useEffect - Character selection check: Object
+index-BrMopCwc.js:500 Načtené zprávy z API: Array(0)
+index-BrMopCwc.js:500 [ChatRoom] FULL DEBUG - User characters raw: Array(2)
+index-BrMopCwc.js:500 [ChatRoom] FULL DEBUG - User characters count: 2
+index-BrMopCwc.js:500 [ChatRoom] FULL DEBUG - Current user ID: 5
+index-BrMopCwc.js:500 [ChatRoom] FULL DEBUG - Filtered user characters: Array(2)
+index-BrMopCwc.js:500 [ChatRoom] FULL DEBUG - Filtered characters count: 2
+index-BrMopCwc.js:500 Message: Object
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Message: Object
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Message: Object
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Message: Object
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Message: Object
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Message: Object
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Message: Object
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Message: Object
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Message: Object
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Message: Object
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Message: Object
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Message: Object
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Message: Object
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Message: Object
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Message: Object
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Message: Object
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Message: Object
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Message: Object
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Message: Object
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Message: Object
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Message: Object
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Message: Object
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Message: Object
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Message: Object
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Message: Object
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Message: Object
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Message: Object
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Message: Object
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Message: Object
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Message: Object
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 getCharacterName called with: Object
+index-BrMopCwc.js:500 [ChatRoom] useEffect - Character selection check: Object
+index-BrMopCwc.js:500 Načtené zprávy z API: Array(30)
+index-BrMopCwc.js:500 Message 0: Object
+index-BrMopCwc.js:500 Message 1: Object
+index-BrMopCwc.js:500 Message 2: Object
+index-BrMopCwc.js:500 Message 3: Object
+index-BrMopCwc.js:500 Message 4: Object
+index-BrMopCwc.js:500 Message 5: Object
+index-BrMopCwc.js:500 Message 6: Object
+index-BrMopCwc.js:500 Message 7: Object
+index-BrMopCwc.js:500 Message 8: Object
+index-BrMopCwc.js:500 Message 9: Object
+index-BrMopCwc.js:500 Message 10: Object
+index-BrMopCwc.js:500 Message 11: Object
+index-BrMopCwc.js:500 Message 12: Object
+index-BrMopCwc.js:500 Message 13: Object
+index-BrMopCwc.js:500 Message 14: Object
+index-BrMopCwc.js:500 Message 15: Object
+index-BrMopCwc.js:500 Message 16: Object
+index-BrMopCwc.js:500 Message 17: Object
+index-BrMopCwc.js:500 Message 18: Object
+index-BrMopCwc.js:500 Message 19: Object
+index-BrMopCwc.js:500 Message 20: Object
+index-BrMopCwc.js:500 Message 21: Object
+index-BrMopCwc.js:500 Message 22: Object
+index-BrMopCwc.js:500 Message 23: Object
+index-BrMopCwc.js:500 Message 24: Object
+index-BrMopCwc.js:500 Message 25: Object
+index-BrMopCwc.js:500 Message 26: Object
+index-BrMopCwc.js:500 Message 27: Object
+index-BrMopCwc.js:500 Message 28: Object
+index-BrMopCwc.js:500 Message 29: Object
+index-BrMopCwc.js:500 WebSocket closed: 1006 
+index-BrMopCwc.js:500 [ChatRoom] FULL DEBUG - User characters raw: (2) [{…}, {…}]
+index-BrMopCwc.js:500 [ChatRoom] FULL DEBUG - User characters count: 2
+index-BrMopCwc.js:500 [ChatRoom] FULL DEBUG - Current user ID: 5
+index-BrMopCwc.js:500 [ChatRoom] FULL DEBUG - Filtered user characters: (2) [{…}, {…}]
+index-BrMopCwc.js:500 [ChatRoom] FULL DEBUG - Filtered characters count: 2
+index-BrMopCwc.js:500 Message: {id: 2, name: 'Testovací chat', description: 'Místnost pro testování a experimenty', isPublic: true, createdAt: '2025-05-28T15:01:05.856', …}
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 2, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 2, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 2, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Message: {id: 3, name: 'Ulice', description: 'Hlavní ulice Příčné ulice', isPublic: true, createdAt: '2025-05-29T18:28:17.684', …}
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 3, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 3, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 3, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Message: {id: 4, name: 'Gringottovi', description: 'Banka pro čaroděje a kouzelníky', isPublic: true, createdAt: '2025-05-29T18:28:17.727', …}
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 4, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 4, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 4, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Message: {id: 5, name: 'Děravý kotel', description: 'Slavný hostinec a vstup do kouzelného světa', isPublic: true, createdAt: '2025-05-29T18:28:17.768', …}
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 5, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 5, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 5, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Message: {id: 6, name: 'Černá vrána', description: 'Pohřební služba pro kouzelný svět', isPublic: true, createdAt: '2025-05-29T18:28:17.821', …}
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 6, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 6, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 6, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Message: {id: 7, name: 'Čarokáva', description: 'Kavárna pro čaroděje', isPublic: true, createdAt: '2025-05-29T18:28:17.858', …}
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 7, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 7, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 7, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Message: {id: 8, name: 'Obrtlá ulice', description: 'Temné zákoutí Obrtlé ulice', isPublic: true, createdAt: '2025-05-29T18:28:17.897', …}
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 8, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 8, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 8, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Message: {id: 9, name: 'Zlomená hůlka', description: 'Obchod s podezřelými kouzelnými předměty', isPublic: true, createdAt: '2025-05-29T18:28:17.933', …}
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 9, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 9, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 9, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Message: {id: 10, name: 'Ministerstvo kouzel', description: 'Úřad kouzelné vlády', isPublic: true, createdAt: '2025-05-29T18:28:17.97', …}
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 10, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 10, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 10, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Message: {id: 11, name: 'Nemocnice u sv. Munga', description: 'Nemocnice pro kouzelné nemoci a úrazy', isPublic: true, createdAt: '2025-05-29T18:28:18.037', …}
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 11, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 11, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 11, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Message: {id: 12, name: 'Katakomby', description: 'Podzemní bludiště pod Londýnem', isPublic: true, createdAt: '2025-05-29T18:28:18.073', …}
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 12, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 12, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 12, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Message: {id: 18, name: 'Pošmourná ulička', description: 'Temné zákoutí Obrtlé ulice', isPublic: true, createdAt: '2025-05-31T20:25:55.518', …}
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 18, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 18, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 18, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Message: {id: 19, name: 'Ubytovna U starého Šeptáka', description: null, isPublic: true, createdAt: '2025-05-31T21:21:05.061', …}
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 19, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 19, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 19, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Message: {id: 22, name: 'Lovci pokladů', description: 'Hledáš prácičku? Nebo něco sháníš? Jsi na správném místě.', isPublic: true, createdAt: '2025-06-01T11:10:49.533', …}
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 22, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 22, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 22, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Message: {id: 23, name: 'U Mlžné konvice', description: 'Šálek čaje nebo tajemství, drahoušku?', isPublic: true, createdAt: '2025-06-01T11:26:19.122', …}
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 23, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 23, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 23, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Message: {id: 24, name: 'Muži písma', description: 'Sháníš knihu či informace? Samozřejmě, kde jinde. Ale nebude to zadarmo.', isPublic: true, createdAt: '2025-06-01T11:35:45.136', …}
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 24, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 24, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 24, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Message: {id: 25, name: 'Hrad', description: 'Bradavická škola čar a kouzel', isPublic: true, createdAt: '2025-06-01T11:39:17.776', …}
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 25, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 25, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 25, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Message: {id: 26, name: 'Pozemky', description: 'Nejbližší okolo Bradavic. Běžně přístupné studentům a návštěvníkům.', isPublic: true, createdAt: '2025-06-01T11:41:38.886', …}
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 26, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 26, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 26, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Message: {id: 27, name: 'Zapovězený les', description: 'Kdo se bojí, nesmí do lesa', isPublic: true, createdAt: '2025-06-01T11:44:27.399', …}
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 27, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 27, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 27, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Message: {id: 28, name: 'Prasinky', description: 'Jediná čistě kouzelnická vesnice v Británii. Opravdu?', isPublic: true, createdAt: '2025-06-01T11:49:36.102', …}
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 28, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 28, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 28, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Message: {id: 29, name: 'Azkaban', description: 'V Azkabanu neumíráš tělem, ale každý den o kousek duší.', isPublic: true, createdAt: '2025-06-01T11:56:50.425', …}
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 29, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 29, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 29, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Message: {id: 30, name: 'U Černé labutě', description: 'Mudlovská hospoda páté cenové', isPublic: true, createdAt: '2025-06-01T19:01:27.319', …}
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 30, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 30, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 30, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Message: {id: 31, name: 'U Pozlacené lišky', description: 'Tady se schází smetánka na drink.', isPublic: true, createdAt: '2025-06-01T19:24:08.961', …}
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 31, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 31, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 31, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Message: {id: 32, name: 'Spící drak', description: 'Kde sny hoří pomalu a minulost šeptá v kouři.', isPublic: true, createdAt: '2025-06-01T19:38:03.713', …}
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 32, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 32, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 32, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Message: {id: 33, name: 'Doky', description: 'Doky – místo, kde se mlha mísí se lží a každé setkání má svou cenu.', isPublic: true, createdAt: '2025-06-01T19:43:38.556', …}
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 33, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 33, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 33, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Message: {id: 34, name: 'Tower', description: 'Starobylá pevnost, jejíž chladné zdi pamatují tolik kouzel, kolik krve — a ani jedno nezmizelo.', isPublic: true, createdAt: '2025-06-01T19:46:35.887', …}
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 34, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 34, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 34, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Message: {id: 35, name: 'Temže', description: 'Městem protékající šedý proud, jenž unáší stíny minulosti i potají pronesená zaklínadla.', isPublic: true, createdAt: '2025-06-01T19:48:56.601', …}
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 35, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 35, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 35, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Message: {id: 36, name: 'Doupě neřesti', description: 'Sídlo/Vila Obří sídlo  - Amálie Zoufalá', isPublic: false, createdAt: '2025-06-08T15:14:53.763', …}
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 36, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 36, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 36, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Message: {id: 37, name: 'Bažina', description: 'Sídlo/Vila Rozsáhlá bažina - Jožin Z Bažin', isPublic: false, createdAt: '2025-06-08T15:32:19.887', …}
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 37, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 37, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 37, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Message: {id: 38, name: 'Tady je Bubákovo', description: 'Dům Dostatečně na stádo hipogryfu  - Zoe Higgins', isPublic: false, createdAt: '2025-06-08T15:33:42.158', …}
+index-BrMopCwc.js:500 Character: undefined
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 38, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 Resolved name: Neznámá postava
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 38, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 38, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 getCharacterName called with: {messageId: 7, characterId: undefined, character: undefined, messageType: undefined}
+index-BrMopCwc.js:500 [ChatRoom] useEffect - Character selection check: {selectedCharacter: {…}, userCharactersLength: 2, charactersLoading: false, isNarratorMode: false, userRole: 'admin'}
