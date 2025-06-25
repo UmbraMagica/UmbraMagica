@@ -1,8 +1,8 @@
 // server/routes/chatMessages.ts
-import { FastifyInstance } from 'fastify';
+import { FastifyInstance } from 'express';
 import { supabaseAdmin } from '../supabase';          // už tam máte supabase.js
 
-export default async function chatMessagesRoutes(app: FastifyInstance) {
+const router = express.Router();
 
   /**
    * GET /api/chat/rooms/:roomId/messages
