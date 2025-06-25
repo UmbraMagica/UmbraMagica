@@ -105,16 +105,9 @@ function validateAndFilterCharacters(characters: any[]): any[] {
       });
     }
 
-export default async function appRoutes(app: FastifyInstance) {
-  // … vaše existující routy
-  await app.register(chatMessagesRoutes);                 // ⬅️ někde uvnitř funkce
-}
-
-    
     return isValid;
   });
 }
-
 
 export async function registerRoutes(app: Express): Promise<void> {
   // HTTP a WebSocket server
