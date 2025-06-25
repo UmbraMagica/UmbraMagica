@@ -1,0 +1,272 @@
+[useAuth] FULL DEBUG - Loaded user data: Object
+index-DO5yE8xf.js:447 [useAuth] FULL DEBUG - Characters response status: 200
+index-DO5yE8xf.js:447 [useAuth] FULL DEBUG - Raw characters data: Object
+index-DO5yE8xf.js:447 [useAuth] FULL DEBUG - Characters data type: object
+index-DO5yE8xf.js:447 [useAuth] FULL DEBUG - Is array: false
+index-DO5yE8xf.js:447 [useAuth] FULL DEBUG - Extracted characters array: Array(2)
+index-DO5yE8xf.js:447 [processCharacters] FULL DEBUG - Input data: Array(2)
+index-DO5yE8xf.js:447 [processCharacters] FULL DEBUG - Input type: object
+index-DO5yE8xf.js:447 [processCharacters] FULL DEBUG - Is array: true
+index-DO5yE8xf.js:447 [processCharacters] FULL DEBUG - Using direct array
+index-DO5yE8xf.js:447 [processCharacters] FULL DEBUG - Characters array: Array(2)
+index-DO5yE8xf.js:447 [processCharacters] FULL DEBUG - Characters array length: 2
+index-DO5yE8xf.js:447 [processCharacters] FULL DEBUG - Checking character 0: Object
+index-DO5yE8xf.js:447 [processCharacters] FULL DEBUG - Character 0 valid: true
+index-DO5yE8xf.js:447 [processCharacters] FULL DEBUG - Checking character 1: Object
+index-DO5yE8xf.js:447 [processCharacters] FULL DEBUG - Character 1 valid: true
+index-DO5yE8xf.js:447 [processCharacters] FULL DEBUG - Valid characters: Array(2)
+index-DO5yE8xf.js:447 [processCharacters] FULL DEBUG - Valid characters count: 2
+index-DO5yE8xf.js:447 [useAuth] FULL DEBUG - Processed characters: Array(2)
+index-DO5yE8xf.js:447 [useAuth] FULL DEBUG - Processed characters count: 2
+index-DO5yE8xf.js:500 [ChatRoom] FULL DEBUG - User characters raw: Array(2)
+index-DO5yE8xf.js:500 [ChatRoom] FULL DEBUG - User characters count: 2
+index-DO5yE8xf.js:500 [ChatRoom] FULL DEBUG - Current user ID: 5
+index-DO5yE8xf.js:500 [ChatRoom] FULL DEBUG - Filtered user characters: Array(2)
+index-DO5yE8xf.js:500 [ChatRoom] FULL DEBUG - Filtered characters count: 2
+index-DO5yE8xf.js:500 [ChatRoom] useEffect - Character selection check: Object
+index-DO5yE8xf.js:500 [ChatRoom] Auto-selecting first character: Object
+index-DO5yE8xf.js:500 Connecting to WebSocket: wss://umbra-dev.onrender.com/ws?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwidXNlcm5hbWUiOiJDYXNleSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1MDg1MzE5NSwiZXhwIjoxNzUxNDU3OTk1fQ.DmnuIer4lZ4VCm4BF_ERw4NP312dIc_Ptk4joGRTGLM
+index-DO5yE8xf.js:500 Načtené zprávy z API: Array(0)
+index-DO5yE8xf.js:500 [ChatRoom] FULL DEBUG - User characters raw: Array(2)
+index-DO5yE8xf.js:500 [ChatRoom] FULL DEBUG - User characters count: 2
+index-DO5yE8xf.js:500 [ChatRoom] FULL DEBUG - Current user ID: 5
+index-DO5yE8xf.js:500 [ChatRoom] FULL DEBUG - Filtered user characters: Array(2)
+index-DO5yE8xf.js:500 [ChatRoom] FULL DEBUG - Filtered characters count: 2
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 [ChatRoom] useEffect - Character selection check: Object
+index-DO5yE8xf.js:500 Načtené zprávy z API: Array(0)
+index-DO5yE8xf.js:500 WebSocket connected
+index-DO5yE8xf.js:500 [ChatRoom] FULL DEBUG - User characters raw: Array(2)
+index-DO5yE8xf.js:500 [ChatRoom] FULL DEBUG - User characters count: 2
+index-DO5yE8xf.js:500 [ChatRoom] FULL DEBUG - Current user ID: 5
+index-DO5yE8xf.js:500 [ChatRoom] FULL DEBUG - Filtered user characters: Array(2)
+index-DO5yE8xf.js:500 [ChatRoom] FULL DEBUG - Filtered characters count: 2
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 [ChatRoom] useEffect - Character selection check: Object
+index-DO5yE8xf.js:500 Načtené zprávy z API: Array(0)
+index-DO5yE8xf.js:500 [ChatRoom] FULL DEBUG - User characters raw: Array(2)
+index-DO5yE8xf.js:500 [ChatRoom] FULL DEBUG - User characters count: 2
+index-DO5yE8xf.js:500 [ChatRoom] FULL DEBUG - Current user ID: 5
+index-DO5yE8xf.js:500 [ChatRoom] FULL DEBUG - Filtered user characters: Array(2)
+index-DO5yE8xf.js:500 [ChatRoom] FULL DEBUG - Filtered characters count: 2
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 [ChatRoom] useEffect - Character selection check: Object
+index-DO5yE8xf.js:500 Načtené zprávy z API: Array(0)
+index-DO5yE8xf.js:500 [ChatRoom] FULL DEBUG - User characters raw: Array(2)
+index-DO5yE8xf.js:500 [ChatRoom] FULL DEBUG - User characters count: 2
+index-DO5yE8xf.js:500 [ChatRoom] FULL DEBUG - Current user ID: 5
+index-DO5yE8xf.js:500 [ChatRoom] FULL DEBUG - Filtered user characters: Array(2)
+index-DO5yE8xf.js:500 [ChatRoom] FULL DEBUG - Filtered characters count: 2
+index-DO5yE8xf.js:500 Message: Object
+index-DO5yE8xf.js:500 Character: undefined
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Resolved name: Neznámá postava
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Message: Object
+index-DO5yE8xf.js:500 Character: undefined
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Resolved name: Neznámá postava
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Message: Object
+index-DO5yE8xf.js:500 Character: undefined
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Resolved name: Neznámá postava
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Message: Object
+index-DO5yE8xf.js:500 Character: undefined
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Resolved name: Neznámá postava
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Message: Object
+index-DO5yE8xf.js:500 Character: undefined
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Resolved name: Neznámá postava
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Message: Object
+index-DO5yE8xf.js:500 Character: undefined
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Resolved name: Neznámá postava
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Message: Object
+index-DO5yE8xf.js:500 Character: undefined
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Resolved name: Neznámá postava
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Message: Object
+index-DO5yE8xf.js:500 Character: undefined
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Resolved name: Neznámá postava
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Message: Object
+index-DO5yE8xf.js:500 Character: undefined
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Resolved name: Neznámá postava
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Message: Object
+index-DO5yE8xf.js:500 Character: undefined
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Resolved name: Neznámá postava
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Message: Object
+index-DO5yE8xf.js:500 Character: undefined
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Resolved name: Neznámá postava
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Message: Object
+index-DO5yE8xf.js:500 Character: undefined
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Resolved name: Neznámá postava
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Message: Object
+index-DO5yE8xf.js:500 Character: undefined
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Resolved name: Neznámá postava
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Message: Object
+index-DO5yE8xf.js:500 Character: undefined
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Resolved name: Neznámá postava
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Message: Object
+index-DO5yE8xf.js:500 Character: undefined
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Resolved name: Neznámá postava
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Message: Object
+index-DO5yE8xf.js:500 Character: undefined
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Resolved name: Neznámá postava
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Message: Object
+index-DO5yE8xf.js:500 Character: undefined
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Resolved name: Neznámá postava
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Message: Object
+index-DO5yE8xf.js:500 Character: undefined
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Resolved name: Neznámá postava
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Message: Object
+index-DO5yE8xf.js:500 Character: undefined
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Resolved name: Neznámá postava
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Message: Object
+index-DO5yE8xf.js:500 Character: undefined
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Resolved name: Neznámá postava
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Message: Object
+index-DO5yE8xf.js:500 Character: undefined
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Resolved name: Neznámá postava
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Message: Object
+index-DO5yE8xf.js:500 Character: undefined
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Resolved name: Neznámá postava
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Message: Object
+index-DO5yE8xf.js:500 Character: undefined
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Resolved name: Neznámá postava
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Message: Object
+index-DO5yE8xf.js:500 Character: undefined
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Resolved name: Neznámá postava
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Message: Object
+index-DO5yE8xf.js:500 Character: undefined
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Resolved name: Neznámá postava
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Message: Object
+index-DO5yE8xf.js:500 Character: undefined
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Resolved name: Neznámá postava
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Message: Object
+index-DO5yE8xf.js:500 Character: undefined
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Resolved name: Neznámá postava
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Message: Object
+index-DO5yE8xf.js:500 Character: undefined
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Resolved name: Neznámá postava
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Message: Object
+index-DO5yE8xf.js:500 Character: undefined
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Resolved name: Neznámá postava
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Message: Object
+index-DO5yE8xf.js:500 Character: undefined
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 Resolved name: Neznámá postava
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 getCharacterName called with: Object
+index-DO5yE8xf.js:500 [ChatRoom] useEffect - Character selection check: Object
+index-DO5yE8xf.js:500 Načtené zprávy z API: Array(30)
+index-DO5yE8xf.js:500 Message 0: Object
+index-DO5yE8xf.js:500 Message 1: Object
+index-DO5yE8xf.js:500 Message 2: Object
+index-DO5yE8xf.js:500 Message 3: Object
+index-DO5yE8xf.js:500 Message 4: Object
+index-DO5yE8xf.js:500 Message 5: Object
+index-DO5yE8xf.js:500 Message 6: Object
+index-DO5yE8xf.js:500 Message 7: Object
+index-DO5yE8xf.js:500 Message 8: Object
+index-DO5yE8xf.js:500 Message 9: Object
+index-DO5yE8xf.js:500 Message 10: Object
+index-DO5yE8xf.js:500 Message 11: Object
+index-DO5yE8xf.js:500 Message 12: Object
+index-DO5yE8xf.js:500 Message 13: Object
+index-DO5yE8xf.js:500 Message 14: Object
+index-DO5yE8xf.js:500 Message 15: Object
+index-DO5yE8xf.js:500 Message 16: Object
+index-DO5yE8xf.js:500 Message 17: Object
+index-DO5yE8xf.js:500 Message 18: Object
+index-DO5yE8xf.js:500 Message 19: Object
+index-DO5yE8xf.js:500 Message 20: Object
+index-DO5yE8xf.js:500 Message 21: Object
+index-DO5yE8xf.js:500 Message 22: Object
+index-DO5yE8xf.js:500 Message 23: Object
+index-DO5yE8xf.js:500 Message 24: Object
+index-DO5yE8xf.js:500 Message 25: Object
+index-DO5yE8xf.js:500 Message 26: Object
+index-DO5yE8xf.js:500 Message 27: Object
+index-DO5yE8xf.js:500 Message 28: Object
+index-DO5yE8xf.js:500 Message 29: Object
