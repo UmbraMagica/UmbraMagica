@@ -1,0 +1,1038 @@
+[useAuth] FULL DEBUG - Loaded user data: Object
+index-DZehSjx0.js:447 [useAuth] FULL DEBUG - Characters response status: 200
+index-DZehSjx0.js:447 [useAuth] FULL DEBUG - Raw characters data: Object
+index-DZehSjx0.js:447 [useAuth] FULL DEBUG - Characters data type: object
+index-DZehSjx0.js:447 [useAuth] FULL DEBUG - Is array: false
+index-DZehSjx0.js:447 [processCharacters] FULL DEBUG - Input data: Object
+index-DZehSjx0.js:447 [processCharacters] FULL DEBUG - Input type: object
+index-DZehSjx0.js:447 [processCharacters] FULL DEBUG - Is array: false
+index-DZehSjx0.js:447 [processCharacters] FULL DEBUG - Using charactersData.characters
+index-DZehSjx0.js:447 [processCharacters] FULL DEBUG - Characters array: Array(15)
+index-DZehSjx0.js:447 [processCharacters] FULL DEBUG - Characters array length: 15
+index-DZehSjx0.js:447 [processCharacters] FULL DEBUG - Checking character 0: Object
+index-DZehSjx0.js:447 [processCharacters] FULL DEBUG - Character 0 valid: true
+index-DZehSjx0.js:447 [processCharacters] FULL DEBUG - Checking character 1: Object
+index-DZehSjx0.js:447 [processCharacters] FULL DEBUG - Character 1 valid: true
+index-DZehSjx0.js:447 [processCharacters] FULL DEBUG - Checking character 2: Object
+index-DZehSjx0.js:447 [processCharacters] FULL DEBUG - Character 2 valid: true
+index-DZehSjx0.js:447 [processCharacters] FULL DEBUG - Checking character 3: Object
+index-DZehSjx0.js:447 [processCharacters] FULL DEBUG - Character 3 valid: true
+index-DZehSjx0.js:447 [processCharacters] FULL DEBUG - Checking character 4: Object
+index-DZehSjx0.js:447 [processCharacters] FULL DEBUG - Character 4 valid: true
+index-DZehSjx0.js:447 [processCharacters] FULL DEBUG - Checking character 5: Object
+index-DZehSjx0.js:447 [processCharacters] FULL DEBUG - Character 5 valid: true
+index-DZehSjx0.js:447 [processCharacters] FULL DEBUG - Checking character 6: Object
+index-DZehSjx0.js:447 [processCharacters] FULL DEBUG - Character 6 valid: true
+index-DZehSjx0.js:447 [processCharacters] FULL DEBUG - Checking character 7: Object
+index-DZehSjx0.js:447 [processCharacters] FULL DEBUG - Character 7 valid: true
+index-DZehSjx0.js:447 [processCharacters] FULL DEBUG - Checking character 8: Object
+index-DZehSjx0.js:447 [processCharacters] FULL DEBUG - Character 8 valid: true
+index-DZehSjx0.js:447 [processCharacters] FULL DEBUG - Checking character 9: Object
+index-DZehSjx0.js:447 [processCharacters] FULL DEBUG - Character 9 valid: true
+index-DZehSjx0.js:447 [processCharacters] FULL DEBUG - Checking character 10: Object
+index-DZehSjx0.js:447 [processCharacters] FULL DEBUG - Character 10 valid: true
+index-DZehSjx0.js:447 [processCharacters] FULL DEBUG - Checking character 11: Object
+index-DZehSjx0.js:447 [processCharacters] FULL DEBUG - Character 11 valid: true
+index-DZehSjx0.js:447 [processCharacters] FULL DEBUG - Checking character 12: Object
+index-DZehSjx0.js:447 [processCharacters] FULL DEBUG - Character 12 valid: true
+index-DZehSjx0.js:447 [processCharacters] FULL DEBUG - Checking character 13: Object
+index-DZehSjx0.js:447 [processCharacters] FULL DEBUG - Character 13 valid: true
+index-DZehSjx0.js:447 [processCharacters] FULL DEBUG - Checking character 14: Object
+index-DZehSjx0.js:447 [processCharacters] FULL DEBUG - Character 14 valid: true
+index-DZehSjx0.js:447 [processCharacters] FULL DEBUG - Valid characters: Array(15)
+index-DZehSjx0.js:447 [processCharacters] FULL DEBUG - Valid characters count: 15
+index-DZehSjx0.js:447 [useAuth] FULL DEBUG - Processed characters: Array(15)
+index-DZehSjx0.js:447 [useAuth] FULL DEBUG - Processed characters count: 15
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - User characters raw: Array(15)
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - User characters count: 15
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - Current user ID: 5
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - Filtered user characters: Array(2)
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - Filtered characters count: 2
+index-DZehSjx0.js:500 [ChatRoom] useEffect - Character selection check: Object
+index-DZehSjx0.js:500 [ChatRoom] Auto-selecting first character: Object
+index-DZehSjx0.js:500 Connecting to WebSocket: wss://umbra-dev.onrender.com/ws?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwidXNlcm5hbWUiOiJDYXNleSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1MDg1MzE5NSwiZXhwIjoxNzUxNDU3OTk1fQ.DmnuIer4lZ4VCm4BF_ERw4NP312dIc_Ptk4joGRTGLM
+index-DZehSjx0.js:500 Načtené zprávy z API: Array(0)
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - User characters raw: Array(15)
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - User characters count: 15
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - Current user ID: 5
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - Filtered user characters: Array(2)
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - Filtered characters count: 2
+index-DZehSjx0.js:500 [ChatRoom] useEffect - Character selection check: Object
+index-DZehSjx0.js:500 Načtené zprávy z API: Array(0)
+index-DZehSjx0.js:500 WebSocket connected
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - User characters raw: Array(15)
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - User characters count: 15
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - Current user ID: 5
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - Filtered user characters: Array(2)
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - Filtered characters count: 2
+index-DZehSjx0.js:500 [ChatRoom] useEffect - Character selection check: Object
+index-DZehSjx0.js:500 Načtené zprávy z API: Array(0)
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - User characters raw: Array(15)
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - User characters count: 15
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - Current user ID: 5
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - Filtered user characters: Array(2)
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - Filtered characters count: 2
+index-DZehSjx0.js:500 [ChatRoom] useEffect - Character selection check: Object
+index-DZehSjx0.js:500 Načtené zprávy z API: Array(0)
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - User characters raw: Array(15)
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - User characters count: 15
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - Current user ID: 5
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - Filtered user characters: Array(2)
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - Filtered characters count: 2
+index-DZehSjx0.js:500 Message: Object
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: Object
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: Object
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: Object
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: Object
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: Object
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: Object
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: Object
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: Object
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: Object
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: Object
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: Object
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: Object
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: Object
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: Object
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: Object
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: Object
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: Object
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: Object
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: Object
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: Object
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: Object
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: Object
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: Object
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: Object
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: Object
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: Object
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: Object
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: Object
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: Object
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 [ChatRoom] useEffect - Character selection check: Object
+index-DZehSjx0.js:500 Načtené zprávy z API: Array(30)
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - User characters raw: (15) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - User characters count: 15
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - Current user ID: 5
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - Filtered user characters: (2) [{…}, {…}]
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - Filtered characters count: 2
+index-DZehSjx0.js:500 Message: {id: 2, name: 'Testovací chat', description: 'Místnost pro testování a experimenty', isPublic: true, createdAt: '2025-05-28T15:01:05.856', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 3, name: 'Ulice', description: 'Hlavní ulice Příčné ulice', isPublic: true, createdAt: '2025-05-29T18:28:17.684', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 4, name: 'Gringottovi', description: 'Banka pro čaroděje a kouzelníky', isPublic: true, createdAt: '2025-05-29T18:28:17.727', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 5, name: 'Děravý kotel', description: 'Slavný hostinec a vstup do kouzelného světa', isPublic: true, createdAt: '2025-05-29T18:28:17.768', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 6, name: 'Černá vrána', description: 'Pohřební služba pro kouzelný svět', isPublic: true, createdAt: '2025-05-29T18:28:17.821', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 7, name: 'Čarokáva', description: 'Kavárna pro čaroděje', isPublic: true, createdAt: '2025-05-29T18:28:17.858', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 8, name: 'Obrtlá ulice', description: 'Temné zákoutí Obrtlé ulice', isPublic: true, createdAt: '2025-05-29T18:28:17.897', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 9, name: 'Zlomená hůlka', description: 'Obchod s podezřelými kouzelnými předměty', isPublic: true, createdAt: '2025-05-29T18:28:17.933', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 10, name: 'Ministerstvo kouzel', description: 'Úřad kouzelné vlády', isPublic: true, createdAt: '2025-05-29T18:28:17.97', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 11, name: 'Nemocnice u sv. Munga', description: 'Nemocnice pro kouzelné nemoci a úrazy', isPublic: true, createdAt: '2025-05-29T18:28:18.037', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 12, name: 'Katakomby', description: 'Podzemní bludiště pod Londýnem', isPublic: true, createdAt: '2025-05-29T18:28:18.073', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 18, name: 'Pošmourná ulička', description: 'Temné zákoutí Obrtlé ulice', isPublic: true, createdAt: '2025-05-31T20:25:55.518', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 19, name: 'Ubytovna U starého Šeptáka', description: null, isPublic: true, createdAt: '2025-05-31T21:21:05.061', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 22, name: 'Lovci pokladů', description: 'Hledáš prácičku? Nebo něco sháníš? Jsi na správném místě.', isPublic: true, createdAt: '2025-06-01T11:10:49.533', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 23, name: 'U Mlžné konvice', description: 'Šálek čaje nebo tajemství, drahoušku?', isPublic: true, createdAt: '2025-06-01T11:26:19.122', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 24, name: 'Muži písma', description: 'Sháníš knihu či informace? Samozřejmě, kde jinde. Ale nebude to zadarmo.', isPublic: true, createdAt: '2025-06-01T11:35:45.136', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 25, name: 'Hrad', description: 'Bradavická škola čar a kouzel', isPublic: true, createdAt: '2025-06-01T11:39:17.776', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 26, name: 'Pozemky', description: 'Nejbližší okolo Bradavic. Běžně přístupné studentům a návštěvníkům.', isPublic: true, createdAt: '2025-06-01T11:41:38.886', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 27, name: 'Zapovězený les', description: 'Kdo se bojí, nesmí do lesa', isPublic: true, createdAt: '2025-06-01T11:44:27.399', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 28, name: 'Prasinky', description: 'Jediná čistě kouzelnická vesnice v Británii. Opravdu?', isPublic: true, createdAt: '2025-06-01T11:49:36.102', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 29, name: 'Azkaban', description: 'V Azkabanu neumíráš tělem, ale každý den o kousek duší.', isPublic: true, createdAt: '2025-06-01T11:56:50.425', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 30, name: 'U Černé labutě', description: 'Mudlovská hospoda páté cenové', isPublic: true, createdAt: '2025-06-01T19:01:27.319', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 31, name: 'U Pozlacené lišky', description: 'Tady se schází smetánka na drink.', isPublic: true, createdAt: '2025-06-01T19:24:08.961', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 32, name: 'Spící drak', description: 'Kde sny hoří pomalu a minulost šeptá v kouři.', isPublic: true, createdAt: '2025-06-01T19:38:03.713', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 33, name: 'Doky', description: 'Doky – místo, kde se mlha mísí se lží a každé setkání má svou cenu.', isPublic: true, createdAt: '2025-06-01T19:43:38.556', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 34, name: 'Tower', description: 'Starobylá pevnost, jejíž chladné zdi pamatují tolik kouzel, kolik krve — a ani jedno nezmizelo.', isPublic: true, createdAt: '2025-06-01T19:46:35.887', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 35, name: 'Temže', description: 'Městem protékající šedý proud, jenž unáší stíny minulosti i potají pronesená zaklínadla.', isPublic: true, createdAt: '2025-06-01T19:48:56.601', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 36, name: 'Doupě neřesti', description: 'Sídlo/Vila Obří sídlo  - Amálie Zoufalá', isPublic: false, createdAt: '2025-06-08T15:14:53.763', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 37, name: 'Bažina', description: 'Sídlo/Vila Rozsáhlá bažina - Jožin Z Bažin', isPublic: false, createdAt: '2025-06-08T15:32:19.887', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 38, name: 'Tady je Bubákovo', description: 'Dům Dostatečně na stádo hipogryfu  - Zoe Higgins', isPublic: false, createdAt: '2025-06-08T15:33:42.158', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 [ChatRoom] useEffect - Character selection check: {selectedCharacter: {…}, userCharactersLength: 2, charactersLoading: false, isNarratorMode: false, userRole: 'admin'}
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - User characters raw: (15) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - User characters count: 15
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - Current user ID: 5
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - Filtered user characters: (2) [{…}, {…}]
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - Filtered characters count: 2
+index-DZehSjx0.js:500 Message: {id: 2, name: 'Testovací chat', description: 'Místnost pro testování a experimenty', isPublic: true, createdAt: '2025-05-28T15:01:05.856', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 3, name: 'Ulice', description: 'Hlavní ulice Příčné ulice', isPublic: true, createdAt: '2025-05-29T18:28:17.684', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 4, name: 'Gringottovi', description: 'Banka pro čaroděje a kouzelníky', isPublic: true, createdAt: '2025-05-29T18:28:17.727', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 5, name: 'Děravý kotel', description: 'Slavný hostinec a vstup do kouzelného světa', isPublic: true, createdAt: '2025-05-29T18:28:17.768', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 6, name: 'Černá vrána', description: 'Pohřební služba pro kouzelný svět', isPublic: true, createdAt: '2025-05-29T18:28:17.821', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 7, name: 'Čarokáva', description: 'Kavárna pro čaroděje', isPublic: true, createdAt: '2025-05-29T18:28:17.858', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 8, name: 'Obrtlá ulice', description: 'Temné zákoutí Obrtlé ulice', isPublic: true, createdAt: '2025-05-29T18:28:17.897', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 9, name: 'Zlomená hůlka', description: 'Obchod s podezřelými kouzelnými předměty', isPublic: true, createdAt: '2025-05-29T18:28:17.933', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 10, name: 'Ministerstvo kouzel', description: 'Úřad kouzelné vlády', isPublic: true, createdAt: '2025-05-29T18:28:17.97', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 11, name: 'Nemocnice u sv. Munga', description: 'Nemocnice pro kouzelné nemoci a úrazy', isPublic: true, createdAt: '2025-05-29T18:28:18.037', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 12, name: 'Katakomby', description: 'Podzemní bludiště pod Londýnem', isPublic: true, createdAt: '2025-05-29T18:28:18.073', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 18, name: 'Pošmourná ulička', description: 'Temné zákoutí Obrtlé ulice', isPublic: true, createdAt: '2025-05-31T20:25:55.518', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 19, name: 'Ubytovna U starého Šeptáka', description: null, isPublic: true, createdAt: '2025-05-31T21:21:05.061', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 22, name: 'Lovci pokladů', description: 'Hledáš prácičku? Nebo něco sháníš? Jsi na správném místě.', isPublic: true, createdAt: '2025-06-01T11:10:49.533', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 23, name: 'U Mlžné konvice', description: 'Šálek čaje nebo tajemství, drahoušku?', isPublic: true, createdAt: '2025-06-01T11:26:19.122', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 24, name: 'Muži písma', description: 'Sháníš knihu či informace? Samozřejmě, kde jinde. Ale nebude to zadarmo.', isPublic: true, createdAt: '2025-06-01T11:35:45.136', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 25, name: 'Hrad', description: 'Bradavická škola čar a kouzel', isPublic: true, createdAt: '2025-06-01T11:39:17.776', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 26, name: 'Pozemky', description: 'Nejbližší okolo Bradavic. Běžně přístupné studentům a návštěvníkům.', isPublic: true, createdAt: '2025-06-01T11:41:38.886', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 27, name: 'Zapovězený les', description: 'Kdo se bojí, nesmí do lesa', isPublic: true, createdAt: '2025-06-01T11:44:27.399', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 28, name: 'Prasinky', description: 'Jediná čistě kouzelnická vesnice v Británii. Opravdu?', isPublic: true, createdAt: '2025-06-01T11:49:36.102', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 29, name: 'Azkaban', description: 'V Azkabanu neumíráš tělem, ale každý den o kousek duší.', isPublic: true, createdAt: '2025-06-01T11:56:50.425', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 30, name: 'U Černé labutě', description: 'Mudlovská hospoda páté cenové', isPublic: true, createdAt: '2025-06-01T19:01:27.319', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 31, name: 'U Pozlacené lišky', description: 'Tady se schází smetánka na drink.', isPublic: true, createdAt: '2025-06-01T19:24:08.961', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 32, name: 'Spící drak', description: 'Kde sny hoří pomalu a minulost šeptá v kouři.', isPublic: true, createdAt: '2025-06-01T19:38:03.713', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 33, name: 'Doky', description: 'Doky – místo, kde se mlha mísí se lží a každé setkání má svou cenu.', isPublic: true, createdAt: '2025-06-01T19:43:38.556', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 34, name: 'Tower', description: 'Starobylá pevnost, jejíž chladné zdi pamatují tolik kouzel, kolik krve — a ani jedno nezmizelo.', isPublic: true, createdAt: '2025-06-01T19:46:35.887', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 35, name: 'Temže', description: 'Městem protékající šedý proud, jenž unáší stíny minulosti i potají pronesená zaklínadla.', isPublic: true, createdAt: '2025-06-01T19:48:56.601', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 36, name: 'Doupě neřesti', description: 'Sídlo/Vila Obří sídlo  - Amálie Zoufalá', isPublic: false, createdAt: '2025-06-08T15:14:53.763', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 37, name: 'Bažina', description: 'Sídlo/Vila Rozsáhlá bažina - Jožin Z Bažin', isPublic: false, createdAt: '2025-06-08T15:32:19.887', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 38, name: 'Tady je Bubákovo', description: 'Dům Dostatečně na stádo hipogryfu  - Zoe Higgins', isPublic: false, createdAt: '2025-06-08T15:33:42.158', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 [ChatRoom] useEffect - Character selection check: {selectedCharacter: {…}, userCharactersLength: 2, charactersLoading: false, isNarratorMode: false, userRole: 'admin'}
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - User characters raw: (15) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - User characters count: 15
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - Current user ID: 5
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - Filtered user characters: (2) [{…}, {…}]
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - Filtered characters count: 2
+index-DZehSjx0.js:500 Message: {id: 2, name: 'Testovací chat', description: 'Místnost pro testování a experimenty', isPublic: true, createdAt: '2025-05-28T15:01:05.856', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 3, name: 'Ulice', description: 'Hlavní ulice Příčné ulice', isPublic: true, createdAt: '2025-05-29T18:28:17.684', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 4, name: 'Gringottovi', description: 'Banka pro čaroděje a kouzelníky', isPublic: true, createdAt: '2025-05-29T18:28:17.727', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 5, name: 'Děravý kotel', description: 'Slavný hostinec a vstup do kouzelného světa', isPublic: true, createdAt: '2025-05-29T18:28:17.768', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 6, name: 'Černá vrána', description: 'Pohřební služba pro kouzelný svět', isPublic: true, createdAt: '2025-05-29T18:28:17.821', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 7, name: 'Čarokáva', description: 'Kavárna pro čaroděje', isPublic: true, createdAt: '2025-05-29T18:28:17.858', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 8, name: 'Obrtlá ulice', description: 'Temné zákoutí Obrtlé ulice', isPublic: true, createdAt: '2025-05-29T18:28:17.897', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 9, name: 'Zlomená hůlka', description: 'Obchod s podezřelými kouzelnými předměty', isPublic: true, createdAt: '2025-05-29T18:28:17.933', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 10, name: 'Ministerstvo kouzel', description: 'Úřad kouzelné vlády', isPublic: true, createdAt: '2025-05-29T18:28:17.97', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 11, name: 'Nemocnice u sv. Munga', description: 'Nemocnice pro kouzelné nemoci a úrazy', isPublic: true, createdAt: '2025-05-29T18:28:18.037', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 12, name: 'Katakomby', description: 'Podzemní bludiště pod Londýnem', isPublic: true, createdAt: '2025-05-29T18:28:18.073', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 18, name: 'Pošmourná ulička', description: 'Temné zákoutí Obrtlé ulice', isPublic: true, createdAt: '2025-05-31T20:25:55.518', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 19, name: 'Ubytovna U starého Šeptáka', description: null, isPublic: true, createdAt: '2025-05-31T21:21:05.061', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 22, name: 'Lovci pokladů', description: 'Hledáš prácičku? Nebo něco sháníš? Jsi na správném místě.', isPublic: true, createdAt: '2025-06-01T11:10:49.533', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 23, name: 'U Mlžné konvice', description: 'Šálek čaje nebo tajemství, drahoušku?', isPublic: true, createdAt: '2025-06-01T11:26:19.122', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 24, name: 'Muži písma', description: 'Sháníš knihu či informace? Samozřejmě, kde jinde. Ale nebude to zadarmo.', isPublic: true, createdAt: '2025-06-01T11:35:45.136', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 25, name: 'Hrad', description: 'Bradavická škola čar a kouzel', isPublic: true, createdAt: '2025-06-01T11:39:17.776', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 26, name: 'Pozemky', description: 'Nejbližší okolo Bradavic. Běžně přístupné studentům a návštěvníkům.', isPublic: true, createdAt: '2025-06-01T11:41:38.886', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 27, name: 'Zapovězený les', description: 'Kdo se bojí, nesmí do lesa', isPublic: true, createdAt: '2025-06-01T11:44:27.399', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 28, name: 'Prasinky', description: 'Jediná čistě kouzelnická vesnice v Británii. Opravdu?', isPublic: true, createdAt: '2025-06-01T11:49:36.102', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 29, name: 'Azkaban', description: 'V Azkabanu neumíráš tělem, ale každý den o kousek duší.', isPublic: true, createdAt: '2025-06-01T11:56:50.425', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 30, name: 'U Černé labutě', description: 'Mudlovská hospoda páté cenové', isPublic: true, createdAt: '2025-06-01T19:01:27.319', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 31, name: 'U Pozlacené lišky', description: 'Tady se schází smetánka na drink.', isPublic: true, createdAt: '2025-06-01T19:24:08.961', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 32, name: 'Spící drak', description: 'Kde sny hoří pomalu a minulost šeptá v kouři.', isPublic: true, createdAt: '2025-06-01T19:38:03.713', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 33, name: 'Doky', description: 'Doky – místo, kde se mlha mísí se lží a každé setkání má svou cenu.', isPublic: true, createdAt: '2025-06-01T19:43:38.556', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 34, name: 'Tower', description: 'Starobylá pevnost, jejíž chladné zdi pamatují tolik kouzel, kolik krve — a ani jedno nezmizelo.', isPublic: true, createdAt: '2025-06-01T19:46:35.887', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 35, name: 'Temže', description: 'Městem protékající šedý proud, jenž unáší stíny minulosti i potají pronesená zaklínadla.', isPublic: true, createdAt: '2025-06-01T19:48:56.601', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 36, name: 'Doupě neřesti', description: 'Sídlo/Vila Obří sídlo  - Amálie Zoufalá', isPublic: false, createdAt: '2025-06-08T15:14:53.763', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 37, name: 'Bažina', description: 'Sídlo/Vila Rozsáhlá bažina - Jožin Z Bažin', isPublic: false, createdAt: '2025-06-08T15:32:19.887', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 38, name: 'Tady je Bubákovo', description: 'Dům Dostatečně na stádo hipogryfu  - Zoe Higgins', isPublic: false, createdAt: '2025-06-08T15:33:42.158', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 [ChatRoom] useEffect - Character selection check: {selectedCharacter: {…}, userCharactersLength: 2, charactersLoading: false, isNarratorMode: false, userRole: 'admin'}
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - User characters raw: (15) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - User characters count: 15
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - Current user ID: 5
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - Filtered user characters: (2) [{…}, {…}]
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - Filtered characters count: 2
+index-DZehSjx0.js:500 Message: {id: 2, name: 'Testovací chat', description: 'Místnost pro testování a experimenty', isPublic: true, createdAt: '2025-05-28T15:01:05.856', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 3, name: 'Ulice', description: 'Hlavní ulice Příčné ulice', isPublic: true, createdAt: '2025-05-29T18:28:17.684', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 4, name: 'Gringottovi', description: 'Banka pro čaroděje a kouzelníky', isPublic: true, createdAt: '2025-05-29T18:28:17.727', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 5, name: 'Děravý kotel', description: 'Slavný hostinec a vstup do kouzelného světa', isPublic: true, createdAt: '2025-05-29T18:28:17.768', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 6, name: 'Černá vrána', description: 'Pohřební služba pro kouzelný svět', isPublic: true, createdAt: '2025-05-29T18:28:17.821', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 7, name: 'Čarokáva', description: 'Kavárna pro čaroděje', isPublic: true, createdAt: '2025-05-29T18:28:17.858', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 8, name: 'Obrtlá ulice', description: 'Temné zákoutí Obrtlé ulice', isPublic: true, createdAt: '2025-05-29T18:28:17.897', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 9, name: 'Zlomená hůlka', description: 'Obchod s podezřelými kouzelnými předměty', isPublic: true, createdAt: '2025-05-29T18:28:17.933', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 10, name: 'Ministerstvo kouzel', description: 'Úřad kouzelné vlády', isPublic: true, createdAt: '2025-05-29T18:28:17.97', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 11, name: 'Nemocnice u sv. Munga', description: 'Nemocnice pro kouzelné nemoci a úrazy', isPublic: true, createdAt: '2025-05-29T18:28:18.037', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 12, name: 'Katakomby', description: 'Podzemní bludiště pod Londýnem', isPublic: true, createdAt: '2025-05-29T18:28:18.073', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 18, name: 'Pošmourná ulička', description: 'Temné zákoutí Obrtlé ulice', isPublic: true, createdAt: '2025-05-31T20:25:55.518', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 19, name: 'Ubytovna U starého Šeptáka', description: null, isPublic: true, createdAt: '2025-05-31T21:21:05.061', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 22, name: 'Lovci pokladů', description: 'Hledáš prácičku? Nebo něco sháníš? Jsi na správném místě.', isPublic: true, createdAt: '2025-06-01T11:10:49.533', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 23, name: 'U Mlžné konvice', description: 'Šálek čaje nebo tajemství, drahoušku?', isPublic: true, createdAt: '2025-06-01T11:26:19.122', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 24, name: 'Muži písma', description: 'Sháníš knihu či informace? Samozřejmě, kde jinde. Ale nebude to zadarmo.', isPublic: true, createdAt: '2025-06-01T11:35:45.136', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 25, name: 'Hrad', description: 'Bradavická škola čar a kouzel', isPublic: true, createdAt: '2025-06-01T11:39:17.776', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 26, name: 'Pozemky', description: 'Nejbližší okolo Bradavic. Běžně přístupné studentům a návštěvníkům.', isPublic: true, createdAt: '2025-06-01T11:41:38.886', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 27, name: 'Zapovězený les', description: 'Kdo se bojí, nesmí do lesa', isPublic: true, createdAt: '2025-06-01T11:44:27.399', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 28, name: 'Prasinky', description: 'Jediná čistě kouzelnická vesnice v Británii. Opravdu?', isPublic: true, createdAt: '2025-06-01T11:49:36.102', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 29, name: 'Azkaban', description: 'V Azkabanu neumíráš tělem, ale každý den o kousek duší.', isPublic: true, createdAt: '2025-06-01T11:56:50.425', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 30, name: 'U Černé labutě', description: 'Mudlovská hospoda páté cenové', isPublic: true, createdAt: '2025-06-01T19:01:27.319', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 31, name: 'U Pozlacené lišky', description: 'Tady se schází smetánka na drink.', isPublic: true, createdAt: '2025-06-01T19:24:08.961', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 32, name: 'Spící drak', description: 'Kde sny hoří pomalu a minulost šeptá v kouři.', isPublic: true, createdAt: '2025-06-01T19:38:03.713', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 33, name: 'Doky', description: 'Doky – místo, kde se mlha mísí se lží a každé setkání má svou cenu.', isPublic: true, createdAt: '2025-06-01T19:43:38.556', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 34, name: 'Tower', description: 'Starobylá pevnost, jejíž chladné zdi pamatují tolik kouzel, kolik krve — a ani jedno nezmizelo.', isPublic: true, createdAt: '2025-06-01T19:46:35.887', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 35, name: 'Temže', description: 'Městem protékající šedý proud, jenž unáší stíny minulosti i potají pronesená zaklínadla.', isPublic: true, createdAt: '2025-06-01T19:48:56.601', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 36, name: 'Doupě neřesti', description: 'Sídlo/Vila Obří sídlo  - Amálie Zoufalá', isPublic: false, createdAt: '2025-06-08T15:14:53.763', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 37, name: 'Bažina', description: 'Sídlo/Vila Rozsáhlá bažina - Jožin Z Bažin', isPublic: false, createdAt: '2025-06-08T15:32:19.887', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 38, name: 'Tady je Bubákovo', description: 'Dům Dostatečně na stádo hipogryfu  - Zoe Higgins', isPublic: false, createdAt: '2025-06-08T15:33:42.158', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 [ChatRoom] useEffect - Character selection check: {selectedCharacter: {…}, userCharactersLength: 2, charactersLoading: false, isNarratorMode: false, userRole: 'admin'}
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - User characters raw: (15) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - User characters count: 15
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - Current user ID: 5
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - Filtered user characters: (2) [{…}, {…}]
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - Filtered characters count: 2
+index-DZehSjx0.js:500 Message: {id: 2, name: 'Testovací chat', description: 'Místnost pro testování a experimenty', isPublic: true, createdAt: '2025-05-28T15:01:05.856', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 3, name: 'Ulice', description: 'Hlavní ulice Příčné ulice', isPublic: true, createdAt: '2025-05-29T18:28:17.684', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 4, name: 'Gringottovi', description: 'Banka pro čaroděje a kouzelníky', isPublic: true, createdAt: '2025-05-29T18:28:17.727', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 5, name: 'Děravý kotel', description: 'Slavný hostinec a vstup do kouzelného světa', isPublic: true, createdAt: '2025-05-29T18:28:17.768', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 6, name: 'Černá vrána', description: 'Pohřební služba pro kouzelný svět', isPublic: true, createdAt: '2025-05-29T18:28:17.821', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 7, name: 'Čarokáva', description: 'Kavárna pro čaroděje', isPublic: true, createdAt: '2025-05-29T18:28:17.858', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 8, name: 'Obrtlá ulice', description: 'Temné zákoutí Obrtlé ulice', isPublic: true, createdAt: '2025-05-29T18:28:17.897', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 9, name: 'Zlomená hůlka', description: 'Obchod s podezřelými kouzelnými předměty', isPublic: true, createdAt: '2025-05-29T18:28:17.933', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 10, name: 'Ministerstvo kouzel', description: 'Úřad kouzelné vlády', isPublic: true, createdAt: '2025-05-29T18:28:17.97', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 11, name: 'Nemocnice u sv. Munga', description: 'Nemocnice pro kouzelné nemoci a úrazy', isPublic: true, createdAt: '2025-05-29T18:28:18.037', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 12, name: 'Katakomby', description: 'Podzemní bludiště pod Londýnem', isPublic: true, createdAt: '2025-05-29T18:28:18.073', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 18, name: 'Pošmourná ulička', description: 'Temné zákoutí Obrtlé ulice', isPublic: true, createdAt: '2025-05-31T20:25:55.518', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 19, name: 'Ubytovna U starého Šeptáka', description: null, isPublic: true, createdAt: '2025-05-31T21:21:05.061', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 22, name: 'Lovci pokladů', description: 'Hledáš prácičku? Nebo něco sháníš? Jsi na správném místě.', isPublic: true, createdAt: '2025-06-01T11:10:49.533', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 23, name: 'U Mlžné konvice', description: 'Šálek čaje nebo tajemství, drahoušku?', isPublic: true, createdAt: '2025-06-01T11:26:19.122', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 24, name: 'Muži písma', description: 'Sháníš knihu či informace? Samozřejmě, kde jinde. Ale nebude to zadarmo.', isPublic: true, createdAt: '2025-06-01T11:35:45.136', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 25, name: 'Hrad', description: 'Bradavická škola čar a kouzel', isPublic: true, createdAt: '2025-06-01T11:39:17.776', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 26, name: 'Pozemky', description: 'Nejbližší okolo Bradavic. Běžně přístupné studentům a návštěvníkům.', isPublic: true, createdAt: '2025-06-01T11:41:38.886', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 27, name: 'Zapovězený les', description: 'Kdo se bojí, nesmí do lesa', isPublic: true, createdAt: '2025-06-01T11:44:27.399', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 28, name: 'Prasinky', description: 'Jediná čistě kouzelnická vesnice v Británii. Opravdu?', isPublic: true, createdAt: '2025-06-01T11:49:36.102', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 29, name: 'Azkaban', description: 'V Azkabanu neumíráš tělem, ale každý den o kousek duší.', isPublic: true, createdAt: '2025-06-01T11:56:50.425', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 30, name: 'U Černé labutě', description: 'Mudlovská hospoda páté cenové', isPublic: true, createdAt: '2025-06-01T19:01:27.319', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 31, name: 'U Pozlacené lišky', description: 'Tady se schází smetánka na drink.', isPublic: true, createdAt: '2025-06-01T19:24:08.961', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 32, name: 'Spící drak', description: 'Kde sny hoří pomalu a minulost šeptá v kouři.', isPublic: true, createdAt: '2025-06-01T19:38:03.713', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 33, name: 'Doky', description: 'Doky – místo, kde se mlha mísí se lží a každé setkání má svou cenu.', isPublic: true, createdAt: '2025-06-01T19:43:38.556', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 34, name: 'Tower', description: 'Starobylá pevnost, jejíž chladné zdi pamatují tolik kouzel, kolik krve — a ani jedno nezmizelo.', isPublic: true, createdAt: '2025-06-01T19:46:35.887', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 35, name: 'Temže', description: 'Městem protékající šedý proud, jenž unáší stíny minulosti i potají pronesená zaklínadla.', isPublic: true, createdAt: '2025-06-01T19:48:56.601', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 36, name: 'Doupě neřesti', description: 'Sídlo/Vila Obří sídlo  - Amálie Zoufalá', isPublic: false, createdAt: '2025-06-08T15:14:53.763', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 37, name: 'Bažina', description: 'Sídlo/Vila Rozsáhlá bažina - Jožin Z Bažin', isPublic: false, createdAt: '2025-06-08T15:32:19.887', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 38, name: 'Tady je Bubákovo', description: 'Dům Dostatečně na stádo hipogryfu  - Zoe Higgins', isPublic: false, createdAt: '2025-06-08T15:33:42.158', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 [ChatRoom] useEffect - Character selection check: {selectedCharacter: {…}, userCharactersLength: 2, charactersLoading: false, isNarratorMode: false, userRole: 'admin'}
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - User characters raw: (15) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - User characters count: 15
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - Current user ID: 5
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - Filtered user characters: (2) [{…}, {…}]
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - Filtered characters count: 2
+index-DZehSjx0.js:500 Message: {id: 2, name: 'Testovací chat', description: 'Místnost pro testování a experimenty', isPublic: true, createdAt: '2025-05-28T15:01:05.856', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 3, name: 'Ulice', description: 'Hlavní ulice Příčné ulice', isPublic: true, createdAt: '2025-05-29T18:28:17.684', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 4, name: 'Gringottovi', description: 'Banka pro čaroděje a kouzelníky', isPublic: true, createdAt: '2025-05-29T18:28:17.727', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 5, name: 'Děravý kotel', description: 'Slavný hostinec a vstup do kouzelného světa', isPublic: true, createdAt: '2025-05-29T18:28:17.768', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 6, name: 'Černá vrána', description: 'Pohřební služba pro kouzelný svět', isPublic: true, createdAt: '2025-05-29T18:28:17.821', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 7, name: 'Čarokáva', description: 'Kavárna pro čaroděje', isPublic: true, createdAt: '2025-05-29T18:28:17.858', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 8, name: 'Obrtlá ulice', description: 'Temné zákoutí Obrtlé ulice', isPublic: true, createdAt: '2025-05-29T18:28:17.897', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 9, name: 'Zlomená hůlka', description: 'Obchod s podezřelými kouzelnými předměty', isPublic: true, createdAt: '2025-05-29T18:28:17.933', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 10, name: 'Ministerstvo kouzel', description: 'Úřad kouzelné vlády', isPublic: true, createdAt: '2025-05-29T18:28:17.97', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 11, name: 'Nemocnice u sv. Munga', description: 'Nemocnice pro kouzelné nemoci a úrazy', isPublic: true, createdAt: '2025-05-29T18:28:18.037', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 12, name: 'Katakomby', description: 'Podzemní bludiště pod Londýnem', isPublic: true, createdAt: '2025-05-29T18:28:18.073', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 18, name: 'Pošmourná ulička', description: 'Temné zákoutí Obrtlé ulice', isPublic: true, createdAt: '2025-05-31T20:25:55.518', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 19, name: 'Ubytovna U starého Šeptáka', description: null, isPublic: true, createdAt: '2025-05-31T21:21:05.061', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 22, name: 'Lovci pokladů', description: 'Hledáš prácičku? Nebo něco sháníš? Jsi na správném místě.', isPublic: true, createdAt: '2025-06-01T11:10:49.533', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 23, name: 'U Mlžné konvice', description: 'Šálek čaje nebo tajemství, drahoušku?', isPublic: true, createdAt: '2025-06-01T11:26:19.122', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 24, name: 'Muži písma', description: 'Sháníš knihu či informace? Samozřejmě, kde jinde. Ale nebude to zadarmo.', isPublic: true, createdAt: '2025-06-01T11:35:45.136', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 25, name: 'Hrad', description: 'Bradavická škola čar a kouzel', isPublic: true, createdAt: '2025-06-01T11:39:17.776', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 26, name: 'Pozemky', description: 'Nejbližší okolo Bradavic. Běžně přístupné studentům a návštěvníkům.', isPublic: true, createdAt: '2025-06-01T11:41:38.886', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 27, name: 'Zapovězený les', description: 'Kdo se bojí, nesmí do lesa', isPublic: true, createdAt: '2025-06-01T11:44:27.399', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 28, name: 'Prasinky', description: 'Jediná čistě kouzelnická vesnice v Británii. Opravdu?', isPublic: true, createdAt: '2025-06-01T11:49:36.102', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 29, name: 'Azkaban', description: 'V Azkabanu neumíráš tělem, ale každý den o kousek duší.', isPublic: true, createdAt: '2025-06-01T11:56:50.425', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 30, name: 'U Černé labutě', description: 'Mudlovská hospoda páté cenové', isPublic: true, createdAt: '2025-06-01T19:01:27.319', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 31, name: 'U Pozlacené lišky', description: 'Tady se schází smetánka na drink.', isPublic: true, createdAt: '2025-06-01T19:24:08.961', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 32, name: 'Spící drak', description: 'Kde sny hoří pomalu a minulost šeptá v kouři.', isPublic: true, createdAt: '2025-06-01T19:38:03.713', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 33, name: 'Doky', description: 'Doky – místo, kde se mlha mísí se lží a každé setkání má svou cenu.', isPublic: true, createdAt: '2025-06-01T19:43:38.556', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 34, name: 'Tower', description: 'Starobylá pevnost, jejíž chladné zdi pamatují tolik kouzel, kolik krve — a ani jedno nezmizelo.', isPublic: true, createdAt: '2025-06-01T19:46:35.887', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 35, name: 'Temže', description: 'Městem protékající šedý proud, jenž unáší stíny minulosti i potají pronesená zaklínadla.', isPublic: true, createdAt: '2025-06-01T19:48:56.601', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 36, name: 'Doupě neřesti', description: 'Sídlo/Vila Obří sídlo  - Amálie Zoufalá', isPublic: false, createdAt: '2025-06-08T15:14:53.763', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 37, name: 'Bažina', description: 'Sídlo/Vila Rozsáhlá bažina - Jožin Z Bažin', isPublic: false, createdAt: '2025-06-08T15:32:19.887', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 38, name: 'Tady je Bubákovo', description: 'Dům Dostatečně na stádo hipogryfu  - Zoe Higgins', isPublic: false, createdAt: '2025-06-08T15:33:42.158', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 [ChatRoom] useEffect - Character selection check: {selectedCharacter: {…}, userCharactersLength: 2, charactersLoading: false, isNarratorMode: false, userRole: 'admin'}
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - User characters raw: (15) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - User characters count: 15
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - Current user ID: 5
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - Filtered user characters: (2) [{…}, {…}]
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - Filtered characters count: 2
+index-DZehSjx0.js:500 Message: {id: 2, name: 'Testovací chat', description: 'Místnost pro testování a experimenty', isPublic: true, createdAt: '2025-05-28T15:01:05.856', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 3, name: 'Ulice', description: 'Hlavní ulice Příčné ulice', isPublic: true, createdAt: '2025-05-29T18:28:17.684', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 4, name: 'Gringottovi', description: 'Banka pro čaroděje a kouzelníky', isPublic: true, createdAt: '2025-05-29T18:28:17.727', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 5, name: 'Děravý kotel', description: 'Slavný hostinec a vstup do kouzelného světa', isPublic: true, createdAt: '2025-05-29T18:28:17.768', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 6, name: 'Černá vrána', description: 'Pohřební služba pro kouzelný svět', isPublic: true, createdAt: '2025-05-29T18:28:17.821', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 7, name: 'Čarokáva', description: 'Kavárna pro čaroděje', isPublic: true, createdAt: '2025-05-29T18:28:17.858', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 8, name: 'Obrtlá ulice', description: 'Temné zákoutí Obrtlé ulice', isPublic: true, createdAt: '2025-05-29T18:28:17.897', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 9, name: 'Zlomená hůlka', description: 'Obchod s podezřelými kouzelnými předměty', isPublic: true, createdAt: '2025-05-29T18:28:17.933', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 10, name: 'Ministerstvo kouzel', description: 'Úřad kouzelné vlády', isPublic: true, createdAt: '2025-05-29T18:28:17.97', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 11, name: 'Nemocnice u sv. Munga', description: 'Nemocnice pro kouzelné nemoci a úrazy', isPublic: true, createdAt: '2025-05-29T18:28:18.037', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 12, name: 'Katakomby', description: 'Podzemní bludiště pod Londýnem', isPublic: true, createdAt: '2025-05-29T18:28:18.073', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 18, name: 'Pošmourná ulička', description: 'Temné zákoutí Obrtlé ulice', isPublic: true, createdAt: '2025-05-31T20:25:55.518', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 19, name: 'Ubytovna U starého Šeptáka', description: null, isPublic: true, createdAt: '2025-05-31T21:21:05.061', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 22, name: 'Lovci pokladů', description: 'Hledáš prácičku? Nebo něco sháníš? Jsi na správném místě.', isPublic: true, createdAt: '2025-06-01T11:10:49.533', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 23, name: 'U Mlžné konvice', description: 'Šálek čaje nebo tajemství, drahoušku?', isPublic: true, createdAt: '2025-06-01T11:26:19.122', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 24, name: 'Muži písma', description: 'Sháníš knihu či informace? Samozřejmě, kde jinde. Ale nebude to zadarmo.', isPublic: true, createdAt: '2025-06-01T11:35:45.136', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 25, name: 'Hrad', description: 'Bradavická škola čar a kouzel', isPublic: true, createdAt: '2025-06-01T11:39:17.776', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 26, name: 'Pozemky', description: 'Nejbližší okolo Bradavic. Běžně přístupné studentům a návštěvníkům.', isPublic: true, createdAt: '2025-06-01T11:41:38.886', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 27, name: 'Zapovězený les', description: 'Kdo se bojí, nesmí do lesa', isPublic: true, createdAt: '2025-06-01T11:44:27.399', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 28, name: 'Prasinky', description: 'Jediná čistě kouzelnická vesnice v Británii. Opravdu?', isPublic: true, createdAt: '2025-06-01T11:49:36.102', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 29, name: 'Azkaban', description: 'V Azkabanu neumíráš tělem, ale každý den o kousek duší.', isPublic: true, createdAt: '2025-06-01T11:56:50.425', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 30, name: 'U Černé labutě', description: 'Mudlovská hospoda páté cenové', isPublic: true, createdAt: '2025-06-01T19:01:27.319', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 31, name: 'U Pozlacené lišky', description: 'Tady se schází smetánka na drink.', isPublic: true, createdAt: '2025-06-01T19:24:08.961', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 32, name: 'Spící drak', description: 'Kde sny hoří pomalu a minulost šeptá v kouři.', isPublic: true, createdAt: '2025-06-01T19:38:03.713', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 33, name: 'Doky', description: 'Doky – místo, kde se mlha mísí se lží a každé setkání má svou cenu.', isPublic: true, createdAt: '2025-06-01T19:43:38.556', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 34, name: 'Tower', description: 'Starobylá pevnost, jejíž chladné zdi pamatují tolik kouzel, kolik krve — a ani jedno nezmizelo.', isPublic: true, createdAt: '2025-06-01T19:46:35.887', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 35, name: 'Temže', description: 'Městem protékající šedý proud, jenž unáší stíny minulosti i potají pronesená zaklínadla.', isPublic: true, createdAt: '2025-06-01T19:48:56.601', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 36, name: 'Doupě neřesti', description: 'Sídlo/Vila Obří sídlo  - Amálie Zoufalá', isPublic: false, createdAt: '2025-06-08T15:14:53.763', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 37, name: 'Bažina', description: 'Sídlo/Vila Rozsáhlá bažina - Jožin Z Bažin', isPublic: false, createdAt: '2025-06-08T15:32:19.887', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 38, name: 'Tady je Bubákovo', description: 'Dům Dostatečně na stádo hipogryfu  - Zoe Higgins', isPublic: false, createdAt: '2025-06-08T15:33:42.158', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 [ChatRoom] useEffect - Character selection check: {selectedCharacter: {…}, userCharactersLength: 2, charactersLoading: false, isNarratorMode: false, userRole: 'admin'}
+index-DZehSjx0.js:500 Odesílám zprávu: {content: '122test', characterId: 7}
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - User characters raw: (15) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - User characters count: 15
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - Current user ID: 5
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - Filtered user characters: (2) [{…}, {…}]
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - Filtered characters count: 2
+index-DZehSjx0.js:500 Message: {id: 2, name: 'Testovací chat', description: 'Místnost pro testování a experimenty', isPublic: true, createdAt: '2025-05-28T15:01:05.856', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 3, name: 'Ulice', description: 'Hlavní ulice Příčné ulice', isPublic: true, createdAt: '2025-05-29T18:28:17.684', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 4, name: 'Gringottovi', description: 'Banka pro čaroděje a kouzelníky', isPublic: true, createdAt: '2025-05-29T18:28:17.727', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 5, name: 'Děravý kotel', description: 'Slavný hostinec a vstup do kouzelného světa', isPublic: true, createdAt: '2025-05-29T18:28:17.768', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 6, name: 'Černá vrána', description: 'Pohřební služba pro kouzelný svět', isPublic: true, createdAt: '2025-05-29T18:28:17.821', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 7, name: 'Čarokáva', description: 'Kavárna pro čaroděje', isPublic: true, createdAt: '2025-05-29T18:28:17.858', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 8, name: 'Obrtlá ulice', description: 'Temné zákoutí Obrtlé ulice', isPublic: true, createdAt: '2025-05-29T18:28:17.897', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 9, name: 'Zlomená hůlka', description: 'Obchod s podezřelými kouzelnými předměty', isPublic: true, createdAt: '2025-05-29T18:28:17.933', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 10, name: 'Ministerstvo kouzel', description: 'Úřad kouzelné vlády', isPublic: true, createdAt: '2025-05-29T18:28:17.97', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 11, name: 'Nemocnice u sv. Munga', description: 'Nemocnice pro kouzelné nemoci a úrazy', isPublic: true, createdAt: '2025-05-29T18:28:18.037', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 12, name: 'Katakomby', description: 'Podzemní bludiště pod Londýnem', isPublic: true, createdAt: '2025-05-29T18:28:18.073', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 18, name: 'Pošmourná ulička', description: 'Temné zákoutí Obrtlé ulice', isPublic: true, createdAt: '2025-05-31T20:25:55.518', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 19, name: 'Ubytovna U starého Šeptáka', description: null, isPublic: true, createdAt: '2025-05-31T21:21:05.061', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 22, name: 'Lovci pokladů', description: 'Hledáš prácičku? Nebo něco sháníš? Jsi na správném místě.', isPublic: true, createdAt: '2025-06-01T11:10:49.533', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 23, name: 'U Mlžné konvice', description: 'Šálek čaje nebo tajemství, drahoušku?', isPublic: true, createdAt: '2025-06-01T11:26:19.122', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 24, name: 'Muži písma', description: 'Sháníš knihu či informace? Samozřejmě, kde jinde. Ale nebude to zadarmo.', isPublic: true, createdAt: '2025-06-01T11:35:45.136', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 25, name: 'Hrad', description: 'Bradavická škola čar a kouzel', isPublic: true, createdAt: '2025-06-01T11:39:17.776', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 26, name: 'Pozemky', description: 'Nejbližší okolo Bradavic. Běžně přístupné studentům a návštěvníkům.', isPublic: true, createdAt: '2025-06-01T11:41:38.886', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 27, name: 'Zapovězený les', description: 'Kdo se bojí, nesmí do lesa', isPublic: true, createdAt: '2025-06-01T11:44:27.399', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 28, name: 'Prasinky', description: 'Jediná čistě kouzelnická vesnice v Británii. Opravdu?', isPublic: true, createdAt: '2025-06-01T11:49:36.102', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 29, name: 'Azkaban', description: 'V Azkabanu neumíráš tělem, ale každý den o kousek duší.', isPublic: true, createdAt: '2025-06-01T11:56:50.425', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 30, name: 'U Černé labutě', description: 'Mudlovská hospoda páté cenové', isPublic: true, createdAt: '2025-06-01T19:01:27.319', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 31, name: 'U Pozlacené lišky', description: 'Tady se schází smetánka na drink.', isPublic: true, createdAt: '2025-06-01T19:24:08.961', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 32, name: 'Spící drak', description: 'Kde sny hoří pomalu a minulost šeptá v kouři.', isPublic: true, createdAt: '2025-06-01T19:38:03.713', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 33, name: 'Doky', description: 'Doky – místo, kde se mlha mísí se lží a každé setkání má svou cenu.', isPublic: true, createdAt: '2025-06-01T19:43:38.556', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 34, name: 'Tower', description: 'Starobylá pevnost, jejíž chladné zdi pamatují tolik kouzel, kolik krve — a ani jedno nezmizelo.', isPublic: true, createdAt: '2025-06-01T19:46:35.887', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 35, name: 'Temže', description: 'Městem protékající šedý proud, jenž unáší stíny minulosti i potají pronesená zaklínadla.', isPublic: true, createdAt: '2025-06-01T19:48:56.601', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 36, name: 'Doupě neřesti', description: 'Sídlo/Vila Obří sídlo  - Amálie Zoufalá', isPublic: false, createdAt: '2025-06-08T15:14:53.763', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 37, name: 'Bažina', description: 'Sídlo/Vila Rozsáhlá bažina - Jožin Z Bažin', isPublic: false, createdAt: '2025-06-08T15:32:19.887', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 38, name: 'Tady je Bubákovo', description: 'Dům Dostatečně na stádo hipogryfu  - Zoe Higgins', isPublic: false, createdAt: '2025-06-08T15:33:42.158', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 [ChatRoom] useEffect - Character selection check: {selectedCharacter: {…}, userCharactersLength: 2, charactersLoading: false, isNarratorMode: false, userRole: 'admin'}
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - User characters raw: (15) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - User characters count: 15
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - Current user ID: 5
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - Filtered user characters: (2) [{…}, {…}]
+index-DZehSjx0.js:500 [ChatRoom] FULL DEBUG - Filtered characters count: 2
+index-DZehSjx0.js:500 Message: {id: 2, name: 'Testovací chat', description: 'Místnost pro testování a experimenty', isPublic: true, createdAt: '2025-05-28T15:01:05.856', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 3, name: 'Ulice', description: 'Hlavní ulice Příčné ulice', isPublic: true, createdAt: '2025-05-29T18:28:17.684', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 4, name: 'Gringottovi', description: 'Banka pro čaroděje a kouzelníky', isPublic: true, createdAt: '2025-05-29T18:28:17.727', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 5, name: 'Děravý kotel', description: 'Slavný hostinec a vstup do kouzelného světa', isPublic: true, createdAt: '2025-05-29T18:28:17.768', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 6, name: 'Černá vrána', description: 'Pohřební služba pro kouzelný svět', isPublic: true, createdAt: '2025-05-29T18:28:17.821', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 7, name: 'Čarokáva', description: 'Kavárna pro čaroděje', isPublic: true, createdAt: '2025-05-29T18:28:17.858', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 8, name: 'Obrtlá ulice', description: 'Temné zákoutí Obrtlé ulice', isPublic: true, createdAt: '2025-05-29T18:28:17.897', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 9, name: 'Zlomená hůlka', description: 'Obchod s podezřelými kouzelnými předměty', isPublic: true, createdAt: '2025-05-29T18:28:17.933', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 10, name: 'Ministerstvo kouzel', description: 'Úřad kouzelné vlády', isPublic: true, createdAt: '2025-05-29T18:28:17.97', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 11, name: 'Nemocnice u sv. Munga', description: 'Nemocnice pro kouzelné nemoci a úrazy', isPublic: true, createdAt: '2025-05-29T18:28:18.037', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 12, name: 'Katakomby', description: 'Podzemní bludiště pod Londýnem', isPublic: true, createdAt: '2025-05-29T18:28:18.073', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 18, name: 'Pošmourná ulička', description: 'Temné zákoutí Obrtlé ulice', isPublic: true, createdAt: '2025-05-31T20:25:55.518', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 19, name: 'Ubytovna U starého Šeptáka', description: null, isPublic: true, createdAt: '2025-05-31T21:21:05.061', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 22, name: 'Lovci pokladů', description: 'Hledáš prácičku? Nebo něco sháníš? Jsi na správném místě.', isPublic: true, createdAt: '2025-06-01T11:10:49.533', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 23, name: 'U Mlžné konvice', description: 'Šálek čaje nebo tajemství, drahoušku?', isPublic: true, createdAt: '2025-06-01T11:26:19.122', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 24, name: 'Muži písma', description: 'Sháníš knihu či informace? Samozřejmě, kde jinde. Ale nebude to zadarmo.', isPublic: true, createdAt: '2025-06-01T11:35:45.136', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 25, name: 'Hrad', description: 'Bradavická škola čar a kouzel', isPublic: true, createdAt: '2025-06-01T11:39:17.776', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 26, name: 'Pozemky', description: 'Nejbližší okolo Bradavic. Běžně přístupné studentům a návštěvníkům.', isPublic: true, createdAt: '2025-06-01T11:41:38.886', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 27, name: 'Zapovězený les', description: 'Kdo se bojí, nesmí do lesa', isPublic: true, createdAt: '2025-06-01T11:44:27.399', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 28, name: 'Prasinky', description: 'Jediná čistě kouzelnická vesnice v Británii. Opravdu?', isPublic: true, createdAt: '2025-06-01T11:49:36.102', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 29, name: 'Azkaban', description: 'V Azkabanu neumíráš tělem, ale každý den o kousek duší.', isPublic: true, createdAt: '2025-06-01T11:56:50.425', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 30, name: 'U Černé labutě', description: 'Mudlovská hospoda páté cenové', isPublic: true, createdAt: '2025-06-01T19:01:27.319', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 31, name: 'U Pozlacené lišky', description: 'Tady se schází smetánka na drink.', isPublic: true, createdAt: '2025-06-01T19:24:08.961', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 32, name: 'Spící drak', description: 'Kde sny hoří pomalu a minulost šeptá v kouři.', isPublic: true, createdAt: '2025-06-01T19:38:03.713', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 33, name: 'Doky', description: 'Doky – místo, kde se mlha mísí se lží a každé setkání má svou cenu.', isPublic: true, createdAt: '2025-06-01T19:43:38.556', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 34, name: 'Tower', description: 'Starobylá pevnost, jejíž chladné zdi pamatují tolik kouzel, kolik krve — a ani jedno nezmizelo.', isPublic: true, createdAt: '2025-06-01T19:46:35.887', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 35, name: 'Temže', description: 'Městem protékající šedý proud, jenž unáší stíny minulosti i potají pronesená zaklínadla.', isPublic: true, createdAt: '2025-06-01T19:48:56.601', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 36, name: 'Doupě neřesti', description: 'Sídlo/Vila Obří sídlo  - Amálie Zoufalá', isPublic: false, createdAt: '2025-06-08T15:14:53.763', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 37, name: 'Bažina', description: 'Sídlo/Vila Rozsáhlá bažina - Jožin Z Bažin', isPublic: false, createdAt: '2025-06-08T15:32:19.887', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 Message: {id: 38, name: 'Tady je Bubákovo', description: 'Dům Dostatečně na stádo hipogryfu  - Zoe Higgins', isPublic: false, createdAt: '2025-06-08T15:33:42.158', …}
+index-DZehSjx0.js:500 Character: undefined
+index-DZehSjx0.js:500 Resolved name: Systém
+index-DZehSjx0.js:500 [ChatRoom] useEffect - Character selection check: {selectedCharacter: {…}, userCharactersLength: 2, charactersLoading: false, isNarratorMode: false, userRole: 'admin'}
