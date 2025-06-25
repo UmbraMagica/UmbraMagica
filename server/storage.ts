@@ -333,7 +333,9 @@ export class DatabaseStorage implements IStorage {
     return toCamel(data);
   }
 
-  async getCharacterById(id: number): Promise<Character | null> {
+  async getCharacterById(id: number) {
+    console.log(`[STORAGE] getCharacterById called with ID: ${id}`);
+
     const { data, error } = await supabase
       .from('characters')
       .select('*')
@@ -341,11 +343,12 @@ export class DatabaseStorage implements IStorage {
       .single();
 
     if (error) {
-      console.error('Error fetching character:', error);
+      console.error(`[STORAGE] Error fetching character by ID ${id}:`, error);
       return null;
     }
 
-    return data ? toCamel(data) : null;
+    console.log(`[STORAGE] Character ${id} found:`, data ? 'YES' : 'NO');
+    return toCamel(data);
   }
 
   async getCharactersByUserId(userId: number): Promise<Character[]> {
@@ -1498,6 +1501,7 @@ export class DatabaseStorage implements IStorage {
       // Random selection
       const randomWood = availableWoods[Math.floor(Math.random() * availableWoods.length)];
       const randomCore = availableCores[Math.floor(Math.random() * availableCores.length)];
+```text
       const randomLength = availableLengths[Math.floor(Math.random() * availableLengths.length)];
       const randomFlexibility = availableFlexibilities[Math.floor(Math.random() * availableFlexibilities.length)];
 

@@ -457,10 +457,19 @@ export async function registerRoutes(app: Express): Promise<void> {
       console.log(`[CHAT][MESSAGES] Raw messages count: ${messages?.length || 0}`);
 
       // Ensure all messages have proper character data
-      const messagesWithCharacters = await Promise.all((messages || []).map(async (message: any) => {
+      const messagesWithCharacters = await Promise.all((messages || []).map(async (message: any, index: number) => {
+        console.log(`[CHAT][MESSAGES] Processing message ${index}:`, {
+          id: message.id,
+          characterId: message.characterId,
+          messageType: message.messageType,
+          content: message.content?.substring(0, 50)
+        });
+
         if (message.characterId && message.characterId > 0) {
           try {
             const character = await storage.getCharacterById(message.characterId);
+            console.log(`[CHAT][MESSAGES] Character lookup for ID ${message.characterId}:`, character ? 'FOUND' : 'NOT_FOUND');
+            
             if (character) {
               message.character = {
                 id: character.id,
@@ -470,7 +479,9 @@ export async function registerRoutes(app: Express): Promise<void> {
                 lastName: character.lastName,
                 avatar: character.avatar
               };
+              console.log(`[CHAT][MESSAGES] Character data set:`, message.character);
             } else {
+              console.warn(`[CHAT][MESSAGES] Character ${message.characterId} not found in database`);
               message.character = {
                 id: message.characterId,
                 userId: 0,
@@ -481,17 +492,37 @@ export async function registerRoutes(app: Express): Promise<void> {
               };
             }
           } catch (error) {
-            console.error(`Error fetching character ${message.characterId}:`, error);
+            console.error(`[CHAT][MESSAGES] Error fetching character ${message.characterId}:`, error);
             message.character = {
               id: message.characterId,
               userId: 0,
-              firstName: 'Neznámá',
+              firstName: 'Chyba',
               middleName: null,
-              lastName: 'postava',
+              lastName: 'načítání',
               avatar: null
             };
           }
+        } else if (message.messageType === 'narrator') {
+          message.character = {
+            id: 0,
+            userId: 0,
+            firstName: 'Vypravěč',
+            middleName: null,
+            lastName: '',
+            avatar: null
+          };
+        } else {
+          console.warn(`[CHAT][MESSAGES] Message ${message.id} has no valid characterId:`, message.characterId);
+          message.character = {
+            id: 0,
+            userId: 0,
+            firstName: 'Systém',
+            middleName: null,
+            lastName: '',
+            avatar: null
+          };
         }
+        
         return message;
       }));
 
