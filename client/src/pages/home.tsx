@@ -711,7 +711,7 @@ export default function Home() {
                         "Období olbřímů varuje před silou: síla bez moudrosti je nebezpečná.",
                         "Nastává čas koček: vaše intuice bude obzvlášť ostrá dnes.",
                         "Týden sov přináší zprávy: důležitá komunikace je na cestě k vám.",
-                        ""Období hadů slibuje transformaci: svlékněte starou kůži a obnovte se.",
+                        "Období hadů slibuje transformaci: svlékněte starou kůži a obnovte se.",
                         "Nastává čas krys: malé problémy mohou vyrůst, řešte je včas."
                       ];
                       const dayOfMonth = new Date().getDate();
