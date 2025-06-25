@@ -115,6 +115,7 @@ export default async function appRoutes(app: FastifyInstance) {
   });
 }
 
+
 export async function registerRoutes(app: Express): Promise<void> {
   // HTTP a WebSocket server
   const httpServer = createServer(app);
