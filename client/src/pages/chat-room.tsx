@@ -47,18 +47,30 @@ const API_URL = import.meta.env.VITE_API_URL || '';
 
 // Helper function to safely get character name
 function getCharacterName(message: any): string {
-  // 1. Pokud máme načtenou postavu, použijeme její jméno
+  console.log('getCharacterName called with:', { 
+    messageId: message.id,
+    characterId: message.characterId, 
+    character: message.character,
+    messageType: message.messageType 
+  });
+
+  // 1. Pokud je to narrator zpráva (characterId === 0)
+  if (message.characterId === 0 || message.messageType === 'narrator') {
+    return 'Vypravěč';
+  }
+
+  // 2. Pokud máme načtenou postavu, použijeme její jméno
   if (message.character && message.character.firstName) {
     const { firstName, middleName, lastName } = message.character;
     return [firstName, middleName, lastName].filter(Boolean).join(' ');
   }
 
-  // 2. Pokud není postava, ale je to systémová/narativní zpráva
-  if (!message.characterId || message.characterId === 0) {
-    return message.messageType === 'narrator' ? 'Vypravěč' : 'Systém';
+  // 3. Pokud má characterId, ale postava není načtená
+  if (message.characterId && message.characterId > 0) {
+    return `Postava #${message.characterId}`;
   }
 
-  // 3. Pokud má characterId, ale postava není načtená (chyba backendu)
+  // 4. Fallback
   return 'Neznámá postava';
 }
 
@@ -577,6 +589,16 @@ export default function ChatRoom() {
   // Debug log pro načtené zprávy
   useEffect(() => {
     console.log('Načtené zprávy z API:', messages);
+    messages.forEach((msg, idx) => {
+      console.log(`Message ${idx}:`, {
+        id: msg.id,
+        content: msg.content,
+        messageType: msg.messageType,
+        characterId: msg.characterId,
+        character: msg.character,
+        createdAt: msg.createdAt
+      });
+    });
   }, [messages]);
 
   // Loading states
@@ -709,7 +731,9 @@ export default function ChatRoom() {
                         </span>
                       </div>
                       <div className="bg-muted/30 rounded-lg p-3">
-                        <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
+                        <p className="text-sm whitespace-pre-wrap break-words">
+                          {message.content || message.body || 'Žádný obsah zprávy'}
+                        </p>
                       </div>
                     </div>
                   </div>
