@@ -889,15 +889,14 @@ export default function ChatRoom() {
 
             {canSendAsNarrator && (
               <Button 
-```text
-                  variant={isNarratorMode ? "default" : "outline"} 
-                  size="sm"
-                  onClick={() => setIsNarratorMode(!isNarratorMode)}
-                  className="h-8"
-                >
-                  {isNarratorMode ? 'Vypravěč (aktivní)' : 'Vypravěč'}
-                </Button>
-              )}
+                variant={isNarratorMode ? "default" : "outline"} 
+                size="sm"
+                onClick={() => setIsNarratorMode(!isNarratorMode)}
+                className="h-8"
+              >
+                {isNarratorMode ? 'Vypravěč (aktivní)' : 'Vypravěč'}
+              </Button>
+            )}
             </div>
           </div>
         </div>
