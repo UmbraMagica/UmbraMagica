@@ -101,10 +101,6 @@ export default function ChatRoom() {
 
 // …
 // 2️⃣ V renderovací části
-<div className="bg-muted/30 rounded-lg p-3">
-  <p className="text-sm whitespace-pre-wrap break-words">
-    {getMessageContent(message)}
-  </p>
   <p className="text-sm whitespace-pre-wrap break-words">
   {getMessageText(message)}
 </p>
