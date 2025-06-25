@@ -8,7 +8,10 @@ import multer from "multer";
 import sharp from "sharp";
 import jwt from 'jsonwebtoken';
 import { supabase } from "./supabaseClient";
+import chatMassagesRoutes from './routes/chatMasssages';
 
+
+  
 // JWT payload do req.user
 declare module 'express-serve-static-core' {
   interface Request {
@@ -102,6 +105,12 @@ function validateAndFilterCharacters(characters: any[]): any[] {
       });
     }
 
+export default async function appRoutes(app: FastifyInstance) {
+  // … vaše existující routy
+  await app.register(chatMessagesRoutes);                 // ⬅️ někde uvnitř funkce
+}
+
+    
     return isValid;
   });
 }
