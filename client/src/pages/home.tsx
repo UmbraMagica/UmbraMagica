@@ -180,6 +180,23 @@ export default function Home() {
     }
   };
 
+  const { data: debugStatus } = useQuery({
+    queryKey: ["/api/debug/status"],
+    queryFn: async () => {
+      const token = localStorage.getItem('jwt_token');
+      const response = await fetch(`${API_URL}/api/debug/status`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      if (!response.ok) throw new Error('Debug fetch failed');
+      return response.json();
+    },
+    enabled: !!user && (process.env.NODE_ENV === 'development' || import.meta.env.DEV),
+    refetchInterval: 30000 // Refresh every 30 seconds
+  });
+
   if (!user) {
     return null;
   }
@@ -694,7 +711,7 @@ export default function Home() {
                         "Období olbřímů varuje před silou: síla bez moudrosti je nebezpečná.",
                         "Nastává čas koček: vaše intuice bude obzvlášť ostrá dnes.",
                         "Týden sov přináší zprávy: důležitá komunikace je na cestě k vám.",
-                        "Období hadů slibuje transformaci: svlékněte starou kůži a obnovte se.",
+                        ""Období hadů slibuje transformaci: svlékněte starou kůži a obnovte se.",
                         "Nastává čas krys: malé problémy mohou vyrůst, řešte je včas."
                       ];
                       const dayOfMonth = new Date().getDate();
@@ -971,6 +988,17 @@ export default function Home() {
             </Card>
           </div>
         </div>
+
+        {(import.meta.env.DEV || process.env.NODE_ENV === 'development') && debugStatus && (
+          <Card className="border-yellow-200 bg-yellow-50">
+            <CardContent className="p-6">
+              <div>Environment: {debugStatus.environment}</div>
+              <div>Database: {debugStatus.database?.connection}</div>
+              <div>Supabase: {debugStatus.supabase?.connection}</div>
+              <div>Last check: {new Date(debugStatus.timestamp).toLocaleTimeString()}</div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Cemetery access at the bottom */}
         <div className="mt-8 pt-4 border-t border-border text-center">

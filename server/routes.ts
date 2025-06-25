@@ -11,7 +11,7 @@ import { supabase } from "./supabaseClient";
 import chatMessagesRoutes from './routes/chatMessages';
 
 
-  
+
 // JWT payload do req.user
 declare module 'express-serve-static-core' {
   interface Request {
@@ -70,7 +70,7 @@ function validateAndFilterCharacters(characters: any[]): any[] {
 
   return characters.filter((char, index) => {
     console.log(`[validateAndFilterCharacters] FULL DEBUG - Processing character ${index}:`, char);
-    
+
     if (!char || typeof char !== 'object') {
       console.warn(`[validateAndFilterCharacters] FULL DEBUG - Invalid character object ${index}:`, char);
       return false;
@@ -79,7 +79,7 @@ function validateAndFilterCharacters(characters: any[]): any[] {
     const hasValidId = typeof char.id === 'number' && char.id > 0;
     const hasValidFirstName = typeof char.firstName === 'string' && char.firstName.trim() !== '';
     const hasValidUserId = typeof char.userId === 'number' && char.userId > 0;
-    
+
     const isValid = hasValidId && hasValidFirstName && hasValidUserId;
 
     console.log(`[validateAndFilterCharacters] FULL DEBUG - Character ${index} validation:`, {
@@ -308,11 +308,11 @@ export async function registerRoutes(app: Express): Promise<void> {
       console.log(`[CHARACTERS] FULL DEBUG - User ${req.user!.username} (${req.user!.role}) requesting OWN characters`);
       console.log(`[CHARACTERS] FULL DEBUG - Raw characters for user ${req.user!.id}:`, characters);
       console.log(`[CHARACTERS] FULL DEBUG - Raw count: ${characters?.length || 0}`);
-      
+
       const validCharacters = validateAndFilterCharacters(characters);
       console.log(`[CHARACTERS] FULL DEBUG - Valid count: ${validCharacters.length}`);
       console.log(`[CHARACTERS] FULL DEBUG - Valid characters:`, validCharacters);
-      
+
       // Always return in { characters: [] } format for consistency
       console.log(`[CHARACTERS] FULL DEBUG - Returning response:`, { characters: validCharacters });
       res.json({ characters: validCharacters });
@@ -455,7 +455,7 @@ export async function registerRoutes(app: Express): Promise<void> {
     try {
       const messages = await storage.getChatMessages(roomId);
       console.log(`[CHAT][MESSAGES] Raw messages count: ${messages?.length || 0}`);
-      
+
       // Ensure all messages have proper character data
       const messagesWithCharacters = await Promise.all((messages || []).map(async (message: any) => {
         if (message.characterId && message.characterId > 0) {
@@ -475,7 +475,7 @@ export async function registerRoutes(app: Express): Promise<void> {
         }
         return message;
       }));
-      
+
       console.log(`[CHAT][MESSAGES] Returning ${messagesWithCharacters.length} messages with character data`);
       res.json(messagesWithCharacters);
     } catch (error) {
@@ -717,7 +717,7 @@ export async function registerRoutes(app: Express): Promise<void> {
 
     try {
       console.log(`[NARRATOR][POST] Creating narrator message for room ${roomId}`);
-      
+
       // Create narrator message with messageType 'narrator'
       const message = await storage.createChatMessage({
         roomId: Number(roomId),
@@ -1584,11 +1584,11 @@ export async function registerRoutes(app: Express): Promise<void> {
       }
       const newInvite = await storage.createInviteCode({ code });
       res.status(200).json(newInvite);
-    } catch (error) {
-      console.error("Chyba při vytváření invite kódu:", error);
-      res.status(500).json({ message: "Chyba při vytváření invite kódu" });
-    }
-  });
+          } catch (error) {
+        console.error("Chyba při vytváření invite kódu:", error);
+        res.status(500).json({ message: "Chyba při vytváření invite kódu" });
+      }
+    });
 
   // --- ADMIN: Získání všech invite kódů ---
   app.get("/api/admin/invite-codes", requireAdmin, async (req, res) => {
@@ -1756,6 +1756,66 @@ export async function registerRoutes(app: Express): Promise<void> {
     } catch (error: any) {
       console.error('Error fetching character wand:', error);
       res.status(500).json({ error: error.message });
+    }
+  });
+
+// ✅ Test
+  app.get('/api/test', (req: Request, res: Response) => {
+    res.json({ message: 'Backend funguje!' });
+  });
+
+  // 🧪 Debug – seznam rout
+  app.get('/api/debug/routes', (req, res) => {
+    res.json({
+      routes: app._router.stack
+        .filter(r => r.route)
+        .map(r => r.route.path)
+    });
+  });
+
+  // 🔍 Comprehensive debug endpoint
+  app.get('/api/debug/status', requireAuth, async (req, res) => {
+    try {
+      const debugInfo = {
+        timestamp: new Date().toISOString(),
+        environment: process.env.NODE_ENV,
+        port: process.env.PORT,
+        user: {
+          id: req.user?.id,
+          username: req.user?.username,
+          role: req.user?.role
+        },
+        supabase: {
+          url: process.env.SUPABASE_URL ? 'SET' : 'MISSING',
+          key: process.env.SUPABASE_ANON_KEY ? 'SET' : 'MISSING'
+        },
+        database: {
+          url: process.env.DATABASE_URL ? 'SET' : 'MISSING'
+        },
+        jwt: {
+          secret: process.env.JWT_SECRET ? 'SET' : 'USING_DEFAULT'
+        }
+      };
+
+      // Test database connection
+      try {
+        const testUser = await storage.getUser(1);
+        debugInfo.database.connection = testUser ? 'OK' : 'NO_DATA';
+      } catch (error) {
+        debugInfo.database.connection = `ERROR: ${error.message}`;
+      }
+
+      // Test Supabase connection
+      try {
+        const { data, error } = await supabase.from('users').select('count').limit(1);
+        debugInfo.supabase.connection = error ? `ERROR: ${error.message}` : 'OK';
+      } catch (error) {
+        debugInfo.supabase.connection = `ERROR: ${error.message}`;
+      }
+
+      res.json(debugInfo);
+    } catch (error) {
+      res.status(500).json({ error: error.message, stack: error.stack });
     }
   });
 }
