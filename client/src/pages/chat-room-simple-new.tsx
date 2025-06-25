@@ -17,6 +17,7 @@ import { RoomDescription } from "@/components/RoomDescription";
 import { RoomPresence } from "@/components/RoomPresence";
 import { CharacterAvatar } from "@/components/CharacterAvatar";
 import DOMPurify from 'dompurify';
+import { cn } from "@/lib/utils";
 
 interface ChatRoom {
   id: number;
@@ -853,6 +854,11 @@ export default function ChatRoom() {
       </div>
     );
   }
+
+  // Function to get message body with fallback
+  const getMessageBody = (message: ChatMessage) => {
+    return message.content || message.text || message.narration || "Žádný text";
+  };
 
   return (
     <div className="flex h-screen bg-background">
