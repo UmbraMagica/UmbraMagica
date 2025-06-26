@@ -235,6 +235,23 @@ export interface IStorage {
     archiveChatMessages(roomId: number): Promise<{ count: number }>;
     clearChatMessages(roomId: number): Promise<{ count: number }>;
     getRoomPresence(roomId: number): Promise<any>;
+
+  createUser(userData: {
+    username: string;
+    email: string;
+    password: string;
+    role: string;
+  }): Promise<User>;
+  createCharacter(characterData: {
+    userId: number;
+    firstName: string;
+    middleName?: string;
+    lastName: string;
+    birthDate: Date;
+    isActive: boolean;
+  }): Promise<Character>;
+  validateInviteCode(code: string): Promise<{ valid: boolean; message: string; data?: any; }>;
+  markInviteCodeAsUsed(code: string): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -259,10 +276,28 @@ export class DatabaseStorage implements IStorage {
     return toCamel(data);
   }
 
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const { data, error } = await supabase.from('users').insert([{ ...insertUser, updated_at: new Date() }]).select().single();
-    if (error) throw new Error(error.message);
-    return toCamel(data);
+  async createUser(userData: {
+    username: string;
+    email: string;
+    password: string;
+    role: string;
+  }) {
+    const { data, error } = await supabase
+      .from('users')
+      .insert({
+        username: userData.username,
+        email: userData.email,
+        password: userData.password,
+        role: userData.role,
+        is_banned: false,
+        is_system: false,
+        can_narrate: false
+      })
+      .select()
+      .single()
+
+    if (error) throw error;
+    return data;
   }
 
   async updateUserRole(id: number, role: string): Promise<User | undefined> {
@@ -656,11 +691,30 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
-  async createCharacter(insertCharacter: InsertCharacter): Promise<Character> {
-    // Odstraním id, pokud je v insertCharacter
-    const { id, ...characterData } = insertCharacter;
-    const { data, error } = await supabase.from('characters').insert([{ ...characterData, updated_at: new Date() }]).select().single();
-    if (error) throw new Error(error.message);
+  async createCharacter(characterData: {
+    userId: number;
+    firstName: string;
+    middleName?: string;
+    lastName: string;
+    birthDate: Date;
+    isActive: boolean;
+  }) {
+    const { data, error } = await supabase
+      .from('characters')
+      .insert({
+        user_id: characterData.userId,
+        first_name: characterData.firstName,
+        middle_name: characterData.middleName || null,
+        last_name: characterData.lastName,
+        birth_date: characterData.birthDate.toISOString(),
+        is_active: characterData.isActive,
+        is_system: false,
+        show_history_to_others: true
+      })
+      .select()
+      .single()
+
+    if (error) throw error;
     return data;
   }
 
@@ -738,6 +792,33 @@ export class DatabaseStorage implements IStorage {
     if (!data) throw new Error("Insert returned no data.");
 
     return data;
+  }
+
+  async validateInviteCode(code: string) {
+    const { data, error } = await supabase
+      .from('invite_codes')
+      .select('*')
+      .eq('code', code)
+      .eq('is_used', false)
+      .single()
+
+    if (error || !data) {
+      return { valid: false, message: "Invalid or already used invite code" };
+    }
+
+    return { valid: true, data };
+  }
+
+  async markInviteCodeAsUsed(code: string) {
+    const { error } = await supabase
+      .from('invite_codes')
+      .update({ 
+        is_used: true,
+        updated_at: new Date().toISOString()
+      })
+      .eq('code', code)
+
+    if (error) throw error;
   }
 
   async useInviteCode(code: string, userId: number): Promise<boolean> {
@@ -1755,8 +1836,6 @@ export class DatabaseStorage implements IStorage {
       .insert([{
         change_type: 'manual',
         points_changed: newTotal - previousTotal,
-        previous_total: previousTotal,
-        new_total: newTotal,
         reason,
         admin_id: userId,
         side: changedSide ?? 'reset',
@@ -1912,7 +1991,7 @@ export class DatabaseStorage implements IStorage {
     return data;
   }
 
-  
+
 }
 
 export const storage = new DatabaseStorage();

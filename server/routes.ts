@@ -7,6 +7,7 @@ import { z } from "zod";
 import multer from "multer";
 import sharp from "sharp";
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 import { supabase } from "./supabaseClient";
 import chatMessagesRoutes from './routes/chatMessages';
 
@@ -220,53 +221,122 @@ export async function registerRoutes(app: Express): Promise<void> {
     res.json({ message: "Logged out successfully" });
   });
 
-  // REGISTER
-  app.post("/api/auth/register", async (req, res) => {
+  // Registration
+  app.post('/api/auth/register', async (req: Request, res: Response) => {
     try {
-      const data = registrationSchema.parse(req.body);
-      const existingUser = await storage.getUserByUsername(data.username);
-      if (existingUser) {
-        return res.status(400).json({ message: "Username already exists" });
+      console.log('[DEBUG] Registration request body:', req.body);
+
+      const result = registrationSchema.safeParse(req.body);
+      if (!result.success) {
+        console.log('[DEBUG] Validation errors:', result.error.issues);
+        return res.status(400).json({ 
+          message: "Validation failed", 
+          errors: result.error.issues 
+        });
       }
-      const existingEmail = await storage.getUserByEmail(data.email);
-      if (existingEmail) {
-        return res.status(400).json({ message: "Email already exists" });
-      }
-      const inviteCode = await storage.getInviteCode(data.inviteCode);
-      if (!inviteCode || inviteCode.isUsed) {
+
+      const { username, email, password, inviteCode, firstName, middleName, lastName, birthDate } = result.data;
+
+      // Check if invite code exists and is unused
+      const { data: inviteCodeData, error: inviteError } = await supabase
+        .from('invite_codes')
+        .select('*')
+        .eq('code', inviteCode)
+        .eq('is_used', false)
+        .single();
+
+      if (inviteError || !inviteCodeData) {
         return res.status(400).json({ message: "Invalid or already used invite code" });
       }
-      const hashedPassword = await storage.hashPassword(data.password);
-      const user = await storage.createUser({
-        username: data.username,
-        email: data.email,
-        password: hashedPassword,
-        role: "user",
-      });
-      await storage.useInviteCode(data.inviteCode, user.id);
-      const character = await storage.createCharacter({
-        userId: user.id,
-        firstName: data.firstName,
-        middleName: data.middleName,
-        lastName: data.lastName,
-        birthDate: data.birthDate,
-      });
-      const token = generateJwt(user);
-      res.json({
-        token,
-        user: {
-          id: user.id,
-          username: user.username,
-          email: user.email,
-          role: user.role,
-          characters: [character],
-        }
-      });
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid input", errors: error.errors });
+
+      // Check if user already exists
+      const { data: existingUser, error: userCheckError } = await supabase
+        .from('users')
+        .select('id')
+        .eq('email', email)
+        .single();
+
+      if (existingUser) {
+        return res.status(400).json({ message: "User already exists" });
       }
-      console.error("Registration error:", error);
+
+      // Hash password
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      // Create user
+      const { data: newUser, error: userError } = await supabase
+        .from('users')
+        .insert({
+          username,
+          email,
+          password: hashedPassword,
+          role: 'user',
+          is_banned: false,
+          is_system: false,
+          can_narrate: false
+        })
+        .select()
+        .single();
+
+      if (userError || !newUser) {
+        console.error('[DEBUG] User creation error:', userError);
+        throw new Error('Failed to create user');
+      }
+
+      // Mark invite code as used
+      const { error: inviteUpdateError } = await supabase
+        .from('invite_codes')
+        .update({ 
+          is_used: true,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', inviteCodeData.id);
+
+      if (inviteUpdateError) {
+        console.error('[DEBUG] Invite code update error:', inviteUpdateError);
+      }
+
+      // Create character
+      const { data: newCharacter, error: characterError } = await supabase
+        .from('characters')
+        .insert({
+          user_id: newUser.id,
+          first_name: firstName,
+          middle_name: middleName || null,
+          last_name: lastName,
+          birth_date: new Date(birthDate).toISOString(),
+          is_active: true,
+          is_system: false,
+          show_history_to_others: true
+        })
+        .select()
+        .single();
+
+      if (characterError) {
+        console.error('[DEBUG] Character creation error:', characterError);
+        // Don't fail registration if character creation fails
+      }
+
+      // Generate token
+      const token = jwt.sign(
+        { userId: newUser.id, username: newUser.username, role: newUser.role },
+        process.env.JWT_SECRET!,
+        { expiresIn: '7d' }
+      );
+
+      res.json({
+        user: {
+          id: newUser.id,
+          username: newUser.username,
+          email: newUser.email,
+          role: newUser.role
+        },
+        character: newCharacter,
+        token
+      });
+
+    } catch (error) {
+      console.error('[DEBUG] Registration error:', error);
       res.status(500).json({ message: "Registration failed" });
     }
   });
@@ -1553,7 +1623,7 @@ export async function registerRoutes(app: Express): Promise<void> {
     try {
       const messages = await storage.getOwlPostSent(characterId);
 
-      // Přidáme informace o odesílateli a příjemci
+      // Přidáme informace o odesílatele a příjemci
       const messagesWithDetails = await Promise.all(messages.map(async (msg: any) => {
         const sender = await storage.getCharacter(msg.senderCharacterId);
         const recipient = await storage.getCharacter(msg.recipientCharacterId);
