@@ -125,7 +125,7 @@ function OwlPost() {
   const sendMessageMutation = useMutation({
     mutationFn: async (data: MessageForm & { senderCharacterId: number }) => {
       const token = getAuthToken();
-      const response = await fetch(`${API_URL}/api/owl-post/send`, {
+      const response = await fetch(`${API_URL}/api/owl-post`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -147,8 +147,9 @@ function OwlPost() {
       replyForm.reset();
       // Invalidate queries to refresh the data
       queryClient.invalidateQueries({ queryKey: [`/api/owl-post/sent/${selectedCharacter?.id}`] });
-      queryClient.invalidateQueries({ queryKey: [`/api/owl-post/inbox`] });
-      queryClient.invalidateQueries({ queryKey: [`/api/owl-post/unread-count`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/owl-post/inbox/${selectedCharacter?.id}`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/owl-post/unread-count/${selectedCharacter?.id}`] });
+      queryClient.invalidateQueries({ queryKey: ["/api/owl-post/unread-total"] });
     },
     onError: () => {
       toast({ title: "Chyba při odesílání dopisu", variant: "destructive" });
@@ -185,12 +186,13 @@ function OwlPost() {
   const markAsReadMutation = useMutation({
     mutationFn: async (messageId: number) => {
       const token = getAuthToken();
-      const response = await fetch(`${API_URL}/api/owl-post/mark-read/${messageId}`, {
+      const response = await fetch(`${API_URL}/api/owl-post/${messageId}/read`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
+        body: JSON.stringify({ characterId: selectedCharacter?.id }),
         credentials: "include",
       });
       if (!response.ok) {

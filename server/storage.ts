@@ -1999,96 +1999,232 @@ export class DatabaseStorage implements IStorage {
     return toCamel(data || []);
   }
 
-  // Owl Post operations
+  // Owl Post operations - používá tabulku messages s room_id = -1 a message_type = 'owl_post'
   async getUnreadOwlPostCount(characterId: number): Promise<number> {
-    const { count, error } = await supabase
-      .from('owl_post_messages')
-      .select('*', { count: 'exact', head: true })
-      .eq('recipient_character_id', characterId)
-      .eq('is_read', false);
-    if (error) return 0;
-    return count || 0;
+    // Spočítáme nepřečtené zprávy typu owl_post určené pro danou postavu
+    // Zpráva je nepřečtená, pokud není v tabulce read_messages
+    const { data: messages, error } = await supabase
+      .from('messages')
+      .select('id')
+      .eq('room_id', -1)
+      .eq('message_type', 'owl_post')
+      .like('content', `%"recipientCharacterId":${characterId}%`);
+    
+    if (error || !messages) return 0;
+
+    // Zkontrolujeme, které z těchto zpráv jsou nepřečtené
+    let unreadCount = 0;
+    for (const message of messages) {
+      const { data: readRecord } = await supabase
+        .from('read_messages')
+        .select('id')
+        .eq('message_id', message.id)
+        .eq('character_id', characterId)
+        .single();
+      
+      if (!readRecord) {
+        unreadCount++;
+      }
+    }
+    
+    return unreadCount;
   }
 
-  async getOwlPostInbox(characterId: number): Promise<OwlPostMessage[]> {
-    const { data, error } = await supabase
-      .from('owl_post_messages')
+  async getOwlPostInbox(characterId: number): Promise<any[]> {
+    const { data: messages, error } = await supabase
+      .from('messages')
       .select('*')
-      .eq('recipient_character_id', characterId)
-      .order('sent_at', { ascending: false });
+      .eq('room_id', -1)
+      .eq('message_type', 'owl_post')
+      .like('content', `%"recipientCharacterId":${characterId}%`)
+      .order('created_at', { ascending: false });
+    
     if (error) {
       console.error("getOwlPostInbox error:", { characterId, error });
       return [];
     }
-    if (!data || data.length === 0) {
-      console.warn("No owl post inbox messages found for character", { characterId, data });
-    } else {
-      console.log(`Loaded ${data.length} owl post inbox messages for character`, { characterId });
+
+    const inbox = [];
+    for (const message of messages || []) {
+      try {
+        const messageData = JSON.parse(message.content);
+        
+        // Získáme informace o odesílateli
+        const { data: sender } = await supabase
+          .from('characters')
+          .select('first_name, middle_name, last_name')
+          .eq('id', messageData.senderCharacterId)
+          .single();
+
+        // Zkontrolujeme, zda je zpráva přečtená
+        const { data: readRecord } = await supabase
+          .from('read_messages')
+          .select('id')
+          .eq('message_id', message.id)
+          .eq('character_id', characterId)
+          .single();
+
+        inbox.push({
+          id: message.id,
+          senderCharacterId: messageData.senderCharacterId,
+          recipientCharacterId: messageData.recipientCharacterId,
+          subject: messageData.subject,
+          content: messageData.messageContent,
+          isRead: !!readRecord,
+          sentAt: message.created_at,
+          readAt: readRecord ? readRecord.created_at : null,
+          sender: sender ? {
+            firstName: sender.first_name,
+            middleName: sender.middle_name,
+            lastName: sender.last_name
+          } : null
+        });
+      } catch (e) {
+        console.error("Error parsing owl post message:", e);
+      }
     }
-    return toCamel(data || []);
+
+    return inbox;
   }
 
-  async getOwlPostSent(characterId: number): Promise<OwlPostMessage[]> {
-    const { data, error } = await supabase
-      .from('owl_post_messages')
+  async getOwlPostSent(characterId: number): Promise<any[]> {
+    const { data: messages, error } = await supabase
+      .from('messages')
       .select('*')
-      .eq('sender_character_id', characterId)
-      .order('sent_at', { ascending: false });
+      .eq('room_id', -1)
+      .eq('message_type', 'owl_post')
+      .eq('character_id', characterId)
+      .order('created_at', { ascending: false });
+    
     if (error) {
       console.error("getOwlPostSent error:", { characterId, error });
       return [];
     }
-    if (!data || data.length === 0) {
-      console.warn("No owl post sent messages found for character", { characterId, data });
-    } else {
-      console.log(`Loaded ${data.length} owl post sent messages for character`, { characterId });
+
+    const sent = [];
+    for (const message of messages || []) {
+      try {
+        const messageData = JSON.parse(message.content);
+        
+        // Získáme informace o příjemci
+        const { data: recipient } = await supabase
+          .from('characters')
+          .select('first_name, middle_name, last_name')
+          .eq('id', messageData.recipientCharacterId)
+          .single();
+
+        sent.push({
+          id: message.id,
+          senderCharacterId: messageData.senderCharacterId,
+          recipientCharacterId: messageData.recipientCharacterId,
+          subject: messageData.subject,
+          content: messageData.messageContent,
+          sentAt: message.created_at,
+          recipient: recipient ? {
+            firstName: recipient.first_name,
+            middleName: recipient.middle_name,
+            lastName: recipient.last_name
+          } : null
+        });
+      } catch (e) {
+        console.error("Error parsing owl post message:", e);
+      }
     }
-    return toCamel(data || []);
+
+    return sent;
   }
 
-  async sendOwlPostMessage(senderCharacterId: number, recipientCharacterId: number, subject: string, content: string): Promise<OwlPostMessage> {
+  async sendOwlPostMessage(senderCharacterId: number, recipientCharacterId: number, subject: string, content: string): Promise<any> {
+    // Vytvoříme JSON obsah zprávy
+    const messageContent = JSON.stringify({
+      senderCharacterId,
+      recipientCharacterId,
+      subject,
+      messageContent: content
+    });
+
     const { data, error } = await supabase
-      .from('owl_post_messages')
-      .insert([{ sender_character_id: senderCharacterId, recipientCharacterId: recipientCharacterId, subject, content, is_read: false, sent_at: new Date() }])
+      .from('messages')
+      .insert([{
+        room_id: -1,
+        character_id: senderCharacterId,
+        content: messageContent,
+        message_type: 'owl_post',
+        created_at: new Date().toISOString()
+      }])
       .select()
       .single();
+    
     if (error) {
       console.error("sendOwlPostMessage error:", { senderCharacterId, recipientCharacterId, error });
       throw new Error(error.message);
     }
+
     console.log("Owl post message sent", { senderCharacterId, recipientCharacterId, subject });
-    return toCamel(data);
+    
+    return {
+      id: data.id,
+      senderCharacterId,
+      recipientCharacterId,
+      subject,
+      content,
+      sentAt: data.created_at
+    };
   }
 
   async markOwlPostMessageRead(messageId: number, characterId: number): Promise<boolean> {
+    // Vytvoříme záznam v read_messages tabulce
     const { error } = await supabase
-      .from('owl_post_messages')
-      .update({ is_read: true, read_at: new Date() })
-      .eq('id', messageId)
-      .eq('recipient_character_id', characterId);
+      .from('read_messages')
+      .upsert([{
+        message_id: messageId,
+        character_id: characterId,
+        created_at: new Date().toISOString()
+      }], { onConflict: 'message_id,character_id' });
+    
     if (error) {
       console.error("markOwlPostMessageRead error:", { messageId, characterId, error });
       return false;
     }
+    
     console.log("Owl post message marked as read", { messageId, characterId });
     return true;
   }
 
-  async getOwlPostMessage(messageId: number): Promise<OwlPostMessage | undefined> {
+  async getOwlPostMessage(messageId: number): Promise<any> {
     const { data, error } = await supabase
-      .from('owl_post_messages')
+      .from('messages')
       .select('*')
       .eq('id', messageId)
+      .eq('room_id', -1)
+      .eq('message_type', 'owl_post')
       .single();
+    
     if (error) return undefined;
-    return toCamel(data);
+    
+    try {
+      const messageData = JSON.parse(data.content);
+      return {
+        id: data.id,
+        senderCharacterId: messageData.senderCharacterId,
+        recipientCharacterId: messageData.recipientCharacterId,
+        subject: messageData.subject,
+        content: messageData.messageContent,
+        sentAt: data.created_at
+      };
+    } catch (e) {
+      return undefined;
+    }
   }
 
   async deleteOwlPostMessage(messageId: number): Promise<boolean> {
     const { error } = await supabase
-      .from('owl_post_messages')
+      .from('messages')
       .delete()
-      .eq('id', messageId);
+      .eq('id', messageId)
+      .eq('room_id', -1)
+      .eq('message_type', 'owl_post');
+    
     return !error;
   }
 
