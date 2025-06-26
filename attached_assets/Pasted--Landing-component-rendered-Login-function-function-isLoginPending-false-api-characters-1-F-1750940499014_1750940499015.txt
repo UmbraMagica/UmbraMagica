@@ -1,0 +1,235 @@
+ Landing component rendered
+ Login function: function
+ isLoginPending: false
+/api/characters:1  Failed to load resource: the server responded with a status of 401 ()
+/api/characters:1  Failed to load resource: the server responded with a status of 401 ()
+/api/characters:1  Failed to load resource: the server responded with a status of 401 ()
+ Landing component rendered
+ Login function: function
+ isLoginPending: false
+ Landing component rendered
+ Login function: function
+ isLoginPending: false
+ Landing component rendered
+ Login function: function
+ isLoginPending: false
+ Landing component rendered
+ Login function: function
+ isLoginPending: false
+ Landing component rendered
+ Login function: function
+ isLoginPending: false
+ Landing component rendered
+ Login function: function
+ isLoginPending: false
+ Landing component rendered
+ Login function: function
+ isLoginPending: false
+ Landing component rendered
+ Login function: function
+ isLoginPending: false
+ Landing component rendered
+ Login function: function
+ isLoginPending: false
+ === FRONTEND LOGIN HANDLER ===
+ Username: Casey
+ Password: ***
+ Calling login function...
+ Landing component rendered
+ Login function: function
+ isLoginPending: true
+ Login result: Object
+ localStorage keys: Array(1)
+ localStorage['jwt_token']: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwidXNlcm5hbWUiOiJDYXNleSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1MDkzOTYyNCwiZXhwIjoxNzUxNTQ0NDI0fQ.5sOOQPkTlN1iPCLsowlTHvYq341azjsjXJ8wH4tM-6E
+ localStorage[jwt_token]: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwidXNlcm5hbWUiOiJDYXNleSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1MDkzOTYyNCwiZXhwIjoxNzUxNTQ0NDI0fQ.5sOOQPkTlN1iPCLsowlTHvYq341azjsjXJ8wH4tM-6E
+ Admin button clicked
+ Landing component rendered
+ Login function: function
+ isLoginPending: false
+/api/characters:1  Failed to load resource: the server responded with a status of 401 ()
+/api/characters:1  Failed to load resource: the server responded with a status of 401 ()
+ Landing component rendered
+ Login function: function
+ isLoginPending: false
+/api/characters:1  Failed to load resource: the server responded with a status of 401 ()
+/api/auth/register:1  Failed to load resource: the server responded with a status of 500 ()
+ API Error Response: Object
+ JSON Parse Error: 
+ Error Response Text: {"message":"Registration failed","error":"Failed to create user: duplicate key value violates unique constraint \"users_pkey\""}
+/api/auth/register:1  Failed to load resource: the server responded with a status of 500 ()
+ API Error Response: Object
+ JSON Parse Error: 
+ Error Response Text: {"message":"Registration failed","error":"Failed to create character: null value in column \"id\" of relation \"characters\" violates not-null constraint"}
+ Landing component rendered
+ Login function: function
+ isLoginPending: false
+ Landing component rendered
+ Login function: function
+ isLoginPending: false
+ Landing component rendered
+ Login function: function
+ isLoginPending: false
+ Landing component rendered
+ Login function: function
+ isLoginPending: false
+ Landing component rendered
+ Login function: function
+ isLoginPending: false
+ Landing component rendered
+ Login function: function
+ isLoginPending: false
+ Landing component rendered
+ Login function: function
+ isLoginPending: false
+ Landing component rendered
+ Login function: function
+ isLoginPending: false
+ Landing component rendered
+ Login function: function
+ isLoginPending: false
+ Landing component rendered
+ Login function: function
+ isLoginPending: false
+ Landing component rendered
+ Login function: function
+index-BHbADUEe.js:447 isLoginPending: false
+index-BHbADUEe.js:447 === FRONTEND LOGIN HANDLER ===
+index-BHbADUEe.js:447 Username: Casey
+index-BHbADUEe.js:447 Password: ***
+index-BHbADUEe.js:447 Calling login function...
+index-BHbADUEe.js:447 Landing component rendered
+index-BHbADUEe.js:447 Login function: function
+index-BHbADUEe.js:447 isLoginPending: true
+index-BHbADUEe.js:447 Login result: Object
+index-BHbADUEe.js:447 localStorage keys: Array(2)
+index-BHbADUEe.js:447 localStorage['jwt_token']: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwidXNlcm5hbWUiOiJDYXNleSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1MDkzOTcwMCwiZXhwIjoxNzUxNTQ0NTAwfQ.sbpgc5ESnWNsdliy933qGYKgFL2DcbA13VxpvuuQn5Y
+index-BHbADUEe.js:447 localStorage[selectedCharacterId]: 7
+index-BHbADUEe.js:447 localStorage[jwt_token]: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwidXNlcm5hbWUiOiJDYXNleSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1MDkzOTcwMCwiZXhwIjoxNzUxNTQ0NTAwfQ.sbpgc5ESnWNsdliy933qGYKgFL2DcbA13VxpvuuQn5Y
+index-BHbADUEe.js:491 Admin button clicked
+index-BHbADUEe.js:447 [useAuth] FULL DEBUG - Loaded user data: Object
+index-BHbADUEe.js:447 [useAuth] FULL DEBUG - Characters response status: 200
+index-BHbADUEe.js:447 [useAuth] FULL DEBUG - Raw characters data: Object
+index-BHbADUEe.js:447 [useAuth] FULL DEBUG - Characters data type: object
+index-BHbADUEe.js:447 [useAuth] FULL DEBUG - Is array: false
+index-BHbADUEe.js:447 [useAuth] FULL DEBUG - Extracted characters array: Array(2)
+index-BHbADUEe.js:447 [processCharacters] FULL DEBUG - Input data: Array(2)
+index-BHbADUEe.js:447 [processCharacters] FULL DEBUG - Input type: object
+index-BHbADUEe.js:447 [processCharacters] FULL DEBUG - Is array: true
+index-BHbADUEe.js:447 [processCharacters] FULL DEBUG - Using direct array
+index-BHbADUEe.js:447 [processCharacters] FULL DEBUG - Characters array: Array(2)
+index-BHbADUEe.js:447 [processCharacters] FULL DEBUG - Characters array length: 2
+index-BHbADUEe.js:447 [processCharacters] FULL DEBUG - Checking character 0: Object
+index-BHbADUEe.js:447 [processCharacters] FULL DEBUG - Character 0 valid: true
+index-BHbADUEe.js:447 [processCharacters] FULL DEBUG - Checking character 1: Object
+index-BHbADUEe.js:447 [processCharacters] FULL DEBUG - Character 1 valid: true
+index-BHbADUEe.js:447 [processCharacters] FULL DEBUG - Valid characters: Array(2)
+index-BHbADUEe.js:447 [processCharacters] FULL DEBUG - Valid characters count: 2
+index-BHbADUEe.js:447 [useAuth] FULL DEBUG - Processed characters: Array(2)
+index-BHbADUEe.js:447 [useAuth] FULL DEBUG - Processed characters count: 2
+index-BHbADUEe.js:491 Admin button clicked
+index-BHbADUEe.js:447 Landing component rendered
+index-BHbADUEe.js:447 Login function: function
+index-BHbADUEe.js:447 isLoginPending: false
+/api/characters:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 ()
+/api/characters:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 ()
+/api/characters:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 ()
+/api/characters:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 ()
+/api/characters/all:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 ()
+/api/influence-bar:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 ()
+/api/characters/7/last-chat:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 ()
+/api/characters/7/wand:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 ()
+/api/owl-post/unread-count/7:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 ()
+/api/characters/online:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 ()
+/api/influence-history:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 ()
+/api/characters:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 ()
+/api/characters/all:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 ()
+/api/influence-bar:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 ()
+/api/characters/7/last-chat:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 ()
+/api/characters/online:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 ()
+/api/influence-history:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 ()
+/api/influence-bar:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 ()
+/api/characters:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 ()
+/api/characters/all:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 ()
+/api/characters/7/last-chat:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 ()
+/api/characters/online:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 ()
+/api/influence-history:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 ()
+index-BHbADUEe.js:491 
+            
+            
+           GET https://umbramagica-dev.onrender.com/api/owl-post/unread-count/7 401 (Unauthorized)
+queryFn @ index-BHbADUEe.js:491
+i @ index-BHbADUEe.js:57
+w @ index-BHbADUEe.js:57
+start @ index-BHbADUEe.js:57
+fetch @ index-BHbADUEe.js:57
+Gc @ index-BHbADUEe.js:57
+(anonymní) @ index-BHbADUEe.js:57
