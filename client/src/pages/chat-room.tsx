@@ -868,7 +868,7 @@ export default function ChatRoom() {
                                 return narratorColor === 'yellow' ? '#fbbf24' :
                                        narratorColor === 'red' ? '#ef4444' :
                                        narratorColor === 'blue' ? '#3b82f6' :
-                                       narratorColor === 'green ? '#10b981' :
+                                       narratorColor === 'green' ? '#10b981' :
                                        narratorColor === 'pink' ? '#ec4899' :
                                        '#8b5cf6';
                               })()
