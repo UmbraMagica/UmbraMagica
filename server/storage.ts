@@ -282,12 +282,14 @@ export class DatabaseStorage implements IStorage {
     password: string;
     role: string;
   }) {
+    const hashedPassword = await bcrypt.hash(userData.password, 10);
+    
     const { data, error } = await supabase
       .from('users')
       .insert({
         username: userData.username,
         email: userData.email,
-        password: userData.password,
+        password: hashedPassword,
         role: userData.role,
         is_banned: false,
         is_system: false,
@@ -1368,13 +1370,15 @@ export class DatabaseStorage implements IStorage {
 
   // Mark invite code as used
   async markInviteCodeUsed(id: number): Promise<void> {
-    await supabase
+    const { error } = await supabase
       .from('invite_codes')
       .update({ 
         is_used: true,
         updated_at: new Date().toISOString()
       })
       .eq('id', id);
+      
+    if (error) throw new Error(`Failed to mark invite code as used: ${error.message}`);
   }
 
   // Get user by email
@@ -1434,9 +1438,21 @@ export class DatabaseStorage implements IStorage {
     isSystem: boolean;
     showHistoryToOthers: boolean;
   }): Promise<any> {
+    // Get next available ID for characters table
+    const { data: maxIdResult, error: maxIdError } = await supabase
+      .from('characters')
+      .select('id')
+      .order('id', { ascending: false })
+      .limit(1);
+    
+    if (maxIdError) throw new Error(`Failed to get max character ID: ${maxIdError.message}`);
+    
+    const nextId = (maxIdResult && maxIdResult.length > 0) ? maxIdResult[0].id + 1 : 1;
+    
     const { data, error } = await supabase
       .from('characters')
       .insert({
+        id: nextId,
         user_id: characterData.userId,
         first_name: characterData.firstName,
         middle_name: characterData.middleName,
@@ -1444,7 +1460,9 @@ export class DatabaseStorage implements IStorage {
         birth_date: characterData.birthDate,
         is_active: characterData.isActive,
         is_system: characterData.isSystem,
-        show_history_to_others: characterData.showHistoryToOthers
+        show_history_to_others: characterData.showHistoryToOthers,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
       })
       .select()
       .single();

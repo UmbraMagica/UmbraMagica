@@ -238,33 +238,41 @@ export async function registerRoutes(app: Express): Promise<void> {
       const { username, email, password, inviteCode, firstName, middleName, lastName, birthDate } = result.data;
 
       // Check if invite code exists and is unused via storage
+      console.log('[DEBUG] Checking invite code:', inviteCode);
       const inviteCodeData = await storage.getInviteCode(inviteCode);
       if (!inviteCodeData || inviteCodeData.isUsed) {
+        console.log('[DEBUG] Invalid invite code:', { inviteCodeData });
         return res.status(400).json({ message: "Invalid or already used invite code" });
       }
 
       // Check if user already exists via storage
+      console.log('[DEBUG] Checking existing user:', email);
       const existingUser = await storage.getUserByEmail(email);
       if (existingUser) {
+        console.log('[DEBUG] User already exists:', existingUser.id);
         return res.status(400).json({ message: "User already exists" });
       }
 
       // Create user via storage system
+      console.log('[DEBUG] Creating user:', { username, email, role: 'user' });
       const newUser = await storage.createUser({
         username,
         email,
-        password, // storage will hash it
+        password,
         role: 'user'
       });
 
       if (!newUser) {
         throw new Error('Failed to create user');
       }
+      console.log('[DEBUG] User created successfully:', newUser.id);
 
       // Mark invite code as used
+      console.log('[DEBUG] Marking invite code as used:', inviteCodeData.id);
       await storage.markInviteCodeUsed(inviteCodeData.id);
 
       // Create character via storage system
+      console.log('[DEBUG] Creating character for user:', newUser.id);
       const newCharacter = await storage.createCharacter({
         userId: newUser.id,
         firstName,
@@ -275,6 +283,7 @@ export async function registerRoutes(app: Express): Promise<void> {
         isSystem: false,
         showHistoryToOthers: true
       });
+      console.log('[DEBUG] Character created successfully:', newCharacter.id);
 
       // Generate token with same structure as login
       const token = generateJwt(newUser);
@@ -283,6 +292,7 @@ export async function registerRoutes(app: Express): Promise<void> {
       const characters = await storage.getCharactersByUserId(newUser.id);
       const validCharacters = validateAndFilterCharacters(characters);
 
+      console.log('[DEBUG] Registration completed successfully');
       res.json({
         token,
         user: {
@@ -296,7 +306,12 @@ export async function registerRoutes(app: Express): Promise<void> {
 
     } catch (error) {
       console.error('[DEBUG] Registration error:', error);
-      res.status(500).json({ message: "Registration failed", error: error.message });
+      console.error('[DEBUG] Error stack:', error.stack);
+      res.status(500).json({ 
+        message: "Registration failed", 
+        error: error.message,
+        details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      });
     }
   });
 
