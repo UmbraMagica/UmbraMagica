@@ -129,8 +129,25 @@ export default function UserSettings() {
 
   // Character order mutation
   const updateCharacterOrderMutation = useMutation({
-    mutationFn: (order: number[]) => 
-      apiRequest("POST", `${API_URL}/api/user/character-order`, { characterOrder: order }),
+    mutationFn: async (order: number[]) => {
+      const token = localStorage.getItem('jwt_token');
+      const response = await fetch(`${API_URL}/api/user/character-order`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify({ characterOrder: order })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || 'Nepodařilo se uložit pořadí postav');
+      }
+
+      return response.json();
+    },
     onSuccess: () => {
       // Invalidate user data to reflect changes
       queryClient.invalidateQueries({ queryKey: [`${API_URL}/api/auth/user`] });
@@ -150,11 +167,28 @@ export default function UserSettings() {
 
   // Highlight words mutation
   const updateHighlightWordsMutation = useMutation({
-    mutationFn: (data: { words: string; color: string }) => 
-      apiRequest("POST", `${API_URL}/api/user/highlight-words`, { 
-        highlightWords: data.words,
-        highlightColor: data.color 
-      }),
+    mutationFn: async (data: { words: string; color: string }) => {
+      const token = localStorage.getItem('jwt_token');
+      const response = await fetch(`${API_URL}/api/user/highlight-settings`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify({ 
+          highlightWords: data.words,
+          highlightColor: data.color 
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || 'Nepodařilo se uložit zvýrazňovaná slova');
+      }
+
+      return response.json();
+    },
     onSuccess: (data, variables) => {
       // Update local state immediately
       setHighlightWords(variables.words);
@@ -177,10 +211,27 @@ export default function UserSettings() {
 
   // Narrator color mutation
   const updateNarratorColorMutation = useMutation({
-    mutationFn: (data: { color: string }) => 
-      apiRequest("POST", `${API_URL}/api/user/narrator-color`, { 
-        narratorColor: data.color 
-      }),
+    mutationFn: async (data: { color: string }) => {
+      const token = localStorage.getItem('jwt_token');
+      const response = await fetch(`${API_URL}/api/user/narrator-color`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify({ 
+          narratorColor: data.color 
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || 'Nepodařilo se uložit barvu vypravěče');
+      }
+
+      return response.json();
+    },
     onSuccess: (data, variables) => {
       // Update local state immediately
       setNarratorColor(variables.color);

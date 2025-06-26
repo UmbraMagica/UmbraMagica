@@ -371,7 +371,7 @@ export class DatabaseStorage implements IStorage {
   async getChatMessages(roomId: number) {
     try {
       console.log(`[STORAGE][getChatMessages] Starting fetch for room ${roomId}`);
-      
+
       // 1. Načti všechny zprávy v místnosti
       const { data: rawMessages, error: msgError } = await supabase
         .from("messages")
@@ -413,7 +413,7 @@ export class DatabaseStorage implements IStorage {
       let characterMap = new Map();
       if (characterIds.length > 0) {
         console.log(`[STORAGE][getChatMessages] Fetching characters for IDs:`, characterIds);
-        
+
         const { data: characters, error: charError } = await supabase
           .from("characters")
           .select("id, first_name, middle_name, last_name, avatar, user_id")
@@ -423,7 +423,7 @@ export class DatabaseStorage implements IStorage {
           console.error("[STORAGE][getChatMessages] Error fetching characters:", charError);
         } else if (characters) {
           console.log(`[STORAGE][getChatMessages] Fetched ${characters.length} characters:`, characters);
-          
+
           characters.forEach((c) => {
             characterMap.set(c.id, {
               id: c.id,
@@ -434,7 +434,7 @@ export class DatabaseStorage implements IStorage {
               userId: c.user_id,
             });
           });
-          
+
           console.log(`[STORAGE][getChatMessages] Character map keys:`, Array.from(characterMap.keys()));
         } else {
           console.log(`[STORAGE][getChatMessages] No characters returned from query`);
@@ -1898,6 +1898,47 @@ export class DatabaseStorage implements IStorage {
       console.error('Error adding item to inventory:', error);
       throw new Error('Failed to add item to inventory');
     }
+  }
+
+  async updateUser(id: number, updates: Partial<User>) {
+    const { data, error } = await supabase
+      .from('users')
+      .update(updates)
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  }
+
+  async updateUserSettings(userId: number, settings: {
+    characterOrder?: string;
+    highlightWords?: string | null;
+    highlightColor?: string;
+    narratorColor?: string;
+  }) {
+    const updateData: any = {};
+
+    if (settings.characterOrder !== undefined) {
+      updateData.character_order = settings.characterOrder;
+    }
+    if (settings.highlightWords !== undefined) {
+      updateData.highlight_words = settings.highlightWords;
+    }
+    if (settings.highlightColor !== undefined) {
+      updateData.highlight_color = settings.highlightColor;
+    }
+    if (settings.narratorColor !== undefined) {
+      updateData.narrator_color = settings.narratorColor;
+    }
+
+    const { error } = await supabase
+      .from('users')
+      .update(updateData)
+      .eq('id', userId)
+
+    if (error) throw error;
   }
 }
 

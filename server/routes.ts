@@ -749,6 +749,57 @@ export async function registerRoutes(app: Express): Promise<void> {
     }
   });
 
+  // User settings endpoints
+  app.post("/api/user/character-order", requireAuth, async (req, res) => {
+    const { characterOrder } = req.body;
+    const userId = req.user!.id;
+
+    if (!Array.isArray(characterOrder)) {
+      return res.status(400).json({ message: "Character order must be an array" });
+    }
+
+    try {
+      await storage.updateUserSettings(userId, { characterOrder });
+      res.json({ message: "Character order updated successfully" });
+    } catch (error) {
+      console.error("Error updating character order:", error);
+      res.status(500).json({ message: "Failed to update character order" });
+    }
+  });
+
+  app.post("/api/user/highlight-settings", requireAuth, async (req, res) => {
+    const { highlightWords, highlightColor } = req.body;
+    const userId = req.user!.id;
+
+    try {
+      await storage.updateUserSettings(userId, { 
+        highlightWords: highlightWords || null,
+        highlightColor: highlightColor || 'yellow'
+      });
+      res.json({ message: "Highlight settings updated successfully" });
+    } catch (error) {
+      console.error("Error updating highlight settings:", error);
+      res.status(500).json({ message: "Failed to update highlight settings" });
+    }
+  });
+
+  app.post("/api/user/narrator-color", requireAuth, async (req, res) => {
+    const { narratorColor } = req.body;
+    const userId = req.user!.id;
+
+    if (!narratorColor) {
+      return res.status(400).json({ message: "Narrator color is required" });
+    }
+
+    try {
+      await storage.updateUserSettings(userId, { narratorColor });
+      res.json({ message: "Narrator color updated successfully" });
+    } catch (error) {
+      console.error("Error updating narrator color:", error);
+      res.status(500).json({ message: "Failed to update narrator color" });
+    }
+  });
+
   // Narrator message endpoint
   app.post("/api/chat/narrator-message", requireAuth, async (req, res) => {
     const { roomId, content } = req.body;
