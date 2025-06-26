@@ -1,0 +1,58 @@
+ [useAuth] FULL DEBUG - Loaded user data: Object
+ [useAuth] FULL DEBUG - Characters response status: 200
+ [useAuth] FULL DEBUG - Raw characters data: Object
+ [useAuth] FULL DEBUG - Characters data type: object
+ [useAuth] FULL DEBUG - Is array: false
+ [useAuth] FULL DEBUG - Extracted characters array: Array(5)
+ [processCharacters] FULL DEBUG - Input data: Array(5)
+ [processCharacters] FULL DEBUG - Input type: object
+ [processCharacters] FULL DEBUG - Is array: true
+ [processCharacters] FULL DEBUG - Using direct array
+index-Bqcy12_w.js:447 [processCharacters] FULL DEBUG - Characters array: Array(5)
+index-Bqcy12_w.js:447 [processCharacters] FULL DEBUG - Characters array length: 5
+index-Bqcy12_w.js:447 [processCharacters] FULL DEBUG - Checking character 0: Object
+index-Bqcy12_w.js:447 [processCharacters] FULL DEBUG - Character 0 valid: true
+index-Bqcy12_w.js:447 [processCharacters] FULL DEBUG - Checking character 1: Object
+index-Bqcy12_w.js:447 [processCharacters] FULL DEBUG - Character 1 valid: true
+index-Bqcy12_w.js:447 [processCharacters] FULL DEBUG - Checking character 2: Object
+index-Bqcy12_w.js:447 [processCharacters] FULL DEBUG - Character 2 valid: true
+index-Bqcy12_w.js:447 [processCharacters] FULL DEBUG - Checking character 3: Object
+index-Bqcy12_w.js:447 [processCharacters] FULL DEBUG - Character 3 valid: true
+index-Bqcy12_w.js:447 [processCharacters] FULL DEBUG - Checking character 4: Object
+index-Bqcy12_w.js:447 [processCharacters] FULL DEBUG - Character 4 valid: true
+index-Bqcy12_w.js:447 [processCharacters] FULL DEBUG - Valid characters: Array(5)
+index-Bqcy12_w.js:447 [processCharacters] FULL DEBUG - Valid characters count: 5
+index-Bqcy12_w.js:447 [useAuth] FULL DEBUG - Processed characters: Array(5)
+index-Bqcy12_w.js:447 [useAuth] FULL DEBUG - Processed characters count: 5
+index-Bqcy12_w.js:500 [OwlPost] Načteno userCharacters: Array(5)
+index-Bqcy12_w.js:500 [OwlPost] Načteno owlPostCharacters: Array(0)
+index-Bqcy12_w.js:500 [OwlPost] Načítám inbox/sent pro postavu: 20 Object
+index-Bqcy12_w.js:500 [OwlPost] Načten inboxMessages: Array(0)
+index-Bqcy12_w.js:500 [OwlPost] Načten sentMessages: Array(0)
+index-Bqcy12_w.js:500 [OwlPost] Načteno owlPostCharacters: Array(0)
+index-Bqcy12_w.js:500 [OwlPost] Načten inboxMessages: Array(0)
+index-Bqcy12_w.js:500 [OwlPost] Načten sentMessages: Array(0)
+index-Bqcy12_w.js:500 [OwlPost] Načteno owlPostCharacters: Array(0)
+index-Bqcy12_w.js:500 [OwlPost] Načten inboxMessages: Array(0)
+index-Bqcy12_w.js:500 [OwlPost] Načten sentMessages: Array(0)
+index-Bqcy12_w.js:500 [OwlPost] Načten unreadData: Object
+index-Bqcy12_w.js:500 [OwlPost] Raw sent response: Array(0)
+index-Bqcy12_w.js:500 [OwlPost] Raw inbox response: Array(0)
+index-Bqcy12_w.js:500 [OwlPost] Načteno owlPostCharacters: Array(0)
+index-Bqcy12_w.js:500 [OwlPost] Načten inboxMessages: Array(0)
+index-Bqcy12_w.js:500 [OwlPost] Načten sentMessages: Array(0)
+index-Bqcy12_w.js:500 [OwlPost] Raw owl-post characters response: Array(15)
+index-Bqcy12_w.js:500 [OwlPost] Načteno owlPostCharacters: Array(15)
+index-Bqcy12_w.js:500 [OwlPost] Načten unreadTotalData: Object
+index-Bqcy12_w.js:500 [OwlPost] Odesílám zprávu od postavy: 20 na adresáta: 6 data: Object
+/api/owl-post:1 
+            
+            
+           Failed to load resource: the server responded with a status of 500 ()
+/api/owl-post:1 
+            
+            
+           Failed to load resource: the server responded with a status of 500 ()
+index-Bqcy12_w.js:500 [OwlPost] Chyba při odesílání zprávy: Error: Failed to send message
+    at Object.mutationFn (index-Bqcy12_w.js:500:245466)
+onError @ index-Bqcy12_w.js:500
