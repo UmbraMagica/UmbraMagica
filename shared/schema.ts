@@ -542,6 +542,11 @@ export const insertWandFlexibilitySchema = createInsertSchema(wandFlexibilities)
   availableForRandom: true,
 });
 
+export const loginSchema = z.object({
+  username: z.string().min(1),
+  password: z.string().min(1),
+});
+
 export const registrationSchema = z.object({
   username: z.string().min(3).max(50),
   email: z.string().email(),
@@ -557,11 +562,6 @@ export const registrationSchema = z.object({
 }).refine(data => data.password === data.passwordConfirm, {
   message: "Passwords don't match",
   path: ["passwordConfirm"],
-});
-
-export const loginSchema = z.object({
-  username: z.string().min(1),
-  password: z.string().min(1),
 });
 
 export const characterEditSchema = z.object({

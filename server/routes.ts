@@ -222,7 +222,7 @@ export async function registerRoutes(app: Express): Promise<void> {
   });
 
   // Registration
-  app.post('/api/auth/register', async (req: Request, res: Response) => {
+  app.post('/api/auth/register', async (req, res) => {
     try {
       console.log('[DEBUG] Registration request body:', req.body);
 
@@ -237,107 +237,66 @@ export async function registerRoutes(app: Express): Promise<void> {
 
       const { username, email, password, inviteCode, firstName, middleName, lastName, birthDate } = result.data;
 
-      // Check if invite code exists and is unused
-      const { data: inviteCodeData, error: inviteError } = await supabase
-        .from('invite_codes')
-        .select('*')
-        .eq('code', inviteCode)
-        .eq('is_used', false)
-        .single();
-
-      if (inviteError || !inviteCodeData) {
+      // Check if invite code exists and is unused via storage
+      const inviteCodeData = await storage.getInviteCode(inviteCode);
+      if (!inviteCodeData || inviteCodeData.isUsed) {
         return res.status(400).json({ message: "Invalid or already used invite code" });
       }
 
-      // Check if user already exists
-      const { data: existingUser, error: userCheckError } = await supabase
-        .from('users')
-        .select('id')
-        .eq('email', email)
-        .single();
-
+      // Check if user already exists via storage
+      const existingUser = await storage.getUserByEmail(email);
       if (existingUser) {
         return res.status(400).json({ message: "User already exists" });
       }
 
-      // Hash password
-      const hashedPassword = await bcrypt.hash(password, 10);
+      // Create user via storage system
+      const newUser = await storage.createUser({
+        username,
+        email,
+        password, // storage will hash it
+        role: 'user'
+      });
 
-      // Create user
-      const { data: newUser, error: userError } = await supabase
-        .from('users')
-        .insert({
-          username,
-          email,
-          password: hashedPassword,
-          role: 'user',
-          is_banned: false,
-          is_system: false,
-          can_narrate: false
-        })
-        .select()
-        .single();
-
-      if (userError || !newUser) {
-        console.error('[DEBUG] User creation error:', userError);
+      if (!newUser) {
         throw new Error('Failed to create user');
       }
 
       // Mark invite code as used
-      const { error: inviteUpdateError } = await supabase
-        .from('invite_codes')
-        .update({ 
-          is_used: true,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', inviteCodeData.id);
+      await storage.markInviteCodeUsed(inviteCodeData.id);
 
-      if (inviteUpdateError) {
-        console.error('[DEBUG] Invite code update error:', inviteUpdateError);
-      }
+      // Create character via storage system
+      const newCharacter = await storage.createCharacter({
+        userId: newUser.id,
+        firstName,
+        middleName: middleName || null,
+        lastName,
+        birthDate: new Date(birthDate).toISOString(),
+        isActive: true,
+        isSystem: false,
+        showHistoryToOthers: true
+      });
 
-      // Create character
-      const { data: newCharacter, error: characterError } = await supabase
-        .from('characters')
-        .insert({
-          user_id: newUser.id,
-          first_name: firstName,
-          middle_name: middleName || null,
-          last_name: lastName,
-          birth_date: new Date(birthDate).toISOString(),
-          is_active: true,
-          is_system: false,
-          show_history_to_others: true
-        })
-        .select()
-        .single();
+      // Generate token with same structure as login
+      const token = generateJwt(newUser);
 
-      if (characterError) {
-        console.error('[DEBUG] Character creation error:', characterError);
-        // Don't fail registration if character creation fails
-      }
-
-      // Generate token
-      const token = jwt.sign(
-        { userId: newUser.id, username: newUser.username, role: newUser.role },
-        process.env.JWT_SECRET!,
-        { expiresIn: '7d' }
-      );
+      // Get characters for response (consistent with login)
+      const characters = await storage.getCharactersByUserId(newUser.id);
+      const validCharacters = validateAndFilterCharacters(characters);
 
       res.json({
+        token,
         user: {
           id: newUser.id,
           username: newUser.username,
           email: newUser.email,
-          role: newUser.role
-        },
-        character: newCharacter,
-        token
+          role: newUser.role,
+          characters: validCharacters,
+        }
       });
 
     } catch (error) {
       console.error('[DEBUG] Registration error:', error);
-      res.status(500).json({ message: "Registration failed" });
+      res.status(500).json({ message: "Registration failed", error: error.message });
     }
   });
 
