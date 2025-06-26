@@ -1954,31 +1954,66 @@ export class DatabaseStorage implements IStorage {
 
   async sendOwlPostMessage(senderCharacterId: number, recipientCharacterId: number, subject: string, content: string): Promise<any> {
     try {
+      console.log("[STORAGE][sendOwlPostMessage] Starting with params:", { senderCharacterId, recipientCharacterId, subject: subject?.substring(0, 50), contentLength: content?.length });
+
       // Validace vstupních parametrů
       if (!senderCharacterId || !recipientCharacterId || !subject || !content) {
-        throw new Error("Missing required parameters");
+        const missingFields = [];
+        if (!senderCharacterId) missingFields.push('senderCharacterId');
+        if (!recipientCharacterId) missingFields.push('recipientCharacterId');
+        if (!subject) missingFields.push('subject');
+        if (!content) missingFields.push('content');
+        console.error("[STORAGE][sendOwlPostMessage] Missing fields:", missingFields);
+        throw new Error(`Missing required parameters: ${missingFields.join(', ')}`);
       }
 
+      // Validace typů
+      if (typeof senderCharacterId !== 'number' || senderCharacterId <= 0) {
+        throw new Error(`Invalid senderCharacterId: ${senderCharacterId}`);
+      }
+      if (typeof recipientCharacterId !== 'number' || recipientCharacterId <= 0) {
+        throw new Error(`Invalid recipientCharacterId: ${recipientCharacterId}`);
+      }
+
+      console.log("[STORAGE][sendOwlPostMessage] Checking if characters exist...");
+
       // Ověř, že obě postavy existují
-      const { data: senderExists } = await supabase
+      const { data: senderExists, error: senderError } = await supabase
         .from('characters')
-        .select('id')
+        .select('id, first_name, last_name')
         .eq('id', senderCharacterId)
         .single();
 
-      const { data: recipientExists } = await supabase
+      if (senderError) {
+        console.error("[STORAGE][sendOwlPostMessage] Sender query error:", senderError);
+        throw new Error(`Error checking sender character: ${senderError.message}`);
+      }
+
+      const { data: recipientExists, error: recipientError } = await supabase
         .from('characters')
-        .select('id')
+        .select('id, first_name, last_name')
         .eq('id', recipientCharacterId)
         .single();
 
+      if (recipientError) {
+        console.error("[STORAGE][sendOwlPostMessage] Recipient query error:", recipientError);
+        throw new Error(`Error checking recipient character: ${recipientError.message}`);
+      }
+
       if (!senderExists) {
+        console.error("[STORAGE][sendOwlPostMessage] Sender character not found:", senderCharacterId);
         throw new Error(`Sender character ${senderCharacterId} not found`);
       }
 
       if (!recipientExists) {
+        console.error("[STORAGE][sendOwlPostMessage] Recipient character not found:", recipientCharacterId);
         throw new Error(`Recipient character ${recipientCharacterId} not found`);
       }
+
+      console.log("[STORAGE][sendOwlPostMessage] Characters found:", { 
+        sender: `${senderExists.first_name} ${senderExists.last_name}`, 
+        recipient: `${recipientExists.first_name} ${recipientExists.last_name}` 
+      });
 
       // Vytvoříme JSON obsah zprávy
       const messageContent = JSON.stringify({
@@ -1987,6 +2022,8 @@ export class DatabaseStorage implements IStorage {
         subject,
         messageContent: content
       });
+
+      console.log("[STORAGE][sendOwlPostMessage] Inserting message into database...");
 
       const { data, error } = await supabase
         .from('messages')
@@ -2001,15 +2038,28 @@ export class DatabaseStorage implements IStorage {
         .single();
 
       if (error) {
-        console.error("sendOwlPostMessage supabase error:", { senderCharacterId, recipientCharacterId, error });
+        console.error("[STORAGE][sendOwlPostMessage] Database insert error:", { 
+          error: error.message, 
+          code: error.code, 
+          details: error.details,
+          hint: error.hint,
+          senderCharacterId, 
+          recipientCharacterId 
+        });
         throw new Error(`Database error: ${error.message}`);
       }
 
       if (!data) {
+        console.error("[STORAGE][sendOwlPostMessage] No data returned from insert");
         throw new Error("No data returned from insert");
       }
 
-      console.log("Owl post message sent successfully", { messageId: data.id, senderCharacterId, recipientCharacterId, subject });
+      console.log("[STORAGE][sendOwlPostMessage] Message sent successfully:", { 
+        messageId: data.id, 
+        senderCharacterId, 
+        recipientCharacterId, 
+        subject: subject.substring(0, 50) 
+      });
 
       return {
         id: data.id,
@@ -2020,7 +2070,12 @@ export class DatabaseStorage implements IStorage {
         sentAt: data.created_at
       };
     } catch (error: any) {
-      console.error("sendOwlPostMessage error:", { senderCharacterId, recipientCharacterId, error: error.message });
+      console.error("[STORAGE][sendOwlPostMessage] Final catch error:", { 
+        senderCharacterId, 
+        recipientCharacterId, 
+        errorMessage: error.message, 
+        errorStack: error.stack 
+      });
       throw error;
     }
   }

@@ -6,7 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -461,6 +461,9 @@ function OwlPost() {
                   <Bird className="h-5 w-5" />
                   Napsat nový dopis
                 </DialogTitle>
+                <DialogDescription>
+                  Vyberte adresáta a napište zprávu
+                </DialogDescription>
               </DialogHeader>
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -692,6 +695,9 @@ function OwlPost() {
                   <Bird className="h-5 w-5" />
                   {selectedMessage.subject}
                 </DialogTitle>
+                <DialogDescription>
+                  Soví pošta - detail zprávy
+                </DialogDescription>
               </DialogHeader>
               <div className="space-y-4">
                 <div className="flex items-center justify-between text-sm text-muted-foreground">
@@ -730,6 +736,9 @@ function OwlPost() {
               <Reply className="h-5 w-5" />
               Odpovědět na dopis
             </DialogTitle>
+            <DialogDescription>
+              Napište odpověď na obdržený dopis
+            </DialogDescription>
           </DialogHeader>
           <Form {...replyForm}>
             <form onSubmit={replyForm.handleSubmit(onReplySubmit)} className="space-y-4">

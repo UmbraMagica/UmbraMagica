@@ -444,29 +444,83 @@ export async function registerRoutes(app: Express): Promise<void> {
   // Soví pošta: odeslání nové zprávy
   app.post("/api/owl-post", requireAuth, async (req, res) => {
     try {
+      console.log("[OWL-POST] Request received from user:", req.user!.username, "ID:", req.user!.id);
+      console.log("[OWL-POST] Request body:", req.body);
+
       const { senderCharacterId, recipientCharacterId, subject, content } = req.body;
-      console.log("[OWL-POST] Sending message:", { senderCharacterId, recipientCharacterId, subject, contentLength: content?.length });
+      console.log("[OWL-POST] Parsed fields:", { 
+        senderCharacterId, 
+        recipientCharacterId, 
+        subject: subject?.substring(0, 50), 
+        contentLength: content?.length,
+        senderType: typeof senderCharacterId,
+        recipientType: typeof recipientCharacterId
+      });
       
+      // Validace povinných polí
       if (!senderCharacterId || !recipientCharacterId || !subject || !content) {
-        console.log("[OWL-POST] Missing required fields:", { senderCharacterId, recipientCharacterId, subject: !!subject, content: !!content });
-        return res.status(400).json({ message: "Missing required fields" });
+        const missingFields = [];
+        if (!senderCharacterId) missingFields.push('senderCharacterId');
+        if (!recipientCharacterId) missingFields.push('recipientCharacterId');
+        if (!subject) missingFields.push('subject');
+        if (!content) missingFields.push('content');
+        
+        console.log("[OWL-POST] Missing required fields:", missingFields);
+        return res.status(400).json({ 
+          message: "Missing required fields", 
+          missingFields,
+          received: { senderCharacterId, recipientCharacterId, subject: !!subject, content: !!content }
+        });
       }
+
+      // Konverze na čísla pokud jsou stringy
+      const senderCharacterIdNum = typeof senderCharacterId === 'string' ? parseInt(senderCharacterId, 10) : senderCharacterId;
+      const recipientCharacterIdNum = typeof recipientCharacterId === 'string' ? parseInt(recipientCharacterId, 10) : recipientCharacterId;
+
+      // Validace číselných hodnot
+      if (isNaN(senderCharacterIdNum) || senderCharacterIdNum <= 0) {
+        console.log("[OWL-POST] Invalid senderCharacterId:", senderCharacterId);
+        return res.status(400).json({ message: "Invalid senderCharacterId" });
+      }
+
+      if (isNaN(recipientCharacterIdNum) || recipientCharacterIdNum <= 0) {
+        console.log("[OWL-POST] Invalid recipientCharacterId:", recipientCharacterId);
+        return res.status(400).json({ message: "Invalid recipientCharacterId" });
+      }
+
+      console.log("[OWL-POST] Validated character IDs:", { senderCharacterIdNum, recipientCharacterIdNum });
       
       // Ověř, že odesílatelská postava patří uživateli (nebo je admin)
       if (req.user!.role !== 'admin') {
+        console.log("[OWL-POST] Checking character ownership for user:", req.user!.id);
         const characters = await storage.getCharactersByUserId(req.user!.id);
-        if (!characters || !Array.isArray(characters) || !characters.some((char: any) => char.id === senderCharacterId)) {
-          console.log("[OWL-POST] Forbidden - character not found:", { userId: req.user!.id, senderCharacterId, userCharacters: characters?.length });
-          return res.status(403).json({ message: "Forbidden" });
+        console.log("[OWL-POST] User characters:", characters?.map((c: any) => ({ id: c.id, name: `${c.firstName} ${c.lastName}` })));
+        
+        if (!characters || !Array.isArray(characters) || !characters.some((char: any) => char.id === senderCharacterIdNum)) {
+          console.log("[OWL-POST] Forbidden - character not found or doesn't belong to user:", { 
+            userId: req.user!.id, 
+            senderCharacterIdNum, 
+            userCharacters: characters?.length || 0,
+            characterIds: characters?.map((c: any) => c.id) || []
+          });
+          return res.status(403).json({ message: "Character does not belong to user" });
         }
       }
       
-      const msg = await storage.sendOwlPostMessage(senderCharacterId, recipientCharacterId, subject, content);
+      console.log("[OWL-POST] Calling storage.sendOwlPostMessage...");
+      const msg = await storage.sendOwlPostMessage(senderCharacterIdNum, recipientCharacterIdNum, subject, content);
       console.log("[OWL-POST] Message sent successfully:", { messageId: msg.id });
       res.status(201).json(msg);
     } catch (error: any) {
-      console.error("Error sending owl post message:", error);
-      res.status(500).json({ message: error.message || "Failed to send message" });
+      console.error("[OWL-POST] Error sending owl post message:", {
+        message: error.message,
+        stack: error.stack,
+        name: error.name
+      });
+      res.status(500).json({ 
+        message: error.message || "Failed to send message",
+        error: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      });
     }
   });
 
