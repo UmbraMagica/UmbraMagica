@@ -1989,6 +1989,19 @@ export class DatabaseStorage implements IStorage {
 
       console.log("[STORAGE][sendOwlPostMessage][DEBUG] Validation passed, checking if characters exist...");
 
+      // Test základního připojení k databázi
+      try {
+        const { error: connectionTest } = await supabase.from('characters').select('count').limit(1);
+        if (connectionTest) {
+          console.error("[STORAGE][sendOwlPostMessage][DEBUG] Database connection test failed:", connectionTest);
+          throw new Error(`Database connection failed: ${connectionTest.message}`);
+        }
+        console.log("[STORAGE][sendOwlPostMessage][DEBUG] Database connection test passed");
+      } catch (connError: any) {
+        console.error("[STORAGE][sendOwlPostMessage][DEBUG] Database connection error:", connError);
+        throw new Error(`Database connection error: ${connError.message}`);
+      }
+
       // Ověř, že obě postavy existují
       console.log("[STORAGE][sendOwlPostMessage][DEBUG] Querying sender character with ID:", senderCharacterId);
       const { data: senderExists, error: senderError } = await supabase
@@ -2058,13 +2071,30 @@ export class DatabaseStorage implements IStorage {
 
       console.log("[STORAGE][sendOwlPostMessage][DEBUG] Insert data:", insertData);
 
+      // Test, zda je tabulka messages dostupná
+      try {
+        const { error: tableTest } = await supabase.from('messages').select('count').limit(1);
+        if (tableTest) {
+          console.error("[STORAGE][sendOwlPostMessage][DEBUG] Messages table test failed:", tableTest);
+          throw new Error(`Messages table not accessible: ${tableTest.message}`);
+        }
+        console.log("[STORAGE][sendOwlPostMessage][DEBUG] Messages table test passed");
+      } catch (tableError: any) {
+        console.error("[STORAGE][sendOwlPostMessage][DEBUG] Messages table error:", tableError);
+        throw new Error(`Messages table error: ${tableError.message}`);
+      }
+
       const { data, error } = await supabase
         .from('messages')
         .insert([insertData])
         .select()
         .single();
 
-      console.log("[STORAGE][sendOwlPostMessage][DEBUG] Database insert result:", { data, error });
+      console.log("[STORAGE][sendOwlPostMessage][DEBUG] Database insert result:", { 
+        data: data ? 'SUCCESS' : 'NO_DATA', 
+        error: error ? error.message : 'NO_ERROR',
+        dataId: data?.id 
+      });
 
       if (error) {
         console.error("[STORAGE][sendOwlPostMessage][DEBUG] Database insert error:", { 
@@ -2075,7 +2105,7 @@ export class DatabaseStorage implements IStorage {
           senderCharacterId, 
           recipientCharacterId 
         });
-        throw new Error(`Database error: ${error.message}`);
+        throw new Error(`Database error: ${error.message} (code: ${error.code})`);
       }
 
       if (!data) {
@@ -2104,7 +2134,8 @@ export class DatabaseStorage implements IStorage {
         errorMessage: error.message, 
         errorStack: error.stack,
         errorName: error.name,
-        errorCode: error.code
+        errorCode: error.code,
+        supabaseError: error.details || error.hint
       });
       console.error("[STORAGE][sendOwlPostMessage][ERROR] ==================== ERROR END ====================");
       throw error;

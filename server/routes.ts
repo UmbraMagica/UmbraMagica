@@ -500,17 +500,22 @@ export async function registerRoutes(app: Express): Promise<void> {
       // Ověř, že odesílatelská postava patří uživateli (nebo je admin)
       if (req.user!.role !== 'admin') {
         console.log("[OWL-POST][DEBUG] Checking character ownership for user:", req.user!.id);
-        const characters = await storage.getCharactersByUserId(req.user!.id);
-        console.log("[OWL-POST][DEBUG] User characters:", characters?.map((c: any) => ({ id: c.id, name: `${c.firstName} ${c.lastName}` })));
-        
-        if (!characters || !Array.isArray(characters) || !characters.some((char: any) => char.id === senderCharacterIdNum)) {
-          console.log("[OWL-POST][DEBUG] Forbidden - character not found or doesn't belong to user:", { 
-            userId: req.user!.id, 
-            senderCharacterIdNum, 
-            userCharacters: characters?.length || 0,
-            characterIds: characters?.map((c: any) => c.id) || []
-          });
-          return res.status(403).json({ message: "Character does not belong to user" });
+        try {
+          const characters = await storage.getCharactersByUserId(req.user!.id);
+          console.log("[OWL-POST][DEBUG] User characters:", characters?.map((c: any) => ({ id: c.id, name: `${c.firstName} ${c.lastName}` })));
+          
+          if (!characters || !Array.isArray(characters) || !characters.some((char: any) => char.id === senderCharacterIdNum)) {
+            console.log("[OWL-POST][DEBUG] Forbidden - character not found or doesn't belong to user:", { 
+              userId: req.user!.id, 
+              senderCharacterIdNum, 
+              userCharacters: characters?.length || 0,
+              characterIds: characters?.map((c: any) => c.id) || []
+            });
+            return res.status(403).json({ message: "Character does not belong to user" });
+          }
+        } catch (charError: any) {
+          console.error("[OWL-POST][DEBUG] Error checking character ownership:", charError);
+          return res.status(500).json({ message: "Error checking character ownership", error: charError.message });
         }
       }
       
@@ -521,9 +526,19 @@ export async function registerRoutes(app: Express): Promise<void> {
         contentLength: content.length
       });
 
-      const msg = await storage.sendOwlPostMessage(senderCharacterIdNum, recipientCharacterIdNum, subject, content);
-      console.log("[OWL-POST][DEBUG] Message sent successfully:", { messageId: msg.id });
-      res.status(201).json(msg);
+      try {
+        const msg = await storage.sendOwlPostMessage(senderCharacterIdNum, recipientCharacterIdNum, subject, content);
+        console.log("[OWL-POST][DEBUG] Message sent successfully:", { messageId: msg.id });
+        res.status(201).json(msg);
+      } catch (storageError: any) {
+        console.error("[OWL-POST][DEBUG] Storage error:", {
+          message: storageError.message,
+          stack: storageError.stack,
+          name: storageError.name,
+          code: storageError.code
+        });
+        throw storageError;
+      }
     } catch (error: any) {
       console.error("[OWL-POST][ERROR] ==================== ERROR ====================");
       console.error("[OWL-POST][ERROR] Error details:", {
