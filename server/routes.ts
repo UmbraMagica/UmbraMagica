@@ -445,19 +445,24 @@ export async function registerRoutes(app: Express): Promise<void> {
   app.post("/api/owl-post", requireAuth, async (req, res) => {
     try {
       const { senderCharacterId, recipientCharacterId, subject, content } = req.body;
+      console.log("[OWL-POST] Sending message:", { senderCharacterId, recipientCharacterId, subject, contentLength: content?.length });
+      
       if (!senderCharacterId || !recipientCharacterId || !subject || !content) {
+        console.log("[OWL-POST] Missing required fields:", { senderCharacterId, recipientCharacterId, subject: !!subject, content: !!content });
         return res.status(400).json({ message: "Missing required fields" });
       }
       
       // Ověř, že odesílatelská postava patří uživateli (nebo je admin)
       if (req.user!.role !== 'admin') {
         const characters = await storage.getCharactersByUserId(req.user!.id);
-        if (!characters.some((char: any) => char.id === senderCharacterId)) {
+        if (!characters || !Array.isArray(characters) || !characters.some((char: any) => char.id === senderCharacterId)) {
+          console.log("[OWL-POST] Forbidden - character not found:", { userId: req.user!.id, senderCharacterId, userCharacters: characters?.length });
           return res.status(403).json({ message: "Forbidden" });
         }
       }
       
       const msg = await storage.sendOwlPostMessage(senderCharacterId, recipientCharacterId, subject, content);
+      console.log("[OWL-POST] Message sent successfully:", { messageId: msg.id });
       res.status(201).json(msg);
     } catch (error: any) {
       console.error("Error sending owl post message:", error);

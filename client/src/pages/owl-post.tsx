@@ -470,7 +470,7 @@ function OwlPost() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Adresát</FormLabel>
-                        <Select onValueChange={(value) => field.onChange(parseInt(value))} value={field.value?.toString()}>
+                        <Select onValueChange={(value) => field.onChange(parseInt(value))} value={field.value?.toString() || ""}>
                           <FormControl>
                             <SelectTrigger>
                               <SelectValue placeholder="Vyberte adresáta" />

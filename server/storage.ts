@@ -1953,41 +1953,76 @@ export class DatabaseStorage implements IStorage {
   }
 
   async sendOwlPostMessage(senderCharacterId: number, recipientCharacterId: number, subject: string, content: string): Promise<any> {
-    // Vytvoříme JSON obsah zprávy
-    const messageContent = JSON.stringify({
-      senderCharacterId,
-      recipientCharacterId,
-      subject,
-      messageContent: content
-    });
+    try {
+      // Validace vstupních parametrů
+      if (!senderCharacterId || !recipientCharacterId || !subject || !content) {
+        throw new Error("Missing required parameters");
+      }
 
-    const { data, error } = await supabase
-      .from('messages')
-      .insert([{
-        room_id: -1,
-        character_id: senderCharacterId,
-        content: messageContent,
-        message_type: 'owl_post',
-        created_at: new Date().toISOString()
-      }])
-      .select()
-      .single();
+      // Ověř, že obě postavy existují
+      const { data: senderExists } = await supabase
+        .from('characters')
+        .select('id')
+        .eq('id', senderCharacterId)
+        .single();
 
-    if (error) {
-      console.error("sendOwlPostMessage error:", { senderCharacterId, recipientCharacterId, error });
-      throw new Error(error.message);
+      const { data: recipientExists } = await supabase
+        .from('characters')
+        .select('id')
+        .eq('id', recipientCharacterId)
+        .single();
+
+      if (!senderExists) {
+        throw new Error(`Sender character ${senderCharacterId} not found`);
+      }
+
+      if (!recipientExists) {
+        throw new Error(`Recipient character ${recipientCharacterId} not found`);
+      }
+
+      // Vytvoříme JSON obsah zprávy
+      const messageContent = JSON.stringify({
+        senderCharacterId,
+        recipientCharacterId,
+        subject,
+        messageContent: content
+      });
+
+      const { data, error } = await supabase
+        .from('messages')
+        .insert([{
+          room_id: -1,
+          character_id: senderCharacterId,
+          content: messageContent,
+          message_type: 'owl_post',
+          created_at: new Date().toISOString()
+        }])
+        .select()
+        .single();
+
+      if (error) {
+        console.error("sendOwlPostMessage supabase error:", { senderCharacterId, recipientCharacterId, error });
+        throw new Error(`Database error: ${error.message}`);
+      }
+
+      if (!data) {
+        throw new Error("No data returned from insert");
+      }
+
+      console.log("Owl post message sent successfully", { messageId: data.id, senderCharacterId, recipientCharacterId, subject });
+
+      return {
+        id: data.id,
+        senderCharacterId,
+        recipientCharacterId,
+        subject,
+        content,
+        sentAt: data.created_at
+      };
+    } catch (error: any) {
+      console.error("sendOwlPostMessage error:", { senderCharacterId, recipientCharacterId, error: error.message });
+      throw error;
     }
-
-    console.log("Owl post message sent", { senderCharacterId, recipientCharacterId, subject });
-
-    return {
-      id: data.id,
-      senderCharacterId,
-      recipientCharacterId,
-      subject,
-      content,
-      sentAt: data.created_at
-    };
   }
 
   async markOwlPostMessageRead(messageId: number, characterId: number): Promise<boolean> {
