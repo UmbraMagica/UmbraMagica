@@ -1954,6 +1954,7 @@ export class DatabaseStorage implements IStorage {
 
   async sendOwlPostMessage(senderCharacterId: number, recipientCharacterId: number, subject: string, content: string): Promise<any> {
     try {
+      console.log("[STORAGE][sendOwlPostMessage] === FUNCTION START ===");
       console.log("[STORAGE][sendOwlPostMessage] Function called with params:", { 
         senderCharacterId, 
         recipientCharacterId, 
@@ -1962,41 +1963,55 @@ export class DatabaseStorage implements IStorage {
       });
 
       // Validace vstupních parametrů
+      console.log("[STORAGE][sendOwlPostMessage] === VALIDATING PARAMETERS ===");
       if (!senderCharacterId || !recipientCharacterId || !subject || !content) {
         const missingFields = [];
         if (!senderCharacterId) missingFields.push('senderCharacterId');
         if (!recipientCharacterId) missingFields.push('recipientCharacterId');
         if (!subject) missingFields.push('subject');
         if (!content) missingFields.push('content');
+        console.error("[STORAGE][sendOwlPostMessage] Missing fields:", missingFields);
         throw new Error(`Missing required parameters: ${missingFields.join(', ')}`);
       }
 
       // Validace typů
       if (typeof senderCharacterId !== 'number' || senderCharacterId <= 0) {
+        console.error("[STORAGE][sendOwlPostMessage] Invalid senderCharacterId:", senderCharacterId);
         throw new Error(`Invalid senderCharacterId: ${senderCharacterId}`);
       }
       if (typeof recipientCharacterId !== 'number' || recipientCharacterId <= 0) {
+        console.error("[STORAGE][sendOwlPostMessage] Invalid recipientCharacterId:", recipientCharacterId);
         throw new Error(`Invalid recipientCharacterId: ${recipientCharacterId}`);
       }
 
+      console.log("[STORAGE][sendOwlPostMessage] Parameters valid, proceeding...");
+
       // Ověř, že obě postavy existují
+      console.log("[STORAGE][sendOwlPostMessage] === CHECKING SENDER CHARACTER ===");
       const { data: senderExists, error: senderError } = await supabase
         .from('characters')
         .select('id, first_name, last_name')
         .eq('id', senderCharacterId)
         .single();
 
+      console.log("[STORAGE][sendOwlPostMessage] Sender query result:", { data: senderExists, error: senderError });
+
       if (senderError || !senderExists) {
+        console.error("[STORAGE][sendOwlPostMessage] Sender character not found:", { senderCharacterId, error: senderError });
         throw new Error(`Sender character ${senderCharacterId} not found`);
       }
 
+      console.log("[STORAGE][sendOwlPostMessage] === CHECKING RECIPIENT CHARACTER ===");
       const { data: recipientExists, error: recipientError } = await supabase
         .from('characters')
         .select('id, first_name, last_name')
         .eq('id', recipientCharacterId)
         .single();
 
+      console.log("[STORAGE][sendOwlPostMessage] Recipient query result:", { data: recipientExists, error: recipientError });
+
       if (recipientError || !recipientExists) {
+        console.error("[STORAGE][sendOwlPostMessage] Recipient character not found:", { recipientCharacterId, error: recipientError });
         throw new Error(`Recipient character ${recipientCharacterId} not found`);
       }
 
@@ -2006,6 +2021,7 @@ export class DatabaseStorage implements IStorage {
       });
 
       // Vytvoříme JSON obsah zprávy
+      console.log("[STORAGE][sendOwlPostMessage] === PREPARING MESSAGE CONTENT ===");
       const messageContent = JSON.stringify({
         senderCharacterId,
         recipientCharacterId,
@@ -2013,36 +2029,86 @@ export class DatabaseStorage implements IStorage {
         messageContent: content
       });
 
-      console.log("[STORAGE][sendOwlPostMessage] Inserting message into database...");
+      console.log("[STORAGE][sendOwlPostMessage] Message content prepared:", {
+        contentLength: messageContent.length,
+        contentPreview: messageContent.substring(0, 100)
+      });
 
-      // Použijeme createChatMessage funkci která už funguje pro chat
-      const messageData = {
-        roomId: -1,
-        characterId: senderCharacterId,
-        userId: 0, // Nastavíme později z req.user
+      // Nejdříve zkontrolujme, jestli existuje room_id = -1
+      console.log("[STORAGE][sendOwlPostMessage] === CHECKING FOR OWL POST ROOM ===");
+      const { data: owlRoom, error: owlRoomError } = await supabase
+        .from('chat_rooms')
+        .select('id, name')
+        .eq('id', -1)
+        .single();
+
+      console.log("[STORAGE][sendOwlPostMessage] Owl post room check:", { data: owlRoom, error: owlRoomError });
+
+      // Pokud místnost neexistuje, vytvoříme ji
+      if (owlRoomError && owlRoomError.code === 'PGRST116') {
+        console.log("[STORAGE][sendOwlPostMessage] === CREATING OWL POST ROOM ===");
+        const { data: newRoom, error: createRoomError } = await supabase
+          .from('chat_rooms')
+          .insert([{
+            id: -1,
+            name: 'Owl Post System',
+            description: 'Virtual room for owl post messages',
+            is_public: false,
+            password: null,
+            category_id: null,
+            sort_order: -1,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          }])
+          .select()
+          .single();
+
+        console.log("[STORAGE][sendOwlPostMessage] Room creation result:", { data: newRoom, error: createRoomError });
+
+        if (createRoomError) {
+          console.error("[STORAGE][sendOwlPostMessage] Failed to create owl post room:", createRoomError);
+          throw new Error(`Failed to create owl post room: ${createRoomError.message}`);
+        }
+        console.log("[STORAGE][sendOwlPostMessage] Owl post room created successfully");
+      } else if (owlRoomError) {
+        console.error("[STORAGE][sendOwlPostMessage] Error checking owl post room:", owlRoomError);
+        throw new Error(`Error checking owl post room: ${owlRoomError.message}`);
+      } else {
+        console.log("[STORAGE][sendOwlPostMessage] Owl post room already exists");
+      }
+
+      console.log("[STORAGE][sendOwlPostMessage] === INSERTING MESSAGE ===");
+      const insertData = {
+        room_id: -1,
+        character_id: senderCharacterId,
         content: messageContent,
-        messageType: 'owl_post'
+        message_type: 'owl_post',
+        created_at: new Date().toISOString()
       };
 
-      // Pokud createChatMessage nefunguje pro owl_post, použijeme přímý insert
+      console.log("[STORAGE][sendOwlPostMessage] Insert data:", insertData);
+
       const { data, error } = await supabase
         .from('messages')
-        .insert([{
-          room_id: -1,
-          character_id: senderCharacterId,
-          content: messageContent,
-          message_type: 'owl_post',
-          created_at: new Date().toISOString()
-        }])
+        .insert([insertData])
         .select()
         .single();
 
+      console.log("[STORAGE][sendOwlPostMessage] Insert result:", { data, error });
+
       if (error) {
-        console.error("[STORAGE][sendOwlPostMessage] Database insert error:", error);
+        console.error("[STORAGE][sendOwlPostMessage] Database insert error:", {
+          error,
+          code: error.code,
+          message: error.message,
+          details: error.details,
+          hint: error.hint
+        });
         throw new Error(`Database error: ${error.message}`);
       }
 
       if (!data) {
+        console.error("[STORAGE][sendOwlPostMessage] No data returned from insert");
         throw new Error("No data returned from insert");
       }
 
@@ -2055,10 +2121,17 @@ export class DatabaseStorage implements IStorage {
         sentAt: data.created_at
       };
 
-      console.log("[STORAGE][sendOwlPostMessage] Message sent successfully:", result.id);
+      console.log("[STORAGE][sendOwlPostMessage] Message sent successfully:", result);
+      console.log("[STORAGE][sendOwlPostMessage] === FUNCTION END SUCCESS ===");
       return result;
     } catch (error: any) {
-      console.error("[STORAGE][sendOwlPostMessage] Error:", error.message);
+      console.error("[STORAGE][sendOwlPostMessage] === FUNCTION END ERROR ===");
+      console.error("[STORAGE][sendOwlPostMessage] Error details:", {
+        message: error.message,
+        stack: error.stack,
+        code: error.code,
+        details: error.details
+      });
       throw error;
     }
   }
