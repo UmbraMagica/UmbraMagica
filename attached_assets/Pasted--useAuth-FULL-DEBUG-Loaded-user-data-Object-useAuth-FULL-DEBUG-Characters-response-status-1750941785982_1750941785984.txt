@@ -1,0 +1,962 @@
+ [useAuth] FULL DEBUG - Loaded user data: Object
+ [useAuth] FULL DEBUG - Characters response status: 200
+ [useAuth] FULL DEBUG - Raw characters data: Object
+ [useAuth] FULL DEBUG - Characters data type: object
+ [useAuth] FULL DEBUG - Is array: false
+ [useAuth] FULL DEBUG - Extracted characters array: Array(1)
+ [processCharacters] FULL DEBUG - Input data: Array(1)
+ [processCharacters] FULL DEBUG - Input type: object
+ [processCharacters] FULL DEBUG - Is array: true
+ [processCharacters] FULL DEBUG - Using direct array
+ [processCharacters] FULL DEBUG - Characters array: Array(1)
+ [processCharacters] FULL DEBUG - Characters array length: 1
+ [processCharacters] FULL DEBUG - Checking character 0: Object
+ [processCharacters] FULL DEBUG - Character 0 valid: true
+ [processCharacters] FULL DEBUG - Valid characters: Array(1)
+ [processCharacters] FULL DEBUG - Valid characters count: 1
+ [useAuth] FULL DEBUG - Processed characters: Array(1)
+ [useAuth] FULL DEBUG - Processed characters count: 1
+ [ChatRoom] FULL DEBUG - User characters raw: Array(1)
+ [ChatRoom] FULL DEBUG - User characters count: 1
+ [ChatRoom] FULL DEBUG - Current user ID: 15
+ [ChatRoom] FULL DEBUG - Filtered user characters: Array(1)
+ [ChatRoom] FULL DEBUG - Filtered characters count: 1
+ [CHAT-ROOM][fetch] Fetching messages for room 3
+ [ChatRoom] useEffect - Character selection check: Object
+ [ChatRoom] Auto-selecting first character: Object
+ Connecting to WebSocket: wss://umbramagica-dev.onrender.com/ws?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTUsInVzZXJuYW1lIjoiRWR3YXJkIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3NTA5NDA4MTksImV4cCI6MTc1MTU0NTYxOX0.iZ1mUkT7_FTzyzN6F8bgAQf8oWsgJ5KacubuiRCuSlw
+ Načtené zprávy z API: Array(0)
+ [ChatRoom] FULL DEBUG - User characters raw: Array(1)
+ [ChatRoom] FULL DEBUG - User characters count: 1
+ [ChatRoom] FULL DEBUG - Current user ID: 15
+ [ChatRoom] FULL DEBUG - Filtered user characters: Array(1)
+ [ChatRoom] FULL DEBUG - Filtered characters count: 1
+ getCharacterName called with: Object
+ [ChatRoom] useEffect - Character selection check: Object
+ Načtené zprávy z API: Array(0)
+ [ChatRoom] FULL DEBUG - User characters raw: Array(1)
+ [ChatRoom] FULL DEBUG - User characters count: 1
+ [ChatRoom] FULL DEBUG - Current user ID: 15
+ [ChatRoom] FULL DEBUG - Filtered user characters: Array(1)
+ [ChatRoom] FULL DEBUG - Filtered characters count: 1
+ getCharacterName called with: Object
+ [ChatRoom] useEffect - Character selection check: Object
+ Načtené zprávy z API: Array(0)
+ WebSocket connected
+ [ChatRoom] FULL DEBUG - User characters raw: Array(1)
+ [ChatRoom] FULL DEBUG - User characters count: 1
+ [ChatRoom] FULL DEBUG - Current user ID: 15
+ [ChatRoom] FULL DEBUG - Filtered user characters: Array(1)
+ [ChatRoom] FULL DEBUG - Filtered characters count: 1
+ getCharacterName called with: Object
+ [ChatRoom] useEffect - Character selection check: Object
+ Načtené zprávy z API: Array(0)
+ [CHAT-ROOM][fetch] Načtené zprávy z API: Array(128)
+ [CHAT-ROOM][fetch] Total messages: 128
+ [CHAT-ROOM][fetch] Message 0: Object
+ [CHAT-ROOM][fetch] Message 1: Object
+ [CHAT-ROOM][fetch] Message 2: Object
+ [CHAT-ROOM][fetch] Message 3: Object
+ [CHAT-ROOM][fetch] Message 4: Object
+ [ChatRoom] FULL DEBUG - User characters raw: Array(1)
+ [ChatRoom] FULL DEBUG - User characters count: 1
+ [ChatRoom] FULL DEBUG - Current user ID: 15
+ [ChatRoom] FULL DEBUG - Filtered user characters: Array(1)
+ [ChatRoom] FULL DEBUG - Filtered characters count: 1
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Edward Cullen
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Casey Lotte Benett
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Casey Lotte Benett
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Casey Lotte Benett
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Kira Mae Spencer
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Kira Mae Spencer
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Vypravěč
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Kira Mae Spencer
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Kira Mae Spencer
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Kira Mae Spencer
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Kira Mae Spencer
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Kira Mae Spencer
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Kira Mae Spencer
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Bažina Jóžová
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Zoe Higgins
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Zoe Higgins
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Zoe Higgins
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Nickolas Sinclair
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Nickolas Sinclair
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Nickolas Sinclair
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Vypravěč
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Casey Lotte Benett
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Kira Mae Spencer
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Kira Mae Spencer
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Kira Mae Spencer
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Zoe Higgins
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Zoe Higgins
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Zoe Higgins
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Zoe Higgins
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Zoe Higgins
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Vypravěč
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Kira Mae Spencer
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Kira Mae Spencer
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Kira Mae Spencer
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Nickolas Sinclair
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Kira Mae Spencer
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Kira Mae Spencer
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Kira Mae Spencer
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Kira Mae Spencer
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Kira Mae Spencer
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Kira Mae Spencer
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Casey Lotte Benett
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Casey Lotte Benett
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Casey Lotte Benett
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Kira Mae Spencer
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Vypravěč
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Kira Mae Spencer
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Kira Mae Spencer
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Kira Mae Spencer
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Kira Mae Spencer
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Kira Mae Spencer
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Kira Mae Spencer
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Vypravěč
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Kira Mae Spencer
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Kira Mae Spencer
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Casey Lotte Benett
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Casey Lotte Benett
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Kira Mae Spencer
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Casey Lotte Benett
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Casey Lotte Benett
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Vypravěč
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Casey Lotte Benett
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Casey Lotte Benett
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Casey Lotte Benett
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Casey Lotte Benett
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Vypravěč
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Casey Lotte Benett
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Vypravěč
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Casey Lotte Benett
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Casey Lotte Benett
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Příšera z Bažin
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Sám Doma
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Matthew Elias Parker
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Matthew Elias Parker
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Vypravěč
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Sám Doma
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Sám Doma
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Sám Doma
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Casey Lotte Benett
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Casey Lotte Benett
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Casey Lotte Benett
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Kira Mae Spencer
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Casey Lotte Benett
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Kira Mae Spencer
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Kira Mae Spencer
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Kira Mae Spencer
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Kira Mae Spencer
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Kira Mae Spencer
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Kira Mae Spencer
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Kira Mae Spencer
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Kira Mae Spencer
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Kira Mae Spencer
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Kira Mae Spencer
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Casey Lotte Benett
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Kira Mae Spencer
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Kira Mae Spencer
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Shantae Okoro
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Matthew Elias Parker
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Zoe Higgins
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Zoe Higgins
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Matthew Elias Parker
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Matthew Elias Parker
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Matthew Elias Parker
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Matthew Elias Parker
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Matthew Elias Parker
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Matthew Elias Parker
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Matthew Elias Parker
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Matthew Elias Parker
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Matthew Elias Parker
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Matthew Elias Parker
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Matthew Elias Parker
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Matthew Elias Parker
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Matthew Elias Parker
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Matthew Elias Parker
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Matthew Elias Parker
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Matthew Elias Parker
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Matthew Elias Parker
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Matthew Elias Parker
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Jožin Z Bažin
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Jožin Z Bažin
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Jožin Z Bažin
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Matthew Elias Parker
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Jožin Z Bažin
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Jožin Z Bažin
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Jožin Z Bažin
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Jožin Z Bažin
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Jožin Z Bažin
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ Message: Object
+ Character: Object
+ getCharacterName called with: Object
+ Resolved name: Gandalf the Grey
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ getCharacterName called with: Object
+ [ChatRoom] useEffect - Character selection check: Object
+ Načtené zprávy z API: Array(128)
+ Message 0: Object
+ Message 1: Object
+ Message 2: Object
+ Message 3: Object
+ Message 4: Object
+ Message 5: Object
+ Message 6: Object
+ Message 7: Object
+ Message 8: Object
+ Message 9: Object
+ Message 10: Object
+ Message 11: Object
+ Message 12: Object
+ Message 13: Object
+ Message 14: Object
+ Message 15: Object
+ Message 16: Object
+ Message 17: Object
+ Message 18: Object
+ Message 19: Object
+ Message 20: Object
+ Message 21: Object
+ Message 22: Object
+ Message 23: Object
+ Message 24: Object
+ Message 25: Object
+ Message 26: Object
+ Message 27: Object
+ Message 28: Object
+ Message 29: Object
+ Message 30: Object
+ Message 31: Object
+ Message 32: Object
+ Message 33: Object
+ Message 34: Object
+ Message 35: Object
+ Message 36: Object
+ Message 37: Object
+ Message 38: Object
+ Message 39: Object
+ Message 40: Object
+ Message 41: Object
+ Message 42: Object
+ Message 43: Object
+ Message 44: Object
+ Message 45: Object
+ Message 46: Object
+ Message 47: Object
+ Message 48: Object
+ Message 49: Object
+ Message 50: Object
+ Message 51: Object
+ Message 52: Object
+ Message 53: Object
+ Message 54: Object
+ Message 55: Object
+ Message 56: Object
+ Message 57: Object
+ Message 58: Object
+ Message 59: Object
+ Message 60: Object
+ Message 61: Object
+ Message 62: Object
+ Message 63: Object
+ Message 64: Object
+ Message 65: Object
+ Message 66: Object
+ Message 67: Object
+ Message 68: Object
+ Message 69: Object
+ Message 70: Object
+ Message 71: Object
+ Message 72: Object
+ Message 73: Object
+ Message 74: Object
+ Message 75: Object
+ Message 76: Object
+ Message 77: Object
+ Message 78: Object
+ Message 79: Object
+ Message 80: Object
+ Message 81: Object
+ Message 82: Object
+ Message 83: Object
+ Message 84: Object
+ Message 85: Object
+ Message 86: Object
+ Message 87: Object
+ Message 88: Object
+ Message 89: Object
+ Message 90: Object
+ Message 91: Object
+index-BhmV0IJQ.js:500 Message 92: Object
+index-BhmV0IJQ.js:500 Message 93: Object
+index-BhmV0IJQ.js:500 Message 94: Object
+index-BhmV0IJQ.js:500 Message 95: Object
+index-BhmV0IJQ.js:500 Message 96: Object
+index-BhmV0IJQ.js:500 Message 97: Object
+index-BhmV0IJQ.js:500 Message 98: Object
+index-BhmV0IJQ.js:500 Message 99: Object
+index-BhmV0IJQ.js:500 Message 100: Object
+index-BhmV0IJQ.js:500 Message 101: Object
+index-BhmV0IJQ.js:500 Message 102: Object
+index-BhmV0IJQ.js:500 Message 103: Object
+index-BhmV0IJQ.js:500 Message 104: Object
+index-BhmV0IJQ.js:500 Message 105: Object
+index-BhmV0IJQ.js:500 Message 106: Object
+index-BhmV0IJQ.js:500 Message 107: Object
+index-BhmV0IJQ.js:500 Message 108: Object
+index-BhmV0IJQ.js:500 Message 109: Object
+index-BhmV0IJQ.js:500 Message 110: Object
+index-BhmV0IJQ.js:500 Message 111: Object
+index-BhmV0IJQ.js:500 Message 112: Object
+index-BhmV0IJQ.js:500 Message 113: Object
+index-BhmV0IJQ.js:500 Message 114: Object
+index-BhmV0IJQ.js:500 Message 115: Object
+index-BhmV0IJQ.js:500 Message 116: Object
+index-BhmV0IJQ.js:500 Message 117: Object
+index-BhmV0IJQ.js:500 Message 118: Object
+index-BhmV0IJQ.js:500 Message 119: Object
+index-BhmV0IJQ.js:500 Message 120: Object
+index-BhmV0IJQ.js:500 Message 121: Object
+index-BhmV0IJQ.js:500 Message 122: Object
+index-BhmV0IJQ.js:500 Message 123: Object
+index-BhmV0IJQ.js:500 Message 124: Object
+index-BhmV0IJQ.js:500 Message 125: Object
+index-BhmV0IJQ.js:500 Message 126: Object
+index-BhmV0IJQ.js:500 Message 127: Object
+index-BhmV0IJQ.js:500 WebSocket closed: 1005 
+/api/characters/21/wand:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()
+index-BhmV0IJQ.js:500 Uncaught TypeError: p.filter is not a function
+    at Q$ (index-BhmV0IJQ.js:500:249737)
+    at xg (index-BhmV0IJQ.js:48:34152)
+    at Rx (index-BhmV0IJQ.js:48:62028)
+    at z1 (index-BhmV0IJQ.js:48:72485)
+    at rS (index-BhmV0IJQ.js:48:106413)
+    at v4 (index-BhmV0IJQ.js:48:105476)
+    at pp (index-BhmV0IJQ.js:48:105306)
+    at tS (index-BhmV0IJQ.js:48:102428)
+    at i0 (index-BhmV0IJQ.js:48:113881)
+    at mu (index-BhmV0IJQ.js:48:112471)
