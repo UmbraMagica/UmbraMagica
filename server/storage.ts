@@ -1912,34 +1912,7 @@ export class DatabaseStorage implements IStorage {
     return data;
   }
 
-  async updateUserSettings(userId: number, settings: {
-    characterOrder?: string;
-    highlightWords?: string | null;
-    highlightColor?: string;
-    narratorColor?: string;
-  }) {
-    const updateData: any = {};
-
-    if (settings.characterOrder !== undefined) {
-      updateData.character_order = settings.characterOrder;
-    }
-    if (settings.highlightWords !== undefined) {
-      updateData.highlight_words = settings.highlightWords;
-    }
-    if (settings.highlightColor !== undefined) {
-      updateData.highlight_color = settings.highlightColor;
-    }
-    if (settings.narratorColor !== undefined) {
-      updateData.narrator_color = settings.narratorColor;
-    }
-
-    const { error } = await supabase
-      .from('users')
-      .update(updateData)
-      .eq('id', userId)
-
-    if (error) throw error;
-  }
+  
 }
 
 export const storage = new DatabaseStorage();
