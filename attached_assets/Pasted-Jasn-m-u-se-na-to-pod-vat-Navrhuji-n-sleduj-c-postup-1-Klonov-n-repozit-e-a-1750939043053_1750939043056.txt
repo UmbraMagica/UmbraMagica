@@ -1,0 +1,63 @@
+Jasně, můžu se na to podívat. Navrhuji následující postup:
+
+---
+
+## 🔧 1. Klonování repozitáře a spuštění lokálně
+
+Nejprve repo stáhni a spusť místně (uprav podle vlastního setupu):
+
+```bash
+git clone https://github.com/UmbraMagica/Umbra-dev.git
+cd Umbra-dev
+npm install
+npm run dev      # nebo yarn start
+```
+
+Tím ověříme, jestli se chyby opakují ve vývojovém prostředí.
+
+---
+
+## 🚫 2. Ladění chyby `GET /api/characters` (401 Unauthorized)
+
+1. Otevři frontend kód, kde se volá `/api/characters` — pravděpodobně v rámci `useEffect` nebo někde v `useAuth`.
+
+2. Zkontroluj, že součástí volání je hlavička:
+
+   ```js
+   headers: {
+     Authorization: `Bearer ${token}`
+   }
+   ```
+
+3. Ladicí výpis v konzoli (`console.log`) udělá dobrou službu – zjisti, jaký token se posílá, nebo jestli se vůbec posílá.
+
+4. Ve vývojářských nástrojích Network (Chrome DevTools) zkontroluj request a ověř jeho hlavičky.
+
+---
+
+## 🧩 3. Řešení chyby `POST /api/auth/register` (500 Internal Server Error)
+
+1. Na backendu (např. Express, NestJS, ad.) najdi endpoint `POST /api/auth/register` a přidej tam strukturovaný try/catch – a `console.error(err)` pro zachycení detailního stack trace.
+2. Zkontroluj validaci vstupu – třeba hází `null`, unikátní klíč (email) už existuje nebo něco chybí.
+3. Pokud používáš databázi (např. MongoDB, PostgreSQL), zkus ručně vložit stejná data přes Postman nebo curl a podívat se, co přesně vrátil server.
+
+---
+
+## 🧪 4. Korelace – registrace ↔ přihlášení
+
+* Pokud registrace selže, token vůbec nepřijde nebo frontend nic neumístí do `localStorage` (nebo contextu), takže přihlašování neproběhne.
+* To se pak negativně projeví, když následně načítáš `/api/characters` – což vede opět k `401`.
+
+---
+
+## ✅ Co je potřeba dál?
+
+1. Návod pro spuštění repozitáře, aby frontend i backend běžely synchronně.
+2. Ve frontendové části zkontrolovat/fixnout přidávání `Authorization` hlavičky.
+3. Na backendu provést logging – zjistit, odkud ta 500 v registraci skutečně pochází.
+
+---
+
+### Jak dál?
+
+Chceš, aby ses spolu připojil přes VS Code Live Share nebo jakým způsobem by ti to sloužilo nejvíc? Dej vědět třeba, jaký typ backendu je to (Express, Nest atp.) a kde máš ten endpoint definovaný – můžeme to probrat konkrétně.

@@ -1,0 +1,61 @@
+index-BHbADUEe.js:447 [useAuth] FULL DEBUG - Loaded user data: Object
+index-BHbADUEe.js:447 [useAuth] FULL DEBUG - Characters response status: 200
+index-BHbADUEe.js:447 [useAuth] FULL DEBUG - Raw characters data: Object
+index-BHbADUEe.js:447 [useAuth] FULL DEBUG - Characters data type: object
+index-BHbADUEe.js:447 [useAuth] FULL DEBUG - Is array: false
+index-BHbADUEe.js:447 [useAuth] FULL DEBUG - Extracted characters array: Array(2)
+index-BHbADUEe.js:447 [processCharacters] FULL DEBUG - Input data: Array(2)
+index-BHbADUEe.js:447 [processCharacters] FULL DEBUG - Input type: object
+index-BHbADUEe.js:447 [processCharacters] FULL DEBUG - Is array: true
+index-BHbADUEe.js:447 [processCharacters] FULL DEBUG - Using direct array
+index-BHbADUEe.js:447 [processCharacters] FULL DEBUG - Characters array: Array(2)
+index-BHbADUEe.js:447 [processCharacters] FULL DEBUG - Characters array length: 2
+index-BHbADUEe.js:447 [processCharacters] FULL DEBUG - Checking character 0: Object
+index-BHbADUEe.js:447 [processCharacters] FULL DEBUG - Character 0 valid: true
+index-BHbADUEe.js:447 [processCharacters] FULL DEBUG - Checking character 1: Object
+index-BHbADUEe.js:447 [processCharacters] FULL DEBUG - Character 1 valid: true
+index-BHbADUEe.js:447 [processCharacters] FULL DEBUG - Valid characters: Array(2)
+index-BHbADUEe.js:447 [processCharacters] FULL DEBUG - Valid characters count: 2
+index-BHbADUEe.js:447 [useAuth] FULL DEBUG - Processed characters: Array(2)
+index-BHbADUEe.js:447 [useAuth] FULL DEBUG - Processed characters count: 2
+index-BHbADUEe.js:491 Admin button clicked
+index-BHbADUEe.js:447 Landing component rendered
+index-BHbADUEe.js:447 Login function: function
+index-BHbADUEe.js:447 isLoginPending: false
+api/characters:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 ()
+api/characters:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 ()
+api/characters:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 ()
+api/auth/register:1 
+            
+            
+           Failed to load resource: the server responded with a status of 500 ()
+index-BHbADUEe.js:57 API Error Response: Object
+index-BHbADUEe.js:57 JSON Parse Error: Error: Registration failed
+    at t2 (index-BHbADUEe.js:57:44028)
+    at async Ke (index-BHbADUEe.js:57:44551)
+    at async Object.mutationFn (index-BHbADUEe.js:447:65866)
+index-BHbADUEe.js:57 Error Response Text: {"message":"Registration failed"}
+index-BHbADUEe.js:57 
+            
+            
+           POST https://umbramagica.onrender.com/api/auth/register 500 (Internal Server Error)
+Ke @ index-BHbADUEe.js:57
+mutationFn @ index-BHbADUEe.js:447
+fn @ index-BHbADUEe.js:57
+w @ index-BHbADUEe.js:57
+(anonymní) @ index-BHbADUEe.js:57
+index-BHbADUEe.js:57 API Error Response: {message: 'Registration failed'}
+index-BHbADUEe.js:57 JSON Parse Error: Error: Registration failed
+    at t2 (index-BHbADUEe.js:57:44028)
+    at async Ke (index-BHbADUEe.js:57:44551)
+    at async Object.mutationFn (index-BHbADUEe.js:447:65866)
+index-BHbADUEe.js:57 Error Response Text: {"message":"Registration failed"}
