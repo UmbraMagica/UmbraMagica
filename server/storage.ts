@@ -1954,7 +1954,17 @@ export class DatabaseStorage implements IStorage {
 
   async sendOwlPostMessage(senderCharacterId: number, recipientCharacterId: number, subject: string, content: string): Promise<any> {
     try {
-      console.log("[STORAGE][sendOwlPostMessage] Starting with params:", { senderCharacterId, recipientCharacterId, subject: subject?.substring(0, 50), contentLength: content?.length });
+      console.log("[STORAGE][sendOwlPostMessage][DEBUG] ==================== FUNCTION START ====================");
+      console.log("[STORAGE][sendOwlPostMessage][DEBUG] Function called with params:", { 
+        senderCharacterId, 
+        recipientCharacterId, 
+        subject: subject?.substring(0, 50), 
+        contentLength: content?.length,
+        senderType: typeof senderCharacterId,
+        recipientType: typeof recipientCharacterId,
+        subjectType: typeof subject,
+        contentType: typeof content
+      });
 
       // Validace vstupních parametrů
       if (!senderCharacterId || !recipientCharacterId || !subject || !content) {
@@ -1963,54 +1973,62 @@ export class DatabaseStorage implements IStorage {
         if (!recipientCharacterId) missingFields.push('recipientCharacterId');
         if (!subject) missingFields.push('subject');
         if (!content) missingFields.push('content');
-        console.error("[STORAGE][sendOwlPostMessage] Missing fields:", missingFields);
+        console.error("[STORAGE][sendOwlPostMessage][DEBUG] Missing fields:", missingFields);
         throw new Error(`Missing required parameters: ${missingFields.join(', ')}`);
       }
 
       // Validace typů
       if (typeof senderCharacterId !== 'number' || senderCharacterId <= 0) {
+        console.error("[STORAGE][sendOwlPostMessage][DEBUG] Invalid senderCharacterId:", { value: senderCharacterId, type: typeof senderCharacterId });
         throw new Error(`Invalid senderCharacterId: ${senderCharacterId}`);
       }
       if (typeof recipientCharacterId !== 'number' || recipientCharacterId <= 0) {
+        console.error("[STORAGE][sendOwlPostMessage][DEBUG] Invalid recipientCharacterId:", { value: recipientCharacterId, type: typeof recipientCharacterId });
         throw new Error(`Invalid recipientCharacterId: ${recipientCharacterId}`);
       }
 
-      console.log("[STORAGE][sendOwlPostMessage] Checking if characters exist...");
+      console.log("[STORAGE][sendOwlPostMessage][DEBUG] Validation passed, checking if characters exist...");
 
       // Ověř, že obě postavy existují
+      console.log("[STORAGE][sendOwlPostMessage][DEBUG] Querying sender character with ID:", senderCharacterId);
       const { data: senderExists, error: senderError } = await supabase
         .from('characters')
         .select('id, first_name, last_name')
         .eq('id', senderCharacterId)
         .single();
 
+      console.log("[STORAGE][sendOwlPostMessage][DEBUG] Sender query result:", { data: senderExists, error: senderError });
+
       if (senderError) {
-        console.error("[STORAGE][sendOwlPostMessage] Sender query error:", senderError);
+        console.error("[STORAGE][sendOwlPostMessage][DEBUG] Sender query error:", senderError);
         throw new Error(`Error checking sender character: ${senderError.message}`);
       }
 
+      console.log("[STORAGE][sendOwlPostMessage][DEBUG] Querying recipient character with ID:", recipientCharacterId);
       const { data: recipientExists, error: recipientError } = await supabase
         .from('characters')
         .select('id, first_name, last_name')
         .eq('id', recipientCharacterId)
         .single();
 
+      console.log("[STORAGE][sendOwlPostMessage][DEBUG] Recipient query result:", { data: recipientExists, error: recipientError });
+
       if (recipientError) {
-        console.error("[STORAGE][sendOwlPostMessage] Recipient query error:", recipientError);
+        console.error("[STORAGE][sendOwlPostMessage][DEBUG] Recipient query error:", recipientError);
         throw new Error(`Error checking recipient character: ${recipientError.message}`);
       }
 
       if (!senderExists) {
-        console.error("[STORAGE][sendOwlPostMessage] Sender character not found:", senderCharacterId);
+        console.error("[STORAGE][sendOwlPostMessage][DEBUG] Sender character not found:", senderCharacterId);
         throw new Error(`Sender character ${senderCharacterId} not found`);
       }
 
       if (!recipientExists) {
-        console.error("[STORAGE][sendOwlPostMessage] Recipient character not found:", recipientCharacterId);
+        console.error("[STORAGE][sendOwlPostMessage][DEBUG] Recipient character not found:", recipientCharacterId);
         throw new Error(`Recipient character ${recipientCharacterId} not found`);
       }
 
-      console.log("[STORAGE][sendOwlPostMessage] Characters found:", { 
+      console.log("[STORAGE][sendOwlPostMessage][DEBUG] Characters found:", { 
         sender: `${senderExists.first_name} ${senderExists.last_name}`, 
         recipient: `${recipientExists.first_name} ${recipientExists.last_name}` 
       });
@@ -2023,22 +2041,33 @@ export class DatabaseStorage implements IStorage {
         messageContent: content
       });
 
-      console.log("[STORAGE][sendOwlPostMessage] Inserting message into database...");
+      console.log("[STORAGE][sendOwlPostMessage][DEBUG] Message content prepared:", {
+        contentLength: messageContent.length,
+        contentPreview: messageContent.substring(0, 200)
+      });
+
+      console.log("[STORAGE][sendOwlPostMessage][DEBUG] Inserting message into database...");
+
+      const insertData = {
+        room_id: -1,
+        character_id: senderCharacterId,
+        content: messageContent,
+        message_type: 'owl_post',
+        created_at: new Date().toISOString()
+      };
+
+      console.log("[STORAGE][sendOwlPostMessage][DEBUG] Insert data:", insertData);
 
       const { data, error } = await supabase
         .from('messages')
-        .insert([{
-          room_id: -1,
-          character_id: senderCharacterId,
-          content: messageContent,
-          message_type: 'owl_post',
-          created_at: new Date().toISOString()
-        }])
+        .insert([insertData])
         .select()
         .single();
 
+      console.log("[STORAGE][sendOwlPostMessage][DEBUG] Database insert result:", { data, error });
+
       if (error) {
-        console.error("[STORAGE][sendOwlPostMessage] Database insert error:", { 
+        console.error("[STORAGE][sendOwlPostMessage][DEBUG] Database insert error:", { 
           error: error.message, 
           code: error.code, 
           details: error.details,
@@ -2050,18 +2079,11 @@ export class DatabaseStorage implements IStorage {
       }
 
       if (!data) {
-        console.error("[STORAGE][sendOwlPostMessage] No data returned from insert");
+        console.error("[STORAGE][sendOwlPostMessage][DEBUG] No data returned from insert");
         throw new Error("No data returned from insert");
       }
 
-      console.log("[STORAGE][sendOwlPostMessage] Message sent successfully:", { 
-        messageId: data.id, 
-        senderCharacterId, 
-        recipientCharacterId, 
-        subject: subject.substring(0, 50) 
-      });
-
-      return {
+      const result = {
         id: data.id,
         senderCharacterId,
         recipientCharacterId,
@@ -2069,13 +2091,22 @@ export class DatabaseStorage implements IStorage {
         content,
         sentAt: data.created_at
       };
+
+      console.log("[STORAGE][sendOwlPostMessage][DEBUG] Message sent successfully, returning:", result);
+      console.log("[STORAGE][sendOwlPostMessage][DEBUG] ==================== FUNCTION END ====================");
+
+      return result;
     } catch (error: any) {
-      console.error("[STORAGE][sendOwlPostMessage] Final catch error:", { 
+      console.error("[STORAGE][sendOwlPostMessage][ERROR] ==================== ERROR CAUGHT ====================");
+      console.error("[STORAGE][sendOwlPostMessage][ERROR] Error details:", { 
         senderCharacterId, 
         recipientCharacterId, 
         errorMessage: error.message, 
-        errorStack: error.stack 
+        errorStack: error.stack,
+        errorName: error.name,
+        errorCode: error.code
       });
+      console.error("[STORAGE][sendOwlPostMessage][ERROR] ==================== ERROR END ====================");
       throw error;
     }
   }

@@ -444,11 +444,16 @@ export async function registerRoutes(app: Express): Promise<void> {
   // Soví pošta: odeslání nové zprávy
   app.post("/api/owl-post", requireAuth, async (req, res) => {
     try {
-      console.log("[OWL-POST] Request received from user:", req.user!.username, "ID:", req.user!.id);
-      console.log("[OWL-POST] Request body:", req.body);
+      console.log("[OWL-POST][DEBUG] ==================== NEW REQUEST ====================");
+      console.log("[OWL-POST][DEBUG] Request received from user:", req.user!.username, "ID:", req.user!.id);
+      console.log("[OWL-POST][DEBUG] Full request body:", JSON.stringify(req.body, null, 2));
+      console.log("[OWL-POST][DEBUG] Request headers:", {
+        'content-type': req.headers['content-type'],
+        'authorization': req.headers.authorization ? 'Bearer [TOKEN]' : 'MISSING'
+      });
 
       const { senderCharacterId, recipientCharacterId, subject, content } = req.body;
-      console.log("[OWL-POST] Parsed fields:", { 
+      console.log("[OWL-POST][DEBUG] Parsed fields:", { 
         senderCharacterId, 
         recipientCharacterId, 
         subject: subject?.substring(0, 50), 
@@ -465,7 +470,7 @@ export async function registerRoutes(app: Express): Promise<void> {
         if (!subject) missingFields.push('subject');
         if (!content) missingFields.push('content');
         
-        console.log("[OWL-POST] Missing required fields:", missingFields);
+        console.log("[OWL-POST][DEBUG] Missing required fields:", missingFields);
         return res.status(400).json({ 
           message: "Missing required fields", 
           missingFields,
@@ -477,27 +482,29 @@ export async function registerRoutes(app: Express): Promise<void> {
       const senderCharacterIdNum = typeof senderCharacterId === 'string' ? parseInt(senderCharacterId, 10) : senderCharacterId;
       const recipientCharacterIdNum = typeof recipientCharacterId === 'string' ? parseInt(recipientCharacterId, 10) : recipientCharacterId;
 
+      console.log("[OWL-POST][DEBUG] After conversion:", { senderCharacterIdNum, recipientCharacterIdNum });
+
       // Validace číselných hodnot
       if (isNaN(senderCharacterIdNum) || senderCharacterIdNum <= 0) {
-        console.log("[OWL-POST] Invalid senderCharacterId:", senderCharacterId);
+        console.log("[OWL-POST][DEBUG] Invalid senderCharacterId:", senderCharacterId);
         return res.status(400).json({ message: "Invalid senderCharacterId" });
       }
 
       if (isNaN(recipientCharacterIdNum) || recipientCharacterIdNum <= 0) {
-        console.log("[OWL-POST] Invalid recipientCharacterId:", recipientCharacterId);
+        console.log("[OWL-POST][DEBUG] Invalid recipientCharacterId:", recipientCharacterId);
         return res.status(400).json({ message: "Invalid recipientCharacterId" });
       }
 
-      console.log("[OWL-POST] Validated character IDs:", { senderCharacterIdNum, recipientCharacterIdNum });
+      console.log("[OWL-POST][DEBUG] Validated character IDs:", { senderCharacterIdNum, recipientCharacterIdNum });
       
       // Ověř, že odesílatelská postava patří uživateli (nebo je admin)
       if (req.user!.role !== 'admin') {
-        console.log("[OWL-POST] Checking character ownership for user:", req.user!.id);
+        console.log("[OWL-POST][DEBUG] Checking character ownership for user:", req.user!.id);
         const characters = await storage.getCharactersByUserId(req.user!.id);
-        console.log("[OWL-POST] User characters:", characters?.map((c: any) => ({ id: c.id, name: `${c.firstName} ${c.lastName}` })));
+        console.log("[OWL-POST][DEBUG] User characters:", characters?.map((c: any) => ({ id: c.id, name: `${c.firstName} ${c.lastName}` })));
         
         if (!characters || !Array.isArray(characters) || !characters.some((char: any) => char.id === senderCharacterIdNum)) {
-          console.log("[OWL-POST] Forbidden - character not found or doesn't belong to user:", { 
+          console.log("[OWL-POST][DEBUG] Forbidden - character not found or doesn't belong to user:", { 
             userId: req.user!.id, 
             senderCharacterIdNum, 
             userCharacters: characters?.length || 0,
@@ -507,19 +514,35 @@ export async function registerRoutes(app: Express): Promise<void> {
         }
       }
       
-      console.log("[OWL-POST] Calling storage.sendOwlPostMessage...");
+      console.log("[OWL-POST][DEBUG] About to call storage.sendOwlPostMessage with:", {
+        senderCharacterIdNum,
+        recipientCharacterIdNum,
+        subject,
+        contentLength: content.length
+      });
+
       const msg = await storage.sendOwlPostMessage(senderCharacterIdNum, recipientCharacterIdNum, subject, content);
-      console.log("[OWL-POST] Message sent successfully:", { messageId: msg.id });
+      console.log("[OWL-POST][DEBUG] Message sent successfully:", { messageId: msg.id });
       res.status(201).json(msg);
     } catch (error: any) {
-      console.error("[OWL-POST] Error sending owl post message:", {
+      console.error("[OWL-POST][ERROR] ==================== ERROR ====================");
+      console.error("[OWL-POST][ERROR] Error details:", {
         message: error.message,
         stack: error.stack,
-        name: error.name
+        name: error.name,
+        code: error.code,
+        cause: error.cause
       });
+      console.error("[OWL-POST][ERROR] Request body was:", JSON.stringify(req.body, null, 2));
+      console.error("[OWL-POST][ERROR] User was:", { id: req.user!.id, username: req.user!.username });
+      
       res.status(500).json({ 
         message: error.message || "Failed to send message",
-        error: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        error: process.env.NODE_ENV === 'development' ? {
+          stack: error.stack,
+          name: error.name,
+          code: error.code
+        } : undefined
       });
     }
   });
@@ -1954,6 +1977,54 @@ export async function registerRoutes(app: Express): Promise<void> {
       res.json(debugInfo);
     } catch (error) {
       res.status(500).json({ error: error.message, stack: error.stack });
+    }
+  });
+
+  // Debug endpoint for testing owl post message creation
+  app.post('/api/debug/owl-post-test', requireAuth, async (req, res) => {
+    try {
+      console.log("[DEBUG][OWL-POST-TEST] Testing owl post message creation");
+      
+      // Test basic database connection
+      const { data: testQuery, error: testError } = await supabase
+        .from('messages')
+        .select('count')
+        .limit(1);
+
+      if (testError) {
+        return res.status(500).json({ 
+          error: 'Database connection failed', 
+          details: testError 
+        });
+      }
+
+      // Test character existence
+      const { data: characters } = await supabase
+        .from('characters')
+        .select('id, first_name, last_name')
+        .limit(5);
+
+      // Test messages table structure
+      const { data: messageStructure, error: structureError } = await supabase
+        .from('messages')
+        .select('*')
+        .limit(1);
+
+      res.json({
+        success: true,
+        database: {
+          connection: 'OK',
+          messagesTable: structureError ? `ERROR: ${structureError.message}` : 'OK',
+          sampleCharacters: characters || [],
+          messagesSample: messageStructure || []
+        }
+      });
+    } catch (error) {
+      console.error("[DEBUG][OWL-POST-TEST] Error:", error);
+      res.status(500).json({ 
+        error: error.message, 
+        stack: error.stack 
+      });
     }
   });
 
