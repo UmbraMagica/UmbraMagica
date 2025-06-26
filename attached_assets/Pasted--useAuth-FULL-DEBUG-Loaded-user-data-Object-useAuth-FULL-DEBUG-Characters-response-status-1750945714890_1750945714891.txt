@@ -1,0 +1,57 @@
+ [useAuth] FULL DEBUG - Loaded user data: Object
+ [useAuth] FULL DEBUG - Characters response status: 200
+ [useAuth] FULL DEBUG - Raw characters data: Object
+ [useAuth] FULL DEBUG - Characters data type: object
+index-BnJtv8dR.js:447 [useAuth] FULL DEBUG - Is array: false
+index-BnJtv8dR.js:447 [useAuth] FULL DEBUG - Extracted characters array: Array(1)
+index-BnJtv8dR.js:447 [processCharacters] FULL DEBUG - Input data: Array(1)
+index-BnJtv8dR.js:447 [processCharacters] FULL DEBUG - Input type: object
+index-BnJtv8dR.js:447 [processCharacters] FULL DEBUG - Is array: true
+index-BnJtv8dR.js:447 [processCharacters] FULL DEBUG - Using direct array
+index-BnJtv8dR.js:447 [processCharacters] FULL DEBUG - Characters array: Array(1)
+index-BnJtv8dR.js:447 [processCharacters] FULL DEBUG - Characters array length: 1
+index-BnJtv8dR.js:447 [processCharacters] FULL DEBUG - Checking character 0: Object
+index-BnJtv8dR.js:447 [processCharacters] FULL DEBUG - Character 0 valid: true
+index-BnJtv8dR.js:447 [processCharacters] FULL DEBUG - Valid characters: Array(1)
+index-BnJtv8dR.js:447 [processCharacters] FULL DEBUG - Valid characters count: 1
+index-BnJtv8dR.js:447 [useAuth] FULL DEBUG - Processed characters: Array(1)
+index-BnJtv8dR.js:447 [useAuth] FULL DEBUG - Processed characters count: 1
+/api/characters/21/wand:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()
+index-BnJtv8dR.js:500 [OwlPost] Načteno userCharacters: Array(1)
+index-BnJtv8dR.js:500 [OwlPost] Načteno owlPostCharacters: Array(0)
+index-BnJtv8dR.js:500 [OwlPost] Načítám inbox/sent pro postavu: 21 Object
+index-BnJtv8dR.js:500 [OwlPost] Načten inboxMessages: Array(0)
+index-BnJtv8dR.js:500 [OwlPost] Načten sentMessages: Array(0)
+index-BnJtv8dR.js:500 [OwlPost] Načteno owlPostCharacters: Array(0)
+index-BnJtv8dR.js:500 [OwlPost] Načten inboxMessages: Array(0)
+index-BnJtv8dR.js:500 [OwlPost] Načten sentMessages: Array(0)
+index-BnJtv8dR.js:500 [OwlPost] Raw owl-post characters response: Array(15)
+index-BnJtv8dR.js:500 [OwlPost] Načteno owlPostCharacters: Array(15)
+index-BnJtv8dR.js:500 [OwlPost] Načten inboxMessages: Array(0)
+index-BnJtv8dR.js:500 [OwlPost] Načten sentMessages: Array(0)
+index-BnJtv8dR.js:500 [OwlPost] Načten inboxMessages: Array(0)
+index-BnJtv8dR.js:500 [OwlPost] Načten sentMessages: Array(0)
+index-BnJtv8dR.js:500 [OwlPost] Načten unreadData: Object
+index-BnJtv8dR.js:500 [OwlPost] Raw inbox response: Array(0)
+index-BnJtv8dR.js:500 [OwlPost] Načten inboxMessages: Array(0)
+index-BnJtv8dR.js:500 [OwlPost] Načten sentMessages: Array(0)
+index-BnJtv8dR.js:500 [OwlPost] Raw sent response: Array(0)
+index-BnJtv8dR.js:500 [OwlPost] Načten sentMessages: Array(0)
+index-BnJtv8dR.js:500 [OwlPost] Načten unreadTotalData: Object
+index-BnJtv8dR.js:491 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+(anonymní) @ index-BnJtv8dR.js:491
+index-BnJtv8dR.js:500 [OwlPost] Odesílám zprávu od postavy: 21 na adresáta: 6 data: Object
+/api/owl-post:1 
+            
+            
+           Failed to load resource: the server responded with a status of 500 ()
+/api/owl-post:1 
+            
+            
+           Failed to load resource: the server responded with a status of 500 ()
+index-BnJtv8dR.js:500 [OwlPost] Chyba při odesílání zprávy: Error: Failed to send message
+    at Object.mutationFn (index-BnJtv8dR.js:500:245466)
+onError @ index-BnJtv8dR.js:500
