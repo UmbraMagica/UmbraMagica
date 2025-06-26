@@ -236,22 +236,7 @@ export interface IStorage {
     clearChatMessages(roomId: number): Promise<{ count: number }>;
     getRoomPresence(roomId: number): Promise<any>;
 
-  createUser(userData: {
-    username: string;
-    email: string;
-    password: string;
-    role: string;
-  }): Promise<User>;
-  createCharacter(characterData: {
-    userId: number;
-    firstName: string;
-    middleName?: string;
-    lastName: string;
-    birthDate: Date;
-    isActive: boolean;
-  }): Promise<Character>;
-  validateInviteCode(code: string): Promise<{ valid: boolean; message: string; data?: any; }>;
-  markInviteCodeAsUsed(code: string): Promise<void>;
+  
 }
 
 export class DatabaseStorage implements IStorage {
@@ -276,31 +261,7 @@ export class DatabaseStorage implements IStorage {
     return toCamel(data);
   }
 
-  async createUser(userData: {
-    username: string;
-    email: string;
-    password: string;
-    role: string;
-  }) {
-    const hashedPassword = await bcrypt.hash(userData.password, 10);
-
-    const { data, error } = await supabase
-      .from('users')
-      .insert({
-        username: userData.username,
-        email: userData.email,
-        password: hashedPassword,
-        role: userData.role,
-        is_banned: false,
-        is_system: false,
-        can_narrate: false
-      })
-      .select()
-      .single()
-
-    if (error) throw error;
-    return data;
-  }
+  
 
   async updateUserRole(id: number, role: string): Promise<User | undefined> {
     const { data, error } = await supabase.from('users').update({ role, updated_at: new Date() }).eq('id', id).select().single();
@@ -693,32 +654,7 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
-  async createCharacter(characterData: {
-    userId: number;
-    firstName: string;
-    middleName?: string;
-    lastName: string;
-    birthDate: Date;
-    isActive: boolean;
-  }) {
-    const { data, error } = await supabase
-      .from('characters')
-      .insert({
-        user_id: characterData.userId,
-        first_name: characterData.firstName,
-        middle_name: characterData.middleName || null,
-        last_name: characterData.lastName,
-        birth_date: characterData.birthDate.toISOString(),
-        is_active: characterData.isActive,
-        is_system: false,
-        show_history_to_others: true
-      })
-      .select()
-      .single()
-
-    if (error) throw error;
-    return data;
-  }
+  
 
   async updateCharacter(id: number, updates: Partial<InsertCharacter>): Promise<Character | undefined> {
     // Převod camelCase na snake_case pro databázi
@@ -797,7 +733,6 @@ export class DatabaseStorage implements IStorage {
   }
 
   async validateInviteCode(code: string) {
-    Removing duplicate methods and fixing owl post character loading in server/storage.ts.```text
     const { data, error} = await supabase
       .from('invite_codes')
       .select('*')
