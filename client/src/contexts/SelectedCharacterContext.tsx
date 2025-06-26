@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 
@@ -37,7 +36,7 @@ function filterValidCharacters(characters: any[]): Character[] {
   if (!Array.isArray(characters)) {
     return [];
   }
-  
+
   return characters.filter(isValidCharacter);
 }
 
@@ -54,11 +53,11 @@ export function SelectedCharacterProvider({ children, roomId, canSendAsNarrator 
         credentials: 'include',
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
-      
+
       if (!res.ok) {
         throw new Error('Failed to fetch characters');
       }
-      
+
       return await res.json();
     }
   });
@@ -68,7 +67,7 @@ export function SelectedCharacterProvider({ children, roomId, canSendAsNarrator 
     try {
       // Handle different response formats
       let charactersArray: any[] = [];
-      
+
       if (Array.isArray(userCharactersRaw)) {
         charactersArray = userCharactersRaw;
       } else if (userCharactersRaw && Array.isArray(userCharactersRaw.characters)) {
@@ -87,18 +86,18 @@ export function SelectedCharacterProvider({ children, roomId, canSendAsNarrator 
 
   useEffect(() => {
     if (!roomId) return;
-    
+
     // Get available characters (alive, non-system)
     const availableChars = userCharacters.filter((c: Character) => 
       isValidCharacter(c) && !c.deathDate && !c.isSystem
     );
-    
+
     // Create all options including narrator if allowed
     let allOptions: Character[] = [...availableChars];
     if (canSendAsNarrator) {
       allOptions = [{ id: 0, firstName: 'Vypravěč', lastName: '', name: 'Vypravěč' }, ...allOptions];
     }
-    
+
     if (allOptions.length === 0) {
       setSelectedCharacter(null);
       if (roomId) localStorage.removeItem(`selectedCharacterId_${roomId}`);

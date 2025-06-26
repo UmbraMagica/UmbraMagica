@@ -173,6 +173,15 @@ export function useAuth() {
       return data.user || null;
     },
     onSuccess: (data) => {
+      // Clear any existing character selections to prevent wrong character display
+      localStorage.removeItem('selectedCharacterId');
+      const keys = Object.keys(localStorage);
+      keys.forEach(key => {
+        if (key.startsWith('selectedCharacterId_')) {
+          localStorage.removeItem(key);
+        }
+      });
+      
       queryClient.setQueryData(['/api/auth/user'], data);
       setLocation("/");
     },
@@ -205,6 +214,9 @@ export function useAuth() {
       return response.json();
     },
     onSuccess: (data) => {
+      // Clear any existing selectedCharacterId to prevent wrong character selection
+      localStorage.removeItem('selectedCharacterId');
+      
       queryClient.setQueryData(['/api/auth/user'], data);
       queryClient.invalidateQueries();
       setLocation("/");

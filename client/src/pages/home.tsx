@@ -99,23 +99,28 @@ export default function Home() {
 
   // Load character from localStorage on component mount
   useEffect(() => {
-    if (userCharacters && Array.isArray(userCharacters) && userCharacters.length > 0) {
+    if (userCharacters && Array.isArray(userCharacters) && userCharacters.length > 0 && user) {
       const savedCharacterId = localStorage.getItem('selectedCharacterId');
       if (savedCharacterId) {
-        const savedCharacter = userCharacters.find((char: any) => char.id === parseInt(savedCharacterId));
-        if (savedCharacter && !savedCharacter.deathDate) {
+        const savedCharacter = userCharacters.find((char: any) => 
+          char.id === parseInt(savedCharacterId) && char.userId === user.id && !char.deathDate
+        );
+        if (savedCharacter) {
           changeCharacter(savedCharacter);
           return;
+        } else {
+          // Remove invalid saved character
+          localStorage.removeItem('selectedCharacterId');
         }
       }
 
-      // If no saved character or character is dead, use first alive character
+      // If no saved character or character is dead/invalid, use first alive character
       if (firstAliveCharacter && !selectedCharacter) {
         changeCharacter(firstAliveCharacter);
         localStorage.setItem('selectedCharacterId', firstAliveCharacter.id.toString());
       }
     }
-  }, [userCharacters, firstAliveCharacter, changeCharacter]);
+  }, [userCharacters, firstAliveCharacter, changeCharacter, user]);
 
   // Get displayed character's wand (for the character currently being viewed)
   const { data: characterWand, error: wandError } = useQuery({

@@ -349,17 +349,22 @@ export async function registerRoutes(app: Express): Promise<void> {
       // Admins can use /api/characters/all for all characters
       const characters = await storage.getCharactersByUserId(req.user!.id);
 
-      console.log(`[CHARACTERS] FULL DEBUG - User ${req.user!.username} (${req.user!.role}) requesting OWN characters`);
+      console.log(`[CHARACTERS] FULL DEBUG - User ${req.user!.username} (ID: ${req.user!.id}, role: ${req.user!.role}) requesting OWN characters`);
       console.log(`[CHARACTERS] FULL DEBUG - Raw characters for user ${req.user!.id}:`, characters);
       console.log(`[CHARACTERS] FULL DEBUG - Raw count: ${characters?.length || 0}`);
 
       const validCharacters = validateAndFilterCharacters(characters);
+      
+      // Extra validation: ensure all characters belong to the requesting user
+      const userOwnedCharacters = validCharacters.filter(char => char.userId === req.user!.id);
+      
       console.log(`[CHARACTERS] FULL DEBUG - Valid count: ${validCharacters.length}`);
-      console.log(`[CHARACTERS] FULL DEBUG - Valid characters:`, validCharacters);
+      console.log(`[CHARACTERS] FULL DEBUG - User-owned count: ${userOwnedCharacters.length}`);
+      console.log(`[CHARACTERS] FULL DEBUG - User-owned characters:`, userOwnedCharacters);
 
       // Always return in { characters: [] } format for consistency
-      console.log(`[CHARACTERS] FULL DEBUG - Returning response:`, { characters: validCharacters });
-      res.json({ characters: validCharacters });
+      console.log(`[CHARACTERS] FULL DEBUG - Returning response:`, { characters: userOwnedCharacters });
+      res.json({ characters: userOwnedCharacters });
     } catch (error) {
       console.error("Chyba při načítání postav:", error);
       res.status(500).json({ message: "Chyba serveru", error: error?.message });
