@@ -2085,8 +2085,7 @@ export class DatabaseStorage implements IStorage {
             password: null,
             category_id: null,
             sort_order: -1,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
+            created_at: new Date().toISOString()
           }])
           .select()
           .single();
