@@ -104,6 +104,33 @@ export default function ChatRoom() {
 
   // Use characters from useAuth
   const { user, isLoading: authLoading } = useAuth();
+  const [showPresence, setShowPresence] = useState(false);
+  const [showRoomDescription, setShowRoomDescription] = useState(false);
+
+  // Function to highlight words in text
+  const highlightWords = (text: string, words: string, color: string) => {
+    if (!words || !text) return text;
+
+    const wordsToHighlight = words.split(',').map(word => word.trim()).filter(word => word.length > 0);
+    if (wordsToHighlight.length === 0) return text;
+
+    let highlightedText = text;
+
+    wordsToHighlight.forEach(word => {
+      const regex = new RegExp(`(${word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+      const colorClass = 
+        color === 'yellow' ? 'bg-yellow-200 text-yellow-900' :
+        color === 'purple' ? 'bg-purple-200 text-purple-900' :
+        color === 'blue' ? 'bg-blue-200 text-blue-900' :
+        color === 'green' ? 'bg-green-200 text-green-900' :
+        color === 'red' ? 'bg-red-200 text-red-900' :
+        'bg-pink-200 text-pink-900';
+
+      highlightedText = highlightedText.replace(regex, `<span class="px-1 rounded ${colorClass}">$1</span>`);
+    });
+
+    return highlightedText;
+  };
 
   // Safe character processing
   const userCharactersRaw = user?.characters || [];
@@ -841,7 +868,7 @@ export default function ChatRoom() {
                                 return narratorColor === 'yellow' ? '#fbbf24' :
                                        narratorColor === 'red' ? '#ef4444' :
                                        narratorColor === 'blue' ? '#3b82f6' :
-                                       narratorColor === 'green' ? '#10b981' :
+                                       narratorColor === 'green ? '#10b981' :
                                        narratorColor === 'pink' ? '#ec4899' :
                                        '#8b5cf6';
                               })()

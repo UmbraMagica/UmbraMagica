@@ -1022,8 +1022,8 @@ export default function ChatRoom() {
                 })()}
 
                 <div className="flex-1 min-w-0">
-                  
-                  
+
+
                     {(() => {
                       const isNarratorMessage = message.messageType === 'narrator' || message.characterId === 0;
                       if (isNarratorMessage) {
@@ -1585,4 +1585,4 @@ export default function ChatRoom() {
       </Dialog>
     </div>
   );
-}This code modification ensures narrator color consistency in the simple chat room component.
+}
