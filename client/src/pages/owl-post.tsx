@@ -88,20 +88,24 @@ function OwlPost() {
   });
 
   // Get inbox messages
-  const { data: inboxMessagesRaw = [] } = useQuery<OwlPostMessage[]>({
+  const { data: inboxMessages = [] } = useQuery<OwlPostMessage[]>({
     queryKey: [`/api/owl-post/inbox/${selectedCharacter?.id}`],
     enabled: !!selectedCharacter,
-    queryFn: getQueryFn({ on401: "throw" }),
+    queryFn: async () => {
+      const response = await apiFetch(`${API_URL}/api/owl-post/inbox/${selectedCharacter?.id}`);
+      return Array.isArray(response) ? response : [];
+    },
   });
-  const inboxMessages = Array.isArray(inboxMessagesRaw) ? inboxMessagesRaw : [];
 
   // Get sent messages
-  const { data: sentMessagesRaw = [] } = useQuery<OwlPostMessage[]>({
+  const { data: sentMessages = [] } = useQuery<OwlPostMessage[]>({
     queryKey: [`/api/owl-post/sent/${selectedCharacter?.id}`],
     enabled: !!selectedCharacter,
-    queryFn: getQueryFn({ on401: "throw" }),
+    queryFn: async () => {
+      const response = await apiFetch(`${API_URL}/api/owl-post/sent/${selectedCharacter?.id}`);
+      return Array.isArray(response) ? response : [];
+    },
   });
-  const sentMessages = Array.isArray(sentMessagesRaw) ? sentMessagesRaw : [];
 
   // Get unread count
   const { data: unreadData } = useQuery<{ count: number }>({
@@ -343,15 +347,25 @@ function OwlPost() {
     );
   }
 
-  const filteredInboxMessages = Array.isArray(inboxMessages) ? inboxMessages.filter(message =>
-    message.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (message.sender && formatSenderName(message.sender).toLowerCase().includes(searchTerm.toLowerCase()))
-  ) : [];
+  const filteredInboxMessages = (() => {
+    const messages = Array.isArray(inboxMessages) ? inboxMessages : [];
+    return messages.filter(message =>
+      message && message.subject && (
+        message.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (message.sender && formatSenderName(message.sender).toLowerCase().includes(searchTerm.toLowerCase()))
+      )
+    );
+  })();
 
-  const filteredSentMessages = Array.isArray(sentMessages) ? sentMessages.filter(message =>
-    message.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (message.recipient && formatRecipientName(message.recipient).toLowerCase().includes(searchTerm.toLowerCase()))
-  ) : [];
+  const filteredSentMessages = (() => {
+    const messages = Array.isArray(sentMessages) ? sentMessages : [];
+    return messages.filter(message =>
+      message && message.subject && (
+        message.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (message.recipient && formatRecipientName(message.recipient).toLowerCase().includes(searchTerm.toLowerCase()))
+      )
+    );
+  })();
 
   return (
     <div className="container mx-auto p-6 max-w-6xl">

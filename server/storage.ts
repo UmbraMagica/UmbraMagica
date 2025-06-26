@@ -2218,14 +2218,30 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteOwlPostMessage(messageId: number): Promise<boolean> {
-    const { error } = await supabase
-      .from('messages')
-      .delete()
-      .eq('id', messageId)
-      .eq('room_id', -1)
-      .eq('message_type', 'owl_post');
-    
-    return !error;
+    try {
+      // Nejdříve smažeme odkazy v read_messages
+      const { error: readError } = await supabase
+        .from('read_messages')
+        .delete()
+        .eq('message_id', messageId);
+
+      if (readError) {
+        console.error("Error deleting read_messages:", readError);
+      }
+
+      // Pak smažeme samotnou zprávu
+      const { error } = await supabase
+        .from('messages')
+        .delete()
+        .eq('id', messageId)
+        .eq('room_id', -1)
+        .eq('message_type', 'owl_post');
+      
+      return !error;
+    } catch (error) {
+      console.error("Error in deleteOwlPostMessage:", error);
+      return false;
+    }
   }
 
   // Přidání předmětu do inventáře včetně ceny

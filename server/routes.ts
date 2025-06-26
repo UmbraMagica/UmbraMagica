@@ -373,77 +373,124 @@ export async function registerRoutes(app: Express): Promise<void> {
 
   // Soví pošta: počet nepřečtených zpráv pro postavu
   app.get("/api/owl-post/unread-count/:characterId", requireAuth, async (req, res) => {
-    const characterId = Number(req.params.characterId);
-    if (!characterId || isNaN(characterId)) {
-      return res.status(400).json({ message: "Invalid characterId" });
-    }
-    // Ověř, že postava patří uživateli (nebo je admin)
-    if (req.user!.role !== 'admin') {
-      const characters = await storage.getCharactersByUserId(req.user!.id);
-      if (!characters.some((char: any) => char.id === characterId)) {
-        return res.status(403).json({ message: "Forbidden" });
+    try {
+      const characterId = Number(req.params.characterId);
+      if (!characterId || isNaN(characterId)) {
+        return res.status(400).json({ message: "Invalid characterId" });
       }
+      
+      // Ověř, že postava patří uživateli (nebo je admin)
+      if (req.user!.role !== 'admin') {
+        const characters = await storage.getCharactersByUserId(req.user!.id);
+        if (!characters.some((char: any) => char.id === characterId)) {
+          return res.status(403).json({ message: "Forbidden" });
+        }
+      }
+      
+      const count = await storage.getUnreadOwlPostCount(characterId);
+      res.json({ count });
+    } catch (error) {
+      console.error("Error getting unread count:", error);
+      res.status(500).json({ message: "Failed to get unread count" });
     }
-    const count = await storage.getUnreadOwlPostCount(characterId);
-    res.json({ count });
   });
 
   // Soví pošta: inbox pro postavu
-  app.get("/api/owl-post/:characterId", requireAuth, async (req, res) => {
-    const characterId = Number(req.params.characterId);
-    if (!characterId || isNaN(characterId)) {
-      return res.status(400).json({ message: "Invalid characterId" });
-    }
-    if (req.user!.role !== 'admin') {
-      const characters = await storage.getCharactersByUserId(req.user!.id);
-      if (!characters.some((char: any) => char.id === characterId)) {
-        return res.status(403).json({ message: "Forbidden" });
+  app.get("/api/owl-post/inbox/:characterId", requireAuth, async (req, res) => {
+    try {
+      const characterId = Number(req.params.characterId);
+      if (!characterId || isNaN(characterId)) {
+        return res.status(400).json({ message: "Invalid characterId" });
       }
+      
+      if (req.user!.role !== 'admin') {
+        const characters = await storage.getCharactersByUserId(req.user!.id);
+        if (!characters.some((char: any) => char.id === characterId)) {
+          return res.status(403).json({ message: "Forbidden" });
+        }
+      }
+      
+      const inbox = await storage.getOwlPostInbox(characterId);
+      res.json(Array.isArray(inbox) ? inbox : []);
+    } catch (error) {
+      console.error("Error getting inbox:", error);
+      res.status(500).json({ message: "Failed to get inbox" });
     }
-    const inbox = await storage.getOwlPostInbox(characterId);
-    res.json({ messages: inbox });
+  });
+
+  // Soví pošta: sent zprávy pro postavu  
+  app.get("/api/owl-post/sent/:characterId", requireAuth, async (req, res) => {
+    try {
+      const characterId = Number(req.params.characterId);
+      if (!characterId || isNaN(characterId)) {
+        return res.status(400).json({ message: "Invalid characterId" });
+      }
+      
+      if (req.user!.role !== 'admin') {
+        const characters = await storage.getCharactersByUserId(req.user!.id);
+        if (!characters.some((char: any) => char.id === characterId)) {
+          return res.status(403).json({ message: "Forbidden" });
+        }
+      }
+      
+      const sent = await storage.getOwlPostSent(characterId);
+      res.json(Array.isArray(sent) ? sent : []);
+    } catch (error) {
+      console.error("Error getting sent messages:", error);
+      res.status(500).json({ message: "Failed to get sent messages" });
+    }
   });
 
   // Soví pošta: odeslání nové zprávy
   app.post("/api/owl-post", requireAuth, async (req, res) => {
-    const { senderCharacterId, recipientCharacterId, subject, content } = req.body;
-    if (!senderCharacterId || !recipientCharacterId || !subject || !content) {
-      return res.status(400).json({ message: "Missing required fields" });
-    }
-    // Ověř, že odesílatelská postava patří uživateli (nebo je admin)
-    if (req.user!.role !== 'admin') {
-      const characters = await storage.getCharactersByUserId(req.user!.id);
-      if (!characters.some((char: any) => char.id === senderCharacterId)) {
-        return res.status(403).json({ message: "Forbidden" });
-      }
-    }
     try {
+      const { senderCharacterId, recipientCharacterId, subject, content } = req.body;
+      if (!senderCharacterId || !recipientCharacterId || !subject || !content) {
+        return res.status(400).json({ message: "Missing required fields" });
+      }
+      
+      // Ověř, že odesílatelská postava patří uživateli (nebo je admin)
+      if (req.user!.role !== 'admin') {
+        const characters = await storage.getCharactersByUserId(req.user!.id);
+        if (!characters.some((char: any) => char.id === senderCharacterId)) {
+          return res.status(403).json({ message: "Forbidden" });
+        }
+      }
+      
       const msg = await storage.sendOwlPostMessage(senderCharacterId, recipientCharacterId, subject, content);
-      res.status(201).json({ message: msg });
-    } catch (e: any) {
-      res.status(500).json({ message: e.message || "Failed to send message" });
+      res.status(201).json(msg);
+    } catch (error: any) {
+      console.error("Error sending owl post message:", error);
+      res.status(500).json({ message: error.message || "Failed to send message" });
     }
   });
 
   // Soví pošta: označení zprávy jako přečtené
   app.post("/api/owl-post/:messageId/read", requireAuth, async (req, res) => {
-    const messageId = Number(req.params.messageId);
-    const { characterId } = req.body;
-    if (!messageId || isNaN(messageId) || !characterId) {
-      return res.status(400).json({ message: "Invalid messageId or characterId" });
-    }
-    // Ověř, že postava patří uživateli (nebo je admin)
-    if (req.user!.role !== 'admin') {
-      const characters = await storage.getCharactersByUserId(req.user!.id);
-      if (!characters.some((char: any) => char.id === characterId)) {
-        return res.status(403).json({ message: "Forbidden" });
+    try {
+      const messageId = Number(req.params.messageId);
+      const { characterId } = req.body;
+      if (!messageId || isNaN(messageId) || !characterId) {
+        return res.status(400).json({ message: "Invalid messageId or characterId" });
       }
-    }
-    const ok = await storage.markOwlPostMessageRead(messageId, characterId);
-    if (ok) {
-      res.json({ success: true });
-    } else {
-      res.status(404).json({ message: "Message not found or not allowed" });
+      
+      // Ověř, že postava patří uživateli (nebo je admin)
+      if (req.user!.role !== 'admin') {
+        const characters = await storage.getCharactersByUserId(req.user!.id);
+        if (!characters.some((char: any) => char.id === characterId)) {
+          return res.status(403).json({ message: "Forbidden" });
+        }
+      }
+      
+      const ok = await storage.markOwlPostMessageRead(messageId, characterId);
+      if (ok) {
+        res.json({ success: true });
+      } else {
+        res.status(404).json({ message: "Message not found or not allowed" });
+      }
+    } catch (error) {
+      console.error("Error marking message as read:", error);
+      res.status(500).json({ message: "Failed to mark message as read" });
     }
   });
 
@@ -1496,9 +1543,11 @@ export async function registerRoutes(app: Express): Promise<void> {
       let totalCount = 0;
       const characterIdParam = req.query.characterId;
       const characterId = characterIdParam ? Number(characterIdParam) : undefined;
+      
       if (characterIdParam && (isNaN(characterId) || characterId <= 0)) {
         return res.status(400).json({ message: "Invalid characterId" });
       }
+      
       if (characterId) {
         // Ověření přístupu k postavě
         if (req.user!.role !== 'admin') {
@@ -1525,7 +1574,6 @@ export async function registerRoutes(app: Express): Promise<void> {
   });
 
   app.get("/api/owl-post/characters", requireAuth, async (req, res) => {
-    console.log("GET /api/owl-post/characters called by user", req.user);
     try {
       const allCharacters = await storage.getAllCharacters();
       const safeAllCharacters = Array.isArray(allCharacters) ? allCharacters : [];
@@ -1536,155 +1584,24 @@ export async function registerRoutes(app: Express): Promise<void> {
       }));
       res.json(charactersWithFullName);
     } catch (error) {
-      console.error("Chyba při načítání owl-post characters:", error, error?.stack);
-      res.json([]); // fallback: nikdy nevracej 400/500, vždy pole
-    }
-  });
-
-  app.get("/api/owl-post/inbox/:characterId", requireAuth, async (req, res) => {
-    const characterId = Number(req.params.characterId);
-    if (!characterId || isNaN(characterId)) {
-      return res.status(400).json({ message: "Invalid characterId" });
-    }
-
-    // Ověření přístupu k postavě
-    if (req.user!.role !== 'admin') {
-      const characters = await storage.getCharactersByUserId(req.user!.id);
-      if (!characters.some((char: any) => char.id === characterId)) {
-        return res.status(403).json({ message: "Forbidden" });
-      }
-    }
-
-    try {
-      const messages = await storage.getOwlPostInbox(characterId);
-
-      // Přidáme informace o odesílateli a příjemci
-      const messagesWithDetails = await Promise.all(messages.map(async (msg: any) => {
-        const sender = await storage.getCharacter(msg.senderCharacterId);
-        const recipient = await storage.getCharacter(msg.recipientCharacterId);
-
-        return {
-          ...msg,
-          sender: sender ? {
-            firstName: sender.firstName,
-            middleName: sender.middleName,
-            lastName: sender.lastName
-          } : null,
-          recipient: recipient ? {
-            firstName: recipient.firstName,
-            middleName: recipient.middleName,
-            lastName: sender.lastName
-          } : null
-        };
-      }));
-
-      res.json(messagesWithDetails);
-    } catch (error) {
-      console.error("Error fetching inbox:", error);
-      res.status(500).json({ message: "Failed to fetch messages" });
-    }
-  });
-
-  app.get("/api/owl-post/sent/:characterId", requireAuth, async (req, res) => {
-    const characterId = Number(req.params.characterId);
-    if (!characterId || isNaN(characterId)) {
-      return res.status(400).json({ message: "Invalid characterId" });
-    }
-
-    // Ověření přístupu k postavě
-    if (req.user!.role !== 'admin') {
-      const characters = await storage.getCharactersByUserId(req.user!.id);
-      if (!characters.some((char: any) => char.id === characterId)) {
-        return res.status(403).json({ message: "Forbidden" });
-      }
-    }
-
-    try {
-      const messages = await storage.getOwlPostSent(characterId);
-
-      // Přidáme informace o odesílatele a příjemci
-      const messagesWithDetails = await Promise.all(messages.map(async (msg: any) => {
-        const sender = await storage.getCharacter(msg.senderCharacterId);
-        const recipient = await storage.getCharacter(msg.recipientCharacterId);
-
-        return {
-          ...msg,
-          sender: sender ? {
-            firstName: sender.firstName,
-            middleName: sender.middleName,
-            lastName: sender.lastName
-          } : null,
-          recipient: recipient ? {
-            firstName: recipient.firstName,
-            middleName: recipient.middleName,
-            lastName: sender.lastName
-          } : null
-        };
-      }));
-
-      res.json(messagesWithDetails);
-    } catch (error) {
-      console.error("Error fetching sent messages:", error);
-      res.status(500).json({ message: "Failed to fetch sent messages" });
-    }
-  });
-
-  app.post("/api/owl-post/send", requireAuth, async (req, res) => {
-    const { senderCharacterId, recipientCharacterId, subject, content } = req.body;
-
-    if (!senderCharacterId || !recipientCharacterId || !subject || !content) {
-      return res.status(400).json({ message: "Missing required fields" });
-    }
-
-    // Ověření přístupu k odesílající postavě
-    if (req.user!.role !== 'admin') {
-      const characters = await storage.getCharactersByUserId(req.user!.id);
-      if (!characters.some((char: any) => char.id === senderCharacterId)) {
-        return res.status(403).json({ message: "Forbidden" });
-      }
-    }
-
-    try {
-      const message = await storage.sendOwlPostMessage(senderCharacterId, recipientCharacterId, subject, content);
-      res.status(201).json(message);
-    } catch (error: any) {
-      console.error("Error sending message:", error);
-      res.status(500).json({ message: error.message || "Failed to send message" });
-    }
-  });
-
-  app.post("/api/owl-post/mark-read/:messageId", requireAuth, async (req, res) => {
-    const messageId = Number(req.params.messageId);
-    if (!messageId || isNaN(messageId)) {
-      return res.status(400).json({ message: "Invalid messageId" });
-    }
-
-    // Najdeme zprávu a ověříme přístup
-    try {
-      // Potřebujeme implementovat getOwlPostMessage v storage
-      // Zatím jen označíme jako přečtenou
-      const success = await storage.markOwlPostMessageRead(messageId, req.user!.id);
-      if (success) {
-        res.json({ success: true });
-      } else {
-        res.status(404).json({ message: "Message not found or access denied" });
-      }
-    } catch (error: any) {
-      console.error("Error marking message as read:", error);
-      res.status(500).json({ message: error.message || "Failed to mark message as read" });
+      console.error("Error loading owl-post characters:", error);
+      res.json([]); // fallback: vždy vrať pole
     }
   });
 
   app.delete("/api/owl-post/message/:messageId", requireAuth, async (req, res) => {
-    const messageId = Number(req.params.messageId);
-    if (!messageId || isNaN(messageId)) {
-      return res.status(400).json({ message: "Invalid messageId" });
-    }
-
     try {
-      // Potřebujeme implementovat deleteOwlPostMessage v storage
-      // Zatím vrátime success
-      res.json({ success: true });
+      const messageId = Number(req.params.messageId);
+      if (!messageId || isNaN(messageId)) {
+        return res.status(400).json({ message: "Invalid messageId" });
+      }
+
+      const success = await storage.deleteOwlPostMessage(messageId);
+      if (success) {
+        res.json({ success: true });
+      } else {
+        res.status(404).json({ message: "Message not found" });
+      }
     } catch (error: any) {
       console.error("Error deleting message:", error);
       res.status(500).json({ message: error.message || "Failed to delete message" });
