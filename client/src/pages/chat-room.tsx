@@ -132,9 +132,9 @@ export default function ChatRoom() {
     words.forEach(word => {
       // Escape special regex characters
       const escapedWord = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      // Use word boundaries to avoid partial matches within words
-      const regex = new RegExp(`\\b(${escapedWord})\\b`, 'gi');
-      highlightedContent = highlightedContent.replace(regex, `<span class="px-1 rounded ${colorClass}">$1</span>`);
+      // Remove word boundaries to allow partial matches and case insensitive search
+      const regex = new RegExp(`(${escapedWord})`, 'gi');
+      highlightedContent = highlightedContent.replace(regex, `<span class="${colorClass}">$1</span>`);
     });
 
     return <span dangerouslySetInnerHTML={{ __html: highlightedContent }} />;
