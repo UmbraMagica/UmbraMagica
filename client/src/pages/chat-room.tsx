@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
@@ -107,29 +107,37 @@ export default function ChatRoom() {
   const [showPresence, setShowPresence] = useState(false);
   const [showRoomDescription, setShowRoomDescription] = useState(false);
 
-  // Function to highlight words in text
-  const highlightWords = (text: string, words: string, color: string) => {
-    if (!words || !text) return text;
+  // Function to highlight words in message content
+  const renderMessageWithHighlight = (content: string, highlightWords?: string, highlightColor?: string) => {
+    if (!highlightWords || !highlightWords.trim()) {
+      return content;
+    }
 
-    const wordsToHighlight = words.split(',').map(word => word.trim()).filter(word => word.length > 0);
-    if (wordsToHighlight.length === 0) return text;
+    const words = highlightWords.split(',').map(word => word.trim()).filter(word => word.length > 0);
+    if (words.length === 0) {
+      return content;
+    }
 
-    let highlightedText = text;
+    const colorClass = {
+      'yellow': 'bg-yellow-200/60 text-yellow-900 dark:bg-yellow-400/30 dark:text-yellow-100',
+      'purple': 'bg-purple-200/60 text-purple-900 dark:bg-purple-400/30 dark:text-purple-100',
+      'blue': 'bg-blue-200/60 text-blue-900 dark:bg-blue-400/30 dark:text-blue-100',
+      'green': 'bg-green-200/60 text-green-900 dark:bg-green-400/30 dark:text-green-100',
+      'red': 'bg-red-200/60 text-red-900 dark:bg-red-400/30 dark:text-red-100',
+      'pink': 'bg-pink-200/60 text-pink-900 dark:bg-pink-400/30 dark:text-pink-100'
+    }[highlightColor || 'yellow'] || 'bg-yellow-200/60 text-yellow-900 dark:bg-yellow-400/30 dark:text-yellow-100';
 
-    wordsToHighlight.forEach(word => {
-      const regex = new RegExp(`(${word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-      const colorClass = 
-        color === 'yellow' ? 'bg-yellow-200 text-yellow-900' :
-        color === 'purple' ? 'bg-purple-200 text-purple-900' :
-        color === 'blue' ? 'bg-blue-200 text-blue-900' :
-        color === 'green' ? 'bg-green-200 text-green-900' :
-        color === 'red' ? 'bg-red-200 text-red-900' :
-        'bg-pink-200 text-pink-900';
+    let highlightedContent = content;
 
-      highlightedText = highlightedText.replace(regex, `<span class="px-1 rounded ${colorClass}">$1</span>`);
+    words.forEach(word => {
+      // Escape special regex characters
+      const escapedWord = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      // Use word boundaries to avoid partial matches within words
+      const regex = new RegExp(`\\b(${escapedWord})\\b`, 'gi');
+      highlightedContent = highlightedContent.replace(regex, `<span class="px-1 rounded ${colorClass}">$1</span>`);
     });
 
-    return highlightedText;
+    return <span dangerouslySetInnerHTML={{ __html: highlightedContent }} />;
   };
 
   // Safe character processing
@@ -143,13 +151,41 @@ export default function ChatRoom() {
   console.log('[ChatRoom] FULL DEBUG - Current user ID:', user?.id);
 
   // Process user characters - only alive, non-system characters belonging to the user
-  const userCharacters = Array.isArray(userCharactersRaw) ? 
+  const userCharactersFiltered = Array.isArray(userCharactersRaw) ? 
     userCharactersRaw.filter(char => 
       char && 
       !char.deathDate && 
       !char.isSystem &&
       char.userId === user?.id
     ) : [];
+
+  // Apply character ordering from user settings
+  const userCharacters = React.useMemo(() => {
+    if (!userCharactersFiltered.length) return [];
+    
+    const characterOrder = user?.characterOrder;
+    if (!characterOrder || !Array.isArray(characterOrder) || characterOrder.length === 0) {
+      return userCharactersFiltered;
+    }
+
+    // Create ordered array based on user preferences
+    const orderedCharacters: any[] = [];
+    const remainingCharacters = [...userCharactersFiltered];
+
+    // First, add characters in the specified order
+    characterOrder.forEach((characterId: number) => {
+      const characterIndex = remainingCharacters.findIndex(char => char.id === characterId);
+      if (characterIndex !== -1) {
+        orderedCharacters.push(remainingCharacters[characterIndex]);
+        remainingCharacters.splice(characterIndex, 1);
+      }
+    });
+
+    // Then add any remaining characters that weren't in the order
+    orderedCharacters.push(...remainingCharacters);
+
+    return orderedCharacters;
+  }, [userCharactersFiltered, user?.characterOrder]);
 
   console.log('[ChatRoom] FULL DEBUG - Filtered user characters:', userCharacters);
   console.log('[ChatRoom] FULL DEBUG - Filtered characters count:', userCharacters.length);
@@ -875,9 +911,13 @@ export default function ChatRoom() {
                             }
                           : {}
                       }>
-                        <p className="text-sm whitespace-pre-wrap break-words">
-                          {message.content || message.body || 'Žádný obsah zprávy'}
-                        </p>
+                        <div className="text-sm whitespace-pre-wrap break-words">
+                          {renderMessageWithHighlight(
+                            message.content || message.body || 'Žádný obsah zprávy',
+                            user?.highlightWords,
+                            user?.highlightColor
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
