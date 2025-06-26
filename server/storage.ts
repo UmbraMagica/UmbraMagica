@@ -1352,23 +1352,6 @@ export class DatabaseStorage implements IStorage {
     return !error;
   }
 
-  // Get invite code
-  async getInviteCode(code: string): Promise<any> {
-    const { data, error } = await supabase
-      .from('invite_codes')
-      .select('*')
-      .eq('code', code)
-      .single();
-
-    if (error) return null;
-    return {
-      id: data.id,
-      code: data.code,
-      isUsed: data.is_used,
-      createdAt: data.created_at
-    };
-  }
-
   // Mark invite code as used
   async markInviteCodeUsed(id: number): Promise<void> {
     const { error } = await supabase
@@ -1380,107 +1363,6 @@ export class DatabaseStorage implements IStorage {
       .eq('id', id);
 
     if (error) throw new Error(`Failed to mark invite code as used: ${error.message}`);
-  }
-
-  // Get user by email
-  async getUserByEmail(email: string): Promise<any> {
-    const { data, error } = await supabase
-      .from('users')
-      .select('*')
-      .eq('email', email)
-      .single();
-
-    if (error) return null;
-    return data;
-  }
-
-  // Create user
-  async createUser(userData: {
-    username: string;
-    email: string;
-    password: string;
-    role: string;
-  }): Promise<any> {
-    const hashedPassword = await bcrypt.hash(userData.password, 10);
-
-    const { data, error } = await supabase
-      .from('users')
-      .insert({
-        username: userData.username,
-        email: userData.email,
-        password: hashedPassword,
-        role: userData.role,
-        is_banned: false,
-        is_system: false,
-        can_narrate: false
-      })
-      .select()
-      .single();
-
-    if (error) throw new Error(`Failed to create user: ${error.message}`);
-
-    return {
-      id: data.id,
-      username: data.username,
-      email: data.email,
-      role: data.role,
-      canNarrate: data.can_narrate
-    };
-  }
-
-  // Create character
-  async createCharacter(characterData: {
-    userId: number;
-    firstName: string;
-    middleName?: string | null;
-    lastName: string;
-    birthDate: string;
-    isActive: boolean;
-    isSystem: boolean;
-    showHistoryToOthers: boolean;
-  }): Promise<any> {
-    // Get next available ID for characters table
-    const { data: maxIdResult, error: maxIdError } = await supabase
-      .from('characters')
-      .select('id')
-      .order('id', { ascending: false })
-      .limit(1);
-
-    if (maxIdError) throw new Error(`Failed to get max character ID: ${maxIdError.message}`);
-
-    const nextId = (maxIdResult && maxIdResult.length > 0) ? maxIdResult[0].id + 1 : 1;
-
-    const { data, error } = await supabase
-      .from('characters')
-      .insert({
-        id: nextId,
-        user_id: characterData.userId,
-        first_name: characterData.firstName,
-        middle_name: characterData.middleName,
-        last_name: characterData.lastName,
-        birth_date: characterData.birthDate,
-        is_active: characterData.isActive,
-        is_system: characterData.isSystem,
-        show_history_to_others: characterData.showHistoryToOthers,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      })
-      .select()
-      .single();
-
-    if (error) throw new Error(`Failed to create character: ${error.message}`);
-
-    return {
-      id: data.id,
-      userId: data.user_id,
-      firstName: data.first_name,
-      middleName: data.middle_name,
-      lastName: data.last_name,
-      birthDate: data.birth_date,
-      isActive: data.is_active,
-      isSystem: data.is_system,
-      showHistoryToOthers: data.show_history_to_others
-    };
   }
 
   // Initialize default spells for all characters
