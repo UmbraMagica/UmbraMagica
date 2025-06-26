@@ -1,0 +1,36 @@
+index-CMWs5lLv.js:447 [useAuth] FULL DEBUG - Loaded user data: Object
+index-CMWs5lLv.js:447 [useAuth] FULL DEBUG - Characters response status: 200
+index-CMWs5lLv.js:447 [useAuth] FULL DEBUG - Raw characters data: Object
+index-CMWs5lLv.js:447 [useAuth] FULL DEBUG - Characters data type: object
+index-CMWs5lLv.js:447 [useAuth] FULL DEBUG - Is array: false
+index-CMWs5lLv.js:447 [useAuth] FULL DEBUG - Extracted characters array: Array(1)
+index-CMWs5lLv.js:447 [processCharacters] FULL DEBUG - Input data: Array(1)
+index-CMWs5lLv.js:447 [processCharacters] FULL DEBUG - Input type: object
+index-CMWs5lLv.js:447 [processCharacters] FULL DEBUG - Is array: true
+index-CMWs5lLv.js:447 [processCharacters] FULL DEBUG - Using direct array
+index-CMWs5lLv.js:447 [processCharacters] FULL DEBUG - Characters array: Array(1)
+index-CMWs5lLv.js:447 [processCharacters] FULL DEBUG - Characters array length: 1
+index-CMWs5lLv.js:447 [processCharacters] FULL DEBUG - Checking character 0: Object
+index-CMWs5lLv.js:447 [processCharacters] FULL DEBUG - Character 0 valid: true
+index-CMWs5lLv.js:447 [processCharacters] FULL DEBUG - Valid characters: Array(1)
+index-CMWs5lLv.js:447 [processCharacters] FULL DEBUG - Valid characters count: 1
+index-CMWs5lLv.js:447 [useAuth] FULL DEBUG - Processed characters: Array(1)
+index-CMWs5lLv.js:447 [useAuth] FULL DEBUG - Processed characters count: 1
+index-CMWs5lLv.js:500 [OwlPost] Načteno userCharacters: Array(0)
+index-CMWs5lLv.js:500 [OwlPost] Načteno owlPostCharacters: Array(0)
+index-CMWs5lLv.js:500 [OwlPost] Načten inboxMessages: Array(0)
+index-CMWs5lLv.js:500 [OwlPost] Načten sentMessages: Array(0)
+index-CMWs5lLv.js:500 [OwlPost] Načteno userCharacters: Array(0)
+index-CMWs5lLv.js:500 [OwlPost] Načteno owlPostCharacters: Array(0)
+index-CMWs5lLv.js:500 [OwlPost] Načten inboxMessages: Array(0)
+index-CMWs5lLv.js:500 [OwlPost] Načten sentMessages: Array(0)
+index-CMWs5lLv.js:500 [OwlPost] Načteno userCharacters: Object
+index-CMWs5lLv.js:500 [OwlPost] Načteno owlPostCharacters: Array(0)
+index-CMWs5lLv.js:500 [OwlPost] Načten inboxMessages: Array(0)
+index-CMWs5lLv.js:500 [OwlPost] Načten sentMessages: Array(0)
+index-CMWs5lLv.js:500 [OwlPost] Načteno owlPostCharacters: Array(15)
+index-CMWs5lLv.js:500 [OwlPost] Načten inboxMessages: Array(0)
+index-CMWs5lLv.js:500 [OwlPost] Načten sentMessages: Array(0)
+index-CMWs5lLv.js:500 [OwlPost] Načten inboxMessages: Array(0)
+index-CMWs5lLv.js:500 [OwlPost] Načten sentMessages: Array(0)
+index-CMWs5lLv.js:500 [OwlPost] Načten unreadTotalData: Object
