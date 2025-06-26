@@ -1597,7 +1597,7 @@ export async function registerRoutes(app: Express): Promise<void> {
       res.json(charactersWithFullName);
     } catch (error) {
       console.error("Error loading owl-post characters:", error);
-      res.status(500).json({ message: "Failed to load characters" });
+      res.status(500).json({ message: "Failed to load characters", characters: [] });
     }
   });
 

@@ -71,63 +71,20 @@ function OwlPost() {
   const [searchTerm, setSearchTerm] = useState("");
   const { selectedCharacter, changeCharacter } = useSelectedCharacter();
 
-  // Get user's characters - use same approach as useAuth
-  const { data: userCharactersData } = useQuery({
+  // Get user's characters
+  const { data: userCharacters = [] } = useQuery<any[]>({
     queryKey: ["/api/characters"],
     enabled: !!user,
-    queryFn: async () => {
-      const token = getAuthToken();
-      const response = await fetch(`${API_URL}/api/characters`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch characters');
-      }
-
-      return response.json();
-    },
+    queryFn: getQueryFn({ on401: "throw" }),
   });
-
-  // Extract characters array consistently with useAuth
-  const userCharacters = (() => {
-    if (!userCharactersData) return [];
-    
-    // Handle different response formats
-    if (Array.isArray(userCharactersData)) {
-      return userCharactersData;
-    }
-    
-    if (userCharactersData.characters && Array.isArray(userCharactersData.characters)) {
-      return userCharactersData.characters;
-    }
-    
-    return [];
-  })();
 
   // Get all characters for owl post
   const { data: owlPostCharacters = [] } = useQuery({
     queryKey: ["/api/owl-post/characters"],
     enabled: !!user,
     queryFn: async () => {
-      const token = getAuthToken();
-      const response = await fetch(`${API_URL}/api/owl-post/characters`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch owl post characters');
-      }
-
-      const data = await response.json();
-      console.log('[OwlPost] Raw owl-post characters response:', data);
-      return Array.isArray(data) ? data : [];
+      const response = await apiFetch(`${API_URL}/api/owl-post/characters`);
+      return Array.isArray(response) ? response : [];
     },
   });
 
