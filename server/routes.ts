@@ -519,19 +519,30 @@ export async function registerRoutes(app: Express): Promise<void> {
 
   // Hůlka postavy
   app.get("/api/characters/:id/wand", requireAuth, async (req, res) => {
-    const characterId = Number(req.params.id);
-    if (!characterId || isNaN(characterId)) {
-      return res.status(400).json({ message: "Invalid characterId" });
-    }
-    if (req.user!.role !== 'admin') {
-      const characters = await storage.getCharactersByUserId(req.user!.id);
-      if (!characters.some((char: any) => char.id === characterId)) {
-        return res.status(403).json({ message: "Forbidden" });
+    try {
+      const characterId = Number(req.params.id);
+      if (!characterId || isNaN(characterId)) {
+        return res.status(400).json({ message: "Invalid characterId" });
       }
+      
+      // Check character ownership
+      if (req.user!.role !== 'admin') {
+        const character = await storage.getCharacterById(characterId);
+        if (!character || character.userId !== req.user!.id) {
+          return res.status(403).json({ message: "Forbidden" });
+        }
+      }
+      
+      const wand = await storage.getCharacterWand(characterId);
+      if (!wand) {
+        return res.status(404).json({ message: "Character has no wand" });
+      }
+      
+      res.json(wand);
+    } catch (error) {
+      console.error("Error fetching character wand:", error);
+      res.status(500).json({ message: "Failed to fetch wand" });
     }
-    const wand = await storage.getCharacterWand(characterId);
-    if (!wand) return res.status(404).json({ message: "Not Found" });
-    res.json(wand);
   });
 
   // Poslední chat postavy (zatím null)
@@ -1582,10 +1593,11 @@ export async function registerRoutes(app: Express): Promise<void> {
         ...char,
         fullName: `${char.firstName} ${char.middleName ? char.middleName + ' ' : ''}${char.lastName}`
       }));
+      console.log(`[OWL-POST] Returning ${charactersWithFullName.length} characters for owl post`);
       res.json(charactersWithFullName);
     } catch (error) {
       console.error("Error loading owl-post characters:", error);
-      res.json([]); // fallback: vždy vrať pole
+      res.status(500).json({ message: "Failed to load characters", characters: [] });
     }
   });
 

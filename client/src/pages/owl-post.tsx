@@ -83,7 +83,8 @@ function OwlPost() {
     queryKey: ["/api/owl-post/characters"],
     enabled: !!user,
     queryFn: async () => {
-      return apiFetch(`${API_URL}/api/owl-post/characters`);
+      const response = await apiFetch(`${API_URL}/api/owl-post/characters`);
+      return Array.isArray(response) ? response : [];
     },
   });
 
@@ -442,7 +443,7 @@ function OwlPost() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {owlPostCharacters.map((character) => (
+                            {Array.isArray(owlPostCharacters) && owlPostCharacters.map((character) => (
                               <SelectItem key={character.id} value={character.id.toString()}>
                                 {character.fullName}
                               </SelectItem>
