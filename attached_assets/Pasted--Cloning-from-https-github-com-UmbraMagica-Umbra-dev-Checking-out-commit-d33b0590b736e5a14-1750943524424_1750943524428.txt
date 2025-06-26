@@ -1,0 +1,97 @@
+==> Cloning from https://github.com/UmbraMagica/Umbra-dev
+==> Checking out commit d33b0590b736e5a14a3242be732b4d81731fa3c0 in branch main
+==> Using Node.js version 22.16.0 (default)
+==> Docs on specifying a Node.js version: https://render.com/docs/node-version
+==> Using Bun version 1.1.0 (default)
+==> Docs on specifying a Bun version: https://render.com/docs/bun-version
+==> Running build command '   npm install && npm run build'...
+added 559 packages, and audited 560 packages in 12s
+75 packages are looking for funding
+  run `npm fund` for details
+9 vulnerabilities (1 low, 7 moderate, 1 high)
+To address issues that do not require attention, run:
+  npm audit fix
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+Run `npm audit` for details.
+> umbra-magica@1.0.0 build
+> npm run build:client && npm run postbuild:client && npm run build:server
+> umbra-magica@1.0.0 build:client
+> cd client && npm install && npm run build
+added 237 packages, and audited 238 packages in 8s
+43 packages are looking for funding
+  run `npm fund` for details
+3 vulnerabilities (1 low, 2 moderate)
+To address all issues, run:
+  npm audit fix
+Run `npm audit` for details.
+> client@1.0.0 build
+> vite build
+The CJS build of Vite's Node API is deprecated. See https://vitejs.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.
+vite v5.2.10 building for production...
+transforming...
+✓ 2736 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.52 kB │ gzip:   0.35 kB
+dist/assets/index-XtQLgoQR.css   90.58 kB │ gzip:  15.36 kB
+dist/assets/index-BCsCkUeL.js   913.89 kB │ gzip: 249.19 kB
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 5.69s
+> umbra-magica@1.0.0 postbuild:client
+> rm -rf dist/public && mkdir -p dist/public && cp -r client/dist/* dist/public/
+> umbra-magica@1.0.0 postbuild:client
+> rm -rf dist/public && mkdir -p dist/public && cp -r client/dist/* dist/public/
+> umbra-magica@1.0.0 build:server
+> esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+▲ [WARNING] Duplicate member "getInviteCode" in class body [duplicate-class-member]
+    server/storage.ts:1355:8:
+      1355 │   async getInviteCode(code: string): Promise<any> {
+           ╵         ~~~~~~~~~~~~~
+  The original member "getInviteCode" is here:
+    server/storage.ts:774:8:
+      774 │   async getInviteCode(code: string): Promise<InviteCode | undefin...
+          ╵         ~~~~~~~~~~~~~
+▲ [WARNING] Duplicate member "getUserByEmail" in class body [duplicate-class-member]
+    server/storage.ts:1385:8:
+      1385 │   async getUserByEmail(email: string): Promise<any> {
+           ╵         ~~~~~~~~~~~~~~
+  The original member "getUserByEmail" is here:
+    server/storage.ts:273:8:
+      273 │   async getUserByEmail(email: string): Promise<User | undefined> {
+          ╵         ~~~~~~~~~~~~~~
+▲ [WARNING] Duplicate member "createUser" in class body [duplicate-class-member]
+    server/storage.ts:1397:8:
+      1397 │   async createUser(userData: {
+           ╵         ~~~~~~~~~~
+  The original member "createUser" is here:
+    server/storage.ts:279:8:
+      279 │   async createUser(userData: {
+          ╵         ~~~~~~~~~~
+▲ [WARNING] Duplicate member "createCharacter" in class body [duplicate-class-member]
+    server/storage.ts:1431:8:
+      1431 │   async createCharacter(characterData: {
+           ╵         ~~~~~~~~~~~~~~~
+  The original member "createCharacter" is here:
+    server/storage.ts:696:8:
+      696 │   async createCharacter(characterData: {
+          ╵         ~~~~~~~~~~~~~~~
+4 warnings
+  dist/index.js  152.9kb
+⚡ Done in 71ms
+==> Uploading build...
+==> Uploaded in 6.7s. Compression took 5.3s
+==> Build successful 🎉
+==> Deploying...
+==> Running '   npm start'
+> umbra-magica@1.0.0 start
+> cross-env NODE_ENV=production node dist/index.js
+==> No open ports detected, continuing to scan...
+==> Docs on specifying a port: https://render.com/docs/web-services#port-binding
+registerRoutes: konec
+Server running on port 10000
+[DEBUG] HEAD /
+==> Your service is live 🎉

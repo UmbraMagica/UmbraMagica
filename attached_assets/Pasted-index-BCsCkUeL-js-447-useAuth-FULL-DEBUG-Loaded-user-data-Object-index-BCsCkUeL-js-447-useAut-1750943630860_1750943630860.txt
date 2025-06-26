@@ -1,0 +1,45 @@
+index-BCsCkUeL.js:447 [useAuth] FULL DEBUG - Loaded user data: Object
+index-BCsCkUeL.js:447 [useAuth] FULL DEBUG - Characters response status: 200
+index-BCsCkUeL.js:447 [useAuth] FULL DEBUG - Raw characters data: Object
+index-BCsCkUeL.js:447 [useAuth] FULL DEBUG - Characters data type: object
+index-BCsCkUeL.js:447 [useAuth] FULL DEBUG - Is array: false
+index-BCsCkUeL.js:447 [useAuth] FULL DEBUG - Extracted characters array: Array(1)
+index-BCsCkUeL.js:447 [processCharacters] FULL DEBUG - Input data: Array(1)
+index-BCsCkUeL.js:447 [processCharacters] FULL DEBUG - Input type: object
+index-BCsCkUeL.js:447 [processCharacters] FULL DEBUG - Is array: true
+index-BCsCkUeL.js:447 [processCharacters] FULL DEBUG - Using direct array
+index-BCsCkUeL.js:447 [processCharacters] FULL DEBUG - Characters array: Array(1)
+index-BCsCkUeL.js:447 [processCharacters] FULL DEBUG - Characters array length: 1
+index-BCsCkUeL.js:447 [processCharacters] FULL DEBUG - Checking character 0: Object
+index-BCsCkUeL.js:447 [processCharacters] FULL DEBUG - Character 0 valid: true
+index-BCsCkUeL.js:447 [processCharacters] FULL DEBUG - Valid characters: Array(1)
+index-BCsCkUeL.js:447 [processCharacters] FULL DEBUG - Valid characters count: 1
+index-BCsCkUeL.js:447 [useAuth] FULL DEBUG - Processed characters: Array(1)
+index-BCsCkUeL.js:447 [useAuth] FULL DEBUG - Processed characters count: 1
+/api/characters/21/wand:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()
+index-BCsCkUeL.js:500 Uncaught TypeError: p.filter is not a function
+    at Q$ (index-BCsCkUeL.js:500:250099)
+    at xg (index-BCsCkUeL.js:48:34152)
+    at Rx (index-BCsCkUeL.js:48:62028)
+    at z1 (index-BCsCkUeL.js:48:72485)
+    at rS (index-BCsCkUeL.js:48:106413)
+    at v4 (index-BCsCkUeL.js:48:105476)
+    at pp (index-BCsCkUeL.js:48:105306)
+    at tS (index-BCsCkUeL.js:48:102428)
+    at i0 (index-BCsCkUeL.js:48:113881)
+    at fu (index-BCsCkUeL.js:48:112471)
+Q$ @ index-BCsCkUeL.js:500
+xg @ index-BCsCkUeL.js:48
+Rx @ index-BCsCkUeL.js:48
+z1 @ index-BCsCkUeL.js:48
+rS @ index-BCsCkUeL.js:48
+v4 @ index-BCsCkUeL.js:48
+pp @ index-BCsCkUeL.js:48
+tS @ index-BCsCkUeL.js:48
+i0 @ index-BCsCkUeL.js:48
+fu @ index-BCsCkUeL.js:48
+mS @ index-BCsCkUeL.js:48
+(anonymní) @ index-BCsCkUeL.js:48
