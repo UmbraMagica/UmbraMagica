@@ -1,0 +1,33 @@
+index-CMWs5lLv.js:447 [useAuth] FULL DEBUG - Loaded user data: Object
+index-CMWs5lLv.js:447 [useAuth] FULL DEBUG - Characters response status: 200
+index-CMWs5lLv.js:447 [useAuth] FULL DEBUG - Raw characters data: Object
+index-CMWs5lLv.js:447 [useAuth] FULL DEBUG - Characters data type: object
+index-CMWs5lLv.js:447 [useAuth] FULL DEBUG - Is array: false
+index-CMWs5lLv.js:447 [useAuth] FULL DEBUG - Extracted characters array: Array(1)
+index-CMWs5lLv.js:447 [processCharacters] FULL DEBUG - Input data: Array(1)
+index-CMWs5lLv.js:447 [processCharacters] FULL DEBUG - Input type: object
+index-CMWs5lLv.js:447 [processCharacters] FULL DEBUG - Is array: true
+index-CMWs5lLv.js:447 [processCharacters] FULL DEBUG - Using direct array
+index-CMWs5lLv.js:447 [processCharacters] FULL DEBUG - Characters array: Array(1)
+index-CMWs5lLv.js:447 [processCharacters] FULL DEBUG - Characters array length: 1
+index-CMWs5lLv.js:447 [processCharacters] FULL DEBUG - Checking character 0: Object
+index-CMWs5lLv.js:447 [processCharacters] FULL DEBUG - Character 0 valid: true
+index-CMWs5lLv.js:447 [processCharacters] FULL DEBUG - Valid characters: Array(1)
+index-CMWs5lLv.js:447 [processCharacters] FULL DEBUG - Valid characters count: 1
+index-CMWs5lLv.js:447 [useAuth] FULL DEBUG - Processed characters: Array(1)
+index-CMWs5lLv.js:447 [useAuth] FULL DEBUG - Processed characters count: 1
+/api/characters/21/wand:1 
+            
+            
+           Failed to load resource: the server responded with a status of 404 ()
+index-CMWs5lLv.js:500 Uncaught TypeError: p.filter is not a function
+    at Q$ (index-CMWs5lLv.js:500:250054)
+    at xg (index-CMWs5lLv.js:48:34152)
+    at Rx (index-CMWs5lLv.js:48:62028)
+    at z1 (index-CMWs5lLv.js:48:72485)
+    at rS (index-CMWs5lLv.js:48:106413)
+    at v4 (index-CMWs5lLv.js:48:105476)
+    at pp (index-CMWs5lLv.js:48:105306)
+    at tS (index-CMWs5lLv.js:48:102428)
+    at i0 (index-CMWs5lLv.js:48:113881)
+    at fu (index-CMWs5lLv.js:48:112471)
