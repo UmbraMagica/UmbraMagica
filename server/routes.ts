@@ -345,25 +345,37 @@ export async function registerRoutes(app: Express): Promise<void> {
   // Endpoint pro seznam všech postav (HLAVNÍ ENDPOINT)
   app.get("/api/characters", requireAuth, async (req, res) => {
     try {
+      console.log(`[CHARACTERS] FULL DEBUG - User ${req.user!.username} (ID: ${req.user!.id}, role: ${req.user!.role}) requesting OWN characters`);
+      
       // ALWAYS return only user's own characters, regardless of admin status
       // Admins can use /api/characters/all for all characters
       const characters = await storage.getCharactersByUserId(req.user!.id);
-
-      console.log(`[CHARACTERS] FULL DEBUG - User ${req.user!.username} (ID: ${req.user!.id}, role: ${req.user!.role}) requesting OWN characters`);
-      console.log(`[CHARACTERS] FULL DEBUG - Raw characters for user ${req.user!.id}:`, characters);
+      
+      console.log(`[CHARACTERS] FULL DEBUG - Raw characters from DB for user ${req.user!.id}:`, characters);
       console.log(`[CHARACTERS] FULL DEBUG - Raw count: ${characters?.length || 0}`);
+
+      if (!characters || !Array.isArray(characters)) {
+        console.log(`[CHARACTERS] FULL DEBUG - No characters or invalid format, returning empty array`);
+        return res.json({ characters: [] });
+      }
 
       const validCharacters = validateAndFilterCharacters(characters);
       
       // Extra validation: ensure all characters belong to the requesting user
-      const userOwnedCharacters = validCharacters.filter(char => char.userId === req.user!.id);
+      const userOwnedCharacters = validCharacters.filter(char => {
+        const belongsToUser = char.userId === req.user!.id;
+        if (!belongsToUser) {
+          console.warn(`[CHARACTERS] FULL DEBUG - Character ${char.id} (${char.firstName} ${char.lastName}) does not belong to user ${req.user!.id}, belongs to ${char.userId}`);
+        }
+        return belongsToUser;
+      });
       
       console.log(`[CHARACTERS] FULL DEBUG - Valid count: ${validCharacters.length}`);
       console.log(`[CHARACTERS] FULL DEBUG - User-owned count: ${userOwnedCharacters.length}`);
-      console.log(`[CHARACTERS] FULL DEBUG - User-owned characters:`, userOwnedCharacters);
+      console.log(`[CHARACTERS] FULL DEBUG - User-owned characters:`, userOwnedCharacters.map(c => ({ id: c.id, name: `${c.firstName} ${c.lastName}`, userId: c.userId })));
 
       // Always return in { characters: [] } format for consistency
-      console.log(`[CHARACTERS] FULL DEBUG - Returning response:`, { characters: userOwnedCharacters });
+      console.log(`[CHARACTERS] FULL DEBUG - Returning response with ${userOwnedCharacters.length} characters`);
       res.json({ characters: userOwnedCharacters });
     } catch (error) {
       console.error("Chyba při načítání postav:", error);

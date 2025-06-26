@@ -350,20 +350,35 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getCharactersByUserId(userId: number): Promise<Character[]> {
+    console.log(`[STORAGE] getCharactersByUserId called for user: ${userId}`);
+    
     const { data, error } = await supabase
       .from('characters')
       .select('*')
       .eq('user_id', userId)
       .or('is_system.eq.false,is_system.is.null')
       .order('created_at', { ascending: false });
+      
     if (error) {
-      console.error("getCharactersByUserId error:", { userId, error });
+      console.error("[STORAGE] getCharactersByUserId error:", { userId, error });
       return [];
     }
+    
+    console.log(`[STORAGE] Raw DB response for user ${userId}:`, data);
+    
     if (!data || data.length === 0) {
-      console.warn("No characters found for user", { userId, data });
+      console.log(`[STORAGE] No characters found for user ${userId}`);
+      return [];
     }
-    return toCamel(data || []);
+    
+    // Extra safety check - filter again to ensure only characters belonging to this user
+    const filteredData = data.filter(char => char.user_id === userId);
+    console.log(`[STORAGE] After filtering: ${filteredData.length} characters for user ${userId}`);
+    
+    const camelCaseData = toCamel(filteredData);
+    console.log(`[STORAGE] Returning characters:`, camelCaseData.map(c => ({ id: c.id, name: `${c.firstName} ${c.lastName}`, userId: c.userId })));
+    
+    return camelCaseData;
   }
 
   async getChatMessages(roomId: number) {
@@ -1961,6 +1976,9 @@ export class DatabaseStorage implements IStorage {
         subject: subject?.substring(0, 50), 
         contentLength: content?.length
       });
+      
+      // Validate that both characters exist and get their details
+      console.log("[STORAGE][sendOwlPostMessage] === VALIDATING CHARACTER EXISTENCE ===");
 
       // Validace vstupních parametrů
       console.log("[STORAGE][sendOwlPostMessage] === VALIDATING PARAMETERS ===");
@@ -1990,28 +2008,38 @@ export class DatabaseStorage implements IStorage {
       console.log("[STORAGE][sendOwlPostMessage] === CHECKING SENDER CHARACTER ===");
       const { data: senderExists, error: senderError } = await supabase
         .from('characters')
-        .select('id, first_name, last_name')
+        .select('id, first_name, last_name, user_id')
         .eq('id', senderCharacterId)
         .single();
 
       console.log("[STORAGE][sendOwlPostMessage] Sender query result:", { data: senderExists, error: senderError });
 
-      if (senderError || !senderExists) {
-        console.error("[STORAGE][sendOwlPostMessage] Sender character not found:", { senderCharacterId, error: senderError });
+      if (senderError) {
+        console.error("[STORAGE][sendOwlPostMessage] Sender character query error:", { senderCharacterId, error: senderError });
+        throw new Error(`Database error looking up sender character ${senderCharacterId}: ${senderError.message}`);
+      }
+      
+      if (!senderExists) {
+        console.error("[STORAGE][sendOwlPostMessage] Sender character not found:", { senderCharacterId });
         throw new Error(`Sender character ${senderCharacterId} not found`);
       }
 
       console.log("[STORAGE][sendOwlPostMessage] === CHECKING RECIPIENT CHARACTER ===");
       const { data: recipientExists, error: recipientError } = await supabase
         .from('characters')
-        .select('id, first_name, last_name')
+        .select('id, first_name, last_name, user_id')
         .eq('id', recipientCharacterId)
         .single();
 
       console.log("[STORAGE][sendOwlPostMessage] Recipient query result:", { data: recipientExists, error: recipientError });
 
-      if (recipientError || !recipientExists) {
-        console.error("[STORAGE][sendOwlPostMessage] Recipient character not found:", { recipientCharacterId, error: recipientError });
+      if (recipientError) {
+        console.error("[STORAGE][sendOwlPostMessage] Recipient character query error:", { recipientCharacterId, error: recipientError });
+        throw new Error(`Database error looking up recipient character ${recipientCharacterId}: ${recipientError.message}`);
+      }
+      
+      if (!recipientExists) {
+        console.error("[STORAGE][sendOwlPostMessage] Recipient character not found:", { recipientCharacterId });
         throw new Error(`Recipient character ${recipientCharacterId} not found`);
       }
 
