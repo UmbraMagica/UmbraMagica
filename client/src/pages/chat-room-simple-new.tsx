@@ -1022,12 +1022,13 @@ export default function ChatRoom() {
                 })()}
 
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-baseline gap-2 mb-1">
+                  
+                  
                     {(() => {
                       const isNarratorMessage = message.messageType === 'narrator' || message.characterId === 0;
                       if (isNarratorMessage) {
                         return (
-                          <span className="font-medium text-sm italic"
+                          <span className="font-semibold text-sm italic"
                                 style={{ 
                                   color: 
                                     user?.narratorColor === 'yellow' ? '#fbbf24' :
@@ -1584,4 +1585,4 @@ export default function ChatRoom() {
       </Dialog>
     </div>
   );
-}
+}This code modification ensures narrator color consistency in the simple chat room component.

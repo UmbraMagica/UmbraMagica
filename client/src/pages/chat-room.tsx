@@ -744,27 +744,110 @@ export default function ChatRoom() {
                 console.log("Character:", message.character);
                 console.log("Resolved name:", getCharacterName(message));
                 return (
-                  <div key={message.id} className="flex gap-3 items-start">
-                    <Avatar className="w-10 h-10 flex-shrink-0">
-                      <AvatarImage src={message.character?.avatar || undefined} />
-                      <AvatarFallback className="bg-primary/10 text-primary font-semibold">
-                        {getCharacterName(message)
-                          .split(' ')
-                          .map((part) => part[0])
-                          .join('')
-                          .toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
+                  <div className="flex gap-3 items-start">
+                    {(() => {
+                      const isNarratorMessage = message.messageType === 'narrator' || message.characterId === 0;
+                      const narratorColor = user?.narratorColor || 'purple';
+
+                      if (isNarratorMessage) {
+                        return (
+                          <Avatar className="w-10 h-10 flex-shrink-0">
+                            <AvatarFallback 
+                              className="font-semibold text-white"
+                              style={{
+                                backgroundColor: 
+                                  narratorColor === 'yellow' ? '#fbbf24' :
+                                  narratorColor === 'red' ? '#ef4444' :
+                                  narratorColor === 'blue' ? '#3b82f6' :
+                                  narratorColor === 'green' ? '#10b981' :
+                                  narratorColor === 'pink' ? '#ec4899' :
+                                  '#8b5cf6'
+                              }}
+                            >
+                              V
+                            </AvatarFallback>
+                          </Avatar>
+                        );
+                      } else {
+                        return (
+                          <Avatar className="w-10 h-10 flex-shrink-0">
+                            <AvatarImage src={message.character?.avatar || undefined} />
+                            <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+                              {getCharacterName(message)
+                                .split(' ')
+                                .map((part) => part[0])
+                                .join('')
+                                .toUpperCase()}
+                            </AvatarFallback>
+                          </Avatar>
+                        );
+                      }
+                    })()}
+
                     <div className="flex-1 min-w-0">
                       <div className="flex items-baseline gap-2 mb-1">
-                        <span className="font-semibold text-foreground">
-                          {getCharacterName(message)}
-                        </span>
+                        {(() => {
+                          const isNarratorMessage = message.messageType === 'narrator' || message.characterId === 0;
+                          const narratorColor = user?.narratorColor || 'purple';
+
+                          if (isNarratorMessage) {
+                            return (
+                              <span 
+                                className="font-semibold italic"
+                                style={{
+                                  color: 
+                                    narratorColor === 'yellow' ? '#fbbf24' :
+                                    narratorColor === 'red' ? '#ef4444' :
+                                    narratorColor === 'blue' ? '#3b82f6' :
+                                    narratorColor === 'green' ? '#10b981' :
+                                    narratorColor === 'pink' ? '#ec4899' :
+                                    '#8b5cf6'
+                                }}
+                              >
+                                Vypravěč
+                              </span>
+                            );
+                          } else {
+                            return (
+                              <span className="font-semibold text-foreground">
+                                {getCharacterName(message)}
+                              </span>
+                            );
+                          }
+                        })()}
                         <span className="text-xs text-muted-foreground">
                           {formatMessageTime(message.createdAt)}
                         </span>
                       </div>
-                      <div className="bg-muted/30 rounded-lg p-3">
+                      <div className={`rounded-lg p-3 ${
+                        message.messageType === 'narrator' || message.characterId === 0 
+                          ? 'border-l-4 italic' 
+                          : 'bg-muted/30'
+                      }`}
+                      style={
+                        message.messageType === 'narrator' || message.characterId === 0 
+                          ? {
+                              backgroundColor: (() => {
+                                const narratorColor = user?.narratorColor || 'purple';
+                                return narratorColor === 'yellow' ? 'rgba(251, 191, 36, 0.1)' :
+                                       narratorColor === 'red' ? 'rgba(239, 68, 68, 0.1)' :
+                                       narratorColor === 'blue' ? 'rgba(59, 130, 246, 0.1)' :
+                                       narratorColor === 'green' ? 'rgba(16, 185, 129, 0.1)' :
+                                       narratorColor === 'pink' ? 'rgba(236, 72, 153, 0.1)' :
+                                       'rgba(139, 92, 246, 0.1)';
+                              })(),
+                              borderLeftColor: (() => {
+                                const narratorColor = user?.narratorColor || 'purple';
+                                return narratorColor === 'yellow' ? '#fbbf24' :
+                                       narratorColor === 'red' ? '#ef4444' :
+                                       narratorColor === 'blue' ? '#3b82f6' :
+                                       narratorColor === 'green' ? '#10b981' :
+                                       narratorColor === 'pink' ? '#ec4899' :
+                                       '#8b5cf6';
+                              })()
+                            }
+                          : {}
+                      }>
                         <p className="text-sm whitespace-pre-wrap break-words">
                           {message.content || message.body || 'Žádný obsah zprávy'}
                         </p>
@@ -793,7 +876,7 @@ export default function ChatRoom() {
                 className="min-h-[40px] max-h-[100px] resize-none pr-16"
                 placeholder="Napište zprávu..."
                 value={messageInput}
-                onChange={e => setMessageInput(e.target.value)}
+                onChange={e =>setMessageInput(e.target.value)}
                 onKeyDown={e => {
                   if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
