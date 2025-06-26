@@ -283,7 +283,7 @@ export class DatabaseStorage implements IStorage {
     role: string;
   }) {
     const hashedPassword = await bcrypt.hash(userData.password, 10);
-    
+
     const { data, error } = await supabase
       .from('users')
       .insert({
@@ -797,6 +797,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async validateInviteCode(code: string) {
+    Removing duplicate methods and fixing owl post character loading in server/storage.ts.```text
     const { data, error} = await supabase
       .from('invite_codes')
       .select('*')
@@ -1377,7 +1378,7 @@ export class DatabaseStorage implements IStorage {
         updated_at: new Date().toISOString()
       })
       .eq('id', id);
-      
+
     if (error) throw new Error(`Failed to mark invite code as used: ${error.message}`);
   }
 
@@ -1444,11 +1445,11 @@ export class DatabaseStorage implements IStorage {
       .select('id')
       .order('id', { ascending: false })
       .limit(1);
-    
+
     if (maxIdError) throw new Error(`Failed to get max character ID: ${maxIdError.message}`);
-    
+
     const nextId = (maxIdResult && maxIdResult.length > 0) ? maxIdResult[0].id + 1 : 1;
-    
+
     const { data, error } = await supabase
       .from('characters')
       .insert({
@@ -2009,7 +2010,7 @@ export class DatabaseStorage implements IStorage {
       .eq('room_id', -1)
       .eq('message_type', 'owl_post')
       .like('content', `%"recipientCharacterId":${characterId}%`);
-    
+
     if (error || !messages) return 0;
 
     // Zkontrolujeme, které z těchto zpráv jsou nepřečtené
@@ -2021,12 +2022,12 @@ export class DatabaseStorage implements IStorage {
         .eq('message_id', message.id)
         .eq('character_id', characterId)
         .single();
-      
+
       if (!readRecord) {
         unreadCount++;
       }
     }
-    
+
     return unreadCount;
   }
 
@@ -2038,7 +2039,7 @@ export class DatabaseStorage implements IStorage {
       .eq('message_type', 'owl_post')
       .like('content', `%"recipientCharacterId":${characterId}%`)
       .order('created_at', { ascending: false });
-    
+
     if (error) {
       console.error("getOwlPostInbox error:", { characterId, error });
       return [];
@@ -2048,7 +2049,7 @@ export class DatabaseStorage implements IStorage {
     for (const message of messages || []) {
       try {
         const messageData = JSON.parse(message.content);
-        
+
         // Získáme informace o odesílateli
         const { data: sender } = await supabase
           .from('characters')
@@ -2095,7 +2096,7 @@ export class DatabaseStorage implements IStorage {
       .eq('message_type', 'owl_post')
       .eq('character_id', characterId)
       .order('created_at', { ascending: false });
-    
+
     if (error) {
       console.error("getOwlPostSent error:", { characterId, error });
       return [];
@@ -2105,7 +2106,7 @@ export class DatabaseStorage implements IStorage {
     for (const message of messages || []) {
       try {
         const messageData = JSON.parse(message.content);
-        
+
         // Získáme informace o příjemci
         const { data: recipient } = await supabase
           .from('characters')
@@ -2154,14 +2155,14 @@ export class DatabaseStorage implements IStorage {
       }])
       .select()
       .single();
-    
+
     if (error) {
       console.error("sendOwlPostMessage error:", { senderCharacterId, recipientCharacterId, error });
       throw new Error(error.message);
     }
 
     console.log("Owl post message sent", { senderCharacterId, recipientCharacterId, subject });
-    
+
     return {
       id: data.id,
       senderCharacterId,
@@ -2181,12 +2182,12 @@ export class DatabaseStorage implements IStorage {
         character_id: characterId,
         created_at: new Date().toISOString()
       }], { onConflict: 'message_id,character_id' });
-    
+
     if (error) {
       console.error("markOwlPostMessageRead error:", { messageId, characterId, error });
       return false;
     }
-    
+
     console.log("Owl post message marked as read", { messageId, characterId });
     return true;
   }
@@ -2199,9 +2200,9 @@ export class DatabaseStorage implements IStorage {
       .eq('room_id', -1)
       .eq('message_type', 'owl_post')
       .single();
-    
+
     if (error) return undefined;
-    
+
     try {
       const messageData = JSON.parse(data.content);
       return {
@@ -2236,7 +2237,7 @@ export class DatabaseStorage implements IStorage {
         .eq('id', messageId)
         .eq('room_id', -1)
         .eq('message_type', 'owl_post');
-      
+
       return !error;
     } catch (error) {
       console.error("Error in deleteOwlPostMessage:", error);

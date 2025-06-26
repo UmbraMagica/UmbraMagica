@@ -71,42 +71,82 @@ function OwlPost() {
   const [searchTerm, setSearchTerm] = useState("");
   const { selectedCharacter, changeCharacter } = useSelectedCharacter();
 
-  // Get user's characters
-  const { data: userCharacters = [] } = useQuery<any[]>({
+  // Get user's characters - ensure consistent array format
+  const { data: userCharactersData } = useQuery({
     queryKey: ["/api/characters"],
     enabled: !!user,
     queryFn: getQueryFn({ on401: "throw" }),
   });
 
-  // Get all characters for owl post
-  const { data: owlPostCharacters = [] } = useQuery({
+  // Extract characters array safely
+  const userCharacters = (() => {
+    if (!userCharactersData) return [];
+    
+    // Handle different response formats from server
+    if (Array.isArray(userCharactersData)) {
+      return userCharactersData;
+    }
+    
+    if (userCharactersData.characters && Array.isArray(userCharactersData.characters)) {
+      return userCharactersData.characters;
+    }
+    
+    console.warn('[OwlPost] userCharacters is not array:', userCharactersData);
+    return [];
+  })();
+
+  // Get all characters for owl post - ensure array format
+  const { data: owlPostCharactersData } = useQuery({
     queryKey: ["/api/owl-post/characters"],
     enabled: !!user,
     queryFn: async () => {
       const response = await apiFetch(`${API_URL}/api/owl-post/characters`);
-      return Array.isArray(response) ? response : [];
+      console.log('[OwlPost] Raw owl-post characters response:', response);
+      return response;
     },
   });
 
-  // Get inbox messages
-  const { data: inboxMessages = [] } = useQuery<OwlPostMessage[]>({
+  // Extract owl post characters array safely
+  const owlPostCharacters = (() => {
+    if (!owlPostCharactersData) return [];
+    
+    if (Array.isArray(owlPostCharactersData)) {
+      return owlPostCharactersData;
+    }
+    
+    if (owlPostCharactersData.characters && Array.isArray(owlPostCharactersData.characters)) {
+      return owlPostCharactersData.characters;
+    }
+    
+    console.warn('[OwlPost] owlPostCharacters is not array:', owlPostCharactersData);
+    return [];
+  })();
+
+  // Get inbox messages - ensure array format  
+  const { data: inboxData } = useQuery({
     queryKey: [`/api/owl-post/inbox/${selectedCharacter?.id}`],
     enabled: !!selectedCharacter,
     queryFn: async () => {
       const response = await apiFetch(`${API_URL}/api/owl-post/inbox/${selectedCharacter?.id}`);
-      return Array.isArray(response) ? response : [];
+      console.log('[OwlPost] Raw inbox response:', response);
+      return response;
     },
   });
 
-  // Get sent messages
-  const { data: sentMessages = [] } = useQuery<OwlPostMessage[]>({
+  const inboxMessages = Array.isArray(inboxData) ? inboxData : [];
+
+  // Get sent messages - ensure array format
+  const { data: sentData } = useQuery({
     queryKey: [`/api/owl-post/sent/${selectedCharacter?.id}`],
     enabled: !!selectedCharacter,
     queryFn: async () => {
       const response = await apiFetch(`${API_URL}/api/owl-post/sent/${selectedCharacter?.id}`);
-      return Array.isArray(response) ? response : [];
+      console.log('[OwlPost] Raw sent response:', response);
+      return response;
     },
   });
+
+  const sentMessages = Array.isArray(sentData) ? sentData : [];
 
   // Get unread count
   const { data: unreadData } = useQuery<{ count: number }>({
@@ -348,25 +388,19 @@ function OwlPost() {
     );
   }
 
-  const filteredInboxMessages = (() => {
-    const messages = Array.isArray(inboxMessages) ? inboxMessages : [];
-    return messages.filter(message =>
-      message && message.subject && (
-        message.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (message.sender && formatSenderName(message.sender).toLowerCase().includes(searchTerm.toLowerCase()))
-      )
-    );
-  })();
+  const filteredInboxMessages = inboxMessages.filter(message =>
+    message && message.subject && (
+      message.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (message.sender && formatSenderName(message.sender).toLowerCase().includes(searchTerm.toLowerCase()))
+    )
+  );
 
-  const filteredSentMessages = (() => {
-    const messages = Array.isArray(sentMessages) ? sentMessages : [];
-    return messages.filter(message =>
-      message && message.subject && (
-        message.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (message.recipient && formatRecipientName(message.recipient).toLowerCase().includes(searchTerm.toLowerCase()))
-      )
-    );
-  })();
+  const filteredSentMessages = sentMessages.filter(message =>
+    message && message.subject && (
+      message.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (message.recipient && formatRecipientName(message.recipient).toLowerCase().includes(searchTerm.toLowerCase()))
+    )
+  );
 
   return (
     <div className="container mx-auto p-6 max-w-6xl">
@@ -443,7 +477,7 @@ function OwlPost() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {Array.isArray(owlPostCharacters) && owlPostCharacters.map((character) => (
+                            {owlPostCharacters.map((character) => (
                               <SelectItem key={character.id} value={character.id.toString()}>
                                 {character.fullName}
                               </SelectItem>
